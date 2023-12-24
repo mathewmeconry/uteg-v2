@@ -4,9 +4,12 @@
 erDiagram
     Starter {
         int ID PK
+        string stvID
         string firstname
         string lastname
         int birthyear
+        string email
+        string password
     }
 
     Club {
@@ -30,6 +33,7 @@ erDiagram
         int starterID FK
         int competitionID FK
         int clubID FK
+        string role
     }
 
     Starter ||--}| Starter2Competition : starterID
@@ -45,23 +49,6 @@ erDiagram
     }
 
     Grade |{--|| Starter2Competition: starter2CompetitionID
-
-    User {
-        int ID PK
-        string email
-        string password
-    }
-
-    User2Competition {
-        int ID PK
-        int competitionID FK
-        int userID FK
-        string role
-    }
-
-    User ||--}| User2Competition: userID
-    User2Competition |{--|| Competition: competitionID
-
 
     Judgetoken {
         int ID PK
