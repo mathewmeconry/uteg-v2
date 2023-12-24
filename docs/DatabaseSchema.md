@@ -70,6 +70,8 @@ erDiagram
         int ID PK
         int competitionID FK
         int ground
+        string state
+        int round
     }
 
     EGT_Division |{--|| Competition: competitionID
