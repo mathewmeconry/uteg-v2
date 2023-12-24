@@ -1,4 +1,5 @@
 ## Base schema without module
+
 ```mermaid
 erDiagram
     Starter {
@@ -45,7 +46,6 @@ erDiagram
 
     Grade |{--|| Starter2Competition: starter2CompetitionID
 
-
     User {
         int ID PK
         string email
@@ -74,7 +74,9 @@ erDiagram
 ```
 
 ## EGT Module schema
+
 Entities created by the EGT module are prefixed with `EGT_`
+
 ```mermaid
 erDiagram
     EGT_Division["Division"] {
@@ -93,5 +95,4 @@ erDiagram
     }
 
     EGT_Lineup |{--|| EGT_Division: divisionID
-
 ```
