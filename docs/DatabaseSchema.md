@@ -25,7 +25,7 @@ erDiagram
         date startDate
         date endDate
         int grounds
-        string[] modules
+        string[] modules "which modules this competition uses"
     }
 
     Starter2Competition {
@@ -45,8 +45,8 @@ erDiagram
         int ID PK
         int starter2CompetitionID FK
         int value
-        int device
-        string module
+        int device "intepreted by module"
+        string module "created by module"
     }
 
     Grade |{--|| Starter2Competition: starter2CompetitionID
@@ -54,7 +54,7 @@ erDiagram
     Judgetoken {
         int ID PK
         int competitionID FK
-        int device
+        int device "intepreted by module"
         int ground
     }
     

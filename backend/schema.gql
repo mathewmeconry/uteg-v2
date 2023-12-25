@@ -1,0 +1,51 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Club {
+  id: ID!
+  location: String!
+  name: String!
+}
+
+type Competition {
+  endDate: Timestamp!
+  grounds: Int!
+  id: ID!
+  location: String!
+  modules: [String!]!
+  name: String!
+  startDate: Timestamp!
+}
+
+type Grade {
+  grade: Float!
+  id: ID!
+  starter: Starter2Competition!
+}
+
+type Query {
+  clubs: [Club!]!
+  competitions: [Competition!]!
+  grades: [Grade!]!
+  starters: [Starter!]!
+}
+
+type Starter {
+  birthyear: Int!
+  email: String
+  firstname: String!
+  id: ID!
+  lastname: String!
+  stvID: String
+}
+
+type Starter2Competition {
+  id: ID!
+  role: String!
+}
+
+"""
+`Date` type as integer. Type represents date and time as number of milliseconds from start of UNIX epoch.
+"""
+scalar Timestamp
