@@ -4,12 +4,12 @@
 erDiagram
     Starter {
         int ID PK
-        string stvID
+        string stvID "nullable"
         string firstname
         string lastname
         int birthyear
-        string email
-        string password
+        string email "nullable"
+        string password "nullable"
     }
 
     Club {
@@ -33,6 +33,7 @@ erDiagram
         int starterID FK
         int competitionID FK
         int clubID FK
+        int category "Set by the modules"
         string role
     }
 
