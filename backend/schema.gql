@@ -18,17 +18,48 @@ type Competition {
   startDate: Timestamp!
 }
 
+input CreateCompetition {
+  endDate: Timestamp!
+  grounds: Int! = 1
+  location: String!
+  modules: [String!]! = []
+  name: String!
+  startDate: Timestamp!
+}
+
+input CreateStarterInput {
+  birthyear: Int!
+  email: String!
+  firstname: String!
+  lastname: String!
+  password: String!
+  stvID: String
+}
+
 type Grade {
-  grade: Float!
   id: ID!
   starter: Starter2Competition!
+  value: Float!
+}
+
+type Mutation {
+  createCompetition(competition: CreateCompetition!): Competition!
+  createStarter(starter: CreateStarterInput!): Starter!
 }
 
 type Query {
   clubs: [Club!]!
   competitions: [Competition!]!
   grades: [Grade!]!
+  starter2competition(id: Int!): Starter2Competition
   starters: [Starter!]!
+}
+
+enum Roles {
+  ADMIN
+  JUDGE
+  STARTER
+  VIEWER
 }
 
 type Starter {
@@ -41,8 +72,11 @@ type Starter {
 }
 
 type Starter2Competition {
+  category: Int
+  firstname: String
   id: ID!
-  role: String!
+  lastname: String
+  role: Roles!
 }
 
 """

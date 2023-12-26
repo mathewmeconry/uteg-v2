@@ -35,6 +35,8 @@ erDiagram
         int clubID FK
         int category "Set by the modules"
         string role
+        string firstname "Used to override firstname for this competition"
+        string lastname "Used to override lastname for this competition"
     }
 
     Starter ||--}| Starter2Competition : starterID

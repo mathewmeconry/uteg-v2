@@ -10,7 +10,7 @@ export class Starter {
 
   @Field({ nullable: true })
   @Column({ nullable: true })
-  stvID: string;
+  stvID?: string;
 
   @Field()
   @Column()
@@ -26,8 +26,8 @@ export class Starter {
 
   @Field({ nullable: true })
   @Column({ nullable: true })
-  email: string;
+  email?: string;
 
   @Column({ nullable: true })
-  password: string;
+  password?: string;
 }
