@@ -5,10 +5,12 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { ConfigModule } from './config/config.module';
 import { ConfigService } from './config/config.service';
 import { BaseModule } from './base/base.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
     BaseModule,
+    AuthModule,
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({

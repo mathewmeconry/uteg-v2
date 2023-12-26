@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Starter } from './starter/starter.entity';
 import { StarterResolver } from './starter/starter.resolver';
@@ -18,9 +18,11 @@ import { CompetitionService } from './competition/competition.service';
 import { GradeService } from './grade/grade.service';
 import { JudgetokenService } from './judgetoken/judgetoken.service';
 import { Starter2CompetitionService } from './starter2competition/starter2competition.service';
+import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
   imports: [
+    forwardRef(() => AuthModule),
     TypeOrmModule.forFeature([
       Club,
       Competition,
@@ -30,7 +32,15 @@ import { Starter2CompetitionService } from './starter2competition/starter2compet
       Starter2Competition,
     ]),
   ],
-  exports: [TypeOrmModule],
+  exports: [
+    TypeOrmModule,
+    ClubService,
+    CompetitionService,
+    GradeService,
+    JudgetokenService,
+    StarterService,
+    Starter2CompetitionService,
+  ],
   providers: [
     ClubResolver,
     CompetitionResolver,

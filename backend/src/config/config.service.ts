@@ -12,6 +12,13 @@ export class ConfigService {
         this.settings.set(key, envOutput[key] === 'true');
         continue;
       }
+      if (
+        !isNaN(parseInt(envOutput[key])) &&
+        parseInt(envOutput[key]).toString() === envOutput[key]
+      ) {
+        this.settings.set(key, parseInt(envOutput[key]));
+        continue;
+      }
       this.settings.set(key, envOutput[key]);
     }
   }
