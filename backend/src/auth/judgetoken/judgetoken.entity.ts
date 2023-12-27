@@ -1,6 +1,6 @@
 import { Field, ID, Int, ObjectType } from '@nestjs/graphql';
+import { Competition } from 'src/base/competition/competition.entity';
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { Competition } from '../competition/competition.entity';
 
 @ObjectType()
 @Entity()

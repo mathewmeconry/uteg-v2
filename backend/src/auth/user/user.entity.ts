@@ -1,26 +1,22 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { ROLES } from '../types';
 
 @ObjectType()
 @Entity()
-export class Starter {
+export class User {
   @Field(() => ID)
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Field({ nullable: true })
-  @Column({ nullable: true })
-  stvID?: string;
-
   @Field()
   @Column()
-  firstname: string;
+  email: string;
 
-  @Field()
   @Column()
-  lastname: string;
+  password: string;
 
-  @Field()
-  @Column()
-  birthyear: number;
+  @Field(() => ROLES)
+  @Column({ default: ROLES.VIEWER })
+  globalRole: ROLES;
 }

@@ -8,8 +8,6 @@ erDiagram
         string firstname
         string lastname
         int birthyear
-        string email "nullable"
-        string password "nullable"
     }
 
     Club {
@@ -34,9 +32,6 @@ erDiagram
         int competitionID FK
         int clubID FK
         int category "Set by the modules"
-        string role
-        string firstname "Used to override firstname for this competition"
-        string lastname "Used to override lastname for this competition"
     }
 
     Starter ||--}| Starter2Competition : starterID
@@ -52,6 +47,28 @@ erDiagram
     }
 
     Grade |{--|| Starter2Competition: starter2CompetitionID
+```
+
+## Auth Module schema
+
+```mermaid
+erDiagram
+    User {
+        int ID PK
+        string email 
+        string password
+        int globalRole
+    }
+
+    User2Competition {
+        int ID PK
+        int competitionID FK
+        int userID FK
+        int role
+    }
+
+    User ||--}| User2Competition: competitionID
+    Competition ||--}| User2Competition: userID
 
     Judgetoken {
         int ID PK

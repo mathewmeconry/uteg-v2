@@ -3,8 +3,8 @@ import { Competition } from './competition.entity';
 import { CompetitionService } from './competition.service';
 import { Inject } from '@nestjs/common';
 import { CreateCompetition } from './competition.types';
-import { User } from 'src/auth/decorators/user.decorator';
-import { Starter } from '../starter/starter.entity';
+import { User } from 'src/auth/user/user.entity';
+import { CurrentUser } from 'src/auth/decorators/currentUser.decorator';
 
 @Resolver(() => Competition)
 export class CompetitionResolver {
@@ -18,7 +18,7 @@ export class CompetitionResolver {
 
   @Mutation(() => Competition, { name: 'createCompetition' })
   async create(
-    @User() user: Starter,
+    @CurrentUser() user: User,
     @Args('competition') competitionData: CreateCompetition,
   ): Promise<Competition> {
     let competition = new Competition();

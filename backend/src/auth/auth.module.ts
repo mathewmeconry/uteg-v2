@@ -1,17 +1,24 @@
-import { Module, forwardRef } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule } from 'src/config/config.module';
 import { ConfigService } from 'src/config/config.service';
 import { AuthService } from './auth.service';
 import { AuthGuard } from './guards/auth.guard';
 import { AuthController } from './auth.controller';
-import { BaseModule } from 'src/base/base.module';
 import { RoleGuard } from './guards/role.guard';
+import { UserService } from './user/user.service';
+import { User } from './user/user.entity';
+import { User2Competition } from './user/user2competition.entity';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { UserResolver } from './user/user.resolver';
+import { JudgetokenResolver } from './judgetoken/judgetoken.resolver';
+import { JudgetokenService } from './judgetoken/judgetoken.service';
+import { Judgetoken } from './judgetoken/judgetoken.entity';
 
 @Module({
   imports: [
-    forwardRef(() => BaseModule),
     ConfigModule,
+    TypeOrmModule.forFeature([User, User2Competition, Judgetoken]),
     JwtModule.registerAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
@@ -25,14 +32,18 @@ import { RoleGuard } from './guards/role.guard';
     }),
   ],
   controllers: [AuthController],
-  exports: [AuthService, RoleGuard],
+  exports: [UserService, JudgetokenService, AuthService, RoleGuard],
   providers: [
-    RoleGuard,
-    AuthService,
     {
       provide: 'APP_GUARD',
       useClass: AuthGuard,
     },
+    RoleGuard,
+    UserService,
+    UserResolver,
+    JudgetokenResolver,
+    JudgetokenService,
+    AuthService,
   ],
 })
 export class AuthModule {}

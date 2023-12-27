@@ -1,32 +1,18 @@
-import {
-  Inject,
-  Injectable,
-  UnauthorizedException,
-  forwardRef,
-} from '@nestjs/common';
+import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { StarterService } from 'src/base/starter/starter.service';
 import { ConfigService } from 'src/config/config.service';
-import { Starter2CompetitionService } from 'src/base/starter2competition/starter2competition.service';
-import * as bcrypt from 'bcrypt';
 import { ROLES } from './types';
+import { UserService } from './user/user.service';
 
 export type JwtPayload = {
   sub: number;
-  metadata: {
-    email: string;
-    firstname: string;
-    lastname: string;
-  };
+  email: string;
 };
 
 @Injectable()
 export class AuthService {
-  @Inject(forwardRef(() => StarterService))
-  private starterService: StarterService;
-
   @Inject()
-  private starter2competitionService: Starter2CompetitionService;
+  private userService: UserService;
 
   @Inject()
   private jwtService: JwtService;
@@ -35,21 +21,17 @@ export class AuthService {
   private configService: ConfigService;
 
   public async authenticate(email: string, password: string): Promise<string> {
-    const starter = await this.starterService.findOneByEmail(email);
+    const starter = await this.userService.findOneByEmail(email);
     if (!starter) {
       throw new UnauthorizedException();
     }
-    if (!this.compare(password, starter.password)) {
+    if (!this.userService.compare(password, starter.password)) {
       throw new UnauthorizedException();
     }
 
     const payload: JwtPayload = {
       sub: starter.id,
-      metadata: {
-        email: starter.email,
-        firstname: starter.firstname,
-        lastname: starter.lastname,
-      },
+      email: starter.email,
     };
 
     return this.jwtService.signAsync(payload, {
@@ -62,34 +44,14 @@ export class AuthService {
     competitionID: number,
     role: ROLES,
   ): Promise<boolean> {
-    const starter2competition =
-      await this.starter2competitionService.findForCompetition(
-        starterID,
-        competitionID,
-      );
-    if (!starter2competition) {
-      return false;
-    }
-
-    return starter2competition.role >= role;
+    const assignedRole = await this.userService.isLinked(
+      starterID,
+      competitionID,
+    );
+    return assignedRole >= role;
   }
 
   public validateJwt(jwt: string): Promise<JwtPayload> {
     return this.jwtService.verifyAsync<JwtPayload>(jwt);
-  }
-
-  public hash(data: string): Promise<string> {
-    return bcrypt.hash(
-      data,
-      this.configService.get<number>('BCRYPT_ROUNDS') || 10,
-    );
-  }
-
-  public compare(input: string, hash: string): Promise<boolean> {
-    try {
-      return bcrypt.compare(input, hash);
-    } catch {
-      throw new UnauthorizedException();
-    }
   }
 }

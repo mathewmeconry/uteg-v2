@@ -29,11 +29,14 @@ input CreateCompetition {
 
 input CreateStarterInput {
   birthyear: Int!
-  email: String!
   firstname: String!
   lastname: String!
-  password: String!
   stvID: String
+}
+
+input CreateUserInput {
+  email: String!
+  password: String!
 }
 
 type Grade {
@@ -45,6 +48,7 @@ type Grade {
 type Mutation {
   createCompetition(competition: CreateCompetition!): Competition!
   createStarter(starter: CreateStarterInput!): Starter!
+  createUser(user: CreateUserInput!): User!
 }
 
 type Query {
@@ -53,6 +57,7 @@ type Query {
   grades: [Grade!]!
   starter2competition(id: Int!): Starter2Competition
   starters: [Starter!]!
+  users: [User!]!
 }
 
 enum Roles {
@@ -64,7 +69,6 @@ enum Roles {
 
 type Starter {
   birthyear: Int!
-  email: String
   firstname: String!
   id: ID!
   lastname: String!
@@ -73,13 +77,16 @@ type Starter {
 
 type Starter2Competition {
   category: Int
-  firstname: String
   id: ID!
-  lastname: String
-  role: Roles!
 }
 
 """
 `Date` type as integer. Type represents date and time as number of milliseconds from start of UNIX epoch.
 """
 scalar Timestamp
+
+type User {
+  email: String!
+  globalRole: Roles!
+  id: ID!
+}

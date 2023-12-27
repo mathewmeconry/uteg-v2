@@ -13,10 +13,4 @@ export class CreateStarterInput {
 
   @Field()
   birthyear: number;
-
-  @Field()
-  email: string;
-
-  @Field()
-  password: string;
 }
