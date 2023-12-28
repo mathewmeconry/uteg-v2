@@ -36,7 +36,6 @@ export function CreateCompetition() {
 
   async function handleNext() {
     await form.trigger();
-    console.log(form.getValues());
     if (form.formState.isValid) {
       setActiveSetp(activeStep + 1);
     }
@@ -44,6 +43,7 @@ export function CreateCompetition() {
 
   async function handleCreate() {
     try {
+      setActiveSetp(activeStep + 1);
       const formValues = form.getValues();
       const competition = await createCompetition({
         variables: {

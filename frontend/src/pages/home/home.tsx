@@ -14,7 +14,7 @@ export function Home() {
     if (loading) {
       for (let i = 0; i < 12; i++) {
         competitionElements.push(
-          <Grid item={true} xs={3} key={i}>
+          <Grid item xs={6} md={3} key={i}>
             <Skeleton variant="rectangular" height={120} />
           </Grid>
         );
@@ -32,7 +32,7 @@ export function Home() {
 
     for (const competition of competitions?.competitions) {
       competitionElements.push(
-        <Grid item={true} xs={3} key={competition.id}>
+        <Grid item xs={6} md={3} key={competition.id}>
           <CompetitionCard competition={competition} />
         </Grid>
       );
@@ -43,7 +43,11 @@ export function Home() {
 
   return (
     <HomeLayout title={t("Home")}>
-      <Button href="/competition/create" variant="outlined" sx={{ mt: 1, mb: 1, float: "right" }}>
+      <Button
+        href="/competition/create"
+        variant="outlined"
+        sx={{ mt: 1, mb: 1, float: "right" }}
+      >
         {t("Create Competition")}
       </Button>
       <Grid container spacing={2}>
