@@ -9,10 +9,12 @@ export class AuthController {
 
   @Post()
   @Public()
-  authenticate(
+  async authenticate(
     @Body('email') email: string,
     @Body('password') password: string,
-  ): Promise<string> {
-    return this.authService.authenticate(email, password);
+  ): Promise<{ token: string }> {
+    return {
+      token: await this.authService.authenticate(email, password),
+    };
   }
 }
