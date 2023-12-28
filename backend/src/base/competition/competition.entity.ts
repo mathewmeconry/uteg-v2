@@ -17,11 +17,11 @@ export class Competition {
   location: string;
 
   @Field()
-  @Column('date')
+  @Column('timestamp')
   startDate: Date;
 
   @Field()
-  @Column('date')
+  @Column('timestamp')
   endDate: Date;
 
   @Field(() => Int)
