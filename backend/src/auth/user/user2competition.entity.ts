@@ -12,10 +12,10 @@ export class User2Competition {
   id: number;
 
   @ManyToOne(() => User)
-  user: User;
+  user: Promise<User>;
 
   @ManyToOne(() => Competition)
-  competition: Competition;
+  competition: Promise<Competition>;
 
   @Field(() => ROLES)
   @Column()

@@ -9,9 +9,9 @@ export class Grade {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Field()
+  @Field(() => Starter2Competition)
   @ManyToOne(() => Starter2Competition)
-  starter: Starter2Competition;
+  starter: Promise<Starter2Competition>;
 
   @Field(() => Float)
   @Column('decimal', { precision: 5, scale: 3 })

@@ -12,13 +12,13 @@ export class Starter2Competition {
   id: number;
 
   @ManyToOne(() => Starter)
-  starter: Starter;
+  starter: Promise<Starter>;
 
   @ManyToOne(() => Competition)
-  competition: Competition;
+  competition: Promise<Competition>;
 
   @ManyToOne(() => Club, { nullable: true })
-  club?: Club;
+  club?: Promise<Club>;
 
   @Field(() => Int, { nullable: true })
   @Column({ nullable: true })
