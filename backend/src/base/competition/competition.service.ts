@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Competition } from './competition.entity';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { UserService } from 'src/auth/user/user.service';
 import { User } from 'src/auth/user/user.entity';
 import { ROLES } from 'src/auth/types';
@@ -10,7 +10,6 @@ import { ROLES } from 'src/auth/types';
 export class CompetitionService {
   @InjectRepository(Competition)
   private competitionRepository: Repository<Competition>;
-
 
   @Inject()
   private userService: UserService;

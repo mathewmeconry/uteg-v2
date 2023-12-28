@@ -5,15 +5,20 @@ import { Inject } from '@nestjs/common';
 import { CreateCompetition } from './competition.types';
 import { User } from 'src/auth/user/user.entity';
 import { CurrentUser } from 'src/auth/decorators/currentUser.decorator';
+import { UserService } from 'src/auth/user/user.service';
 
 @Resolver(() => Competition)
 export class CompetitionResolver {
   @Inject()
   private competitionService: CompetitionService;
 
+  @Inject()
+  private userService: UserService;
+
   @Query(() => [Competition], { name: 'competitions' })
-  async findAll(): Promise<Competition[]> {
-    return this.competitionService.findAll();
+  async findAll(@CurrentUser() user: User): Promise<Competition[]> {
+    const linked = await this.userService.findLinked(user.id);
+    return Promise.all(linked.map(async (linked) => await linked.competition));
   }
 
   @Mutation(() => Competition, { name: 'createCompetition' })

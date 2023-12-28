@@ -33,7 +33,11 @@ export class UserService {
   }
 
   findOneByEmail(email: string): Promise<User | null> {
-    return this.userRepository.findOneBy({ email });
+    return this.userRepository.findOne({
+      where: {
+        email,
+      },
+    });
   }
 
   async remove(id: number): Promise<void> {
@@ -46,8 +50,8 @@ export class UserService {
     role: ROLES,
   ): Promise<User2Competition> {
     const user2competition = new User2Competition();
-    user2competition.user = user;
-    user2competition.competition = competition;
+    user2competition.user = Promise.resolve(user);
+    user2competition.competition = Promise.resolve(competition);
     user2competition.role = role;
     return this.user2competitionRepository.save(user2competition);
   }
@@ -64,6 +68,16 @@ export class UserService {
       },
     });
     return entity.role;
+  }
+
+  findLinked(userID: number): Promise<User2Competition[]> {
+    return this.user2competitionRepository.find({
+      where: {
+        user: {
+          id: userID,
+        },
+      },
+    });
   }
 
   public hash(data: string): Promise<string> {
