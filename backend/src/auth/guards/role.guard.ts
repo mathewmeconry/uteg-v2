@@ -24,6 +24,11 @@ export class RoleGuard implements CanActivate {
       context.getHandler(),
       context.getClass(),
     ]);
+
+    if (!role) {
+      return true;
+    }
+
     return this.authService.authorize(
       ctx.getContext().user.id,
       ctx.getContext().competition,
