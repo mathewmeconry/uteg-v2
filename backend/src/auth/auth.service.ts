@@ -21,17 +21,21 @@ export class AuthService {
   private configService: ConfigService;
 
   public async authenticate(email: string, password: string): Promise<string> {
-    const starter = await this.userService.findOneByEmail(email);
-    if (!starter) {
+    if (!email || !password) {
       throw new UnauthorizedException();
     }
-    if (!this.userService.compare(password, starter.password)) {
+
+    const user = await this.userService.findOneByEmail(email);
+    if (!user) {
+      throw new UnauthorizedException();
+    }
+    if (!(await this.userService.compare(password, user.password))) {
       throw new UnauthorizedException();
     }
 
     const payload: JwtPayload = {
-      sub: starter.id,
-      email: starter.email,
+      sub: user.id,
+      email: user.email,
     };
 
     return this.jwtService.signAsync(payload, {
@@ -40,14 +44,11 @@ export class AuthService {
   }
 
   public async authorize(
-    starterID: number,
+    userID: number,
     competitionID: number,
     role: ROLES,
   ): Promise<boolean> {
-    const assignedRole = await this.userService.isLinked(
-      starterID,
-      competitionID,
-    );
+    const assignedRole = await this.userService.isLinked(userID, competitionID);
     return assignedRole >= role;
   }
 
