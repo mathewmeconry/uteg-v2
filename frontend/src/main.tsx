@@ -24,7 +24,7 @@ import { CreateCompetition } from "./pages/competition/create/createCompetition"
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { Dashboard } from "./pages/competition/[id]/dashboard";
-import { StartersList } from "./pages/competition/[id]/starters/[sex]/staterslist";
+import { StartersList } from "./pages/competition/[id]/starters/[sex]/starterslist";
 
 const router = createBrowserRouter([
   {

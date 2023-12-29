@@ -18,6 +18,11 @@ type Competition {
   startDate: Timestamp!
 }
 
+input CreateClubInput {
+  location: String!
+  name: String!
+}
+
 input CreateCompetition {
   endDate: Timestamp!
   grounds: Int! = 1
@@ -35,6 +40,13 @@ input CreateStarterInput {
   stvID: String
 }
 
+input CreateStarterLinkInput {
+  category: Int
+  clubID: ID!
+  competitionID: ID!
+  starterID: ID!
+}
+
 input CreateUserInput {
   email: String!
   password: String!
@@ -47,8 +59,10 @@ type Grade {
 }
 
 type Mutation {
+  createClub(data: CreateClubInput!): Club!
   createCompetition(competition: CreateCompetition!): Competition!
-  createStarter(starter: CreateStarterInput!): Starter!
+  createStarter(data: CreateStarterInput!): Starter!
+  createStarterLink(data: CreateStarterLinkInput!): Starter2Competition!
   createUser(user: CreateUserInput!): User!
 }
 
@@ -80,6 +94,7 @@ type Starter {
   id: ID!
   lastname: String!
   sex: Sex!
+  starter2competitions: [Starter2Competition!]!
   stvID: String
 }
 
@@ -90,8 +105,11 @@ type Starter2Competition {
 
 input StarterFilter {
   category: Int
-  competitionID: ID!
+  competitionID: ID
+  firstname: String
+  lastname: String
   sex: Sex
+  stvID: String
 }
 
 """

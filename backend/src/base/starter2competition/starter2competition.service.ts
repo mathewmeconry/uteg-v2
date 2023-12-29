@@ -8,8 +8,10 @@ export class Starter2CompetitionService {
   @InjectRepository(Starter2Competition)
   private starter2CompetitionRepository: Repository<Starter2Competition>;
 
-  create(starter2Competition: Starter2Competition): Promise<Starter2Competition> {
-    return this.starter2CompetitionRepository.save(starter2Competition)
+  create(
+    starter2Competition: Starter2Competition,
+  ): Promise<Starter2Competition> {
+    return this.starter2CompetitionRepository.save(starter2Competition);
   }
 
   findAll(): Promise<Starter2Competition[]> {
@@ -30,6 +32,17 @@ export class Starter2CompetitionService {
       },
       starter: {
         id: starterID,
+      },
+    });
+  }
+
+  findForStarter(starterID: number): Promise<Starter2Competition[]> {
+    return this.starter2CompetitionRepository.find({
+      relations: ['starter'],
+      where: {
+        starter: {
+          id: starterID,
+        },
       },
     });
   }

@@ -19,4 +19,8 @@ export class ClubService {
   async remove(id: number): Promise<void> {
     await this.clubRepository.delete(id);
   }
+
+  async create(club: Club): Promise<Club> {
+    return this.clubRepository.save(club)
+  }
 }

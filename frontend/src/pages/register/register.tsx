@@ -17,7 +17,8 @@ export function Register() {
     register,
     handleSubmit,
     setError,
-    formState: { errors: formErrors },
+    trigger,
+    formState: { errors: formErrors, isValid: formIsValid },
   } = useForm();
 
   if (isTokenValid()) {
@@ -25,6 +26,11 @@ export function Register() {
   }
 
   async function onSubmit(data: FieldValues) {
+    await trigger();
+    if (!formIsValid) {
+      return;
+    }
+
     if (data.password !== data.passwordRepeat) {
       setError("password", {
         message: t("Passwords don't match"),

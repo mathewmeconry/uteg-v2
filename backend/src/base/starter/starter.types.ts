@@ -20,14 +20,23 @@ export class CreateStarterInput {
 
 @InputType()
 export class StarterFilter {
-  @Field(() => ID)
-  competitionID: number
+  @Field(() => ID, { nullable: true })
+  competitionID: number;
 
-  @Field(() => SEX, {nullable: true})
-  sex?: SEX
+  @Field(() => SEX, { nullable: true })
+  sex?: SEX;
+
+  @Field({ nullable: true })
+  category?: number;
+
+  @Field({ nullable: true })
+  firstname?: string;
+
+  @Field({ nullable: true })
+  lastname?: string;
 
   @Field({nullable: true})
-  category?: number
+  stvID?: string
 }
 
 export enum SEX {

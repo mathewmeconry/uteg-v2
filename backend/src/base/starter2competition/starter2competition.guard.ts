@@ -16,14 +16,20 @@ export class Starter2CompetitionGuard implements CanActivate {
     const ctx = GqlExecutionContext.create(context);
     const args = ctx.getArgs();
 
-    if (!args.competitionID) {
-      const starter2competition = await this.starter2competitionService.findOne(
-        args.id,
-      );
-
-      ctx.getContext().competition = (await starter2competition.competition).id;
+    if (args.competitionID) {
+      ctx.getContext().competition = args.competitionID;
       return true;
     }
-    ctx.getContext().competition = args.competitionID;
+    if (args.data && args.data.competitionID) {
+      ctx.getContext().competition = args.data.competitionID;
+      return true;
+    }
+
+    const starter2competition = await this.starter2competitionService.findOne(
+      args.id,
+    );
+
+    ctx.getContext().competition = (await starter2competition.competition).id;
+    return true;
   }
 }

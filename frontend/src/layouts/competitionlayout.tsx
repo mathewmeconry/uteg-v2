@@ -1,7 +1,7 @@
-import { PropsWithChildren, useState } from "react";
+import { PropsWithChildren, useEffect, useState } from "react";
 import { HomeLayout } from "./homelayout";
 import { useCompetitionNameQuery } from "../__generated__/graphql";
-import { NavLink, useParams } from "react-router-dom";
+import { NavLink, useLocation, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import {
   Box,
@@ -36,14 +36,19 @@ type MenuItem = {
 };
 
 export function CompetitionLayout(props: PropsWithChildren) {
+  const location = useLocation();
   const { id } = useParams();
   const { data, loading } = useCompetitionNameQuery({ variables: { id } });
   const { t } = useTranslation();
-  const [drawerOpen, setDrawerOpen] = useState(true);
+  const [drawerOpen, setDrawerOpen] = useState(false);
   const [submenuStates, setSubmenuStates] = useState<{
     [index: string]: boolean;
   }>({});
   const drawerWidth = 250;
+
+  useEffect(() => {
+    setDrawerOpen(false);
+  }, [location]);
 
   function renderName() {
     if (loading) {
@@ -54,6 +59,7 @@ export function CompetitionLayout(props: PropsWithChildren) {
 
   const icons = [
     <MenuIcon
+      key="menu"
       sx={{ mr: 2, cursor: "pointer" }}
       onClick={() => setDrawerOpen(!drawerOpen)}
     />,
@@ -106,6 +112,7 @@ export function CompetitionLayout(props: PropsWithChildren) {
     if (item.to) {
       return (
         <NavLink
+          key={item.key}
           to={item.to || ""}
           style={{ textDecoration: "none", color: "inherit" }}
         >
@@ -157,7 +164,7 @@ export function CompetitionLayout(props: PropsWithChildren) {
         anchor="left"
         open={drawerOpen}
         onClose={() => setDrawerOpen(false)}
-        variant="persistent"
+        variant="temporary"
         sx={{
           width: drawerWidth,
           flexShrink: 0,
