@@ -56,7 +56,7 @@ export class UserService {
     return this.user2competitionRepository.save(user2competition);
   }
 
-  async isLinked(userID: number, competitionID: number): Promise<ROLES> {
+  async isLinked(userID: number, competitionID: number): Promise<ROLES | null> {
     const entity = await this.user2competitionRepository.findOne({
       where: {
         competition: {
@@ -67,6 +67,10 @@ export class UserService {
         },
       },
     });
+    if (!entity) {
+      return null;
+    }
+
     return entity.role;
   }
 
