@@ -90,11 +90,17 @@ export type MutationCreateUserArgs = {
 export type Query = {
   __typename?: 'Query';
   clubs: Array<Club>;
+  competition: Competition;
   competitions: Array<Competition>;
   grades: Array<Grade>;
   starter2competition?: Maybe<Starter2Competition>;
   starters: Array<Starter>;
   users: Array<User>;
+};
+
+
+export type QueryCompetitionArgs = {
+  id: Scalars['ID']['input'];
 };
 
 
@@ -130,6 +136,13 @@ export type User = {
   id: Scalars['ID']['output'];
 };
 
+export type CompetitionNameQueryVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type CompetitionNameQuery = { __typename?: 'Query', competition: { __typename?: 'Competition', name: string } };
+
 export type CreateCompetitionMutationVariables = Exact<{
   name: Scalars['String']['input'];
   location: Scalars['String']['input'];
@@ -156,6 +169,46 @@ export type CreateUserMutationVariables = Exact<{
 export type CreateUserMutation = { __typename?: 'Mutation', createUser: { __typename?: 'User', id: string } };
 
 
+export const CompetitionNameDocument = gql`
+    query competitionName($id: ID!) {
+  competition(id: $id) {
+    name
+  }
+}
+    `;
+
+/**
+ * __useCompetitionNameQuery__
+ *
+ * To run a query within a React component, call `useCompetitionNameQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCompetitionNameQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCompetitionNameQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useCompetitionNameQuery(baseOptions: Apollo.QueryHookOptions<CompetitionNameQuery, CompetitionNameQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<CompetitionNameQuery, CompetitionNameQueryVariables>(CompetitionNameDocument, options);
+      }
+export function useCompetitionNameLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CompetitionNameQuery, CompetitionNameQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<CompetitionNameQuery, CompetitionNameQueryVariables>(CompetitionNameDocument, options);
+        }
+export function useCompetitionNameSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<CompetitionNameQuery, CompetitionNameQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<CompetitionNameQuery, CompetitionNameQueryVariables>(CompetitionNameDocument, options);
+        }
+export type CompetitionNameQueryHookResult = ReturnType<typeof useCompetitionNameQuery>;
+export type CompetitionNameLazyQueryHookResult = ReturnType<typeof useCompetitionNameLazyQuery>;
+export type CompetitionNameSuspenseQueryHookResult = ReturnType<typeof useCompetitionNameSuspenseQuery>;
+export type CompetitionNameQueryResult = Apollo.QueryResult<CompetitionNameQuery, CompetitionNameQueryVariables>;
 export const CreateCompetitionDocument = gql`
     mutation createCompetition($name: String!, $location: String!, $startDate: Timestamp!, $endDate: Timestamp!, $grounds: Int!, $modules: [String!]!) {
   createCompetition(

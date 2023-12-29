@@ -14,7 +14,7 @@ export function CompetitionCard(props: { competition: CompetitionFields }) {
   const navigate = useNavigate();
 
   function handleClick() {
-    navigate(`/compeition/${props.competition.id}/dashboard`);
+    navigate(`/competition/${props.competition.id}/dashboard`);
   }
 
   return (

@@ -2,15 +2,14 @@ import AccountCircle from "@mui/icons-material/AccountCircle";
 import {
   AppBar,
   Box,
-  Grid,
   IconButton,
   Menu,
   MenuItem,
-  Paper,
   Toolbar,
   Typography,
+  useTheme,
 } from "@mui/material";
-import { PropsWithChildren, useState } from "react";
+import React, { PropsWithChildren, useState } from "react";
 import { removeToken } from "../helpers/auth";
 import { useNavigate } from "react-router-dom";
 import { enqueueSnackbar } from "notistack";
@@ -18,11 +17,17 @@ import { useTranslation } from "react-i18next";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 
 export function HomeLayout(
-  props: { title: string; returnable?: boolean } & PropsWithChildren
+  props: {
+    title: string | React.ReactElement;
+    returnable?: boolean;
+    icons?: React.ReactElement[];
+    ml?: number;
+  } & PropsWithChildren
 ) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const theme = useTheme();
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -50,10 +55,22 @@ export function HomeLayout(
   return (
     <>
       <AppBar>
-        <Toolbar>
+        <Toolbar
+          style={{
+            marginLeft: props.ml,
+            transition: theme.transitions.create(["margin"], {
+              easing: theme.transitions.easing.sharp,
+              duration: theme.transitions.duration.enteringScreen,
+            }),
+          }}
+        >
           {props.returnable && (
-            <ArrowBackIosNewIcon onClick={handleBack} sx={{ mr: 3, cursor: 'pointer' }} />
+            <ArrowBackIosNewIcon
+              onClick={handleBack}
+              sx={{ mr: 3, cursor: "pointer" }}
+            />
           )}
+          {!props.returnable && (props.icons || [])}
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             {props.title}
           </Typography>
