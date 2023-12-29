@@ -13,12 +13,12 @@ export class Starter2CompetitionResolver {
   @Inject()
   private starter2competitionService: Starter2CompetitionService;
 
-  @Role(ROLES.ADMIN)
+  @Role(ROLES.VIEWER)
   @Query(() => Starter2Competition, {
     name: 'starter2competition',
     nullable: true,
   })
-  async find(@Args('id') id: number): Promise<Starter2Competition | null> {
+  async findById(@Args('id') id: number): Promise<Starter2Competition | null> {
     return this.starter2competitionService.findOne(id);
   }
 }

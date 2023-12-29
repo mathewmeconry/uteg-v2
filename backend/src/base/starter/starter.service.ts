@@ -1,7 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Starter } from './starter.entity';
-import { Repository } from 'typeorm';
+import { FindOptionsWhere, Repository } from 'typeorm';
+import { StarterFilter } from './starter.types';
+import { Starter2Competition } from '../starter2competition/starter2competition.entity';
 
 @Injectable()
 export class StarterService {
@@ -14,6 +16,29 @@ export class StarterService {
 
   findAll(): Promise<Starter[]> {
     return this.starterRepository.find();
+  }
+
+  find(filter: StarterFilter): Promise<Starter[]> {
+    const where: FindOptionsWhere<Starter> = {
+      starter2competitions: {
+        competition: {
+          id: filter.competitionID,
+        },
+      },
+    };
+
+    if (filter.sex) {
+      where.sex = filter.sex;
+    }
+
+    if (filter.category) {
+      (where.starter2competitions as FindOptionsWhere<Starter2Competition>).category = filter.category;
+    }
+
+    return this.starterRepository.find({
+      relations: ['starter2competitions'],
+      where,
+    });
   }
 
   findOne(id: number): Promise<Starter | null> {

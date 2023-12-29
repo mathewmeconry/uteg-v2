@@ -31,6 +31,7 @@ input CreateStarterInput {
   birthyear: Int!
   firstname: String!
   lastname: String!
+  sex: Sex!
   stvID: String
 }
 
@@ -53,10 +54,11 @@ type Mutation {
 
 type Query {
   clubs: [Club!]!
+  competition(id: ID!): Competition!
   competitions: [Competition!]!
   grades: [Grade!]!
   starter2competition(id: Int!): Starter2Competition
-  starters: [Starter!]!
+  starters(filter: StarterFilter!): [Starter!]!
   users: [User!]!
 }
 
@@ -67,17 +69,29 @@ enum Roles {
   VIEWER
 }
 
+enum Sex {
+  FEMALE
+  MALE
+}
+
 type Starter {
   birthyear: Int!
   firstname: String!
   id: ID!
   lastname: String!
+  sex: Sex!
   stvID: String
 }
 
 type Starter2Competition {
   category: Int
   id: ID!
+}
+
+input StarterFilter {
+  category: Int
+  competitionID: ID!
+  sex: Sex
 }
 
 """

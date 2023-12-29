@@ -31,6 +31,7 @@ import { AuthModule } from './auth/auth.module';
       installSubscriptionHandlers: true,
       sortSchema: true,
       playground: true,
+      fieldResolverEnhancers: ['guards'],
       buildSchemaOptions: {
         dateScalarMode: 'timestamp',
         numberScalarMode: 'integer'
