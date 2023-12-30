@@ -8,7 +8,7 @@ import { AuthController } from './auth.controller';
 import { RoleGuard } from './guards/role.guard';
 import { UserService } from './user/user.service';
 import { User } from './user/user.entity';
-import { User2Competition } from './user/user2competition.entity';
+import { UserLink } from './user/userLink.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserResolver } from './user/user.resolver';
 import { JudgetokenResolver } from './judgetoken/judgetoken.resolver';
@@ -18,7 +18,7 @@ import { Judgetoken } from './judgetoken/judgetoken.entity';
 @Module({
   imports: [
     ConfigModule,
-    TypeOrmModule.forFeature([User, User2Competition, Judgetoken]),
+    TypeOrmModule.forFeature([User, UserLink, Judgetoken]),
     JwtModule.registerAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({

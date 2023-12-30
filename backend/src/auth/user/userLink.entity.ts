@@ -6,7 +6,7 @@ import { ROLES } from '../types';
 
 @ObjectType()
 @Entity()
-export class User2Competition {
+export class UserLink {
   @Field(() => ID)
   @PrimaryGeneratedColumn()
   id: number;

@@ -4,7 +4,7 @@ import { User } from './user.entity';
 import { Repository } from 'typeorm';
 import { Competition } from 'src/base/competition/competition.entity';
 import { ROLES } from '../types';
-import { User2Competition } from './user2competition.entity';
+import { UserLink } from './userLink.entity';
 import * as bcrypt from 'bcrypt';
 import { ConfigService } from 'src/config/config.service';
 
@@ -13,8 +13,8 @@ export class UserService {
   @InjectRepository(User)
   private userRepository: Repository<User>;
 
-  @InjectRepository(User2Competition)
-  private user2competitionRepository: Repository<User2Competition>;
+  @InjectRepository(UserLink)
+  private user2competitionRepository: Repository<UserLink>;
 
   @Inject()
   private configService: ConfigService;
@@ -48,8 +48,8 @@ export class UserService {
     user: User,
     competition: Competition,
     role: ROLES,
-  ): Promise<User2Competition> {
-    const user2competition = new User2Competition();
+  ): Promise<UserLink> {
+    const user2competition = new UserLink();
     user2competition.user = Promise.resolve(user);
     user2competition.competition = Promise.resolve(competition);
     user2competition.role = role;
@@ -74,7 +74,7 @@ export class UserService {
     return entity.role;
   }
 
-  findLinked(userID: number): Promise<User2Competition[]> {
+  findLinked(userID: number): Promise<UserLink[]> {
     return this.user2competitionRepository.find({
       where: {
         user: {
