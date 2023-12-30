@@ -9,13 +9,13 @@ import { useState } from "react";
 import { blue } from "@mui/material/colors";
 import { enqueueSnackbar } from "notistack";
 import { Navigate, useNavigate } from "react-router-dom";
+import { FormTextInput } from "../../components/form/FormTextInput";
 
 export function Login() {
   const { t } = useTranslation();
   const {
-    register,
     handleSubmit,
-    formState: { errors },
+    control: formControl,
   } = useForm();
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -57,27 +57,17 @@ export function Login() {
         }}
       >
         <form onSubmit={handleSubmit(onSubmit)}>
-          <TextField
-            id="email"
-            type="email"
-            label={t("E-Mail")}
-            variant="standard"
-            margin="normal"
-            fullWidth
-            required={true}
-            {...register("email")}
-            error={!!errors.email}
+          <FormTextInput
+            name="email"
+            fieldProps={{ type: "email" }}
+            control={formControl}
+            rules={{ required: true }}
           />
-          <TextField
-            id="password"
-            type="password"
-            label={t("Password")}
-            variant="standard"
-            margin="normal"
-            fullWidth
-            required={true}
-            {...register("password")}
-            error={!!errors.password}
+          <FormTextInput
+            name="password"
+            fieldProps={{ type: "password" }}
+            control={formControl}
+            rules={{ required: true }}
           />
           <Button type="submit" variant="contained" sx={{ mt: 2, width: 1 }}>
             {loading && (

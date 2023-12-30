@@ -18,7 +18,7 @@ import { Register } from "./pages/register/register";
 import { ApolloProvider } from "@apollo/client";
 import { apolloClient } from "./helpers/apollo";
 import { Home } from "./pages/home/home";
-import { ProtectedRoute } from "./helpers/protectedRoute";
+import { ProtectedRoute } from "./components/protectedRoute";
 import { ThemeProvider } from "@mui/material";
 import { CreateCompetition } from "./pages/competition/create/createCompetition";
 import { LocalizationProvider } from "@mui/x-date-pickers";

@@ -6,10 +6,7 @@ import {
   DialogContent,
   DialogTitle,
   FilterOptionsState,
-  FormControl,
-  InputLabel,
   MenuItem,
-  Select,
   TextField,
   TextFieldProps,
   Typography,
@@ -17,19 +14,19 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import { Controller, FieldValues, useForm, useWatch } from "react-hook-form";
+import { FieldValues, useForm, useWatch } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import {
-  Starter,
   useClubsLazyQuery,
   useCreateStarterLinkMutation,
   useCreateStarterMutation,
   useStartersAutocompleteLazyQuery,
 } from "../../__generated__/graphql";
-import { SyntheticEvent, useEffect, useMemo, useState } from "react";
+import { SyntheticEvent, useMemo, useState } from "react";
 import { CreateClubDialog } from "../createClub/createClubDialog";
 import { useParams } from "react-router-dom";
 import { enqueueSnackbar } from "notistack";
+import { FormTextInput } from "../../components/form/FormTextInput";
 
 type ClubInput = {
   label: string;
@@ -234,7 +231,11 @@ export function CreateStarterDialog(props: {
 
   async function onSubmit(data: FieldValues) {
     let starterID: string;
-    if (data.starter && data.starter.birthyear === data.birthyear && data.starter.sex === data.sex) {
+    if (
+      data.starter &&
+      data.starter.birthyear === data.birthyear &&
+      data.starter.sex === data.sex
+    ) {
       starterID = data.starter.id;
     } else {
       const createStarterResponse = await createStarter({
@@ -349,43 +350,20 @@ export function CreateStarterDialog(props: {
               }
               renderOption={renderStarterOption}
             />
-            <Controller
-              control={formControl}
+            <FormTextInput
               name="birthyear"
               rules={{ required: true }}
-              render={({ field: { onChange, onBlur, value, ref } }) => (
-                <TextField
-                  id="birthyear"
-                  label={t("Birthyear")}
-                  required={true}
-                  type="number"
-                  variant="standard"
-                  margin="normal"
-                  fullWidth
-                  error={!!formErrors.birthyear}
-                  helperText={formErrors.birthyear?.message?.toString()}
-                  onChange={onChange}
-                  onBlur={onBlur}
-                  value={value}
-                  ref={ref}
-                />
-              )}
+              control={formControl}
             />
-            <FormControl variant="standard" margin="normal" fullWidth>
-              <InputLabel id="sex-label">{t("Sex")}</InputLabel>
-              <Select
-                labelId="sex-label"
-                id="sex"
-                value={sex}
-                {...register("sex")}
-                label={t("Sex")}
-                fullWidth
-                required={true}
-              >
-                <MenuItem value="MALE">{t("Male")}</MenuItem>
-                <MenuItem value="FEMALE">{t("Female")}</MenuItem>
-              </Select>
-            </FormControl>
+            <FormTextInput
+              name="sex"
+              rules={{ required: true }}
+              control={formControl}
+              fieldProps={{ select: true }}
+            >
+              <MenuItem value="MALE">{t("Male")}</MenuItem>
+              <MenuItem value="FEMALE">{t("Female")}</MenuItem>
+            </FormTextInput>
             <Autocomplete
               disablePortal
               id="club"

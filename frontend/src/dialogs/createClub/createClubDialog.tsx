@@ -5,7 +5,6 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  TextField,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
@@ -13,6 +12,7 @@ import { FieldValues, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { useCreateClubMutation } from "../../__generated__/graphql";
 import { useEffect } from "react";
+import { FormTextInput } from "../../components/form/FormTextInput";
 
 export function CreateClubDialog(props: {
   isOpen: boolean;
@@ -23,11 +23,11 @@ export function CreateClubDialog(props: {
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
   const { t } = useTranslation();
   const {
-    register,
     setValue,
     handleSubmit,
     reset,
-    formState: { errors: formErrors, isValid: formIsValid },
+    formState: { isValid: formIsValid },
+    control: formControl,
   } = useForm();
   const [createClub, { loading }] = useCreateClubMutation();
 
@@ -62,27 +62,15 @@ export function CreateClubDialog(props: {
       <DialogTitle>{t("Add Club")}</DialogTitle>
       <form onSubmit={handleSubmit(onSubmit)}>
         <DialogContent>
-          <TextField
-            id="name"
-            label={t("Name")}
-            required={true}
-            variant="standard"
-            margin="normal"
-            fullWidth
-            {...register("name", { required: true })}
-            error={!!formErrors.name}
-            helperText={formErrors.name?.message?.toString()}
+          <FormTextInput
+            name="name"
+            rules={{ required: true }}
+            control={formControl}
           />
-          <TextField
-            id="location"
-            label={t("Location")}
-            required={true}
-            variant="standard"
-            margin="normal"
-            fullWidth
-            {...register("location", { required: true })}
-            error={!!formErrors.location}
-            helperText={formErrors.location?.message?.toString()}
+          <FormTextInput
+            name="location"
+            rules={{ required: true }}
+            control={formControl}
           />
         </DialogContent>
         <DialogActions>

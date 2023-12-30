@@ -8,17 +8,18 @@ import { useCreateUserMutation } from "../../__generated__/graphql.ts";
 import { Navigate, useNavigate } from "react-router-dom";
 import { enqueueSnackbar } from "notistack";
 import { getToken, isTokenValid } from "../../helpers/auth.ts";
+import { FormTextInput } from "../../components/form/FormTextInput.tsx";
 
 export function Register() {
   const [createUser, { loading, error }] = useCreateUserMutation();
   const navigate = useNavigate();
   const { t } = useTranslation();
   const {
-    register,
     handleSubmit,
     setError,
     trigger,
-    formState: { errors: formErrors, isValid: formIsValid },
+    formState: { isValid: formIsValid },
+    control: formControl,
   } = useForm();
 
   if (isTokenValid()) {
@@ -74,40 +75,23 @@ export function Register() {
         }}
       >
         <form onSubmit={handleSubmit(onSubmit)}>
-          <TextField
-            id="email"
-            type="email"
-            label={t("E-Mail")}
-            variant="standard"
-            margin="normal"
-            fullWidth
-            required={true}
-            {...register("email")}
-            error={!!formErrors.email}
-            helperText={formErrors.email?.message?.toString()}
+          <FormTextInput
+            name="email"
+            fieldProps={{ type: "email" }}
+            control={formControl}
+            rules={{ required: true }}
           />
-          <TextField
-            id="password"
-            type="password"
-            label={t("Password")}
-            variant="standard"
-            margin="normal"
-            fullWidth
-            required={true}
-            {...register("password")}
-            error={!!formErrors.password}
+          <FormTextInput
+            name="password"
+            fieldProps={{ type: "password" }}
+            control={formControl}
+            rules={{ required: true }}
           />
-          <TextField
-            id="passwordRepeat"
-            type="password"
-            label={t("Repeat Password")}
-            variant="standard"
-            margin="normal"
-            fullWidth
-            required={true}
-            {...register("passwordRepeat")}
-            error={!!formErrors.passwordRepeat}
-            helperText={formErrors.passwordRepeat?.message?.toString()}
+          <FormTextInput
+            name="passwordRepeat"
+            fieldProps={{ type: "password" }}
+            control={formControl}
+            rules={{ required: true }}
           />
           <Button type="submit" variant="contained" sx={{ mt: 2, width: 1 }}>
             {loading && <CircularProgress />}

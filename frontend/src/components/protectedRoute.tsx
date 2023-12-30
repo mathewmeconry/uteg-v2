@@ -1,5 +1,5 @@
 import { Navigate, Outlet } from "react-router-dom";
-import { isTokenValid } from "./auth";
+import { isTokenValid } from "../helpers/auth";
 import { enqueueSnackbar } from "notistack";
 import { useTranslation } from "react-i18next";
 

@@ -1,8 +1,9 @@
-import { Box, TextField } from "@mui/material";
+import { Box } from "@mui/material";
 import { useFormContext } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs, { Dayjs } from "dayjs";
+import { FormTextInput } from "../../../../components/form/FormTextInput";
 
 export function BasicInformation() {
   const { t } = useTranslation();
@@ -11,32 +12,23 @@ export function BasicInformation() {
     watch,
     setValue,
     getValues,
+    control: formControl,
     formState: { errors: formErrors },
   } = useFormContext();
 
   return (
     <Box sx={{ display: "flex", width: 1, flexDirection: "column" }}>
-      <TextField
-        id="name"
-        type="string"
-        label={t("Name")}
-        variant="filled"
-        size="small"
-        margin="normal"
-        {...register("basic.name", { required: true })}
-        error={!!formErrors?.basic?.name}
-        helperText={formErrors?.basic?.name?.message?.toString()}
+      <FormTextInput
+        name="email"
+        fieldProps={{ type: "email" }}
+        control={formControl}
+        rules={{ required: true }}
       />
-      <TextField
-        id="location"
-        type="string"
-        label={t("Location")}
-        variant="filled"
-        size="small"
-        margin="normal"
-        {...register("basic.location", { required: true })}
-        error={!!formErrors?.basic?.location}
-        helperText={formErrors?.basic?.location?.message?.toString()}
+      <FormTextInput
+        name="location"
+        fieldProps={{ type: "string" }}
+        control={formControl}
+        rules={{ required: true }}
       />
       <DatePicker
         label={t("Start Date")}
