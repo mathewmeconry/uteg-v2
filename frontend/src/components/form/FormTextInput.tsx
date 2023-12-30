@@ -25,6 +25,7 @@ export function FormTextInput(props: FormTextInputProps) {
   const {
     field,
     fieldState: { invalid, isTouched, error },
+    formState: formState,
   } = useController({
     name: props.name,
     control: props.control,
@@ -39,7 +40,7 @@ export function FormTextInput(props: FormTextInputProps) {
       margin="normal"
       fullWidth
       {...props.fieldProps}
-      error={invalid && isTouched}
+      error={invalid && (isTouched || formState.isSubmitted)}
       helperText={error?.message?.toString()}
       onChange={field.onChange}
       onBlur={field.onBlur}
