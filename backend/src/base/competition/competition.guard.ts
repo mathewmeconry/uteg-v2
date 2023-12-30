@@ -4,7 +4,7 @@ import {
 } from '@nestjs/common';
 import { GqlExecutionContext } from '@nestjs/graphql';
 
-// Enriches gql context with role assigned to starter2competition
+// Enriches gql context with role assigned to starterLink
 export class CompetitionGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const ctx = GqlExecutionContext.create(context);

@@ -5,12 +5,12 @@ import {
   Injectable,
 } from '@nestjs/common';
 import { GqlExecutionContext } from '@nestjs/graphql';
-import { Starter2CompetitionService } from './starter2competition.service';
+import { StarterLinkService } from './starterLink.service';
 
 @Injectable()
-export class Starter2CompetitionGuard implements CanActivate {
+export class StarterLinkGuard implements CanActivate {
   @Inject()
-  private starter2competitionService: Starter2CompetitionService;
+  private starterLinkService: StarterLinkService;
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const ctx = GqlExecutionContext.create(context);
@@ -25,11 +25,11 @@ export class Starter2CompetitionGuard implements CanActivate {
       return true;
     }
 
-    const starter2competition = await this.starter2competitionService.findOne(
+    const starterLink = await this.starterLinkService.findOne(
       args.id,
     );
 
-    ctx.getContext().competition = (await starter2competition.competition).id;
+    ctx.getContext().competition = (await starterLink.competition).id;
     return true;
   }
 }

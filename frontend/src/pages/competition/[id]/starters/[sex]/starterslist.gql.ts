@@ -6,9 +6,6 @@ const STARTERS = gql`
       id
       firstname
       lastname
-      starter2competitions {
-        category
-      }
       birthyear,
       stvID
     }

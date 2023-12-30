@@ -41,7 +41,6 @@ input CreateStarterInput {
 }
 
 input CreateStarterLinkInput {
-  category: Int
   clubID: ID!
   competitionID: ID!
   starterID: ID!
@@ -54,7 +53,7 @@ input CreateUserInput {
 
 type Grade {
   id: ID!
-  starter: Starter2Competition!
+  starter: StarterLink!
   value: Float!
 }
 
@@ -62,7 +61,7 @@ type Mutation {
   createClub(data: CreateClubInput!): Club!
   createCompetition(competition: CreateCompetition!): Competition!
   createStarter(data: CreateStarterInput!): Starter!
-  createStarterLink(data: CreateStarterLinkInput!): Starter2Competition!
+  createStarterLink(data: CreateStarterLinkInput!): StarterLink!
   createUser(user: CreateUserInput!): User!
 }
 
@@ -71,7 +70,7 @@ type Query {
   competition(id: ID!): Competition!
   competitions: [Competition!]!
   grades: [Grade!]!
-  starter2competition(id: Int!): Starter2Competition
+  starterLink(id: Int!): StarterLink
   starters(filter: StarterFilter!): [Starter!]!
   users: [User!]!
 }
@@ -94,13 +93,8 @@ type Starter {
   id: ID!
   lastname: String!
   sex: Sex!
-  starter2competitions: [Starter2Competition!]!
+  starterLinks: [StarterLink!]!
   stvID: String
-}
-
-type Starter2Competition {
-  category: Int
-  id: ID!
 }
 
 input StarterFilter {
@@ -110,6 +104,10 @@ input StarterFilter {
   lastname: String
   sex: Sex
   stvID: String
+}
+
+type StarterLink {
+  id: ID!
 }
 
 """

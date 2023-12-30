@@ -6,7 +6,7 @@ import { Competition } from '../competition/competition.entity';
 
 @ObjectType()
 @Entity()
-export class Starter2Competition {
+export class StarterLink {
   @Field(() => ID)
   @PrimaryGeneratedColumn()
   id: number;

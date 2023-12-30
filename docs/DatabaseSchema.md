@@ -26,7 +26,7 @@ erDiagram
         string[] modules "which modules this competition uses"
     }
 
-    Starter2Competition {
+    StarterLink {
         int ID PK
         int starterID FK
         int competitionID FK
@@ -34,19 +34,19 @@ erDiagram
         int category "Set by the modules"
     }
 
-    Starter ||--}| Starter2Competition : starterID
-    Competition ||--}| Starter2Competition : competitionID
-    Club ||--}| Starter2Competition : clubID
+    Starter ||--}| StarterLink : starterID
+    Competition ||--}| StarterLink : competitionID
+    Club ||--}| StarterLink : clubID
 
     Grade {
         int ID PK
-        int starter2CompetitionID FK
+        int starterLinkID FK
         int value
         int device "intepreted by module"
         string module "created by module"
     }
 
-    Grade |{--|| Starter2Competition: starter2CompetitionID
+    Grade |{--|| StarterLink: starterLinkID
 ```
 
 ## Auth Module schema
@@ -99,7 +99,7 @@ erDiagram
     EGT_Lineup["Lineup"] {
         int ID PK
         int divisionID FK
-        int[] starter2competitionIDs FK
+        int[] starterLinkIDs FK
         int startDevice
     }
 

@@ -1,6 +1,6 @@
 import { Field, Float, ID, ObjectType } from '@nestjs/graphql';
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { Starter2Competition } from '../starter2competition/starter2competition.entity';
+import { StarterLink } from '../starterLink/starterLink.entity';
 
 @ObjectType()
 @Entity()
@@ -9,9 +9,9 @@ export class Grade {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Field(() => Starter2Competition)
-  @ManyToOne(() => Starter2Competition)
-  starter: Promise<Starter2Competition>;
+  @Field(() => StarterLink)
+  @ManyToOne(() => StarterLink)
+  starter: Promise<StarterLink>;
 
   @Field(() => Float)
   @Column('decimal', { precision: 5, scale: 3 })

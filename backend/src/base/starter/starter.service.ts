@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Starter } from './starter.entity';
 import { Brackets, FindOptionsWhere, Repository } from 'typeorm';
 import { StarterFilter } from './starter.types';
-import { Starter2Competition } from '../starter2competition/starter2competition.entity';
+import { StarterLink } from '../starterLink/starterLink.entity';
 
 @Injectable()
 export class StarterService {
@@ -28,13 +28,13 @@ export class StarterService {
     let queryBuilder = this.starterRepository
       .createQueryBuilder('starter')
       .leftJoinAndSelect(
-        'starter.starter2competitions',
-        'starter2competitions',
+        'starter.starterLinks',
+        'starterLinks',
       );
 
     if (filter.competitionID) {
       queryBuilder = queryBuilder.andWhere(
-        'starter2competitions.competition = :competition',
+        'starterLinks.competition = :competition',
         {
           competition: filter.competitionID,
         },
@@ -47,7 +47,7 @@ export class StarterService {
 
     if (filter.category) {
       queryBuilder = queryBuilder.andWhere(
-        'starter2competitions.category = :category',
+        'starterLinks.category = :category',
         {
           category: filter.category,
         },

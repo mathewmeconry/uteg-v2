@@ -60,7 +60,6 @@ export type CreateStarterInput = {
 };
 
 export type CreateStarterLinkInput = {
-  category?: InputMaybe<Scalars['Int']['input']>;
   clubID: Scalars['ID']['input'];
   competitionID: Scalars['ID']['input'];
   starterID: Scalars['ID']['input'];
@@ -74,7 +73,7 @@ export type CreateUserInput = {
 export type Grade = {
   __typename?: 'Grade';
   id: Scalars['ID']['output'];
-  starter: Starter2Competition;
+  starter: StarterLink;
   value: Scalars['Float']['output'];
 };
 
@@ -83,7 +82,7 @@ export type Mutation = {
   createClub: Club;
   createCompetition: Competition;
   createStarter: Starter;
-  createStarterLink: Starter2Competition;
+  createStarterLink: StarterLink;
   createUser: User;
 };
 
@@ -118,7 +117,7 @@ export type Query = {
   competition: Competition;
   competitions: Array<Competition>;
   grades: Array<Grade>;
-  starter2competition?: Maybe<Starter2Competition>;
+  starterLink?: Maybe<StarterLink>;
   starters: Array<Starter>;
   users: Array<User>;
 };
@@ -129,7 +128,7 @@ export type QueryCompetitionArgs = {
 };
 
 
-export type QueryStarter2competitionArgs = {
+export type QueryStarterLinkArgs = {
   id: Scalars['Int']['input'];
 };
 
@@ -155,14 +154,8 @@ export type Starter = {
   id: Scalars['ID']['output'];
   lastname: Scalars['String']['output'];
   sex: Sex;
-  starter2competitions: Array<Starter2Competition>;
+  starterLinks: Array<StarterLink>;
   stvID?: Maybe<Scalars['String']['output']>;
-};
-
-export type Starter2Competition = {
-  __typename?: 'Starter2Competition';
-  category?: Maybe<Scalars['Int']['output']>;
-  id: Scalars['ID']['output'];
 };
 
 export type StarterFilter = {
@@ -172,6 +165,11 @@ export type StarterFilter = {
   lastname?: InputMaybe<Scalars['String']['input']>;
   sex?: InputMaybe<Sex>;
   stvID?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type StarterLink = {
+  __typename?: 'StarterLink';
+  id: Scalars['ID']['output'];
 };
 
 export type User = {
@@ -205,7 +203,7 @@ export type CreateStarterLinkMutationVariables = Exact<{
 }>;
 
 
-export type CreateStarterLinkMutation = { __typename?: 'Mutation', createStarterLink: { __typename?: 'Starter2Competition', id: string } };
+export type CreateStarterLinkMutation = { __typename?: 'Mutation', createStarterLink: { __typename?: 'StarterLink', id: string } };
 
 export type StartersAutocompleteQueryVariables = Exact<{
   filter: StarterFilter;
@@ -226,7 +224,7 @@ export type StartersQueryVariables = Exact<{
 }>;
 
 
-export type StartersQuery = { __typename?: 'Query', starters: Array<{ __typename?: 'Starter', id: string, firstname: string, lastname: string, birthyear: number, stvID?: string | null, starter2competitions: Array<{ __typename?: 'Starter2Competition', category?: number | null }> }> };
+export type StartersQuery = { __typename?: 'Query', starters: Array<{ __typename?: 'Starter', id: string, firstname: string, lastname: string, birthyear: number, stvID?: string | null }> };
 
 export type CreateCompetitionMutationVariables = Exact<{
   name: Scalars['String']['input'];
@@ -485,9 +483,6 @@ export const StartersDocument = gql`
     id
     firstname
     lastname
-    starter2competitions {
-      category
-    }
     birthyear
     stvID
   }

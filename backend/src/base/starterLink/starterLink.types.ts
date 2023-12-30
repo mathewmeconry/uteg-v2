@@ -10,7 +10,4 @@ export class CreateStarterLinkInput {
 
   @Field(() => ID)
   clubID: number;
-
-  @Field(() => Int, { nullable: true })
-  category?: number;
 }
