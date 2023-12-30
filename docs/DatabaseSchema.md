@@ -60,15 +60,15 @@ erDiagram
         int globalRole
     }
 
-    User2Competition {
+    UserLink {
         int ID PK
         int competitionID FK
         int userID FK
         int role
     }
 
-    User ||--}| User2Competition: competitionID
-    Competition ||--}| User2Competition: userID
+    User ||--}| UserLink: competitionID
+    Competition ||--}| UserLink: userID
 
     Judgetoken {
         int ID PK

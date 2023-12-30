@@ -234,7 +234,7 @@ export function CreateStarterDialog(props: {
 
   async function onSubmit(data: FieldValues) {
     let starterID: string;
-    if (data.starter) {
+    if (data.starter && data.starter.birthyear === data.birthyear && data.starter.sex === data.sex) {
       starterID = data.starter.id;
     } else {
       const createStarterResponse = await createStarter({

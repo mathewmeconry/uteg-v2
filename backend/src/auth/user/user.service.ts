@@ -14,7 +14,7 @@ export class UserService {
   private userRepository: Repository<User>;
 
   @InjectRepository(UserLink)
-  private user2competitionRepository: Repository<UserLink>;
+  private userLinkRepository: Repository<UserLink>;
 
   @Inject()
   private configService: ConfigService;
@@ -49,15 +49,15 @@ export class UserService {
     competition: Competition,
     role: ROLES,
   ): Promise<UserLink> {
-    const user2competition = new UserLink();
-    user2competition.user = Promise.resolve(user);
-    user2competition.competition = Promise.resolve(competition);
-    user2competition.role = role;
-    return this.user2competitionRepository.save(user2competition);
+    const userLink = new UserLink();
+    userLink.user = Promise.resolve(user);
+    userLink.competition = Promise.resolve(competition);
+    userLink.role = role;
+    return this.userLinkRepository.save(userLink);
   }
 
   async isLinked(userID: number, competitionID: number): Promise<ROLES | null> {
-    const entity = await this.user2competitionRepository.findOne({
+    const entity = await this.userLinkRepository.findOne({
       where: {
         competition: {
           id: competitionID,
@@ -75,7 +75,7 @@ export class UserService {
   }
 
   findLinked(userID: number): Promise<UserLink[]> {
-    return this.user2competitionRepository.find({
+    return this.userLinkRepository.find({
       where: {
         user: {
           id: userID,
