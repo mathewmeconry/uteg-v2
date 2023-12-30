@@ -19,8 +19,4 @@ export class Starter2Competition {
 
   @ManyToOne(() => Club, { nullable: true })
   club?: Promise<Club>;
-
-  @Field(() => Int, { nullable: true })
-  @Column({ nullable: true })
-  category?: number;
 }
