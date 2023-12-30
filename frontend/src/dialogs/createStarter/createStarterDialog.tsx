@@ -27,6 +27,7 @@ import { CreateClubDialog } from "../createClub/createClubDialog";
 import { useParams } from "react-router-dom";
 import { enqueueSnackbar } from "notistack";
 import { FormTextInput } from "../../components/form/FormTextInput";
+import { ApolloError } from "@apollo/client";
 
 type ClubInput = {
   label: string;
@@ -233,8 +234,8 @@ export function CreateStarterDialog(props: {
     let starterID: string;
     if (
       data.starter &&
-      data.starter.birthyear === data.birthyear &&
-      data.starter.sex === data.sex
+      data.starter.birthyear == data.birthyear &&
+      data.starter.sex == data.sex
     ) {
       starterID = data.starter.id;
     } else {
@@ -257,18 +258,24 @@ export function CreateStarterDialog(props: {
       starterID = createStarterResponse.data.createStarter.id;
     }
 
-    await createStarterLink({
-      variables: {
-        input: {
-          starterID,
-          competitionID: id || "",
-          clubID: data.club.id,
+    try {
+      await createStarterLink({
+        variables: {
+          input: {
+            starterID,
+            competitionID: id || "",
+            clubID: data.club.id,
+          },
         },
-      },
-    });
-    enqueueSnackbar(t("Starter linked"), { variant: "success" });
-    reset();
-    props.onClose();
+      });
+      enqueueSnackbar(t("Starter linked"), { variant: "success" });
+      reset();
+      props.onClose();
+    } catch (err) {
+      if (err instanceof ApolloError && err.message) {
+        enqueueSnackbar(t(err.message), { variant: "error" });
+      }
+    }
   }
 
   return (

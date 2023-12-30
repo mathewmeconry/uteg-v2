@@ -1,9 +1,8 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Starter } from './starter.entity';
-import { Brackets, FindOptionsWhere, Repository } from 'typeorm';
+import { Brackets, Repository } from 'typeorm';
 import { StarterFilter } from './starter.types';
-import { StarterLink } from '../starterLink/starterLink.entity';
 
 @Injectable()
 export class StarterService {

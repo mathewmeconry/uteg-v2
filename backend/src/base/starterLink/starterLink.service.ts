@@ -8,9 +8,21 @@ export class StarterLinkService {
   @InjectRepository(StarterLink)
   private starterLinkRepository: Repository<StarterLink>;
 
-  create(
-    starterLink: StarterLink,
-  ): Promise<StarterLink> {
+  async create(starterLink: StarterLink): Promise<StarterLink> {
+    const alreadyExisting = await this.starterLinkRepository.find({
+      where: {
+        competition: {
+          id: (await starterLink.competition).id,
+        },
+        starter: {
+          id: (await starterLink.starter).id,
+        },
+      },
+    });
+    if (alreadyExisting) {
+      throw new Error("Already Linked");
+    }
+
     return this.starterLinkRepository.save(starterLink);
   }
 
