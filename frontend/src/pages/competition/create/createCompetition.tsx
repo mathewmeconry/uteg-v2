@@ -11,7 +11,7 @@ import {
   Stepper,
   Typography,
 } from "@mui/material";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { BasicInformation } from "./steps/basicInformation";
 import { FormProvider, useForm } from "react-hook-form";
 import { Setup } from "./steps/setup";
@@ -69,7 +69,7 @@ export function CreateCompetition() {
     }
   }
 
-  const steps = [
+  const steps = useMemo(() => [
     {
       label: t("Basic Information"),
       component: <BasicInformation />,
@@ -90,7 +90,7 @@ export function CreateCompetition() {
       label: t("Review"),
       component: <Review />,
     },
-  ];
+  ], []);
 
   function renderContent() {
     if (loading) {

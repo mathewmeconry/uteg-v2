@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Starter } from './starter.entity';
 import { Brackets, Repository } from 'typeorm';
 import { StarterFilter } from './starter.types';
+import { AlreadyExistingException } from '../exceptions/AlreadyExisting';
 
 @Injectable()
 export class StarterService {
@@ -10,6 +11,33 @@ export class StarterService {
   private starterRepository: Repository<Starter>;
 
   async create(starter: Starter): Promise<Starter> {
+    if (!starter.stvID) {
+      starter.stvID = undefined;
+    }
+
+    const alreadyExisting = await this.starterRepository
+      .createQueryBuilder('starter')
+      .where('LOWER(stvID) = LOWER(:stvID)', { stvID: starter.stvID || '' })
+      .orWhere(
+        new Brackets((qb) => {
+          qb.where('LOWER(firstname) = LOWER(:firstname)', {
+            firstname: starter.firstname,
+          })
+            .andWhere('LOWER(lastname) = LOWER(:lastname)', {
+              lastname: starter.lastname,
+            })
+            .andWhere('birthyear = :birthyear', {
+              birthyear: starter.birthyear,
+            })
+            .andWhere('sex = :sex', { sex: starter.sex });
+        }),
+      )
+      .getOne();
+
+    if (alreadyExisting) {
+      throw new AlreadyExistingException();
+    }
+
     return this.starterRepository.save(starter);
   }
 
@@ -26,10 +54,7 @@ export class StarterService {
 
     let queryBuilder = this.starterRepository
       .createQueryBuilder('starter')
-      .leftJoinAndSelect(
-        'starter.starterLinks',
-        'starterLinks',
-      );
+      .leftJoinAndSelect('starter.starterLinks', 'starterLinks');
 
     if (filter.competitionID) {
       queryBuilder = queryBuilder.andWhere(

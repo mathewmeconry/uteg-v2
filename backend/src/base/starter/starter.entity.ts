@@ -11,7 +11,7 @@ export class Starter {
   id: number;
 
   @Field({ nullable: true })
-  @Column({ nullable: true })
+  @Column({ nullable: true, unique: true })
   stvID?: string;
 
   @Field()
@@ -30,9 +30,6 @@ export class Starter {
   @Column()
   sex: SEX;
 
-  @OneToMany(
-    () => StarterLink,
-    (starterLink) => starterLink.starter,
-  )
+  @OneToMany(() => StarterLink, (starterLink) => starterLink.starter)
   starterLinks: Promise<StarterLink[]>;
 }

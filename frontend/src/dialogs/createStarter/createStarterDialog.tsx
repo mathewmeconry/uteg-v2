@@ -5,35 +5,26 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  FilterOptionsState,
   MenuItem,
   TextField,
   TextFieldProps,
   Typography,
-  createFilterOptions,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
 import { FieldValues, useForm, useWatch } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import {
-  useClubsLazyQuery,
   useCreateStarterLinkMutation,
   useCreateStarterMutation,
   useStartersAutocompleteLazyQuery,
 } from "../../__generated__/graphql";
-import { SyntheticEvent, useMemo, useState } from "react";
-import { CreateClubDialog } from "../createClub/createClubDialog";
+import { SyntheticEvent, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import { enqueueSnackbar } from "notistack";
 import { FormTextInput } from "../../components/form/FormTextInput";
 import { ApolloError } from "@apollo/client";
-
-type ClubInput = {
-  label: string;
-  inputValue: string;
-  id: string;
-};
+import { ClubInput, FormClubAutocomplete } from "../../components/form/FormClubAutocomplete";
 
 type StarterInput = {
   stvID: string;
@@ -79,13 +70,6 @@ export function CreateStarterDialog(props: {
       starter: "",
     },
   });
-  const [
-    fetchClubs,
-    { data: clubs, loading: clubsLoading, refetch: refetchClubs },
-  ] = useClubsLazyQuery();
-  const [openAddClubDialog, setOpenAddClubDialog] = useState(false);
-  const [addClubDialogValue, setAddClubDialogValue] = useState("");
-  const clubFilter = createFilterOptions<ClubInput>();
   const [createStarter] = useCreateStarterMutation();
   const [createStarterLink] = useCreateStarterLinkMutation();
   const [
@@ -93,21 +77,6 @@ export function CreateStarterDialog(props: {
     { data: starters, loading: startersLoading },
   ] = useStartersAutocompleteLazyQuery();
   const starter = useWatch({ name: "starter", control: formControl });
-  const sex = useWatch({ name: "sex", control: formControl });
-
-  const clubOptions: ClubInput[] = useMemo(() => {
-    const options: ClubInput[] = [];
-    if (clubs?.clubs) {
-      for (const club of clubs.clubs) {
-        options.push({
-          label: club.name,
-          inputValue: club.name,
-          id: club.id,
-        });
-      }
-    }
-    return options;
-  }, [clubs]);
 
   const starterOptions: StarterInput[] = useMemo(() => {
     const options: StarterInput[] = [];
@@ -231,7 +200,7 @@ export function CreateStarterDialog(props: {
   }
 
   async function onSubmit(data: FieldValues) {
-    let starterID: string;
+    let starterID: string | undefined = undefined;
     if (
       data.starter &&
       data.starter.birthyear == data.birthyear &&
@@ -239,26 +208,37 @@ export function CreateStarterDialog(props: {
     ) {
       starterID = data.starter.id;
     } else {
-      const createStarterResponse = await createStarter({
-        variables: {
-          input: {
-            firstname: data.firstname,
-            lastname: data.lastname,
-            birthyear: parseInt(data.birthyear),
-            stvID: data.stvID,
-            sex: data.sex,
+      try {
+        const createStarterResponse = await createStarter({
+          variables: {
+            input: {
+              firstname: data.firstname,
+              lastname: data.lastname,
+              birthyear: parseInt(data.birthyear),
+              stvID: data.stvID,
+              sex: data.sex,
+            },
           },
-        },
-      });
-      if (!createStarterResponse.data?.createStarter.id) {
-        enqueueSnackbar(t("Ooops"), { variant: "error" });
-        return;
+        });
+        if (!createStarterResponse.data?.createStarter.id) {
+          enqueueSnackbar(t("Ooops"), { variant: "error" });
+          return;
+        }
+        enqueueSnackbar(t("Starter created"), { variant: "success" });
+        starterID = createStarterResponse.data.createStarter.id;
+      } catch (err) {
+        if (err instanceof ApolloError && err.message) {
+          enqueueSnackbar(t(`Starter ${err.message}`), { variant: "error" });
+          return;
+        }
       }
-      enqueueSnackbar(t("Starter created"), { variant: "success" });
-      starterID = createStarterResponse.data.createStarter.id;
     }
 
     try {
+      if (!starterID) {
+        enqueueSnackbar(t("Ooops"), { variant: "error" });
+        return;
+      }
       await createStarterLink({
         variables: {
           input: {
@@ -273,7 +253,7 @@ export function CreateStarterDialog(props: {
       props.onClose();
     } catch (err) {
       if (err instanceof ApolloError && err.message) {
-        enqueueSnackbar(t(err.message), { variant: "error" });
+        enqueueSnackbar(t(`Link ${err.message}`), { variant: "error" });
       }
     }
   }
@@ -305,7 +285,7 @@ export function CreateStarterDialog(props: {
               freeSolo={true}
               renderInput={renderStarterAutocompleteInput("stvID", false)}
               getOptionLabel={(option) =>
-                typeof option !== "string" ? option.stvID : ""
+                typeof option !== "string" ? option.stvID || "" : ""
               }
               getOptionKey={(option) =>
                 typeof option !== "string" ? option.id : ""
@@ -371,52 +351,7 @@ export function CreateStarterDialog(props: {
               <MenuItem value="MALE">{t("Male")}</MenuItem>
               <MenuItem value="FEMALE">{t("Female")}</MenuItem>
             </FormTextInput>
-            <Autocomplete
-              disablePortal
-              id="club"
-              {...register("club", { required: true })}
-              onChange={(_, newValue) => {
-                if (newValue) {
-                  if (newValue.id === "new") {
-                    setAddClubDialogValue(newValue.inputValue);
-                    setOpenAddClubDialog(true);
-                  } else {
-                    setValue("club", newValue);
-                  }
-                }
-              }}
-              loading={clubsLoading}
-              onOpen={() => {
-                fetchClubs();
-              }}
-              filterOptions={(
-                options: ClubInput[],
-                params: FilterOptionsState<ClubInput>
-              ) => {
-                const filtered = clubFilter(options, params);
-
-                if (params.inputValue !== "") {
-                  filtered.push({
-                    id: "new",
-                    label: `${t("Add")} "${params.inputValue}"`,
-                    inputValue: params.inputValue,
-                  });
-                }
-
-                return filtered;
-              }}
-              options={clubOptions}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label={t("Club")}
-                  variant="standard"
-                  margin="normal"
-                  required={true}
-                  fullWidth
-                />
-              )}
-            />
+            <FormClubAutocomplete control={formControl} rules={{required: true}}/>
           </DialogContent>
           <DialogActions>
             <Button onClick={handleCancel}>{t("Cancel")}</Button>
@@ -426,21 +361,6 @@ export function CreateStarterDialog(props: {
           </DialogActions>
         </form>
       </Dialog>
-      <CreateClubDialog
-        isOpen={openAddClubDialog}
-        onClose={async (club) => {
-          if (club) {
-            await refetchClubs();
-            setOpenAddClubDialog(false);
-            setValue("club", {
-              label: club?.name,
-              id: club?.id,
-              inputValue: club?.name,
-            });
-          }
-        }}
-        name={addClubDialogValue}
-      />
     </>
   );
 }

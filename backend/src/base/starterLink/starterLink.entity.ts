@@ -11,10 +11,10 @@ export class StarterLink {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Starter)
+  @ManyToOne(() => Starter, { onDelete: 'CASCADE' })
   starter: Promise<Starter>;
 
-  @ManyToOne(() => Competition)
+  @ManyToOne(() => Competition, { onDelete: 'CASCADE' })
   competition: Promise<Competition>;
 
   @ManyToOne(() => Club, { nullable: true })

@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Club } from './club.entity';
 import { Repository } from 'typeorm';
+import { AlreadyExistingException } from '../exceptions/AlreadyExisting';
 
 @Injectable()
 export class ClubService {
@@ -21,6 +22,18 @@ export class ClubService {
   }
 
   async create(club: Club): Promise<Club> {
-    return this.clubRepository.save(club)
+    const alreadyExisting = await this.clubRepository
+      .createQueryBuilder('club')
+      .where('LOWER(name) = LOWER(:name)', { name: club.name })
+      .andWhere('LOWER(location) = LOWER(:location)', {
+        location: club.location,
+      })
+      .getOne();
+
+    if (alreadyExisting) {
+      throw new AlreadyExistingException();
+    }
+
+    return this.clubRepository.save(club);
   }
 }

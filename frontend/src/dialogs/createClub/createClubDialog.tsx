@@ -13,6 +13,8 @@ import { useTranslation } from "react-i18next";
 import { useCreateClubMutation } from "../../__generated__/graphql";
 import { useEffect } from "react";
 import { FormTextInput } from "../../components/form/FormTextInput";
+import { ApolloError } from "@apollo/client";
+import { enqueueSnackbar } from "notistack";
 
 export function CreateClubDialog(props: {
   isOpen: boolean;
@@ -28,7 +30,12 @@ export function CreateClubDialog(props: {
     reset,
     formState: { isValid: formIsValid },
     control: formControl,
-  } = useForm();
+  } = useForm({
+    defaultValues: {
+      name: "",
+      location: "",
+    },
+  });
   const [createClub, { loading }] = useCreateClubMutation();
 
   useEffect(() => {
@@ -44,16 +51,23 @@ export function CreateClubDialog(props: {
 
   async function onSubmit(data: FieldValues) {
     if (formIsValid) {
-      const club = await createClub({
-        variables: {
-          input: {
-            name: data.name,
-            location: data.location,
+      try {
+        const club = await createClub({
+          variables: {
+            input: {
+              name: data.name,
+              location: data.location,
+            },
           },
-        },
-      });
-      reset();
-      props.onClose(club.data?.createClub);
+        });
+        enqueueSnackbar(t("Club created"), { variant: "success" });
+        reset();
+        props.onClose(club.data?.createClub);
+      } catch (e) {
+        if (e instanceof ApolloError) {
+          enqueueSnackbar(t(e.message), { variant: "error" });
+        }
+      }
     }
   }
 

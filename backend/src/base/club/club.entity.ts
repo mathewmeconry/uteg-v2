@@ -9,7 +9,7 @@ export class Club {
   id: number;
 
   @Field()
-  @Column()
+  @Column({ unique: true })
   name: string;
 
   @Field()

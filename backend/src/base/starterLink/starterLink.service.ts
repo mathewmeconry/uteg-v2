@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { StarterLink } from './starterLink.entity';
 import { Repository } from 'typeorm';
+import { AlreadyExistingException } from '../exceptions/AlreadyExisting';
 
 @Injectable()
 export class StarterLinkService {
@@ -9,7 +10,7 @@ export class StarterLinkService {
   private starterLinkRepository: Repository<StarterLink>;
 
   async create(starterLink: StarterLink): Promise<StarterLink> {
-    const alreadyExisting = await this.starterLinkRepository.find({
+    const alreadyExisting = await this.starterLinkRepository.findOne({
       where: {
         competition: {
           id: (await starterLink.competition).id,
@@ -20,7 +21,7 @@ export class StarterLinkService {
       },
     });
     if (alreadyExisting) {
-      throw new Error("Already Linked");
+      throw new AlreadyExistingException();
     }
 
     return this.starterLinkRepository.save(starterLink);
