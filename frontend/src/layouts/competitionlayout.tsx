@@ -26,6 +26,7 @@ import ExpandMore from "@mui/icons-material/ExpandMore";
 import WomanIcon from "@mui/icons-material/Woman";
 import ManIcon from "@mui/icons-material/Man";
 import SettingsIcon from "@mui/icons-material/Settings";
+import UploadFileIcon from "@mui/icons-material/UploadFile";
 
 type MenuItem = {
   icon: React.ReactElement;
@@ -89,6 +90,12 @@ export function CompetitionLayout(props: PropsWithChildren) {
           text: t("Male"),
           key: "starters.male",
           to: `/competition/${id}/starters/male`,
+        },
+        {
+          icon: <UploadFileIcon />,
+          text: t("Import"),
+          key: "starters.import",
+          to: `/competition/${id}/starters/import`,
         },
       ],
     },

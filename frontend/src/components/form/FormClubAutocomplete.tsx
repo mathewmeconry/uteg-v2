@@ -4,15 +4,14 @@ import {
   FilterOptionsState,
   TextField,
 } from "@mui/material";
-import { t } from "i18next";
 import { useState, useMemo } from "react";
 import { useClubsLazyQuery } from "../../__generated__/graphql";
 import { CreateClubDialog } from "../../dialogs/createClub/createClubDialog";
 import {
-  Control,
   FieldValues,
   RegisterOptions,
   useController,
+  useFormContext,
 } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
@@ -23,7 +22,6 @@ export type ClubInput = {
 };
 
 type FormClubAutocompleteProps = {
-  control: Control<any>;
   rules:
     | Omit<
         RegisterOptions<FieldValues, any>,
@@ -33,6 +31,7 @@ type FormClubAutocompleteProps = {
 };
 
 export function FormClubAutocomplete(props: FormClubAutocompleteProps) {
+  const { control: formControl, trigger: formTrigger } = useFormContext();
   const { t } = useTranslation();
   const [
     fetchClubs,
@@ -47,7 +46,7 @@ export function FormClubAutocomplete(props: FormClubAutocompleteProps) {
     formState: formState,
   } = useController({
     name: "club",
-    control: props.control,
+    control: formControl,
     rules: props.rules,
   });
 
@@ -73,13 +72,14 @@ export function FormClubAutocomplete(props: FormClubAutocompleteProps) {
         onBlur={field.onBlur}
         value={field.value}
         ref={field.ref}
-        onChange={(_, newValue) => {
+        onChange={async (_, newValue) => {
           if (newValue) {
             if (newValue.id === "new") {
               setAddClubDialogValue(newValue.inputValue);
               setOpenAddClubDialog(true);
             } else {
               field.onChange(newValue);
+              formTrigger("club");
             }
           }
         }}
@@ -122,13 +122,13 @@ export function FormClubAutocomplete(props: FormClubAutocompleteProps) {
         onClose={async (club) => {
           if (club) {
             await refetchClubs();
-            setOpenAddClubDialog(false);
             field.onChange({
               label: club?.name,
               id: club?.id,
               inputValue: club?.name,
             });
           }
+          setOpenAddClubDialog(false);
         }}
         name={addClubDialogValue}
       />

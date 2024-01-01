@@ -19,12 +19,15 @@ import { ApolloProvider } from "@apollo/client";
 import { apolloClient } from "./helpers/apollo";
 import { Home } from "./pages/home/home";
 import { ProtectedRoute } from "./components/protectedRoute";
-import { ThemeProvider } from "@mui/material";
+import { createTheme, ThemeProvider } from "@mui/material";
 import { CreateCompetition } from "./pages/competition/create/createCompetition";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { Dashboard } from "./pages/competition/[id]/dashboard";
 import { StartersList } from "./pages/competition/[id]/starters/[sex]/starterslist";
+import { StartersImport } from "./pages/competition/[id]/starters/import/startersImport";
+
+const theme = createTheme()
 
 const router = createBrowserRouter([
   {
@@ -71,6 +74,10 @@ const router = createBrowserRouter([
                 path: ":sex",
                 element: <StartersList />,
               },
+              {
+                path: "import",
+                element: <StartersImport />
+              }
             ],
           },
         ],
@@ -94,7 +101,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     <ApolloProvider client={apolloClient}>
       <CssBaseline>
         <SnackbarProvider autoHideDuration={3000} preventDuplicate={true} />
-        <ThemeProvider theme>
+        <ThemeProvider theme={theme}>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <RouterProvider router={router} />
           </LocalizationProvider>

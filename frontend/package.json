@@ -34,12 +34,14 @@
     "react-i18next": "^14.0.0",
     "react-jwt": "^1.2.0",
     "react-router-dom": "^6.21.1",
-    "styled-components": "^6.1.6"
+    "styled-components": "^6.1.6",
+    "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.1/xlsx-0.20.1.tgz"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "5.0.0",
     "@graphql-codegen/client-preset": "^4.1.0",
     "@graphql-codegen/typescript-react-apollo": "^4.1.0",
+    "@hookform/devtools": "^4.3.1",
     "@parcel/watcher": "^2.3.0",
     "@types/jsonwebtoken": "^9.0.5",
     "@types/node": "^20.10.5",

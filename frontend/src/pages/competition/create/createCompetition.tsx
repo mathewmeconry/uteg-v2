@@ -24,26 +24,26 @@ import { useNavigate } from "react-router-dom";
 
 export function CreateCompetition() {
   const { t } = useTranslation();
-  const [activeStep, setActiveSetp] = useState(0);
+  const [activeStep, setActiveStep] = useState(0);
   const form = useForm();
   const [createCompetition, { loading }] = useCreateCompetitionMutation();
   const navigate = useNavigate();
   const [competitionId, setCompetitionId] = useState<string>();
 
   function handleBack() {
-    setActiveSetp(activeStep - 1);
+    setActiveStep(activeStep - 1);
   }
 
   async function handleNext() {
     await form.trigger();
     if (form.formState.isValid) {
-      setActiveSetp(activeStep + 1);
+      setActiveStep(activeStep + 1);
     }
   }
 
   async function handleCreate() {
     try {
-      setActiveSetp(activeStep + 1);
+      setActiveStep(activeStep + 1);
       const formValues = form.getValues();
       const competition = await createCompetition({
         variables: {

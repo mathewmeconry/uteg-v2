@@ -60,13 +60,11 @@ export function Login() {
           <FormTextInput
             name="email"
             fieldProps={{ type: "email" }}
-            control={formControl}
             rules={{ required: true }}
           />
           <FormTextInput
             name="password"
             fieldProps={{ type: "password" }}
-            control={formControl}
             rules={{ required: true }}
           />
           <Button type="submit" variant="contained" sx={{ mt: 2, width: 1 }}>

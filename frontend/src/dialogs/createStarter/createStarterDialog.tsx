@@ -24,7 +24,10 @@ import { useParams } from "react-router-dom";
 import { enqueueSnackbar } from "notistack";
 import { FormTextInput } from "../../components/form/FormTextInput";
 import { ApolloError } from "@apollo/client";
-import { ClubInput, FormClubAutocomplete } from "../../components/form/FormClubAutocomplete";
+import {
+  ClubInput,
+  FormClubAutocomplete,
+} from "../../components/form/FormClubAutocomplete";
 
 type StarterInput = {
   stvID: string;
@@ -337,21 +340,16 @@ export function CreateStarterDialog(props: {
               }
               renderOption={renderStarterOption}
             />
-            <FormTextInput
-              name="birthyear"
-              rules={{ required: true }}
-              control={formControl}
-            />
+            <FormTextInput name="birthyear" rules={{ required: true }} />
             <FormTextInput
               name="sex"
               rules={{ required: true }}
-              control={formControl}
               fieldProps={{ select: true }}
             >
               <MenuItem value="MALE">{t("Male")}</MenuItem>
               <MenuItem value="FEMALE">{t("Female")}</MenuItem>
             </FormTextInput>
-            <FormClubAutocomplete control={formControl} rules={{required: true}}/>
+            <FormClubAutocomplete rules={{ required: true }} />
           </DialogContent>
           <DialogActions>
             <Button onClick={handleCancel}>{t("Cancel")}</Button>

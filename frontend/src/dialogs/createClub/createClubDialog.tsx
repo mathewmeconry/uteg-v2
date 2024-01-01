@@ -8,10 +8,9 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import { FieldValues, useForm } from "react-hook-form";
+import { FieldValues, FormProvider, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { useCreateClubMutation } from "../../__generated__/graphql";
-import { useEffect } from "react";
 import { FormTextInput } from "../../components/form/FormTextInput";
 import { ApolloError } from "@apollo/client";
 import { enqueueSnackbar } from "notistack";
@@ -24,33 +23,24 @@ export function CreateClubDialog(props: {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
   const { t } = useTranslation();
-  const {
-    setValue,
-    handleSubmit,
-    reset,
-    formState: { isValid: formIsValid },
-    control: formControl,
-  } = useForm({
+  const form = useForm({
     defaultValues: {
       name: "",
       location: "",
     },
+    values: {
+      name: props.name || ''
+    }
   });
   const [createClub, { loading }] = useCreateClubMutation();
 
-  useEffect(() => {
-    if (props.name) {
-      setValue("name", props.name);
-    }
-  }, [props.name]);
-
   function handleCancel() {
-    reset();
+    form.reset();
     props.onClose();
   }
 
   async function onSubmit(data: FieldValues) {
-    if (formIsValid) {
+    if (await form.trigger()) {
       try {
         const club = await createClub({
           variables: {
@@ -61,7 +51,7 @@ export function CreateClubDialog(props: {
           },
         });
         enqueueSnackbar(t("Club created"), { variant: "success" });
-        reset();
+        form.reset();
         props.onClose(club.data?.createClub);
       } catch (e) {
         if (e instanceof ApolloError) {
@@ -74,17 +64,16 @@ export function CreateClubDialog(props: {
   return (
     <Dialog open={props.isOpen} fullScreen={fullScreen} maxWidth="sm" fullWidth>
       <DialogTitle>{t("Add Club")}</DialogTitle>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <FormProvider {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)}>
         <DialogContent>
           <FormTextInput
             name="name"
             rules={{ required: true }}
-            control={formControl}
           />
           <FormTextInput
             name="location"
             rules={{ required: true }}
-            control={formControl}
           />
         </DialogContent>
         <DialogActions>
@@ -95,6 +84,7 @@ export function CreateClubDialog(props: {
           </Button>
         </DialogActions>
       </form>
+      </FormProvider>
     </Dialog>
   );
 }

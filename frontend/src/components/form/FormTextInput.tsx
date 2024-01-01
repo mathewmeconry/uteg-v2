@@ -1,16 +1,15 @@
 import { TextField, TextFieldProps } from "@mui/material";
-import { PropsWithChildren } from "react";
+import { ChangeEvent, PropsWithChildren } from "react";
 import {
-  Control,
   FieldValues,
   RegisterOptions,
   useController,
+  useFormContext,
 } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
 export type FormTextInputProps = PropsWithChildren & {
   name: string;
-  control: Control<any>;
   fieldProps?: TextFieldProps;
   rules:
     | Omit<
@@ -21,6 +20,7 @@ export type FormTextInputProps = PropsWithChildren & {
 };
 
 export function FormTextInput(props: FormTextInputProps) {
+  const { control: formControl, trigger: formTrigger } = useFormContext();
   const { t } = useTranslation();
   const {
     field,
@@ -28,12 +28,14 @@ export function FormTextInput(props: FormTextInputProps) {
     formState: formState,
   } = useController({
     name: props.name,
-    control: props.control,
+    control: formControl,
     rules: props.rules,
   });
 
+
   return (
     <TextField
+      key={props.name}
       id={props.name}
       label={t(props.name)}
       variant="standard"
@@ -43,7 +45,7 @@ export function FormTextInput(props: FormTextInputProps) {
       error={invalid && (isTouched || formState.isSubmitted)}
       helperText={error?.message?.toString()}
       onChange={field.onChange}
-      onBlur={field.onBlur}
+      inputProps={{ onBlur: field.onBlur }}
       value={field.value}
       ref={field.ref}
     >

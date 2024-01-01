@@ -1,5 +1,4 @@
 import { ApolloClient, InMemoryCache, createHttpLink } from "@apollo/client";
-import { isExpired } from "react-jwt";
 import { setContext } from "@apollo/client/link/context";
 import { isTokenValid } from "./auth";
 
