@@ -29,13 +29,16 @@ export class StarterService {
             .andWhere('birthyear = :birthyear', {
               birthyear: starter.birthyear,
             })
-            .andWhere('sex = :sex', { sex: starter.sex });
+            .andWhere('sex = :sex', { sex: starter.sex })
+            .andWhere('birthyear = :birthyear', {
+              birthyear: starter.birthyear,
+            });
         }),
       )
       .getOne();
 
     if (alreadyExisting) {
-      throw new AlreadyExistingException();
+      return alreadyExisting
     }
 
     return this.starterRepository.save(starter);
