@@ -13,6 +13,9 @@ import {
   GridActionsCellItem,
   GridActionsColDef,
   GridColDef,
+  GridFilterItem,
+  GridFilterOperator,
+  GridValidRowModel,
 } from "@mui/x-data-grid";
 import { PaperExtended } from "../../../../../components/paperExtended";
 import { useTranslation } from "react-i18next";
@@ -27,6 +30,7 @@ import { StarterslistToolbar } from "./starterslistToolbar";
 import { StarterlistColumnMenu } from "./starterslistColumnMenu";
 import { DeleteConfirmationDialog } from "../../../../../dialogs/deleteConfirmationDialog/deleteConfirmationDialog";
 import { List, ListItem, Typography } from "@mui/material";
+import { GridApiCommunity } from "@mui/x-data-grid/internals";
 
 export function StartersList() {
   const { sex, id } = useParams();
@@ -56,6 +60,22 @@ export function StartersList() {
     },
   });
 
+  const inFilter: GridFilterOperator = {
+    label: t("In"),
+    value: "in",
+    // @ts-ignore need to add noop based on the docs (https://mui.com/x/react-data-grid/filtering/customization/#optimize-performance)
+    getApplyFilterFn: () => {},
+    getApplyFilterFnV7: (filterItem: GridFilterItem) => {
+      return (value: string): boolean => {
+        if (filterItem.value.length === 0) {
+          return true;
+        }
+
+        return filterItem.value.includes(value);
+      };
+    },
+  };
+
   const columns: Array<GridColDef | GridActionsColDef> = [
     {
       field: "starter.firstname",
@@ -82,6 +102,7 @@ export function StartersList() {
       headerName: t("club"),
       valueGetter: (params) => params.row.club.name,
       flex: 1,
+      filterOperators: [inFilter],
     },
     {
       type: "actions",

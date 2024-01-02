@@ -1,7 +1,7 @@
 import { ListItemIcon, Menu, MenuItem } from "@mui/material";
 import { GridColumnMenuProps, useGridApiContext } from "@mui/x-data-grid";
 import { StarterLink } from "../../../../../__generated__/graphql";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import Check from "@mui/icons-material/Check";
 
 export function StarterlistColumnMenu(
@@ -9,7 +9,6 @@ export function StarterlistColumnMenu(
     rows: StarterLink[];
   }
 ) {
-  const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
   const gridApi = useGridApiContext();
   const columnHeaderElement = gridApi.current.getColumnHeaderElement(
     props.colDef.field
@@ -25,33 +24,45 @@ export function StarterlistColumnMenu(
         }
       }
     }
-    return filterValues;
+    return filterValues.sort();
   }, [props.rows]);
 
-  useEffect(() => {
-    setSelectedFilters((filters) => {
-      for (const filter of selectedFilters) {
-        if (!deduplicatedItems.includes(filter)) {
-          filters.splice(filters.indexOf(filter), 1);
-        }
+  function getClubFilterItem() {
+    for (const filterItem of gridApi.current.state.filter.filterModel.items) {
+      if (filterItem.field === "club.name" && filterItem.operator === "in") {
+        return filterItem;
       }
-      return [...filters];
-    });
-  }, [deduplicatedItems]);
-
-  function onItemClick(value: string) {
-    setSelectedFilters((filters) => {
-      if (filters.includes(value)) {
-        filters.splice(filters.indexOf(value), 1);
-      } else {
-        filters.push(value);
-      }
-      return [...filters];
-    });
+    }
+    return {
+      field: "club.name",
+      operator: "in",
+      value: [],
+    };
   }
 
-  console.log(selectedFilters);
-  console.log(props);
+  function onItemClick(value: string) {
+    const clubFilter = getClubFilterItem();
+    if (clubFilter.value.includes(value)) {
+      clubFilter.value.splice(clubFilter.value.indexOf(value), 1);
+    } else {
+      clubFilter.value.push(value);
+    }
+
+    if (
+      clubFilter.value.length === 0 ||
+      JSON.stringify(deduplicatedItems) ===
+        JSON.stringify(clubFilter.value.sort())
+    ) {
+      gridApi.current.setFilterModel({
+        items: [],
+      });
+    } else {
+      gridApi.current.setFilterModel({
+        items: [clubFilter],
+      });
+    }
+  }
+
   return (
     <Menu
       open={props.open}
@@ -60,7 +71,7 @@ export function StarterlistColumnMenu(
     >
       {deduplicatedItems.map((value, index) => (
         <MenuItem onClick={() => onItemClick(value)} key={index}>
-          {selectedFilters.includes(value) && (
+          {getClubFilterItem().value.includes(value) && (
             <ListItemIcon>
               <Check />
             </ListItemIcon>
