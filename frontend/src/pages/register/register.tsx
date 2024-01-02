@@ -3,7 +3,7 @@ import { LandingPageLayout } from "../../layouts/landingpagelayout.tsx";
 import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
 import { Button, CircularProgress, Divider } from "@mui/material";
-import { FieldValues, useForm } from "react-hook-form";
+import { FieldValues, FormProvider, useForm } from "react-hook-form";
 import { useCreateUserMutation } from "../../__generated__/graphql.ts";
 import { Navigate, useNavigate } from "react-router-dom";
 import { enqueueSnackbar } from "notistack";
@@ -14,29 +14,23 @@ export function Register() {
   const [createUser, { loading, error }] = useCreateUserMutation();
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const {
-    handleSubmit,
-    setError,
-    trigger,
-    formState: { isValid: formIsValid },
-    control: formControl,
-  } = useForm();
+  const form = useForm();
 
   if (isTokenValid()) {
     return <Navigate to="/home" replace={true} />;
   }
 
   async function onSubmit(data: FieldValues) {
-    await trigger();
-    if (!formIsValid) {
+    await form.trigger();
+    if (!form.formState.isValid) {
       return;
     }
 
     if (data.password !== data.passwordRepeat) {
-      setError("password", {
+      form.setError("password", {
         message: t("Passwords don't match"),
       });
-      setError("passwordRepeat", {
+      form.setError("passwordRepeat", {
         message: t("Passwords don't match"),
       });
       return;
@@ -56,7 +50,7 @@ export function Register() {
       navigate("/home");
     } catch {
       if (error?.message.includes("Duplicate entry")) {
-        setError("email", {
+        form.setError("email", {
           message: t("E-Mail already exists"),
         });
       }
@@ -74,30 +68,29 @@ export function Register() {
           width: 1,
         }}
       >
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <FormTextInput
-            name="email"
-            fieldProps={{ type: "email" }}
-            control={formControl}
-            rules={{ required: true }}
-          />
-          <FormTextInput
-            name="password"
-            fieldProps={{ type: "password" }}
-            control={formControl}
-            rules={{ required: true }}
-          />
-          <FormTextInput
-            name="passwordRepeat"
-            fieldProps={{ type: "password" }}
-            control={formControl}
-            rules={{ required: true }}
-          />
-          <Button type="submit" variant="contained" sx={{ mt: 2, width: 1 }}>
-            {loading && <CircularProgress />}
-            {!loading && t("Register")}
-          </Button>
-        </form>
+        <FormProvider {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)}>
+            <FormTextInput
+              name="email"
+              fieldProps={{ type: "email" }}
+              rules={{ required: true }}
+            />
+            <FormTextInput
+              name="password"
+              fieldProps={{ type: "password" }}
+              rules={{ required: true }}
+            />
+            <FormTextInput
+              name="passwordRepeat"
+              fieldProps={{ type: "password" }}
+              rules={{ required: true }}
+            />
+            <Button type="submit" variant="contained" sx={{ mt: 2, width: 1 }}>
+              {loading && <CircularProgress />}
+              {!loading && t("Register")}
+            </Button>
+          </form>
+        </FormProvider>
         <Divider variant="middle" sx={{ mt: 2, width: 1 }}>
           {t("or")}
         </Divider>

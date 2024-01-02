@@ -1,9 +1,8 @@
 import { useTranslation } from "react-i18next";
 import { LandingPageLayout } from "../../layouts/landingpagelayout";
-import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
 import { Button, CircularProgress, Divider } from "@mui/material";
-import { FieldValues, useForm } from "react-hook-form";
+import { FieldValues, FormProvider, useForm } from "react-hook-form";
 import { getToken, isTokenValid } from "../../helpers/auth";
 import { useState } from "react";
 import { blue } from "@mui/material/colors";
@@ -13,10 +12,7 @@ import { FormTextInput } from "../../components/form/FormTextInput";
 
 export function Login() {
   const { t } = useTranslation();
-  const {
-    handleSubmit,
-    control: formControl,
-  } = useForm();
+  const form = useForm();
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -56,24 +52,26 @@ export function Login() {
           width: 1,
         }}
       >
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <FormTextInput
-            name="email"
-            fieldProps={{ type: "email" }}
-            rules={{ required: true }}
-          />
-          <FormTextInput
-            name="password"
-            fieldProps={{ type: "password" }}
-            rules={{ required: true }}
-          />
-          <Button type="submit" variant="contained" sx={{ mt: 2, width: 1 }}>
-            {loading && (
-              <CircularProgress size={24} sx={{ color: blue[500] }} />
-            )}
-            {!loading && t("Login")}
-          </Button>
-        </form>
+        <FormProvider {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)}>
+            <FormTextInput
+              name="email"
+              fieldProps={{ type: "email" }}
+              rules={{ required: true }}
+            />
+            <FormTextInput
+              name="password"
+              fieldProps={{ type: "password" }}
+              rules={{ required: true }}
+            />
+            <Button type="submit" variant="contained" sx={{ mt: 2, width: 1 }}>
+              {loading && (
+                <CircularProgress size={24} sx={{ color: blue[500] }} />
+              )}
+              {!loading && t("Login")}
+            </Button>
+          </form>
+        </FormProvider>
         <Divider variant="middle" sx={{ mt: 2, width: 1 }}>
           {t("or")}
         </Divider>
