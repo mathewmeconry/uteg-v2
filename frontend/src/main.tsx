@@ -11,6 +11,7 @@ import { SnackbarProvider } from "notistack";
 import {
   createBrowserRouter,
   Navigate,
+  RouteObject,
   RouterProvider,
 } from "react-router-dom";
 import { Login } from "./pages/login/login";
@@ -18,7 +19,6 @@ import { Register } from "./pages/register/register";
 import { ApolloProvider } from "@apollo/client";
 import { apolloClient } from "./helpers/apollo";
 import { Home } from "./pages/home/home";
-import { ProtectedRoute } from "./components/protectedRoute";
 import { createTheme, ThemeProvider } from "@mui/material";
 import { CreateCompetition } from "./pages/competition/create/createCompetition";
 import { LocalizationProvider } from "@mui/x-date-pickers";
@@ -26,10 +26,12 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { Dashboard } from "./pages/competition/[id]/dashboard";
 import { StartersList } from "./pages/competition/[id]/starters/[sex]/starterslist";
 import { StartersImport } from "./pages/competition/[id]/starters/import/startersImport";
+import { HomeLayout } from "./layouts/homelayout";
+import { CompetitionLayout } from "./layouts/competitionlayout";
 
-const theme = createTheme()
+const theme = createTheme();
 
-const router = createBrowserRouter([
+const routes: RouteObject[] = [
   {
     path: "/",
     element: <Navigate to="/login" replace={true} />,
@@ -43,25 +45,45 @@ const router = createBrowserRouter([
     element: <Register />,
   },
   {
-    path: "/home",
-    element: <ProtectedRoute />,
+    element: <HomeLayout />,
     children: [
+      {
+        path: "/profile",
+        element: <>TODO</>,
+      },
       {
         path: "/home",
         element: <Home />,
+        handle: {
+          layout: {
+            title: "home",
+          },
+        },
       },
     ],
   },
   {
     path: "/competition",
-    element: <ProtectedRoute />,
+    element: <HomeLayout />,
     children: [
       {
         path: "create",
         element: <CreateCompetition />,
+        handle: {
+          layout: {
+            title: "create competition",
+            returnable: true,
+          },
+        },
       },
       {
         path: ":id",
+        element: <CompetitionLayout />,
+        handle: {
+          layout: {
+            hasDrawer: true,
+          },
+        },
         children: [
           {
             path: "dashboard",
@@ -76,25 +98,17 @@ const router = createBrowserRouter([
               },
               {
                 path: "import",
-                element: <StartersImport />
-              }
+                element: <StartersImport />,
+              },
             ],
           },
         ],
       },
     ],
   },
-  {
-    path: "/profile",
-    element: <ProtectedRoute />,
-    children: [
-      {
-        path: "/profile",
-        element: <>TODO</>,
-      },
-    ],
-  },
-]);
+];
+
+const router = createBrowserRouter(routes);
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>

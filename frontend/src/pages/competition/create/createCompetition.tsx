@@ -1,5 +1,4 @@
 import { useTranslation } from "react-i18next";
-import { HomeLayout } from "../../../layouts/homelayout";
 import {
   Box,
   Button,
@@ -69,28 +68,31 @@ export function CreateCompetition() {
     }
   }
 
-  const steps = useMemo(() => [
-    {
-      label: t("Basic Information"),
-      component: <BasicInformation />,
-    },
-    {
-      label: t("Setup"),
-      component: <Setup />,
-    },
-    {
-      label: t("Modules"),
-      component: <ModulesSettings />,
-    },
-    {
-      label: t("Users"),
-      component: <Users />,
-    },
-    {
-      label: t("Review"),
-      component: <Review />,
-    },
-  ], []);
+  const steps = useMemo(
+    () => [
+      {
+        label: t("Basic Information"),
+        component: <BasicInformation />,
+      },
+      {
+        label: t("Setup"),
+        component: <Setup />,
+      },
+      {
+        label: t("Modules"),
+        component: <ModulesSettings />,
+      },
+      {
+        label: t("Users"),
+        component: <Users />,
+      },
+      {
+        label: t("Review"),
+        component: <Review />,
+      },
+    ],
+    []
+  );
 
   function renderContent() {
     if (loading) {
@@ -180,18 +182,16 @@ export function CreateCompetition() {
   }
 
   return (
-    <HomeLayout title={t("Create Competition")} returnable={true}>
-      <Paper sx={{ p: 2 }}>
-        <Stepper activeStep={activeStep} alternativeLabel>
-          {steps.map((step) => (
-            <Step key={step.label}>
-              <StepButton>{step.label}</StepButton>
-            </Step>
-          ))}
-        </Stepper>
-        <Divider sx={{ mt: 2 }}></Divider>
-        {renderContent()}
-      </Paper>
-    </HomeLayout>
+    <Paper sx={{ p: 2 }}>
+      <Stepper activeStep={activeStep} alternativeLabel>
+        {steps.map((step) => (
+          <Step key={step.label}>
+            <StepButton>{step.label}</StepButton>
+          </Step>
+        ))}
+      </Stepper>
+      <Divider sx={{ mt: 2 }}></Divider>
+      {renderContent()}
+    </Paper>
   );
 }

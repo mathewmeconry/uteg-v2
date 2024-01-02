@@ -1,5 +1,4 @@
 import { useParams } from "react-router-dom";
-import { CompetitionLayout } from "../../../../../layouts/competitionlayout";
 import {
   Sex,
   StarterLink,
@@ -174,7 +173,7 @@ export function StartersList() {
   }
 
   return (
-    <CompetitionLayout>
+    <>
       <PaperExtended title={t(`${sex} Starters`)}>
         <Box sx={{ height: "80vh", width: "100%" }}>
           <DataGrid
@@ -245,6 +244,6 @@ export function StartersList() {
           ))}
         </List>
       </DeleteConfirmationDialog>
-    </CompetitionLayout>
+      </>
   );
 }

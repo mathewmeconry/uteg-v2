@@ -1,7 +1,6 @@
-import { Button, Grid, Paper, Skeleton } from "@mui/material";
-import { HomeLayout } from "../../layouts/homelayout";
+import { Button, Grid, Skeleton } from "@mui/material";
 import { useTranslation } from "react-i18next";
-import { Competition, useCompetitionsQuery } from "../../__generated__/graphql";
+import { useCompetitionsQuery } from "../../__generated__/graphql";
 import { CompetitionCard } from "./competitionCard";
 import { enqueueSnackbar } from "notistack";
 
@@ -42,7 +41,7 @@ export function Home() {
   }
 
   return (
-    <HomeLayout title={t("Home")}>
+    <>
       <Button
         href="/competition/create"
         variant="outlined"
@@ -53,6 +52,6 @@ export function Home() {
       <Grid container spacing={2}>
         {renderCompetitions()}
       </Grid>
-    </HomeLayout>
+    </>
   );
 }

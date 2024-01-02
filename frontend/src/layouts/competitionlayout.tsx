@@ -1,7 +1,6 @@
-import { PropsWithChildren, useEffect, useState } from "react";
-import { HomeLayout } from "./homelayout";
+import { Fragment, PropsWithChildren, useState } from "react";
 import { useCompetitionNameQuery } from "../__generated__/graphql";
-import { NavLink, useLocation, useParams } from "react-router-dom";
+import { NavLink, Outlet, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import {
   Box,
@@ -18,7 +17,6 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import PeopleIcon from "@mui/icons-material/People";
 import ExpandLess from "@mui/icons-material/ExpandLess";
@@ -27,6 +25,8 @@ import WomanIcon from "@mui/icons-material/Woman";
 import ManIcon from "@mui/icons-material/Man";
 import SettingsIcon from "@mui/icons-material/Settings";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
+import { useModules } from "../hooks/useModules/useModules";
+import { useHomeLayoutContext } from "./homelayout";
 
 type MenuItem = {
   icon: React.ReactElement;
@@ -36,20 +36,15 @@ type MenuItem = {
   children?: MenuItem[];
 };
 
-export function CompetitionLayout(props: PropsWithChildren) {
-  const location = useLocation();
+export function CompetitionLayout() {
   const { id } = useParams();
+  const { drawerWidth, drawerOpen, setDrawerOpen } = useHomeLayoutContext();
+  const { modules: competitionModules } = useModules(id || "");
   const { data, loading } = useCompetitionNameQuery({ variables: { id } });
   const { t } = useTranslation();
-  const [drawerOpen, setDrawerOpen] = useState(false);
   const [submenuStates, setSubmenuStates] = useState<{
     [index: string]: boolean;
   }>({});
-  const drawerWidth = 250;
-
-  useEffect(() => {
-    setDrawerOpen(false);
-  }, [location]);
 
   function renderName() {
     if (loading) {
@@ -57,14 +52,6 @@ export function CompetitionLayout(props: PropsWithChildren) {
     }
     return data?.competition.name || t("Loading failed");
   }
-
-  const icons = [
-    <MenuIcon
-      key="menu"
-      sx={{ mr: 2, cursor: "pointer" }}
-      onClick={() => setDrawerOpen(!drawerOpen)}
-    />,
-  ];
 
   const menuItems: MenuItem[] = [
     {
@@ -164,9 +151,6 @@ export function CompetitionLayout(props: PropsWithChildren) {
 
   return (
     <>
-      <HomeLayout title="" icons={icons} ml={drawerOpen ? drawerWidth : 0}>
-        {props.children}
-      </HomeLayout>
       <Drawer
         anchor="left"
         open={drawerOpen}
@@ -190,10 +174,17 @@ export function CompetitionLayout(props: PropsWithChildren) {
               <Typography variant="caption">{t("Go back home")}</Typography>
             </Button>
           </Toolbar>
-          <Divider />
+          <Divider>{t("competition")}</Divider>
           <List>{menuItems.map((item) => renderMenuItem(item))}</List>
+          {competitionModules.map((module) => (
+            <Fragment key={module.name}>
+              <Divider>{t(module.name)}</Divider>
+              {module.renderMenu()}
+            </Fragment>
+          ))}
         </Box>
       </Drawer>
+      <Outlet />
     </>
   );
 }

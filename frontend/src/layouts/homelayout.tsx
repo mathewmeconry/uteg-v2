@@ -9,25 +9,62 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import React, { PropsWithChildren, useState } from "react";
-import { removeToken } from "../helpers/auth";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { isTokenValid, removeToken } from "../helpers/auth";
+import {
+  Navigate,
+  Outlet,
+  UIMatch,
+  useLocation,
+  useMatches,
+  useNavigate,
+  useOutletContext,
+} from "react-router-dom";
 import { enqueueSnackbar } from "notistack";
 import { useTranslation } from "react-i18next";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
+import { RouteHandleLayout } from "./types";
+import MenuIcon from "@mui/icons-material/Menu";
 
-export function HomeLayout(
-  props: {
-    title: string | React.ReactElement;
-    returnable?: boolean;
-    icons?: React.ReactElement[];
-    ml?: number;
-  } & PropsWithChildren
-) {
+function parseMatches(
+  matches: UIMatch<unknown, { layout: RouteHandleLayout }>[]
+): RouteHandleLayout {
+  let result: RouteHandleLayout = {};
+  for (const match of matches) {
+    if (match.handle && match.handle.layout) {
+      result = {
+        ...result,
+        ...match.handle.layout,
+      };
+    }
+  }
+  return result;
+}
+
+export function HomeLayout() {
+  const drawerWidth = 250;
+  const matches = useMatches();
+  const location = useLocation();
+  const props = parseMatches(
+    matches as UIMatch<unknown, { layout: RouteHandleLayout }>[]
+  );
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const navigate = useNavigate();
   const { t } = useTranslation();
   const theme = useTheme();
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
+  if (!isTokenValid()) {
+    enqueueSnackbar(t("Permission Denied!"), {
+      variant: "error",
+      key: "permissionDenied",
+    });
+    return <Navigate to="/login" replace={true}></Navigate>;
+  }
+
+  useEffect(() => {
+    setDrawerOpen(false);
+  }, [location]);
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -57,11 +94,11 @@ export function HomeLayout(
       <AppBar>
         <Toolbar
           style={{
-            marginLeft: props.ml,
             transition: theme.transitions.create(["margin"], {
               easing: theme.transitions.easing.sharp,
               duration: theme.transitions.duration.enteringScreen,
             }),
+            marginLeft: drawerOpen ? drawerWidth : 0,
           }}
         >
           {props.returnable && (
@@ -70,9 +107,15 @@ export function HomeLayout(
               sx={{ mr: 3, cursor: "pointer" }}
             />
           )}
-          {!props.returnable && (props.icons || [])}
+          {props.hasDrawer && (
+            <MenuIcon
+              key="menu"
+              sx={{ mr: 2, cursor: "pointer" }}
+              onClick={() => setDrawerOpen(!drawerOpen)}
+            />
+          )}
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            {props.title}
+            {t(props.title || "")}
           </Typography>
           <div>
             <IconButton
@@ -107,7 +150,18 @@ export function HomeLayout(
         </Toolbar>
       </AppBar>
       <Toolbar />
-      <Box sx={{ m: 1, mt: 2 }}>{props.children}</Box>
+      <Box sx={{ m: 1, mt: 2 }}>
+        <Outlet context={{ drawerWidth, drawerOpen, setDrawerOpen }} />
+      </Box>
     </>
   );
+}
+
+export type HomeLayoutContextType = {
+  drawerWidth: number;
+  drawerOpen: boolean;
+  setDrawerOpen: (state: boolean) => void;
+};
+export function useHomeLayoutContext(): HomeLayoutContextType {
+  return useOutletContext<HomeLayoutContextType>();
 }

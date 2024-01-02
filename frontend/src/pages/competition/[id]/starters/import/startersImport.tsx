@@ -15,7 +15,6 @@ import { FileUploadStep } from "./steps/fileUploadStep";
 import { StartersReviewStep } from "./steps/startersReviewStep";
 import { ClubInput } from "../../../../../components/form/FormClubAutocomplete";
 import { PaperExtended } from "../../../../../components/paperExtended";
-import { CompetitionLayout } from "../../../../../layouts/competitionlayout";
 import { Starter } from "../../../../../__generated__/graphql";
 import { processXLSX } from "./processImport";
 import { ImportStep } from "./steps/importStep";
@@ -116,18 +115,16 @@ export function StartersImport() {
   }
 
   return (
-    <CompetitionLayout>
-      <PaperExtended title={t("Starters import")}>
-        <Stepper activeStep={activeStep}>
-          {steps.map((step) => (
-            <Step key={step.label}>
-              <StepButton>{step.label}</StepButton>
-            </Step>
-          ))}
-        </Stepper>
-        <Divider sx={{ mt: 2 }}></Divider>
-        {renderContent()}
-      </PaperExtended>
-    </CompetitionLayout>
+    <PaperExtended title={t("Starters import")}>
+      <Stepper activeStep={activeStep}>
+        {steps.map((step) => (
+          <Step key={step.label}>
+            <StepButton>{step.label}</StepButton>
+          </Step>
+        ))}
+      </Stepper>
+      <Divider sx={{ mt: 2 }}></Divider>
+      {renderContent()}
+    </PaperExtended>
   );
 }
