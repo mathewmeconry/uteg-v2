@@ -1,9 +1,20 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Starter } from './starter.entity';
 import { Brackets, Repository } from 'typeorm';
-import { StarterFilter } from './starter.types';
-import { AlreadyExistingException } from '../exceptions/AlreadyExisting';
+import { StarterFilter, UpdateStarterInput } from './starter.types';
+
+export const AllowedStarterFields = [
+  'stvID',
+  'firstname',
+  'lastname',
+  'birthyear',
+  'sex',
+];
 
 @Injectable()
 export class StarterService {
@@ -15,30 +26,30 @@ export class StarterService {
       starter.stvID = undefined;
     }
 
-    const alreadyExisting = await this.starterRepository
-      .createQueryBuilder('starter')
-      .where('LOWER(stvID) = LOWER(:stvID)', { stvID: starter.stvID || '' })
-      .orWhere(
-        new Brackets((qb) => {
-          qb.where('LOWER(firstname) = LOWER(:firstname)', {
-            firstname: starter.firstname,
-          })
-            .andWhere('LOWER(lastname) = LOWER(:lastname)', {
-              lastname: starter.lastname,
-            })
-            .andWhere('birthyear = :birthyear', {
-              birthyear: starter.birthyear,
-            })
-            .andWhere('sex = :sex', { sex: starter.sex })
-            .andWhere('birthyear = :birthyear', {
-              birthyear: starter.birthyear,
-            });
-        }),
-      )
-      .getOne();
+    const alreadyExisting = await this.findDuplicate(starter);
 
     if (alreadyExisting) {
-      return alreadyExisting
+      return alreadyExisting;
+    }
+
+    return this.starterRepository.save(starter);
+  }
+
+  async update(id: number, data: UpdateStarterInput): Promise<Starter> {
+    const starter = await this.findOne(id);
+    if (!starter) {
+      throw new NotFoundException();
+    }
+
+    for (const key of AllowedStarterFields) {
+      if (data[key] !== undefined) {
+        starter[key] = data[key];
+      }
+    }
+
+    const duplicate = await this.findDuplicate(starter, true);
+    if (duplicate) {
+      return duplicate;
     }
 
     return this.starterRepository.save(starter);
@@ -57,7 +68,7 @@ export class StarterService {
 
     let queryBuilder = this.starterRepository
       .createQueryBuilder('starter')
-      .leftJoinAndSelect('starter.starterLinks', 'starterLinks');
+      .leftJoin('starter.starterLinks', 'starterLinks');
 
     if (filter.competitionID) {
       queryBuilder = queryBuilder.andWhere(
@@ -70,15 +81,6 @@ export class StarterService {
 
     if (filter.sex) {
       queryBuilder = queryBuilder.andWhere('sex = :sex', { sex: filter.sex });
-    }
-
-    if (filter.category) {
-      queryBuilder = queryBuilder.andWhere(
-        'starterLinks.category = :category',
-        {
-          category: filter.category,
-        },
-      );
     }
 
     if (filter.firstname || filter.lastname) {
@@ -116,5 +118,33 @@ export class StarterService {
 
   async remove(id: number): Promise<void> {
     await this.starterRepository.delete(id);
+  }
+
+  findDuplicate(
+    starter: Starter,
+    ignoreStvID: boolean = false,
+  ): Promise<Starter | undefined> {
+    const qb = this.starterRepository.createQueryBuilder('starter').orWhere(
+      new Brackets((qb) => {
+        qb.where('LOWER(firstname) = LOWER(:firstname)', {
+          firstname: starter.firstname,
+        })
+          .andWhere('LOWER(lastname) = LOWER(:lastname)', {
+            lastname: starter.lastname,
+          })
+          .andWhere('birthyear = :birthyear', {
+            birthyear: starter.birthyear,
+          })
+          .andWhere('sex = :sex', { sex: starter.sex });
+      }),
+    );
+
+    if (!ignoreStvID) {
+      qb.orWhere('LOWER(stvID) = LOWER(:stvID)', {
+        stvID: starter.stvID || '',
+      });
+    }
+
+    return qb.getOne();
   }
 }

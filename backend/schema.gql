@@ -63,6 +63,9 @@ type Mutation {
   createStarter(data: CreateStarterInput!): Starter!
   createStarterLink(data: CreateStarterLinkInput!): StarterLink!
   createUser(user: CreateUserInput!): User!
+  removeStarterLink(id: ID!): StarterLink!
+  updateStarter(data: UpdateStarterInput!, id: ID!): Starter!
+  updateStarterLink(data: UpdateStarterLinkInput!, id: ID!): StarterLink!
 }
 
 type Query {
@@ -70,7 +73,8 @@ type Query {
   competition(id: ID!): Competition!
   competitions: [Competition!]!
   grades: [Grade!]!
-  starterLink(id: Int!): StarterLink
+  starterLink(id: ID!): StarterLink
+  starterLinks(competitionID: ID!, sex: String): [StarterLink!]!
   starters(filter: StarterFilter!): [Starter!]!
   users: [User!]!
 }
@@ -98,7 +102,6 @@ type Starter {
 }
 
 input StarterFilter {
-  category: Int
   competitionID: ID
   firstname: String
   lastname: String
@@ -107,13 +110,29 @@ input StarterFilter {
 }
 
 type StarterLink {
+  club: Club!
+  competition: Competition!
   id: ID!
+  starter: Starter!
 }
 
 """
 `Date` type as integer. Type represents date and time as number of milliseconds from start of UNIX epoch.
 """
 scalar Timestamp
+
+input UpdateStarterInput {
+  birthyear: Int
+  firstname: String
+  lastname: String
+  sex: Sex
+  stvID: String
+}
+
+input UpdateStarterLinkInput {
+  clubID: ID!
+  competitionID: ID!
+}
 
 type User {
   email: String!

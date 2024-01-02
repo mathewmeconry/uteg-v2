@@ -84,6 +84,9 @@ export type Mutation = {
   createStarter: Starter;
   createStarterLink: StarterLink;
   createUser: User;
+  removeStarterLink: StarterLink;
+  updateStarter: Starter;
+  updateStarterLink: StarterLink;
 };
 
 
@@ -111,6 +114,23 @@ export type MutationCreateUserArgs = {
   user: CreateUserInput;
 };
 
+
+export type MutationRemoveStarterLinkArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationUpdateStarterArgs = {
+  data: UpdateStarterInput;
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationUpdateStarterLinkArgs = {
+  data: UpdateStarterLinkInput;
+  id: Scalars['ID']['input'];
+};
+
 export type Query = {
   __typename?: 'Query';
   clubs: Array<Club>;
@@ -118,6 +138,7 @@ export type Query = {
   competitions: Array<Competition>;
   grades: Array<Grade>;
   starterLink?: Maybe<StarterLink>;
+  starterLinks: Array<StarterLink>;
   starters: Array<Starter>;
   users: Array<User>;
 };
@@ -129,7 +150,13 @@ export type QueryCompetitionArgs = {
 
 
 export type QueryStarterLinkArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
+};
+
+
+export type QueryStarterLinksArgs = {
+  competitionID: Scalars['ID']['input'];
+  sex?: InputMaybe<Scalars['String']['input']>;
 };
 
 
@@ -159,7 +186,6 @@ export type Starter = {
 };
 
 export type StarterFilter = {
-  category?: InputMaybe<Scalars['Int']['input']>;
   competitionID?: InputMaybe<Scalars['ID']['input']>;
   firstname?: InputMaybe<Scalars['String']['input']>;
   lastname?: InputMaybe<Scalars['String']['input']>;
@@ -169,7 +195,23 @@ export type StarterFilter = {
 
 export type StarterLink = {
   __typename?: 'StarterLink';
+  club: Club;
+  competition: Competition;
   id: Scalars['ID']['output'];
+  starter: Starter;
+};
+
+export type UpdateStarterInput = {
+  birthyear?: InputMaybe<Scalars['Int']['input']>;
+  firstname?: InputMaybe<Scalars['String']['input']>;
+  lastname?: InputMaybe<Scalars['String']['input']>;
+  sex?: InputMaybe<Sex>;
+  stvID?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type UpdateStarterLinkInput = {
+  clubID: Scalars['ID']['input'];
+  competitionID: Scalars['ID']['input'];
 };
 
 export type User = {
@@ -212,6 +254,29 @@ export type StartersAutocompleteQueryVariables = Exact<{
 
 export type StartersAutocompleteQuery = { __typename?: 'Query', starters: Array<{ __typename?: 'Starter', id: string, firstname: string, lastname: string, birthyear: number, stvID?: string | null, sex: Sex }> };
 
+export type UpdateStarterMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+  input: UpdateStarterInput;
+}>;
+
+
+export type UpdateStarterMutation = { __typename?: 'Mutation', updateStarter: { __typename?: 'Starter', id: string } };
+
+export type UpdateStarterLinkMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+  input: UpdateStarterLinkInput;
+}>;
+
+
+export type UpdateStarterLinkMutation = { __typename?: 'Mutation', updateStarterLink: { __typename?: 'StarterLink', id: string } };
+
+export type StarterLinkQueryVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type StarterLinkQuery = { __typename?: 'Query', starterLink?: { __typename?: 'StarterLink', id: string, competition: { __typename?: 'Competition', id: string }, starter: { __typename?: 'Starter', id: string, stvID?: string | null, firstname: string, lastname: string, sex: Sex, birthyear: number }, club: { __typename?: 'Club', id: string, name: string } } | null };
+
 export type CompetitionNameQueryVariables = Exact<{
   id: Scalars['ID']['input'];
 }>;
@@ -219,12 +284,20 @@ export type CompetitionNameQueryVariables = Exact<{
 
 export type CompetitionNameQuery = { __typename?: 'Query', competition: { __typename?: 'Competition', name: string } };
 
-export type StartersQueryVariables = Exact<{
-  filter: StarterFilter;
+export type StarterLinksQueryVariables = Exact<{
+  competitionID: Scalars['ID']['input'];
+  sex?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 
-export type StartersQuery = { __typename?: 'Query', starters: Array<{ __typename?: 'Starter', id: string, firstname: string, lastname: string, birthyear: number, stvID?: string | null }> };
+export type StarterLinksQuery = { __typename?: 'Query', starterLinks: Array<{ __typename?: 'StarterLink', id: string, starter: { __typename?: 'Starter', id: string, firstname: string, lastname: string, birthyear: number, stvID?: string | null, sex: Sex }, club: { __typename?: 'Club', id: string, name: string } }> };
+
+export type RemoveStarterLinkMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type RemoveStarterLinkMutation = { __typename?: 'Mutation', removeStarterLink: { __typename?: 'StarterLink', id: string } };
 
 export type CreateCompetitionMutationVariables = Exact<{
   name: Scalars['String']['input'];
@@ -437,6 +510,129 @@ export type StartersAutocompleteQueryHookResult = ReturnType<typeof useStartersA
 export type StartersAutocompleteLazyQueryHookResult = ReturnType<typeof useStartersAutocompleteLazyQuery>;
 export type StartersAutocompleteSuspenseQueryHookResult = ReturnType<typeof useStartersAutocompleteSuspenseQuery>;
 export type StartersAutocompleteQueryResult = Apollo.QueryResult<StartersAutocompleteQuery, StartersAutocompleteQueryVariables>;
+export const UpdateStarterDocument = gql`
+    mutation updateStarter($id: ID!, $input: UpdateStarterInput!) {
+  updateStarter(id: $id, data: $input) {
+    id
+  }
+}
+    `;
+export type UpdateStarterMutationFn = Apollo.MutationFunction<UpdateStarterMutation, UpdateStarterMutationVariables>;
+
+/**
+ * __useUpdateStarterMutation__
+ *
+ * To run a mutation, you first call `useUpdateStarterMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateStarterMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateStarterMutation, { data, loading, error }] = useUpdateStarterMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateStarterMutation(baseOptions?: Apollo.MutationHookOptions<UpdateStarterMutation, UpdateStarterMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateStarterMutation, UpdateStarterMutationVariables>(UpdateStarterDocument, options);
+      }
+export type UpdateStarterMutationHookResult = ReturnType<typeof useUpdateStarterMutation>;
+export type UpdateStarterMutationResult = Apollo.MutationResult<UpdateStarterMutation>;
+export type UpdateStarterMutationOptions = Apollo.BaseMutationOptions<UpdateStarterMutation, UpdateStarterMutationVariables>;
+export const UpdateStarterLinkDocument = gql`
+    mutation updateStarterLink($id: ID!, $input: UpdateStarterLinkInput!) {
+  updateStarterLink(id: $id, data: $input) {
+    id
+  }
+}
+    `;
+export type UpdateStarterLinkMutationFn = Apollo.MutationFunction<UpdateStarterLinkMutation, UpdateStarterLinkMutationVariables>;
+
+/**
+ * __useUpdateStarterLinkMutation__
+ *
+ * To run a mutation, you first call `useUpdateStarterLinkMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateStarterLinkMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateStarterLinkMutation, { data, loading, error }] = useUpdateStarterLinkMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateStarterLinkMutation(baseOptions?: Apollo.MutationHookOptions<UpdateStarterLinkMutation, UpdateStarterLinkMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateStarterLinkMutation, UpdateStarterLinkMutationVariables>(UpdateStarterLinkDocument, options);
+      }
+export type UpdateStarterLinkMutationHookResult = ReturnType<typeof useUpdateStarterLinkMutation>;
+export type UpdateStarterLinkMutationResult = Apollo.MutationResult<UpdateStarterLinkMutation>;
+export type UpdateStarterLinkMutationOptions = Apollo.BaseMutationOptions<UpdateStarterLinkMutation, UpdateStarterLinkMutationVariables>;
+export const StarterLinkDocument = gql`
+    query starterLink($id: ID!) {
+  starterLink(id: $id) {
+    id
+    competition {
+      id
+    }
+    starter {
+      id
+      stvID
+      firstname
+      lastname
+      sex
+      birthyear
+    }
+    club {
+      id
+      name
+    }
+  }
+}
+    `;
+
+/**
+ * __useStarterLinkQuery__
+ *
+ * To run a query within a React component, call `useStarterLinkQuery` and pass it any options that fit your needs.
+ * When your component renders, `useStarterLinkQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useStarterLinkQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useStarterLinkQuery(baseOptions: Apollo.QueryHookOptions<StarterLinkQuery, StarterLinkQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<StarterLinkQuery, StarterLinkQueryVariables>(StarterLinkDocument, options);
+      }
+export function useStarterLinkLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<StarterLinkQuery, StarterLinkQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<StarterLinkQuery, StarterLinkQueryVariables>(StarterLinkDocument, options);
+        }
+export function useStarterLinkSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<StarterLinkQuery, StarterLinkQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<StarterLinkQuery, StarterLinkQueryVariables>(StarterLinkDocument, options);
+        }
+export type StarterLinkQueryHookResult = ReturnType<typeof useStarterLinkQuery>;
+export type StarterLinkLazyQueryHookResult = ReturnType<typeof useStarterLinkLazyQuery>;
+export type StarterLinkSuspenseQueryHookResult = ReturnType<typeof useStarterLinkSuspenseQuery>;
+export type StarterLinkQueryResult = Apollo.QueryResult<StarterLinkQuery, StarterLinkQueryVariables>;
 export const CompetitionNameDocument = gql`
     query competitionName($id: ID!) {
   competition(id: $id) {
@@ -477,50 +673,92 @@ export type CompetitionNameQueryHookResult = ReturnType<typeof useCompetitionNam
 export type CompetitionNameLazyQueryHookResult = ReturnType<typeof useCompetitionNameLazyQuery>;
 export type CompetitionNameSuspenseQueryHookResult = ReturnType<typeof useCompetitionNameSuspenseQuery>;
 export type CompetitionNameQueryResult = Apollo.QueryResult<CompetitionNameQuery, CompetitionNameQueryVariables>;
-export const StartersDocument = gql`
-    query starters($filter: StarterFilter!) {
-  starters(filter: $filter) {
+export const StarterLinksDocument = gql`
+    query starterLinks($competitionID: ID!, $sex: String) {
+  starterLinks(competitionID: $competitionID, sex: $sex) {
     id
-    firstname
-    lastname
-    birthyear
-    stvID
+    starter {
+      id
+      firstname
+      lastname
+      birthyear
+      stvID
+      sex
+    }
+    club {
+      id
+      name
+    }
   }
 }
     `;
 
 /**
- * __useStartersQuery__
+ * __useStarterLinksQuery__
  *
- * To run a query within a React component, call `useStartersQuery` and pass it any options that fit your needs.
- * When your component renders, `useStartersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useStarterLinksQuery` and pass it any options that fit your needs.
+ * When your component renders, `useStarterLinksQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useStartersQuery({
+ * const { data, loading, error } = useStarterLinksQuery({
  *   variables: {
- *      filter: // value for 'filter'
+ *      competitionID: // value for 'competitionID'
+ *      sex: // value for 'sex'
  *   },
  * });
  */
-export function useStartersQuery(baseOptions: Apollo.QueryHookOptions<StartersQuery, StartersQueryVariables>) {
+export function useStarterLinksQuery(baseOptions: Apollo.QueryHookOptions<StarterLinksQuery, StarterLinksQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<StartersQuery, StartersQueryVariables>(StartersDocument, options);
+        return Apollo.useQuery<StarterLinksQuery, StarterLinksQueryVariables>(StarterLinksDocument, options);
       }
-export function useStartersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<StartersQuery, StartersQueryVariables>) {
+export function useStarterLinksLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<StarterLinksQuery, StarterLinksQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<StartersQuery, StartersQueryVariables>(StartersDocument, options);
+          return Apollo.useLazyQuery<StarterLinksQuery, StarterLinksQueryVariables>(StarterLinksDocument, options);
         }
-export function useStartersSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<StartersQuery, StartersQueryVariables>) {
+export function useStarterLinksSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<StarterLinksQuery, StarterLinksQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<StartersQuery, StartersQueryVariables>(StartersDocument, options);
+          return Apollo.useSuspenseQuery<StarterLinksQuery, StarterLinksQueryVariables>(StarterLinksDocument, options);
         }
-export type StartersQueryHookResult = ReturnType<typeof useStartersQuery>;
-export type StartersLazyQueryHookResult = ReturnType<typeof useStartersLazyQuery>;
-export type StartersSuspenseQueryHookResult = ReturnType<typeof useStartersSuspenseQuery>;
-export type StartersQueryResult = Apollo.QueryResult<StartersQuery, StartersQueryVariables>;
+export type StarterLinksQueryHookResult = ReturnType<typeof useStarterLinksQuery>;
+export type StarterLinksLazyQueryHookResult = ReturnType<typeof useStarterLinksLazyQuery>;
+export type StarterLinksSuspenseQueryHookResult = ReturnType<typeof useStarterLinksSuspenseQuery>;
+export type StarterLinksQueryResult = Apollo.QueryResult<StarterLinksQuery, StarterLinksQueryVariables>;
+export const RemoveStarterLinkDocument = gql`
+    mutation removeStarterLink($id: ID!) {
+  removeStarterLink(id: $id) {
+    id
+  }
+}
+    `;
+export type RemoveStarterLinkMutationFn = Apollo.MutationFunction<RemoveStarterLinkMutation, RemoveStarterLinkMutationVariables>;
+
+/**
+ * __useRemoveStarterLinkMutation__
+ *
+ * To run a mutation, you first call `useRemoveStarterLinkMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveStarterLinkMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeStarterLinkMutation, { data, loading, error }] = useRemoveStarterLinkMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useRemoveStarterLinkMutation(baseOptions?: Apollo.MutationHookOptions<RemoveStarterLinkMutation, RemoveStarterLinkMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RemoveStarterLinkMutation, RemoveStarterLinkMutationVariables>(RemoveStarterLinkDocument, options);
+      }
+export type RemoveStarterLinkMutationHookResult = ReturnType<typeof useRemoveStarterLinkMutation>;
+export type RemoveStarterLinkMutationResult = Apollo.MutationResult<RemoveStarterLinkMutation>;
+export type RemoveStarterLinkMutationOptions = Apollo.BaseMutationOptions<RemoveStarterLinkMutation, RemoveStarterLinkMutationVariables>;
 export const CreateCompetitionDocument = gql`
     mutation createCompetition($name: String!, $location: String!, $startDate: Timestamp!, $endDate: Timestamp!, $grounds: Int!, $modules: [String!]!) {
   createCompetition(

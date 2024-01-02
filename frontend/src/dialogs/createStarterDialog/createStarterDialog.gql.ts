@@ -9,7 +9,7 @@ const CLUBS = gql`
   }
 `;
 
-const ADD_STARTER = gql`
+const CREATE_STARTER = gql`
   mutation createStarter($input: CreateStarterInput!) {
     createStarter(data: $input) {
       id
@@ -25,16 +25,15 @@ const LINK_STARTER = gql`
   }
 `;
 
-
 const STARTERS_AUTOCOMPLETE = gql`
-query startersAutocomplete($filter: StarterFilter!) {
-  starters(filter: $filter) {
-    id
-    firstname
-    lastname
-    birthyear
-    stvID
-    sex
+  query startersAutocomplete($filter: StarterFilter!) {
+    starters(filter: $filter) {
+      id
+      firstname
+      lastname
+      birthyear
+      stvID
+      sex
+    }
   }
-}
-`
+`;

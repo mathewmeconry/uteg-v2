@@ -84,14 +84,19 @@ export class UserService {
     });
   }
 
-  public hash(data: string): Promise<string> {
+  async getGlobalRole(userID: number): Promise<ROLES> {
+    const entity = await this.userRepository.findOneBy({id: userID})
+    return entity.globalRole
+  }
+
+  hash(data: string): Promise<string> {
     return bcrypt.hash(
       data,
       this.configService.get<number>('BCRYPT_ROUNDS') || 10,
     );
   }
 
-  public compare(input: string, hash: string): Promise<boolean> {
+  compare(input: string, hash: string): Promise<boolean> {
     try {
       return bcrypt.compare(input, hash);
     } catch {

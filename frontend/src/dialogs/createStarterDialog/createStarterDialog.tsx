@@ -12,7 +12,7 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import { FieldValues, useForm, useWatch } from "react-hook-form";
+import { FieldValues, FormProvider, useForm, useWatch } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import {
   useCreateStarterLinkMutation,
@@ -29,8 +29,18 @@ import {
   FormClubAutocomplete,
 } from "../../components/form/FormClubAutocomplete";
 
-type StarterInput = {
-  stvID: string;
+export type CreateStarterForm = {
+  stvID?: string;
+  firstname: string;
+  lastname: string;
+  club: ClubInput | string;
+  sex: string;
+  birthyear: string;
+  starter: CreateStarterInput | string;
+};
+
+type CreateStarterInput = {
+  stvID?: string;
   firstname: string;
   lastname: string;
   birthyear: number;
@@ -53,16 +63,7 @@ export function CreateStarterDialog(props: {
     getValues,
     setValue,
     reset,
-    formState: { errors: formErrors },
-  } = useForm<{
-    stvID?: string;
-    firstname: string;
-    lastname: string;
-    club: ClubInput | string;
-    sex: string;
-    birthyear: string;
-    starter: StarterInput | string;
-  }>({
+  } = useForm<CreateStarterForm>({
     defaultValues: {
       stvID: "",
       firstname: "",
@@ -73,16 +74,16 @@ export function CreateStarterDialog(props: {
       starter: "",
     },
   });
-  const [createStarter] = useCreateStarterMutation();
-  const [createStarterLink] = useCreateStarterLinkMutation();
+  const [createStarterMutation] = useCreateStarterMutation();
+  const [createStarterLinkMutation] = useCreateStarterLinkMutation();
   const [
     queryStarters,
     { data: starters, loading: startersLoading },
   ] = useStartersAutocompleteLazyQuery();
   const starter = useWatch({ name: "starter", control: formControl });
 
-  const starterOptions: StarterInput[] = useMemo(() => {
-    const options: StarterInput[] = [];
+  const starterOptions: CreateStarterInput[] = useMemo(() => {
+    const options: CreateStarterInput[] = [];
     if (starters?.starters) {
       for (const starter of starters.starters) {
         options.push({
@@ -105,7 +106,7 @@ export function CreateStarterDialog(props: {
 
   function renderStarterOption(
     props: React.HTMLAttributes<HTMLLIElement>,
-    option: StarterInput
+    option: CreateStarterInput
   ): React.ReactNode {
     return (
       <Typography {...props}>
@@ -121,23 +122,7 @@ export function CreateStarterDialog(props: {
   }
 
   function renderStarterAutocompleteInput(
-    name:
-      | "stvID"
-      | "firstname"
-      | "lastname"
-      | "club"
-      | "sex"
-      | "birthyear"
-      | "starter"
-      | "club.id"
-      | "club.label"
-      | "club.inputValue"
-      | "starter.id"
-      | "starter.stvID"
-      | "starter.firstname"
-      | "starter.lastname"
-      | "starter.sex"
-      | "starter.birthyear",
+    name: keyof CreateStarterForm,
     required = true
   ) {
     return (params: TextFieldProps) => (
@@ -162,28 +147,10 @@ export function CreateStarterDialog(props: {
     );
   }
 
-  function onStarterAutocompleteChange(
-    name:
-      | "stvID"
-      | "firstname"
-      | "lastname"
-      | "club"
-      | "sex"
-      | "birthyear"
-      | "starter"
-      | "club.id"
-      | "club.label"
-      | "club.inputValue"
-      | "starter.id"
-      | "starter.stvID"
-      | "starter.firstname"
-      | "starter.lastname"
-      | "starter.sex"
-      | "starter.birthyear"
-  ) {
+  function onStarterAutocompleteChange(name: keyof CreateStarterForm) {
     return (
       _: SyntheticEvent<Element, Event>,
-      value: string | StarterInput | null
+      value: string | CreateStarterInput | null
     ) => {
       if (value && typeof value !== "string") {
         setValue("starter", value);
@@ -193,7 +160,6 @@ export function CreateStarterDialog(props: {
         setValue("birthyear", value.birthyear.toString());
         setValue("sex", value.sex);
       } else {
-        // @ts-ignore Ignoring here because name is only used by the starter value inputs
         if (getValues("starter")[name] !== value) {
           setValue("starter", "");
         }
@@ -212,7 +178,7 @@ export function CreateStarterDialog(props: {
       starterID = data.starter.id;
     } else {
       try {
-        const createStarterResponse = await createStarter({
+        const createStarterResponse = await createStarterMutation({
           variables: {
             input: {
               firstname: data.firstname,
@@ -242,7 +208,7 @@ export function CreateStarterDialog(props: {
         enqueueSnackbar(t("Ooops"), { variant: "error" });
         return;
       }
-      await createStarterLink({
+      await createStarterLinkMutation({
         variables: {
           input: {
             starterID,
@@ -270,94 +236,96 @@ export function CreateStarterDialog(props: {
         maxWidth="sm"
         fullWidth
       >
-        <DialogTitle>{t("Add Starter")}</DialogTitle>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <DialogContent sx={{ mt: 2 }}>
-            <Autocomplete
-              disablePortal
-              id="stvID"
-              value={starter}
-              {...register("stvID", { required: false })}
-              onChange={onStarterAutocompleteChange("stvID")}
-              filterOptions={(options: StarterInput[]) => {
-                return options;
-              }}
-              loading={startersLoading}
-              options={starterOptions}
-              inputValue={getValues("stvID") || ""}
-              freeSolo={true}
-              renderInput={renderStarterAutocompleteInput("stvID", false)}
-              getOptionLabel={(option) =>
-                typeof option !== "string" ? option.stvID || "" : ""
-              }
-              getOptionKey={(option) =>
-                typeof option !== "string" ? option.id : ""
-              }
-              renderOption={renderStarterOption}
-            />
-            <Autocomplete
-              disablePortal
-              id="firstname"
-              value={starter}
-              {...register("firstname", { required: false })}
-              onChange={onStarterAutocompleteChange("firstname")}
-              filterOptions={(options: StarterInput[]) => {
-                return options;
-              }}
-              autoSelect={true}
-              loading={startersLoading}
-              options={starterOptions}
-              inputValue={getValues("firstname") as string}
-              freeSolo={true}
-              renderInput={renderStarterAutocompleteInput("firstname")}
-              getOptionLabel={(option) =>
-                typeof option !== "string" ? option.firstname : ""
-              }
-              getOptionKey={(option) =>
-                typeof option !== "string" ? option.id : ""
-              }
-              renderOption={renderStarterOption}
-            />
-            <Autocomplete
-              disablePortal
-              id="lastname"
-              value={starter}
-              {...register("lastname", { required: false })}
-              onChange={onStarterAutocompleteChange("lastname")}
-              filterOptions={(options: StarterInput[]) => {
-                return options;
-              }}
-              loading={startersLoading}
-              options={starterOptions}
-              inputValue={getValues("lastname") as string}
-              freeSolo={true}
-              renderInput={renderStarterAutocompleteInput("lastname")}
-              getOptionLabel={(option) =>
-                typeof option !== "string" ? option.lastname : ""
-              }
-              getOptionKey={(option) =>
-                typeof option !== "string" ? option.id : ""
-              }
-              renderOption={renderStarterOption}
-            />
-            <FormTextInput name="birthyear" rules={{ required: true }} />
-            <FormTextInput
-              name="sex"
-              rules={{ required: true }}
-              fieldProps={{ select: true }}
-            >
-              <MenuItem value="MALE">{t("Male")}</MenuItem>
-              <MenuItem value="FEMALE">{t("Female")}</MenuItem>
-            </FormTextInput>
-            <FormClubAutocomplete rules={{ required: true }} />
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleCancel}>{t("Cancel")}</Button>
-            <Button variant="contained" color="success" type="submit">
-              {t("Save")}
-            </Button>
-          </DialogActions>
-        </form>
+        <DialogTitle>{t("Create Starter")}</DialogTitle>
+        <FormProvider control={formControl}>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <DialogContent sx={{ mt: 2 }}>
+              <Autocomplete
+                disablePortal
+                id="stvID"
+                value={starter}
+                {...register("stvID", { required: false })}
+                onChange={onStarterAutocompleteChange("stvID")}
+                filterOptions={(options: CreateStarterInput[]) => {
+                  return options;
+                }}
+                loading={startersLoading}
+                options={starterOptions}
+                inputValue={getValues("stvID") || ""}
+                freeSolo={true}
+                renderInput={renderStarterAutocompleteInput("stvID", false)}
+                getOptionLabel={(option) =>
+                  typeof option !== "string" ? option.stvID || "" : ""
+                }
+                getOptionKey={(option) =>
+                  typeof option !== "string" ? option.id : ""
+                }
+                renderOption={renderStarterOption}
+              />
+              <Autocomplete
+                disablePortal
+                id="firstname"
+                value={starter}
+                {...register("firstname", { required: false })}
+                onChange={onStarterAutocompleteChange("firstname")}
+                filterOptions={(options: CreateStarterInput[]) => {
+                  return options;
+                }}
+                autoSelect={true}
+                loading={startersLoading}
+                options={starterOptions}
+                inputValue={getValues("firstname") as string}
+                freeSolo={true}
+                renderInput={renderStarterAutocompleteInput("firstname")}
+                getOptionLabel={(option) =>
+                  typeof option !== "string" ? option.firstname : ""
+                }
+                getOptionKey={(option) =>
+                  typeof option !== "string" ? option.id : ""
+                }
+                renderOption={renderStarterOption}
+              />
+              <Autocomplete
+                disablePortal
+                id="lastname"
+                value={starter}
+                {...register("lastname", { required: false })}
+                onChange={onStarterAutocompleteChange("lastname")}
+                filterOptions={(options: CreateStarterInput[]) => {
+                  return options;
+                }}
+                loading={startersLoading}
+                options={starterOptions}
+                inputValue={getValues("lastname") as string}
+                freeSolo={true}
+                renderInput={renderStarterAutocompleteInput("lastname")}
+                getOptionLabel={(option) =>
+                  typeof option !== "string" ? option.lastname : ""
+                }
+                getOptionKey={(option) =>
+                  typeof option !== "string" ? option.id : ""
+                }
+                renderOption={renderStarterOption}
+              />
+              <FormTextInput name="birthyear" rules={{ required: true }} />
+              <FormTextInput
+                name="sex"
+                rules={{ required: true }}
+                fieldProps={{ select: true }}
+              >
+                <MenuItem value="MALE">{t("Male")}</MenuItem>
+                <MenuItem value="FEMALE">{t("Female")}</MenuItem>
+              </FormTextInput>
+              <FormClubAutocomplete rules={{ required: true }} />
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleCancel}>{t("Cancel")}</Button>
+              <Button variant="contained" color="success" type="submit">
+                {t("Save")}
+              </Button>
+            </DialogActions>
+          </form>
+        </FormProvider>
       </Dialog>
     </>
   );

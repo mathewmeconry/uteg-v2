@@ -4,6 +4,7 @@ import { User } from './user.entity';
 import { UserService } from './user.service';
 import { Public } from 'src/auth/decorators/public.decorator';
 import { CreateUserInput } from './user.types';
+import { GlobalRole } from '../decorators/globalRole.decorator';
 
 @Resolver(() => User)
 export class UserResolver {

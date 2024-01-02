@@ -52,6 +52,11 @@ export class AuthService {
     return assignedRole >= role;
   }
 
+  public async globalAuthorize(userID: number, role: ROLES): Promise<boolean> {
+    const globalRole = await this.userService.getGlobalRole(userID);
+    return globalRole >= role;
+  }
+
   public validateJwt(jwt: string): Promise<JwtPayload> {
     return this.jwtService.verifyAsync<JwtPayload>(jwt);
   }

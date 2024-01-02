@@ -24,14 +24,12 @@ export function FormTextInput(props: FormTextInputProps) {
   const { t } = useTranslation();
   const {
     field,
-    fieldState: { invalid, isTouched, error },
-    formState: formState,
+    fieldState: { invalid, error },
   } = useController({
     name: props.name,
     control: formControl,
     rules: props.rules,
   });
-
 
   return (
     <TextField
@@ -42,10 +40,12 @@ export function FormTextInput(props: FormTextInputProps) {
       margin="normal"
       fullWidth
       {...props.fieldProps}
-      error={invalid && (isTouched || formState.isSubmitted)}
+      error={invalid}
       helperText={error?.message?.toString()}
       onChange={field.onChange}
-      inputProps={{ onBlur: field.onBlur }}
+      inputProps={{
+        onBlur: field.onBlur,
+      }}
       value={field.value}
       ref={field.ref}
     >

@@ -9,6 +9,7 @@ import { GqlExecutionContext } from '@nestjs/graphql';
 import { ROLE_KEY } from '../decorators/role.decorator';
 import { Reflector } from '@nestjs/core';
 import { ROLES } from '../types';
+import { GLOBAL_ROLE_KEY } from '../decorators/globalRole.decorator';
 
 @Injectable()
 export class RoleGuard implements CanActivate {
@@ -24,9 +25,21 @@ export class RoleGuard implements CanActivate {
       context.getHandler(),
       context.getClass(),
     ]);
+    const globalRole = this.reflector.getAllAndOverride<ROLES>(
+      GLOBAL_ROLE_KEY,
+      [context.getHandler(), context.getClass()],
+    );
 
-    if (!role) {
+    if (!role && !globalRole) {
       return true;
+    }
+
+    if (globalRole) {
+      if (
+        await this.authService.globalAuthorize(ctx.getContext().user.id, globalRole)
+      ) {
+        return true;
+      }
     }
 
     return this.authService.authorize(

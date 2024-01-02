@@ -1,4 +1,12 @@
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import {
+  Args,
+  ID,
+  Mutation,
+  Parent,
+  Query,
+  ResolveField,
+  Resolver,
+} from '@nestjs/graphql';
 import { StarterLink } from './starterLink.entity';
 import { Inject, UseGuards } from '@nestjs/common';
 import { StarterLinkService } from './starterLink.service';
@@ -6,10 +14,17 @@ import { RoleGuard } from 'src/auth/guards/role.guard';
 import { ROLES } from 'src/auth/types';
 import { Role } from 'src/auth/decorators/role.decorator';
 import { StarterLinkGuard } from './starterLink.guard';
-import { CreateStarterLinkInput } from './starterLink.types';
+import {
+  CreateStarterLinkInput,
+  UpdateStarterLinkInput,
+} from './starterLink.types';
 import { StarterService } from '../starter/starter.service';
 import { ClubService } from '../club/club.service';
 import { CompetitionService } from '../competition/competition.service';
+import { Starter } from '../starter/starter.entity';
+import { Club } from '../club/club.entity';
+import { Competition } from '../competition/competition.entity';
+import { SEX } from '../starter/starter.types';
 
 @Resolver(() => StarterLink)
 @UseGuards(StarterLinkGuard, RoleGuard)
@@ -31,8 +46,21 @@ export class StarterLinkResolver {
     name: 'starterLink',
     nullable: true,
   })
-  async findById(@Args('id') id: number): Promise<StarterLink | null> {
+  async findById(
+    @Args('id', { type: () => ID }) id: number,
+  ): Promise<StarterLink | null> {
     return this.starterLinkService.findOne(id);
+  }
+
+  @Role(ROLES.VIEWER)
+  @Query(() => [StarterLink], {
+    name: 'starterLinks',
+  })
+  async find(
+    @Args('competitionID', { type: () => ID }) competitionID: number,
+    @Args('sex', { nullable: true }) sex: SEX,
+  ): Promise<StarterLink[]> {
+    return this.starterLinkService.find(competitionID, sex);
   }
 
   @Role(ROLES.ADMIN)
@@ -51,5 +79,37 @@ export class StarterLinkResolver {
       await this.competitionService.findOne(linkData.competitionID),
     );
     return this.starterLinkService.create(starterLink);
+  }
+
+  @Role(ROLES.ADMIN)
+  @Mutation(() => StarterLink, { name: 'updateStarterLink' })
+  async updateLink(
+    @Args('id', { type: () => ID }) id: number,
+    @Args('data') data: UpdateStarterLinkInput,
+  ): Promise<StarterLink> {
+    return this.starterLinkService.update(id, data);
+  }
+
+  @Role(ROLES.ADMIN)
+  @Mutation(() => StarterLink, { name: 'removeStarterLink' })
+  async unlink(
+    @Args('id', { type: () => ID }) id: number,
+  ): Promise<StarterLink> {
+    return this.starterLinkService.remove(id);
+  }
+
+  @ResolveField(() => Starter)
+  async starter(@Parent() starterLink: StarterLink): Promise<Starter> {
+    return starterLink.starter;
+  }
+
+  @ResolveField(() => Club)
+  async club(@Parent() starterLink: StarterLink): Promise<Club> {
+    return starterLink.club;
+  }
+
+  @ResolveField(() => Competition)
+  async competition(@Parent() starterLink: StarterLink): Promise<Competition> {
+    return starterLink.competition;
   }
 }

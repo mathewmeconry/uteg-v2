@@ -1,21 +1,37 @@
 import { useParams } from "react-router-dom";
 import { CompetitionLayout } from "../../../../../layouts/competitionlayout";
-import { Sex, useStartersQuery } from "../../../../../__generated__/graphql";
+import {
+  Sex,
+  StarterLink,
+  useRemoveStarterLinkMutation,
+  useStarterLinksQuery,
+} from "../../../../../__generated__/graphql";
 import { enqueueSnackbar } from "notistack";
 import { Error } from "../../../../../components/error";
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import {
+  DataGrid,
+  GridActionsCellItem,
+  GridActionsColDef,
+  GridColDef,
+} from "@mui/x-data-grid";
 import { PaperExtended } from "../../../../../components/paperExtended";
 import { useTranslation } from "react-i18next";
 import { Box } from "@mui/system";
-import { Button, TextField } from "@mui/material";
 import { useState } from "react";
-import { CreateStarterDialog } from "../../../../../dialogs/createStarter/createStarterDialog";
+import { CreateStarterDialog } from "../../../../../dialogs/createStarterDialog/createStarterDialog";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { UpdateStarterDialog } from "../../../../../dialogs/updateStarterDialog/updateStarterDialog";
+import { ApolloError } from "@apollo/client";
+import { StarterslistToolbar } from "./starterslistToolbar";
+import { StarterlistColumnMenu } from "./starterslistColumnMenu";
 
 export function StartersList() {
   const { sex, id } = useParams();
   const { t } = useTranslation();
   const [openDialog, setOpenDialog] = useState("");
-  const [searchQuery, setSearchQuery] = useState("");
+  const [toEditLink, setToEditLink] = useState<string>("");
+  const [removeStarterLink] = useRemoveStarterLinkMutation();
 
   if (!sex) {
     enqueueSnackbar("Ooops", { variant: "error" });
@@ -27,58 +43,103 @@ export function StartersList() {
   }
 
   const {
-    data: starters,
+    data: starterLinksData,
     loading,
     refetch: refetchStarters,
-  } = useStartersQuery({
+  } = useStarterLinksQuery({
     variables: {
-      filter: {
-        competitionID: id,
-        sex: sex.toUpperCase() as Sex,
-        firstname: searchQuery,
-        lastname: searchQuery
-      },
+      competitionID: id,
+      sex: sex.toUpperCase() as Sex,
     },
   });
 
-  const columns: GridColDef[] = [
+  const columns: Array<GridColDef | GridActionsColDef> = [
     {
-      field: "firstname",
+      field: "starter.firstname",
       headerName: t("firstname"),
+      valueGetter: (params) => params.row.starter.firstname,
+      flex: 1,
+      disableColumnMenu: true,
     },
     {
-      field: "lastname",
+      field: "starter.lastname",
       headerName: t("lastname"),
+      valueGetter: (params) => params.row.starter.lastname,
+      flex: 1,
+      disableColumnMenu: true,
+    },
+    {
+      field: "starter.birthyear",
+      headerName: t("birthyear"),
+      valueGetter: (params) => params.row.starter.birthyear,
+      disableColumnMenu: true,
+    },
+    {
+      field: "club.name",
+      headerName: t("club"),
+      valueGetter: (params) => params.row.club.name,
+      flex: 1,
+    },
+    {
+      type: "actions",
+      headerName: t("actions"),
+      field: "actions",
+      getActions: getColumnActions,
+      disableColumnMenu: true,
     },
   ];
+
+  function onEdit(starterLink: StarterLink) {
+    return () => {
+      setToEditLink(starterLink.id);
+      setOpenDialog("updateStarter");
+    };
+  }
+
+  function onRemove(starterLink: StarterLink) {
+    return async () => {
+      try {
+        await removeStarterLink({
+          variables: {
+            id: starterLink.id,
+          },
+        });
+        enqueueSnackbar(t("Starter unlinked"), { variant: "success" });
+      } catch (e) {
+        if (e instanceof ApolloError) {
+          enqueueSnackbar(t(e.message), { variant: "error" });
+        }
+        console.error(e);
+      }
+      refetchStarters();
+    };
+  }
+
+  function getColumnActions({ row: starterlink }: { row: StarterLink }) {
+    return [
+      <GridActionsCellItem
+        icon={<EditIcon />}
+        label="Edit"
+        className="textPrimary"
+        onClick={onEdit(starterlink)}
+        color="inherit"
+      />,
+      <GridActionsCellItem
+        icon={<DeleteIcon />}
+        label="Delete"
+        color="inherit"
+        onClick={onRemove(starterlink)}
+      />,
+    ];
+  }
 
   return (
     <CompetitionLayout>
       <PaperExtended title={t(`${sex} Starters`)}>
-        <Box sx={{ display: "flex" }}>
-          <TextField
-            id="search"
-            type="string"
-            label={t("Search")}
-            variant="standard"
-            margin="normal"
-            fullWidth
-            sx={{ mt: 0 }}
-            value={searchQuery}
-            onChange={(data) => setSearchQuery(data.currentTarget.value)}
-          />
-          <Button
-            variant="outlined"
-            onClick={() => setOpenDialog("addStarter")}
-            sx={{ m: 1, whiteSpace: "nowrap" }}
-          >
-            {t("Add Starter")}
-          </Button>
-        </Box>
-        <Box sx={{ height: 400, width: "100%" }}>
+        <Box sx={{ height: "80vh", width: "100%" }}>
           <DataGrid
             loading={loading}
-            rows={starters?.starters || []}
+            rows={starterLinksData?.starterLinks || []}
             columns={columns}
             initialState={{
               pagination: {
@@ -90,11 +151,32 @@ export function StartersList() {
             pageSizeOptions={[20, 50, 100]}
             checkboxSelection
             disableRowSelectionOnClick
+            slots={{
+              toolbar: StarterslistToolbar,
+              columnMenu: StarterlistColumnMenu,
+            }}
+            slotProps={{
+              columnMenu: {
+                rows: starterLinksData?.starterLinks || [],
+              },
+              toolbar: {
+                openDialog: setOpenDialog,
+              },
+            }}
+            ignoreDiacritics
           />
         </Box>
       </PaperExtended>
       <CreateStarterDialog
         isOpen={openDialog === "addStarter"}
+        onClose={() => {
+          refetchStarters();
+          setOpenDialog("");
+        }}
+      />
+      <UpdateStarterDialog
+        isOpen={openDialog === "updateStarter"}
+        linkID={toEditLink}
         onClose={() => {
           refetchStarters();
           setOpenDialog("");

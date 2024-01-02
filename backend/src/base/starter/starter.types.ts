@@ -1,4 +1,10 @@
-import { Field, ID, InputType, registerEnumType } from '@nestjs/graphql';
+import {
+  Field,
+  ID,
+  InputType,
+  PartialType,
+  registerEnumType,
+} from '@nestjs/graphql';
 
 @InputType()
 export class CreateStarterInput {
@@ -27,17 +33,17 @@ export class StarterFilter {
   sex?: SEX;
 
   @Field({ nullable: true })
-  category?: number;
-
-  @Field({ nullable: true })
   firstname?: string;
 
   @Field({ nullable: true })
   lastname?: string;
 
-  @Field({nullable: true})
-  stvID?: string
+  @Field({ nullable: true })
+  stvID?: string;
 }
+
+@InputType()
+export class UpdateStarterInput extends PartialType(CreateStarterInput) {}
 
 export enum SEX {
   MALE = 'male',
