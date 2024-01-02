@@ -25,6 +25,8 @@ import { UpdateStarterDialog } from "../../../../../dialogs/updateStarterDialog/
 import { ApolloError } from "@apollo/client";
 import { StarterslistToolbar } from "./starterslistToolbar";
 import { StarterlistColumnMenu } from "./starterslistColumnMenu";
+import { DeleteConfirmationDialog } from "../../../../../dialogs/deleteConfirmationDialog/deleteConfirmationDialog";
+import { List, ListItem, Typography } from "@mui/material";
 
 export function StartersList() {
   const { sex, id } = useParams();
@@ -32,6 +34,7 @@ export function StartersList() {
   const [openDialog, setOpenDialog] = useState("");
   const [toEditLink, setToEditLink] = useState<string>("");
   const [removeStarterLink] = useRemoveStarterLinkMutation();
+  const [toDeleteStarters, setToDeleteStarters] = useState<StarterLink[]>([]);
 
   if (!sex) {
     enqueueSnackbar("Ooops", { variant: "error" });
@@ -97,22 +100,31 @@ export function StartersList() {
   }
 
   function onRemove(starterLink: StarterLink) {
-    return async () => {
-      try {
+    return () => {
+      setToDeleteStarters([starterLink]);
+      setOpenDialog("deleteStarter");
+    };
+  }
+
+  async function handleStarterDelete() {
+    try {
+      for (const starterLink of toDeleteStarters) {
         await removeStarterLink({
           variables: {
             id: starterLink.id,
           },
         });
-        enqueueSnackbar(t("Starter unlinked"), { variant: "success" });
-      } catch (e) {
-        if (e instanceof ApolloError) {
-          enqueueSnackbar(t(e.message), { variant: "error" });
-        }
-        console.error(e);
       }
-      refetchStarters();
-    };
+      enqueueSnackbar(t("Starters unlinked"), { variant: "success" });
+    } catch (e) {
+      if (e instanceof ApolloError) {
+        enqueueSnackbar(t(e.message), { variant: "error" });
+      }
+      console.error(e);
+    }
+    setOpenDialog("");
+    setToDeleteStarters([]);
+    refetchStarters();
   }
 
   function getColumnActions({ row: starterlink }: { row: StarterLink }) {
@@ -182,6 +194,21 @@ export function StartersList() {
           setOpenDialog("");
         }}
       />
+      <DeleteConfirmationDialog
+        isOpen={openDialog === "deleteStarter"}
+        title={t("Delete Starter")}
+        onCancel={() => setOpenDialog("")}
+        onConfirm={() => handleStarterDelete()}
+      >
+        <Typography>{t("Do you really wanna delete?")}</Typography>
+        <List>
+          {toDeleteStarters.map((starterLink) => (
+            <ListItem key={starterLink.id}>
+              {starterLink.starter.firstname} {starterLink.starter.lastname}
+            </ListItem>
+          ))}
+        </List>
+      </DeleteConfirmationDialog>
     </CompetitionLayout>
   );
 }
