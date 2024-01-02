@@ -1,7 +1,7 @@
 import { ListItemIcon, Menu, MenuItem } from "@mui/material";
 import { GridColumnMenuProps, useGridApiContext } from "@mui/x-data-grid";
 import { StarterLink } from "../../../../../__generated__/graphql";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import Check from "@mui/icons-material/Check";
 
 export function StarterlistColumnMenu(
@@ -39,6 +39,25 @@ export function StarterlistColumnMenu(
       value: [],
     };
   }
+
+  useEffect(() => {
+    const filterItem = getClubFilterItem();
+    if (filterItem.value.length > 0) {
+      filterItem.value = filterItem.value.filter((value: string) =>
+        deduplicatedItems.includes(value)
+      );
+
+      if (filterItem.value.length === 0) {
+        gridApi.current.setFilterModel({
+          items: [],
+        });
+      } else {
+        gridApi.current.setFilterModel({
+          items: [filterItem],
+        });
+      }
+    }
+  }, [deduplicatedItems]);
 
   function onItemClick(value: string) {
     const clubFilter = getClubFilterItem();

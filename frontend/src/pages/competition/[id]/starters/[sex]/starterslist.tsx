@@ -128,10 +128,10 @@ export function StartersList() {
   }
 
   function onRemoveRows(rows: Map<GridRowId, GridValidRowModel>) {
-    const deletionArray: StarterLink[] = []
-    rows.forEach(row => deletionArray.push(row))
+    const deletionArray: StarterLink[] = [];
+    rows.forEach((row) => deletionArray.push(row));
     setToDeleteStarters(deletionArray);
-    setOpenDialog('deleteStarter')
+    setOpenDialog("deleteStarter");
   }
 
   async function handleStarterDelete() {
@@ -187,6 +187,14 @@ export function StartersList() {
                   pageSize: 20,
                 },
               },
+              sorting: {
+                sortModel: [
+                  {
+                    field: "starter.lastname",
+                    sort: "asc",
+                  },
+                ],
+              },
             }}
             pageSizeOptions={[20, 50, 100]}
             checkboxSelection
@@ -203,7 +211,7 @@ export function StartersList() {
                 onRowDeletionClick: onRemoveRows,
               },
             }}
-            ignoreDiacritics
+            ignoreDiacritics={false}
           />
         </Box>
       </PaperExtended>
