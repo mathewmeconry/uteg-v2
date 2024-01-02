@@ -175,7 +175,10 @@ export function ImportStep() {
           onClick={() => navigate(`/competition/${competitionID}/dashboard`)}
           sx={{ mt: 2 }}
         >
-            {t('Go to Dashbaord')}
+          {t("Go to Dashbaord")}
+        </Button>
+        <Button variant="outlined" onClick={() => navigate(0)} sx={{ mt: 2 }}>
+          {t("Start over")}
         </Button>
       </>
     );
