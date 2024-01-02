@@ -15,6 +15,7 @@ import {
   GridColDef,
   GridFilterItem,
   GridFilterOperator,
+  GridRowId,
   GridValidRowModel,
 } from "@mui/x-data-grid";
 import { PaperExtended } from "../../../../../components/paperExtended";
@@ -30,7 +31,6 @@ import { StarterslistToolbar } from "./starterslistToolbar";
 import { StarterlistColumnMenu } from "./starterslistColumnMenu";
 import { DeleteConfirmationDialog } from "../../../../../dialogs/deleteConfirmationDialog/deleteConfirmationDialog";
 import { List, ListItem, Typography } from "@mui/material";
-import { GridApiCommunity } from "@mui/x-data-grid/internals";
 
 export function StartersList() {
   const { sex, id } = useParams();
@@ -127,6 +127,13 @@ export function StartersList() {
     };
   }
 
+  function onRemoveRows(rows: Map<GridRowId, GridValidRowModel>) {
+    const deletionArray: StarterLink[] = []
+    rows.forEach(row => deletionArray.push(row))
+    setToDeleteStarters(deletionArray);
+    setOpenDialog('deleteStarter')
+  }
+
   async function handleStarterDelete() {
     try {
       for (const starterLink of toDeleteStarters) {
@@ -183,7 +190,6 @@ export function StartersList() {
             }}
             pageSizeOptions={[20, 50, 100]}
             checkboxSelection
-            disableRowSelectionOnClick
             slots={{
               toolbar: StarterslistToolbar,
               columnMenu: StarterlistColumnMenu,
@@ -194,6 +200,7 @@ export function StartersList() {
               },
               toolbar: {
                 openDialog: setOpenDialog,
+                onRowDeletionClick: onRemoveRows,
               },
             }}
             ignoreDiacritics
