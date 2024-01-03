@@ -6,11 +6,13 @@ import { ConfigModule } from './config/config.module';
 import { ConfigService } from './config/config.service';
 import { BaseModule } from './base/base.module';
 import { AuthModule } from './auth/auth.module';
+import { EGTModule } from './egt/egt.module';
 
 @Module({
   imports: [
     BaseModule,
     AuthModule,
+    EGTModule,
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({

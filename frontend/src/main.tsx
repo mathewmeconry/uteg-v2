@@ -28,8 +28,16 @@ import { StartersList } from "./pages/competition/[id]/starters/[sex]/startersli
 import { StartersImport } from "./pages/competition/[id]/starters/import/startersImport";
 import { HomeLayout } from "./layouts/homelayout";
 import { CompetitionLayout } from "./layouts/competitionlayout";
+import { EGTModule } from "./modules/egt";
+import { registerModule } from "./hooks/useModules/useModules";
 
 const theme = createTheme();
+
+const egtModule = new EGTModule()
+registerModule({
+  name: 'egt',
+  class: egtModule
+})
 
 const routes: RouteObject[] = [
   {
@@ -104,6 +112,7 @@ const routes: RouteObject[] = [
           },
         ],
       },
+      ...egtModule.getCompetitionRoutes()
     ],
   },
 ];

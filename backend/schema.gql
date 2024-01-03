@@ -32,6 +32,11 @@ input CreateCompetition {
   startDate: Timestamp!
 }
 
+input CreateEGTStarterLinkInput {
+  divisionID: ID!
+  starterLinkID: ID!
+}
+
 input CreateStarterInput {
   birthyear: Int!
   firstname: String!
@@ -51,6 +56,24 @@ input CreateUserInput {
   password: String!
 }
 
+type EGTDivision {
+  ground: Int!
+  id: ID!
+  round: Int!
+  state: EGTDivisionStates!
+}
+
+enum EGTDivisionStates {
+  ENDED
+  PENDING
+  RUNNING
+}
+
+type EGTStarterLink {
+  division: EGTDivision!
+  id: ID!
+}
+
 type Grade {
   id: ID!
   starter: StarterLink!
@@ -60,6 +83,7 @@ type Grade {
 type Mutation {
   createClub(data: CreateClubInput!): Club!
   createCompetition(competition: CreateCompetition!): Competition!
+  createEGTStarterLink(data: CreateEGTStarterLinkInput!): EGTStarterLink!
   createStarter(data: CreateStarterInput!): Starter!
   createStarterLink(data: CreateStarterLinkInput!): StarterLink!
   createUser(user: CreateUserInput!): User!
@@ -112,6 +136,7 @@ input StarterFilter {
 type StarterLink {
   club: Club!
   competition: Competition!
+  egt: EGTStarterLink
   id: ID!
   starter: Starter!
 }

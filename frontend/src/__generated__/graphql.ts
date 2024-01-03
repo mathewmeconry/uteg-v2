@@ -197,6 +197,7 @@ export type StarterLink = {
   __typename?: 'StarterLink';
   club: Club;
   competition: Competition;
+  egt: Scalars['Int']['output'];
   id: Scalars['ID']['output'];
   starter: Starter;
 };
@@ -276,6 +277,13 @@ export type StarterLinkQueryVariables = Exact<{
 
 
 export type StarterLinkQuery = { __typename?: 'Query', starterLink?: { __typename?: 'StarterLink', id: string, competition: { __typename?: 'Competition', id: string }, starter: { __typename?: 'Starter', id: string, stvID?: string | null, firstname: string, lastname: string, sex: Sex, birthyear: number }, club: { __typename?: 'Club', id: string, name: string } } | null };
+
+export type ModulesQueryVariables = Exact<{
+  competitionID: Scalars['ID']['input'];
+}>;
+
+
+export type ModulesQuery = { __typename?: 'Query', competition: { __typename?: 'Competition', id: string, modules: Array<string> } };
 
 export type CompetitionNameQueryVariables = Exact<{
   id: Scalars['ID']['input'];
@@ -633,6 +641,47 @@ export type StarterLinkQueryHookResult = ReturnType<typeof useStarterLinkQuery>;
 export type StarterLinkLazyQueryHookResult = ReturnType<typeof useStarterLinkLazyQuery>;
 export type StarterLinkSuspenseQueryHookResult = ReturnType<typeof useStarterLinkSuspenseQuery>;
 export type StarterLinkQueryResult = Apollo.QueryResult<StarterLinkQuery, StarterLinkQueryVariables>;
+export const ModulesDocument = gql`
+    query modules($competitionID: ID!) {
+  competition(id: $competitionID) {
+    id
+    modules
+  }
+}
+    `;
+
+/**
+ * __useModulesQuery__
+ *
+ * To run a query within a React component, call `useModulesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useModulesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useModulesQuery({
+ *   variables: {
+ *      competitionID: // value for 'competitionID'
+ *   },
+ * });
+ */
+export function useModulesQuery(baseOptions: Apollo.QueryHookOptions<ModulesQuery, ModulesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ModulesQuery, ModulesQueryVariables>(ModulesDocument, options);
+      }
+export function useModulesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ModulesQuery, ModulesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ModulesQuery, ModulesQueryVariables>(ModulesDocument, options);
+        }
+export function useModulesSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<ModulesQuery, ModulesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<ModulesQuery, ModulesQueryVariables>(ModulesDocument, options);
+        }
+export type ModulesQueryHookResult = ReturnType<typeof useModulesQuery>;
+export type ModulesLazyQueryHookResult = ReturnType<typeof useModulesLazyQuery>;
+export type ModulesSuspenseQueryHookResult = ReturnType<typeof useModulesSuspenseQuery>;
+export type ModulesQueryResult = Apollo.QueryResult<ModulesQuery, ModulesQueryVariables>;
 export const CompetitionNameDocument = gql`
     query competitionName($id: ID!) {
   competition(id: $id) {
