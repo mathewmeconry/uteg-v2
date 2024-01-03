@@ -1,7 +1,14 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql';
-import { Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { EGTDivision } from '../division/egtDivision.entity';
 import { StarterLink } from 'src/base/starterLink/starterLink.entity';
+import { EGTLineup } from '../lineup/egtLineup.entity';
 
 @ObjectType()
 @Entity()
@@ -13,7 +20,10 @@ export class EGTStarterLink {
   @ManyToOne(() => EGTDivision)
   division: Promise<EGTDivision>;
 
-  @OneToOne(() => StarterLink)
+  @OneToOne(() => StarterLink, { onDelete: 'CASCADE' })
   @JoinColumn()
-  starterLink: Promise<StarterLink>
+  starterLink: Promise<StarterLink>;
+
+  @ManyToOne(() => EGTLineup, { nullable: true, onDelete: 'SET NULL' })
+  lineup?: EGTLineup;
 }

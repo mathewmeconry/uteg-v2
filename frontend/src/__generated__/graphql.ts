@@ -51,6 +51,18 @@ export type CreateCompetition = {
   startDate: Scalars['Timestamp']['input'];
 };
 
+export type CreateEgtDivisionInput = {
+  category: Scalars['Int']['input'];
+  competitionID: Scalars['ID']['input'];
+  ground: Scalars['Int']['input'];
+  sex: Sex;
+};
+
+export type CreateEgtStarterLinkInput = {
+  divisionID: Scalars['ID']['input'];
+  starterLinkID: Scalars['ID']['input'];
+};
+
 export type CreateStarterInput = {
   birthyear: Scalars['Int']['input'];
   firstname: Scalars['String']['input'];
@@ -70,6 +82,34 @@ export type CreateUserInput = {
   password: Scalars['String']['input'];
 };
 
+export type EgtDivision = {
+  __typename?: 'EGTDivision';
+  category: Scalars['Int']['output'];
+  ground: Scalars['Int']['output'];
+  id: Scalars['ID']['output'];
+  number: Scalars['Int']['output'];
+  round: Scalars['Int']['output'];
+  sex: Sex;
+  state: EgtDivisionStates;
+};
+
+export type EgtDivisionFilterInput = {
+  category?: InputMaybe<Scalars['Int']['input']>;
+  competitionID: Scalars['ID']['input'];
+  sex?: InputMaybe<Sex>;
+};
+
+export type EgtDivisionStates =
+  | 'ENDED'
+  | 'PENDING'
+  | 'RUNNING';
+
+export type EgtStarterLink = {
+  __typename?: 'EGTStarterLink';
+  division: EgtDivision;
+  id: Scalars['ID']['output'];
+};
+
 export type Grade = {
   __typename?: 'Grade';
   id: Scalars['ID']['output'];
@@ -81,9 +121,12 @@ export type Mutation = {
   __typename?: 'Mutation';
   createClub: Club;
   createCompetition: Competition;
+  createEGTStarterLink: EgtStarterLink;
+  createEgtDivision: EgtDivision;
   createStarter: Starter;
   createStarterLink: StarterLink;
   createUser: User;
+  removeEgtDivision: EgtDivision;
   removeStarterLink: StarterLink;
   updateStarter: Starter;
   updateStarterLink: StarterLink;
@@ -100,6 +143,16 @@ export type MutationCreateCompetitionArgs = {
 };
 
 
+export type MutationCreateEgtStarterLinkArgs = {
+  data: CreateEgtStarterLinkInput;
+};
+
+
+export type MutationCreateEgtDivisionArgs = {
+  data: CreateEgtDivisionInput;
+};
+
+
 export type MutationCreateStarterArgs = {
   data: CreateStarterInput;
 };
@@ -112,6 +165,11 @@ export type MutationCreateStarterLinkArgs = {
 
 export type MutationCreateUserArgs = {
   user: CreateUserInput;
+};
+
+
+export type MutationRemoveEgtDivisionArgs = {
+  id: Scalars['ID']['input'];
 };
 
 
@@ -136,6 +194,7 @@ export type Query = {
   clubs: Array<Club>;
   competition: Competition;
   competitions: Array<Competition>;
+  egtDivisions: Array<EgtDivision>;
   grades: Array<Grade>;
   starterLink?: Maybe<StarterLink>;
   starterLinks: Array<StarterLink>;
@@ -146,6 +205,11 @@ export type Query = {
 
 export type QueryCompetitionArgs = {
   id: Scalars['ID']['input'];
+};
+
+
+export type QueryEgtDivisionsArgs = {
+  filter: EgtDivisionFilterInput;
 };
 
 
@@ -197,7 +261,7 @@ export type StarterLink = {
   __typename?: 'StarterLink';
   club: Club;
   competition: Competition;
-  egt: Scalars['Int']['output'];
+  egt?: Maybe<EgtStarterLink>;
   id: Scalars['ID']['output'];
   starter: Starter;
 };

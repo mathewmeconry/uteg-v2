@@ -3,7 +3,7 @@ import { StarterLink } from 'src/base/starterLink/starterLink.entity';
 import { EGTStarterLink } from '../starterlink/egtStarterLink.entity';
 import { Inject, UseGuards } from '@nestjs/common';
 import { EGTStarterLinkService } from '../starterlink/egtStarterLink.service';
-import { StarterLinkGuard } from './starterLink.guard';
+import { StarterLinkGuard } from './starterLink.guard.extension';
 
 @Resolver(() => StarterLink)
 @UseGuards(StarterLinkGuard)

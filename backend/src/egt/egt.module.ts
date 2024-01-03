@@ -8,11 +8,15 @@ import { BaseModule } from 'src/base/base.module';
 import { EGTDivisionService } from './division/egtDivision.service';
 import { EGTStarterLinkResolver } from './starterlink/egtStarterLink.resolver';
 import { AuthModule } from 'src/auth/auth.module';
+import { EGTLineup } from './lineup/egtLineup.entity';
+import { EGTDivisionResolver } from './division/egtDivision.resolver';
+import { EGTLineupService } from './lineup/egtLineup.service';
+import { EGTLineupResolver } from './lineup/egtLineup.resolver';
 
 @Module({
   imports: [
     AuthModule,
-    TypeOrmModule.forFeature([EGTStarterLink, EGTDivision]),
+    TypeOrmModule.forFeature([EGTStarterLink, EGTDivision, EGTLineup]),
     BaseModule,
   ],
   providers: [
@@ -20,6 +24,9 @@ import { AuthModule } from 'src/auth/auth.module';
     EGTStarterLinkResolver,
     EGTStarterLinkService,
     EGTDivisionService,
+    EGTDivisionResolver,
+    EGTLineupService,
+    EGTLineupResolver,
   ],
 })
 export class EGTModule {}
