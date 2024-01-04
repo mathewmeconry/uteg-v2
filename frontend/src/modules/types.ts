@@ -1,24 +1,23 @@
 import { GridColDef } from "@mui/x-data-grid";
 import { RouteObject } from "react-router-dom";
+import { MenuItem } from "../layouts/competitionlayout";
 
-export interface IModule {
+export type IModule = {
   name: string;
 
-  extensions: 
-
-  getCompetitionRoutes(): RouteObject[]
-  renderMenu(): React.ReactElement[];
-}
+  routes: RouteObject[];
+  menuItems: MenuItem[];
+};
 
 export type ModuleExtensions = {
-  addStarterForm:FormExtension
-}
+  addStarterForm: FormExtension;
+};
 
 export type FormExtension = {
-  components: JSX.Element[],
-  handleSubmit: (data: any) => void
-}
+  components: JSX.Element[];
+  handleSubmit: (data: any) => void;
+};
 
 export type DataGridExtension = {
-  columns: GridColDef[]
-}
+  columns: GridColDef[];
+};

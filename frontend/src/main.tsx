@@ -33,11 +33,10 @@ import { registerModule } from "./hooks/useModules/useModules";
 
 const theme = createTheme();
 
-const egtModule = new EGTModule()
 registerModule({
-  name: 'egt',
-  class: egtModule
-})
+  name: "egt",
+  module: EGTModule,
+});
 
 const routes: RouteObject[] = [
   {
@@ -110,9 +109,9 @@ const routes: RouteObject[] = [
               },
             ],
           },
+          ...EGTModule.routes,
         ],
       },
-      ...egtModule.getCompetitionRoutes()
     ],
   },
 ];

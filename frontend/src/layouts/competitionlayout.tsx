@@ -1,6 +1,6 @@
 import { Fragment, PropsWithChildren, useState } from "react";
 import { useCompetitionNameQuery } from "../__generated__/graphql";
-import { NavLink, Outlet, useParams } from "react-router-dom";
+import { NavLink, Outlet, generatePath, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import {
   Box,
@@ -28,7 +28,7 @@ import UploadFileIcon from "@mui/icons-material/UploadFile";
 import { useModules } from "../hooks/useModules/useModules";
 import { useHomeLayoutContext } from "./homelayout";
 
-type MenuItem = {
+export type MenuItem = {
   icon: React.ReactElement;
   text: string;
   key: string;
@@ -56,41 +56,41 @@ export function CompetitionLayout() {
   const menuItems: MenuItem[] = [
     {
       icon: <DashboardIcon />,
-      text: t("Dashboard"),
+      text: "Dashboard",
       key: "dashboard",
-      to: `/competition/${id}/dashboard`,
+      to: `/competition/:id/dashboard`,
     },
     {
       icon: <PeopleIcon />,
-      text: t("Starters"),
+      text: "Starters",
       key: "starters",
       children: [
         {
           icon: <WomanIcon />,
-          text: t("Female"),
+          text: "Female",
           key: "starters.female",
-          to: `/competition/${id}/starters/female`,
+          to: `/competition/:id/starters/female`,
         },
 
         {
           icon: <ManIcon />,
-          text: t("Male"),
+          text: "Male",
           key: "starters.male",
-          to: `/competition/${id}/starters/male`,
+          to: `/competition/:id/starters/male`,
         },
         {
           icon: <UploadFileIcon />,
-          text: t("Import"),
+          text: "Import",
           key: "starters.import",
-          to: `/competition/${id}/starters/import`,
+          to: `/competition/:id/starters/import`,
         },
       ],
     },
     {
       icon: <SettingsIcon />,
-      text: t("Settings"),
+      text: "Settings",
       key: "settings",
-      to: `/competition/${id}/settings`,
+      to: `/competition/:id/settings`,
     },
   ];
 
@@ -107,14 +107,16 @@ export function CompetitionLayout() {
       return (
         <NavLink
           key={item.key}
-          to={item.to || ""}
+          to={generatePath(item.to, {
+            id,
+          })}
           style={{ textDecoration: "none", color: "inherit" }}
         >
           {({ isActive }) => (
             <ListItem key={item.key} disablePadding>
               <ListItemButton selected={isActive}>
                 <ListItemIcon>{item.icon}</ListItemIcon>
-                <ListItemText primary={item.text}></ListItemText>
+                <ListItemText primary={t(item.text)}></ListItemText>
               </ListItemButton>
             </ListItem>
           )}
@@ -179,7 +181,7 @@ export function CompetitionLayout() {
           {competitionModules.map((module) => (
             <Fragment key={module.name}>
               <Divider>{t(module.name)}</Divider>
-              {module.renderMenu()}
+              {module.menuItems.map((item) => renderMenuItem(item))}
             </Fragment>
           ))}
         </Box>

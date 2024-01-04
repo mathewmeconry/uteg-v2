@@ -85,12 +85,14 @@ export type CreateUserInput = {
 export type EgtDivision = {
   __typename?: 'EGTDivision';
   category: Scalars['Int']['output'];
+  currentRound: Scalars['Int']['output'];
   ground: Scalars['Int']['output'];
   id: Scalars['ID']['output'];
   number: Scalars['Int']['output'];
   round: Scalars['Int']['output'];
   sex: Sex;
   state: EgtDivisionStates;
+  totalRounds: Scalars['Int']['output'];
 };
 
 export type EgtDivisionFilterInput = {
@@ -355,6 +357,34 @@ export type CompetitionNameQueryVariables = Exact<{
 
 
 export type CompetitionNameQuery = { __typename?: 'Query', competition: { __typename?: 'Competition', name: string } };
+
+export type CompetitionGroundsQueryVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type CompetitionGroundsQuery = { __typename?: 'Query', competition: { __typename?: 'Competition', id: string, grounds: number } };
+
+export type CreateEgtDivisionMutationVariables = Exact<{
+  data: CreateEgtDivisionInput;
+}>;
+
+
+export type CreateEgtDivisionMutation = { __typename?: 'Mutation', createEgtDivision: { __typename?: 'EGTDivision', id: string } };
+
+export type EgtDivisionsQueryVariables = Exact<{
+  competitionID: Scalars['ID']['input'];
+}>;
+
+
+export type EgtDivisionsQuery = { __typename?: 'Query', egtDivisions: Array<{ __typename?: 'EGTDivision', id: string, ground: number, state: EgtDivisionStates, round: number, currentRound: number, totalRounds: number, category: number, sex: Sex, number: number }> };
+
+export type RemoveEgtDivisionMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type RemoveEgtDivisionMutation = { __typename?: 'Mutation', removeEgtDivision: { __typename?: 'EGTDivision', id: string } };
 
 export type StarterLinksQueryVariables = Exact<{
   competitionID: Scalars['ID']['input'];
@@ -786,6 +816,161 @@ export type CompetitionNameQueryHookResult = ReturnType<typeof useCompetitionNam
 export type CompetitionNameLazyQueryHookResult = ReturnType<typeof useCompetitionNameLazyQuery>;
 export type CompetitionNameSuspenseQueryHookResult = ReturnType<typeof useCompetitionNameSuspenseQuery>;
 export type CompetitionNameQueryResult = Apollo.QueryResult<CompetitionNameQuery, CompetitionNameQueryVariables>;
+export const CompetitionGroundsDocument = gql`
+    query competitionGrounds($id: ID!) {
+  competition(id: $id) {
+    id
+    grounds
+  }
+}
+    `;
+
+/**
+ * __useCompetitionGroundsQuery__
+ *
+ * To run a query within a React component, call `useCompetitionGroundsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCompetitionGroundsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCompetitionGroundsQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useCompetitionGroundsQuery(baseOptions: Apollo.QueryHookOptions<CompetitionGroundsQuery, CompetitionGroundsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<CompetitionGroundsQuery, CompetitionGroundsQueryVariables>(CompetitionGroundsDocument, options);
+      }
+export function useCompetitionGroundsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CompetitionGroundsQuery, CompetitionGroundsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<CompetitionGroundsQuery, CompetitionGroundsQueryVariables>(CompetitionGroundsDocument, options);
+        }
+export function useCompetitionGroundsSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<CompetitionGroundsQuery, CompetitionGroundsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<CompetitionGroundsQuery, CompetitionGroundsQueryVariables>(CompetitionGroundsDocument, options);
+        }
+export type CompetitionGroundsQueryHookResult = ReturnType<typeof useCompetitionGroundsQuery>;
+export type CompetitionGroundsLazyQueryHookResult = ReturnType<typeof useCompetitionGroundsLazyQuery>;
+export type CompetitionGroundsSuspenseQueryHookResult = ReturnType<typeof useCompetitionGroundsSuspenseQuery>;
+export type CompetitionGroundsQueryResult = Apollo.QueryResult<CompetitionGroundsQuery, CompetitionGroundsQueryVariables>;
+export const CreateEgtDivisionDocument = gql`
+    mutation createEgtDivision($data: CreateEGTDivisionInput!) {
+  createEgtDivision(data: $data) {
+    id
+  }
+}
+    `;
+export type CreateEgtDivisionMutationFn = Apollo.MutationFunction<CreateEgtDivisionMutation, CreateEgtDivisionMutationVariables>;
+
+/**
+ * __useCreateEgtDivisionMutation__
+ *
+ * To run a mutation, you first call `useCreateEgtDivisionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateEgtDivisionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createEgtDivisionMutation, { data, loading, error }] = useCreateEgtDivisionMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useCreateEgtDivisionMutation(baseOptions?: Apollo.MutationHookOptions<CreateEgtDivisionMutation, CreateEgtDivisionMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateEgtDivisionMutation, CreateEgtDivisionMutationVariables>(CreateEgtDivisionDocument, options);
+      }
+export type CreateEgtDivisionMutationHookResult = ReturnType<typeof useCreateEgtDivisionMutation>;
+export type CreateEgtDivisionMutationResult = Apollo.MutationResult<CreateEgtDivisionMutation>;
+export type CreateEgtDivisionMutationOptions = Apollo.BaseMutationOptions<CreateEgtDivisionMutation, CreateEgtDivisionMutationVariables>;
+export const EgtDivisionsDocument = gql`
+    query egtDivisions($competitionID: ID!) {
+  egtDivisions(filter: {competitionID: $competitionID}) {
+    id
+    ground
+    state
+    round
+    currentRound
+    totalRounds
+    category
+    sex
+    number
+  }
+}
+    `;
+
+/**
+ * __useEgtDivisionsQuery__
+ *
+ * To run a query within a React component, call `useEgtDivisionsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useEgtDivisionsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useEgtDivisionsQuery({
+ *   variables: {
+ *      competitionID: // value for 'competitionID'
+ *   },
+ * });
+ */
+export function useEgtDivisionsQuery(baseOptions: Apollo.QueryHookOptions<EgtDivisionsQuery, EgtDivisionsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<EgtDivisionsQuery, EgtDivisionsQueryVariables>(EgtDivisionsDocument, options);
+      }
+export function useEgtDivisionsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<EgtDivisionsQuery, EgtDivisionsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<EgtDivisionsQuery, EgtDivisionsQueryVariables>(EgtDivisionsDocument, options);
+        }
+export function useEgtDivisionsSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<EgtDivisionsQuery, EgtDivisionsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<EgtDivisionsQuery, EgtDivisionsQueryVariables>(EgtDivisionsDocument, options);
+        }
+export type EgtDivisionsQueryHookResult = ReturnType<typeof useEgtDivisionsQuery>;
+export type EgtDivisionsLazyQueryHookResult = ReturnType<typeof useEgtDivisionsLazyQuery>;
+export type EgtDivisionsSuspenseQueryHookResult = ReturnType<typeof useEgtDivisionsSuspenseQuery>;
+export type EgtDivisionsQueryResult = Apollo.QueryResult<EgtDivisionsQuery, EgtDivisionsQueryVariables>;
+export const RemoveEgtDivisionDocument = gql`
+    mutation removeEgtDivision($id: ID!) {
+  removeEgtDivision(id: $id) {
+    id
+  }
+}
+    `;
+export type RemoveEgtDivisionMutationFn = Apollo.MutationFunction<RemoveEgtDivisionMutation, RemoveEgtDivisionMutationVariables>;
+
+/**
+ * __useRemoveEgtDivisionMutation__
+ *
+ * To run a mutation, you first call `useRemoveEgtDivisionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveEgtDivisionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeEgtDivisionMutation, { data, loading, error }] = useRemoveEgtDivisionMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useRemoveEgtDivisionMutation(baseOptions?: Apollo.MutationHookOptions<RemoveEgtDivisionMutation, RemoveEgtDivisionMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RemoveEgtDivisionMutation, RemoveEgtDivisionMutationVariables>(RemoveEgtDivisionDocument, options);
+      }
+export type RemoveEgtDivisionMutationHookResult = ReturnType<typeof useRemoveEgtDivisionMutation>;
+export type RemoveEgtDivisionMutationResult = Apollo.MutationResult<RemoveEgtDivisionMutation>;
+export type RemoveEgtDivisionMutationOptions = Apollo.BaseMutationOptions<RemoveEgtDivisionMutation, RemoveEgtDivisionMutationVariables>;
 export const StarterLinksDocument = gql`
     query starterLinks($competitionID: ID!, $sex: String) {
   starterLinks(competitionID: $competitionID, sex: $sex) {

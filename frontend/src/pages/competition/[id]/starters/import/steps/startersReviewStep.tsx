@@ -60,7 +60,7 @@ export function StartersReviewStep() {
             <TableCell>{t("stvID")}</TableCell>
             <TableCell>{t("firstname")}</TableCell>
             <TableCell
-              sx={{ width: 1 * theme.typography.fontSize }}
+              sx={{ width: theme.typography.fontSize }}
               padding="none"
             >
               <IconButton onClick={() => swapAllFirstLastname()}>

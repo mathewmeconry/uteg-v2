@@ -3,7 +3,7 @@ import { IModule } from "../../modules/types";
 
 export type ModuleRegistration = {
   name: string;
-  class: IModule;
+  hook: IModule;
 };
 
 let registeredModules: ModuleRegistration[] = [];
@@ -24,12 +24,12 @@ export function useModules(competitionID: string): UseModuleReturn {
     loading,
     modules: registeredModules
       .filter((module) => data?.competition.modules.includes(module.name))
-      .map((module) => module.class),
+      .map((module) => module.module),
   };
 }
 
 export function useRegisteredModules(): IModule[] {
-  return registeredModules.map((module) => module.class);
+  return registeredModules.map((module) => module.module);
 }
 
 export function registerModule(registration: ModuleRegistration) {
