@@ -27,7 +27,7 @@ import {
   Typography,
   List,
 } from "@mui/material";
-import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
+import DoneIcon from '@mui/icons-material/Done';
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { CreateDivisionDialog } from "../../dialogs/createDivisionDialog/createDivisionDialog";
@@ -160,7 +160,7 @@ export function Divisionslist() {
               </Box>
             );
           case "ENDED":
-            return <CheckCircleOutlineIcon  style={{ fontSize: "1.7rem" }}/>;
+            return <DoneIcon  style={{ fontSize: "1.7rem" }}/>;
         }
       },
     },
