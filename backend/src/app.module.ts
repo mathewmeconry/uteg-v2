@@ -33,7 +33,6 @@ import { EGTModule } from './egt/egt.module';
       installSubscriptionHandlers: true,
       sortSchema: true,
       playground: true,
-      fieldResolverEnhancers: ['guards'],
       buildSchemaOptions: {
         dateScalarMode: 'timestamp',
         numberScalarMode: 'integer'

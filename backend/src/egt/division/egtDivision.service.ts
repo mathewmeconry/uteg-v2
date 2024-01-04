@@ -36,7 +36,7 @@ export class EGTDivisionService {
       qb.andWhere('division.sex = :sex', { sex: filter.sex });
     }
 
-    return qb.getMany();
+    return qb.orderBy('category', 'ASC').addOrderBy('number', 'ASC').getMany();
   }
 
   async create(division: EGTDivision): Promise<EGTDivision> {
@@ -66,14 +66,9 @@ export class EGTDivisionService {
     }
 
     const cloned = { ...division };
+    const competition = await division.competition;
     await this.egtDivisionRepository.remove(division);
-    await this.renumberDivisions(
-      (
-        await cloned.competition
-      ).id,
-      cloned.category,
-      cloned.sex,
-    );
+    await this.renumberDivisions(competition.id, cloned.category, cloned.sex);
     return cloned;
   }
 
@@ -113,7 +108,7 @@ export class EGTDivisionService {
       .getMany();
 
     for (let i = 1; i < divisions.length + 1; i++) {
-      divisions[i].number = i;
+      divisions[i - 1].number = i;
     }
 
     await this.egtDivisionRepository.save(divisions);

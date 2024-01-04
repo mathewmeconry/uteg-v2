@@ -25,16 +25,15 @@ export class EGTDivisionGuard implements CanActivate {
       return true;
     }
 
-    if (args.data.competitionID) {
+    if (args.data && args.data.competitionID) {
       ctx.getContext().competition = args.data.competitionID;
       return true;
     }
 
-    if (args.filter.competitionID) {
-      ctx.getContext().competition = args.data.competitionID;
+    if (args.filter && args.filter.competitionID) {
+      ctx.getContext().competition = args.filter.competitionID;
       return true;
     }
-
 
     return false;
   }

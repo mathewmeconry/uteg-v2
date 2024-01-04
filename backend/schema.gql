@@ -65,12 +65,14 @@ input CreateUserInput {
 
 type EGTDivision {
   category: Int!
+  currentRound: Int!
   ground: Int!
   id: ID!
   number: Int!
   round: Int!
   sex: Sex!
   state: EGTDivisionStates!
+  totalRounds: Int!
 }
 
 input EGTDivisionFilterInput {

@@ -26,12 +26,16 @@ export class EGTDivision {
   competition: Promise<Competition>;
 
   @Field(() => EGTDivisionStates)
-  @Column()
+  @Column({ default: EGTDivisionStates.PENDING })
   state: EGTDivisionStates;
 
   @Field(() => Int)
   @Column({ default: 0 })
   round: number;
+
+  @Field(() => Int)
+  @Column({ default: 0 })
+  currentRound: number;
 
   @OneToMany(() => EGTLineup, (lineup) => lineup.division)
   lineups: EGTLineup[];
@@ -48,5 +52,5 @@ export class EGTDivision {
   // starting with 1 for ease in the frontend
   @Field(() => Int)
   @Column()
-  number: number; 
+  number: number;
 }

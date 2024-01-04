@@ -1,4 +1,13 @@
-import { Args, Resolver, Query, Mutation, ID } from '@nestjs/graphql';
+import {
+  Args,
+  Resolver,
+  Query,
+  Mutation,
+  ID,
+  ResolveField,
+  Int,
+  Parent,
+} from '@nestjs/graphql';
 import { EGTDivision } from './egtDivision.entity';
 import { Inject, NotFoundException, UseGuards } from '@nestjs/common';
 import { RoleGuard } from 'src/auth/guards/role.guard';
@@ -11,6 +20,7 @@ import {
 } from './egtDivision.types';
 import { EGTDivisionService } from './egtDivision.service';
 import { CompetitionService } from 'src/base/competition/competition.service';
+import { SEX } from 'src/base/starter/starter.types';
 
 @Resolver(() => EGTDivision)
 @UseGuards(EGTDivisionGuard, RoleGuard)
@@ -54,5 +64,17 @@ export class EGTDivisionResolver {
   @Mutation(() => EGTDivision, { name: 'removeEgtDivision' })
   remove(@Args('id', { type: () => ID }) id: number): Promise<EGTDivision> {
     return this.egtDivisionService.remove(id);
+  }
+
+  @ResolveField(() => Int)
+  totalRounds(@Parent() division: EGTDivision): number {
+    switch (division.sex) {
+      case SEX.MALE:
+        return 5;
+      case SEX.FEMALE:
+        return 4;
+      default:
+        return 0;
+    }
   }
 }
