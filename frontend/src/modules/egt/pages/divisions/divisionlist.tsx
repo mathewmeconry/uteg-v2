@@ -27,7 +27,7 @@ import {
   Typography,
   List,
 } from "@mui/material";
-import DoneIcon from '@mui/icons-material/Done';
+import DoneIcon from "@mui/icons-material/Done";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { CreateDivisionDialog } from "../../dialogs/createDivisionDialog/createDivisionDialog";
@@ -82,7 +82,7 @@ export function Divisionslist() {
           },
         });
       }
-      enqueueSnackbar(t("Starters unlinked"), { variant: "success" });
+      enqueueSnackbar(t("Division deleted"), { variant: "success" });
     } catch (e) {
       if (e instanceof ApolloError) {
         enqueueSnackbar(t(e.message), { variant: "error" });
@@ -160,7 +160,7 @@ export function Divisionslist() {
               </Box>
             );
           case "ENDED":
-            return <DoneIcon  style={{ fontSize: "1.7rem" }}/>;
+            return <DoneIcon style={{ fontSize: "1.7rem" }} />;
         }
       },
     },

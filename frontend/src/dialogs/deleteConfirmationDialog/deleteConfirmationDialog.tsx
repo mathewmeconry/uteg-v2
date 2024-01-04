@@ -7,7 +7,6 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import { t } from "i18next";
 import { PropsWithChildren } from "react";
 import { useTranslation } from "react-i18next";
 
