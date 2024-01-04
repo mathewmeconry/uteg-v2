@@ -28,6 +28,7 @@ import {
   ClubInput,
   FormClubAutocomplete,
 } from "../../components/form/FormClubAutocomplete";
+import { FormSexSelect } from "../../components/form/FormSexSelect";
 
 export type CreateStarterForm = {
   stvID?: string;
@@ -308,14 +309,7 @@ export function CreateStarterDialog(props: {
                 renderOption={renderStarterOption}
               />
               <FormTextInput name="birthyear" rules={{ required: true }} />
-              <FormTextInput
-                name="sex"
-                rules={{ required: true }}
-                fieldProps={{ select: true }}
-              >
-                <MenuItem value="MALE">{t("Male")}</MenuItem>
-                <MenuItem value="FEMALE">{t("Female")}</MenuItem>
-              </FormTextInput>
+              <FormSexSelect />
               <FormClubAutocomplete rules={{ required: true }} />
             </DialogContent>
             <DialogActions>

@@ -6,7 +6,7 @@ import {
 } from "@mui/material";
 import { useState, useMemo } from "react";
 import { useClubsLazyQuery } from "../../__generated__/graphql";
-import { CreateClubDialog } from "../../dialogs/createClub/createClubDialog";
+import { CreateClubDialog } from "../../dialogs/createClubDialog/createClubDialog";
 import {
   FieldValues,
   RegisterOptions,
