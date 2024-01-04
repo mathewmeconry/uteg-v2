@@ -21,6 +21,8 @@ import {
 import { EGTDivisionService } from './egtDivision.service';
 import { CompetitionService } from 'src/base/competition/competition.service';
 import { SEX } from 'src/base/starter/starter.types';
+import { StarterLink } from 'src/base/starterLink/starterLink.entity';
+import { EGTStarterLink } from '../starterlink/egtStarterLink.entity';
 
 @Resolver(() => EGTDivision)
 @UseGuards(EGTDivisionGuard, RoleGuard)
@@ -68,13 +70,21 @@ export class EGTDivisionResolver {
 
   @ResolveField(() => Int)
   totalRounds(@Parent() division: EGTDivision): number {
-    switch (division.sex) {
-      case SEX.MALE:
-        return 5;
-      case SEX.FEMALE:
-        return 4;
-      default:
-        return 0;
+    return division.totalRounds;
+  }
+
+  @ResolveField(() => StarterLink)
+  async starters(@Parent() division: EGTDivision): Promise<StarterLink[]> {
+    const lineups = await division.lineups;
+    let egtStarterLinks: EGTStarterLink[] = [];
+    for (const lineup of lineups) {
+      egtStarterLinks = egtStarterLinks.concat(await lineup.starterlinks);
     }
+
+    return Promise.all(
+      egtStarterLinks.map(
+        async (egtStarterLink) => await egtStarterLink.starterLink,
+      ),
+    );
   }
 }

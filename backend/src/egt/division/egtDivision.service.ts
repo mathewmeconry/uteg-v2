@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -8,11 +9,16 @@ import { EGTDivision } from './egtDivision.entity';
 import { Repository } from 'typeorm';
 import { SEX } from 'src/base/starter/starter.types';
 import { EGTDivisionFilterInput } from './egtDivision.types';
+import { EGTLineup } from '../lineup/egtLineup.entity';
+import { EGTLineupService } from '../lineup/egtLineup.service';
 
 @Injectable()
 export class EGTDivisionService {
   @InjectRepository(EGTDivision)
   private egtDivisionRepository: Repository<EGTDivision>;
+
+  @Inject()
+  private egtLineupService: EGTLineupService;
 
   findOne(id: number): Promise<EGTDivision | null> {
     return this.egtDivisionRepository.findOneBy({ id });
@@ -56,7 +62,19 @@ export class EGTDivisionService {
       division.sex,
     );
 
-    return this.egtDivisionRepository.save(division);
+    division = await this.egtDivisionRepository.save(division);
+
+    // create lineups for division
+    const promises = [];
+    for (let i = 1; i <= division.totalRounds; i++) {
+      const lineup = new EGTLineup();
+      lineup.division = Promise.resolve(division);
+      lineup.device = i;
+      promises.push(await this.egtLineupService.create(lineup));
+    }
+    await Promise.all(promises);
+
+    return division;
   }
 
   async remove(id: number): Promise<EGTDivision> {
@@ -65,7 +83,7 @@ export class EGTDivisionService {
       throw new NotFoundException();
     }
 
-    const cloned = { ...division };
+    const cloned = Object.assign(new EGTDivision(), division);
     const competition = await division.competition;
     await this.egtDivisionRepository.remove(division);
     await this.renumberDivisions(competition.id, cloned.category, cloned.sex);

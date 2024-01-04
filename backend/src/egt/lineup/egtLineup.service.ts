@@ -19,4 +19,8 @@ export class EGTLineupService {
       .where('division.id = :divisionID', { divisionID })
       .getMany();
   }
+
+  create(lineup: EGTLineup): Promise<EGTLineup> {
+    return this.egtLineupRepository.save(lineup);
+  }
 }

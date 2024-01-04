@@ -17,10 +17,10 @@ export class EGTLineup {
   id: number;
 
   @ManyToOne(() => EGTDivision, { onDelete: 'CASCADE' })
-  division: EGTDivision;
+  division: Promise<EGTDivision>;
 
   @OneToMany(() => EGTStarterLink, (starterLink) => starterLink.lineup)
-  starterlinks: EGTStarterLink[];
+  starterlinks: Promise<EGTStarterLink[]>;
 
   @Field(() => ID)
   @Column()

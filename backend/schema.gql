@@ -71,6 +71,7 @@ type EGTDivision {
   number: Int!
   round: Int!
   sex: Sex!
+  starters: StarterLink!
   state: EGTDivisionStates!
   totalRounds: Int!
 }

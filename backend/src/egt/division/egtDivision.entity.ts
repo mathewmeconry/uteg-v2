@@ -38,7 +38,7 @@ export class EGTDivision {
   currentRound: number;
 
   @OneToMany(() => EGTLineup, (lineup) => lineup.division)
-  lineups: EGTLineup[];
+  lineups: Promise<EGTLineup[]>;
 
   @Field(() => Int)
   @Column()
@@ -53,4 +53,15 @@ export class EGTDivision {
   @Field(() => Int)
   @Column()
   number: number;
+
+  get totalRounds(): number {
+    switch (this.sex) {
+      case SEX.MALE:
+        return 5;
+      case SEX.FEMALE:
+        return 4;
+      default:
+        return 0;
+    }
+  }
 }

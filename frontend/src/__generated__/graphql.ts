@@ -91,6 +91,7 @@ export type EgtDivision = {
   number: Scalars['Int']['output'];
   round: Scalars['Int']['output'];
   sex: Sex;
+  starters: StarterLink;
   state: EgtDivisionStates;
   totalRounds: Scalars['Int']['output'];
 };
