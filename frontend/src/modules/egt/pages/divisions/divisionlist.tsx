@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   EgtDivision,
   EgtDivisionStates,
@@ -30,6 +30,7 @@ import {
 import DoneIcon from "@mui/icons-material/Done";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import GroupsIcon from "@mui/icons-material/Groups";
 import { CreateDivisionDialog } from "../../dialogs/createDivisionDialog/createDivisionDialog";
 import { DeleteConfirmationDialog } from "../../../../dialogs/deleteConfirmationDialog/deleteConfirmationDialog";
 import { ApolloError } from "@apollo/client";
@@ -37,6 +38,7 @@ import { ApolloError } from "@apollo/client";
 export function Divisionslist() {
   const { id } = useParams();
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [openDialog, setOpenDialog] = useState("");
   const [toDeleteDivisions, setToDeleteDivisions] = useState<EgtDivision[]>([]);
   const [removeDivision] = useRemoveEgtDivisionMutation();
@@ -186,6 +188,15 @@ export function Divisionslist() {
         className="textPrimary"
         onClick={onEdit()}
         color="inherit"
+      />,
+      <GridActionsCellItem
+        icon={<GroupsIcon />}
+        label="Lineup"
+        className="textPrimary"
+        color="inherit"
+        onClick={() =>
+          navigate(`/competition/${id}/egt/division/${division.id}/lineup`)
+        }
       />,
       <GridActionsCellItem
         icon={<DeleteIcon />}

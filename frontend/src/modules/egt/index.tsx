@@ -2,6 +2,7 @@ import { IModule } from "../types";
 import { RouteObject } from "react-router-dom";
 import { Divisionslist } from "./pages/divisions/divisionlist";
 import AccountTreeIcon from "@mui/icons-material/AccountTree";
+import { Lineup } from "./pages/divisions/[id]/lineup/lineup";
 
 const routes: RouteObject[] = [
   {
@@ -10,6 +11,20 @@ const routes: RouteObject[] = [
       {
         path: "divisions",
         element: <Divisionslist />,
+      },
+      {
+        path: "division",
+        children: [
+          {
+            path: ":id",
+            children: [
+              {
+                path: "lineup",
+                element: <Lineup />,
+              },
+            ],
+          },
+        ],
       },
     ],
   },
