@@ -65,12 +65,14 @@ export function UpdateStarterDialog(props: UpdateStarterDialogProps) {
     mode: "onChange",
     shouldFocusError: true,
     resetOptions: {
-        keepTouched: false
-    }
+      keepTouched: false,
+    },
   });
 
   useEffect(() => {
-    fetchStarterLink();
+    if (props.linkID) {
+      fetchStarterLink();
+    }
   }, [props.linkID]);
 
   useEffect(() => {
