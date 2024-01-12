@@ -1,7 +1,9 @@
 import {
   Args,
+  ID,
   Mutation,
   Parent,
+  Query,
   ResolveField,
   Resolver,
 } from '@nestjs/graphql';
@@ -15,7 +17,7 @@ import { EGTDivisionService } from '../division/egtDivision.service';
 import { StarterLinkService } from 'src/base/starterLink/starterLink.service';
 import { Role } from 'src/auth/decorators/role.decorator';
 import { ROLES } from 'src/auth/types';
-import { CreateEGTStarterLinkInput } from './egtStarterLink.types';
+import { EGTStarterLinkInput } from './egtStarterLink.types';
 
 @Resolver(() => EGTStarterLink)
 @UseGuards(EGTStarterLinkGuard, RoleGuard)
@@ -28,21 +30,49 @@ export class EGTStarterLinkResolver {
   @Inject()
   private starterLinkService: StarterLinkService;
 
+  @Role(ROLES.VIEWER)
+  @Query(() => EGTStarterLink, { nullable: true, name: 'egtStarterLink' })
+  async egtStarterLink(
+    @Args('id', { type: () => ID, nullable: true }) id: number,
+    @Args('starterLinkID', { type: () => ID, nullable: true })
+    starterLinkID: number,
+  ): Promise<EGTStarterLink | null> {
+    if (id) {
+      return this.egtStarterLinkService.findOne(id);
+    }
+    return this.egtStarterLinkService.findByStarterLink(starterLinkID);
+  }
+
   @Role(ROLES.ADMIN)
-  @Mutation(() => EGTStarterLink, { name: 'createEGTStarterLink' })
+  @Mutation(() => EGTStarterLink, { name: 'egtStarterLink' })
   async create(
-    @Args('data') linkData: CreateEGTStarterLinkInput,
+    @Args('data') linkData: EGTStarterLinkInput,
   ): Promise<EGTStarterLink> {
-    const link = new EGTStarterLink();
-    link.division = Promise.resolve(
-      await this.egtDivisionService.findOne(linkData.divisionID),
+    let link = await this.egtStarterLinkService.findByStarterLink(
+      linkData.starterLinkID,
     );
 
-    link.starterLink = Promise.resolve(
-      await this.starterLinkService.findOne(linkData.starterLinkID),
-    );
+    if (!link) {
+      link = new EGTStarterLink();
+    }
 
-    return this.egtStarterLinkService.create(link);
+    if (linkData.divisionID) {
+      link.division = Promise.resolve(
+        await this.egtDivisionService.findOne(linkData.divisionID),
+      );
+    }
+
+    if (linkData.category) {
+      link.category = linkData.category;
+    }
+
+    if (!(await link.starterLink)) {
+      link.starterLink = Promise.resolve(
+        await this.starterLinkService.findOne(linkData.starterLinkID),
+      );
+    }
+
+    return this.egtStarterLinkService.save(link);
   }
 
   @ResolveField(() => EGTDivision)

@@ -24,6 +24,8 @@ import {
 import { FormTextInput } from "../../components/form/FormTextInput";
 import { enqueueSnackbar } from "notistack";
 import { ApolloError } from "@apollo/client";
+import { useParams } from "react-router-dom";
+import { ModuleExtensions } from "../../components/moduleExtension";
 
 export type UpdateStarterDialogProps = {
   linkID: string;
@@ -31,7 +33,8 @@ export type UpdateStarterDialogProps = {
   onClose: () => void;
 };
 
-type UpdateStarterForm = {
+export type UpdateStarterForm = {
+  id: string;
   stvID?: string | null;
   firstname: string;
   lastname: string;
@@ -42,6 +45,7 @@ type UpdateStarterForm = {
 
 export function UpdateStarterDialog(props: UpdateStarterDialogProps) {
   const { t } = useTranslation();
+  const { id } = useParams();
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
   const [updateStarterMutation] = useUpdateStarterMutation();
@@ -55,6 +59,7 @@ export function UpdateStarterDialog(props: UpdateStarterDialogProps) {
   );
   const form = useForm<UpdateStarterForm>({
     defaultValues: {
+      id: props.linkID,
       stvID: "",
       firstname: "",
       lastname: "",
@@ -77,6 +82,7 @@ export function UpdateStarterDialog(props: UpdateStarterDialogProps) {
 
   useEffect(() => {
     if (starterLinkData?.starterLink) {
+      form.setValue("id", props.linkID);
       form.setValue("stvID", starterLinkData.starterLink.starter.stvID);
       form.setValue("firstname", starterLinkData.starterLink.starter.firstname);
       form.setValue("lastname", starterLinkData.starterLink.starter.lastname);
@@ -117,7 +123,7 @@ export function UpdateStarterDialog(props: UpdateStarterDialogProps) {
               birthyear: parseInt(data.birthyear.toString()),
               sex: data.sex,
             },
-          },
+          }
         });
         enqueueSnackbar(t("Starter updated"), { variant: "success" });
       } catch (e) {
@@ -174,7 +180,7 @@ export function UpdateStarterDialog(props: UpdateStarterDialogProps) {
     >
       <DialogTitle>{t("Update Starter")}</DialogTitle>
 
-      <FormProvider control={form.control}>
+      <FormProvider {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <DialogContent sx={{ mt: 2 }}>
             <FormTextInput name="stvID" rules={{ required: false }} />
@@ -194,6 +200,10 @@ export function UpdateStarterDialog(props: UpdateStarterDialogProps) {
               <MenuItem value="FEMALE">{t("Female")}</MenuItem>
             </FormTextInput>
             <FormClubAutocomplete rules={{ required: true }} />
+            <ModuleExtensions
+              extensionName="updateStarterForm"
+              competitionId={id || ""}
+            />
           </DialogContent>
           <DialogActions>
             <Button onClick={handleCancel}>{t("Cancel")}</Button>

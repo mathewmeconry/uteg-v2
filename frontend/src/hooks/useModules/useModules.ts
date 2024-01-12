@@ -1,19 +1,26 @@
 import { useModulesQuery } from "../../__generated__/graphql";
-import { IModule } from "../../modules/types";
+import { Module } from "../../modules/types";
 
 export type ModuleRegistration = {
   name: string;
-  hook: IModule;
+  hook: Module;
 };
 
 let registeredModules: ModuleRegistration[] = [];
 
 export type UseModuleReturn = {
   loading: boolean;
-  modules: IModule[];
+  modules: Module[];
 };
 
 export function useModules(competitionID: string): UseModuleReturn {
+  if (!competitionID) {
+    return {
+      loading: false,
+      modules: [],
+    };
+  }
+
   const { data, loading } = useModulesQuery({
     variables: {
       competitionID,
@@ -28,7 +35,7 @@ export function useModules(competitionID: string): UseModuleReturn {
   };
 }
 
-export function useRegisteredModules(): IModule[] {
+export function useRegisteredModules(): Module[] {
   return registeredModules.map((module) => module.module);
 }
 

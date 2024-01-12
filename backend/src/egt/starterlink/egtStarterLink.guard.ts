@@ -41,12 +41,16 @@ export class EGTStarterLinkGuard implements CanActivate {
       const starterLinkExtension = await this.egtStarterLinkService.findOne(
         args.id,
       );
-      starterLinkID = (await starterLinkExtension.starterLink).id;
+      if (starterLinkExtension) {
+        starterLinkID = (await starterLinkExtension.starterLink).id;
+      }
     }
 
     const starterLink = await this.starterLinkService.findOne(starterLinkID);
 
-    ctx.getContext().competition = (await starterLink.competition).id;
+    if (starterLink) {
+      ctx.getContext().competition = (await starterLink.competition).id;
+    }
     return true;
   }
 }

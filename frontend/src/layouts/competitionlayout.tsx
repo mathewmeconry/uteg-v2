@@ -1,4 +1,4 @@
-import { Fragment, PropsWithChildren, useState } from "react";
+import { Fragment, useState } from "react";
 import { useCompetitionNameQuery } from "../__generated__/graphql";
 import { NavLink, Outlet, generatePath, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";

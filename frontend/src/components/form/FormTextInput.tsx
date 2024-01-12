@@ -11,6 +11,7 @@ import { useTranslation } from "react-i18next";
 export type FormTextInputProps = PropsWithChildren & {
   name: string;
   fieldProps?: TextFieldProps;
+  defaultValue?: string;
   rules:
     | Omit<
         RegisterOptions<FieldValues, any>,
@@ -29,6 +30,7 @@ export function FormTextInput(props: FormTextInputProps) {
     name: props.name,
     control: formControl,
     rules: props.rules,
+    defaultValue: props.defaultValue,
   });
 
   return (

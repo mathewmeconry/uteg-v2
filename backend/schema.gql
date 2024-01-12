@@ -39,11 +39,6 @@ input CreateEGTDivisionInput {
   sex: Sex!
 }
 
-input CreateEGTStarterLinkInput {
-  divisionID: ID!
-  starterLinkID: ID!
-}
-
 input CreateStarterInput {
   birthyear: Int!
   firstname: String!
@@ -89,8 +84,15 @@ enum EGTDivisionStates {
 }
 
 type EGTStarterLink {
+  category: Int
   division: EGTDivision!
   id: ID!
+}
+
+input EGTStarterLinkInput {
+  category: Int
+  divisionID: ID
+  starterLinkID: ID!
 }
 
 type Grade {
@@ -102,11 +104,11 @@ type Grade {
 type Mutation {
   createClub(data: CreateClubInput!): Club!
   createCompetition(competition: CreateCompetition!): Competition!
-  createEGTStarterLink(data: CreateEGTStarterLinkInput!): EGTStarterLink!
   createEgtDivision(data: CreateEGTDivisionInput!): EGTDivision!
   createStarter(data: CreateStarterInput!): Starter!
   createStarterLink(data: CreateStarterLinkInput!): StarterLink!
   createUser(user: CreateUserInput!): User!
+  egtStarterLink(data: EGTStarterLinkInput!): EGTStarterLink!
   removeEgtDivision(id: ID!): EGTDivision!
   removeStarterLink(id: ID!): StarterLink!
   updateStarter(data: UpdateStarterInput!, id: ID!): Starter!
@@ -118,6 +120,7 @@ type Query {
   competition(id: ID!): Competition!
   competitions: [Competition!]!
   egtDivisions(filter: EGTDivisionFilterInput!): [EGTDivision!]!
+  egtStarterLink(id: ID, starterLinkID: ID): EGTStarterLink
   grades: [Grade!]!
   starterLink(id: ID!): StarterLink
   starterLinks(competitionID: ID!, sex: String): [StarterLink!]!

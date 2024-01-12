@@ -1,5 +1,6 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql';
 import {
+  Column,
   Entity,
   JoinColumn,
   ManyToOne,
@@ -26,4 +27,8 @@ export class EGTStarterLink {
 
   @ManyToOne(() => EGTLineup, { nullable: true, onDelete: 'SET NULL' })
   lineup?: EGTLineup;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  category?: number;
 }

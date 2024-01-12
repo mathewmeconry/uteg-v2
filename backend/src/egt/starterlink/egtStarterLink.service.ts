@@ -21,18 +21,7 @@ export class EGTStarterLinkService {
       .getOne();
   }
 
-  async create(starterLink: EGTStarterLink): Promise<EGTStarterLink> {
-    const alreadyExisting = await this.egtStarterLinkRepository.findOne({
-      where: {
-        starterLink: {
-          id: (await starterLink.starterLink).id,
-        },
-      },
-    });
-    if (alreadyExisting) {
-      throw new AlreadyExistingException();
-    }
-
+  async save(starterLink: EGTStarterLink): Promise<EGTStarterLink> {
     return this.egtStarterLinkRepository.save(starterLink);
   }
 }

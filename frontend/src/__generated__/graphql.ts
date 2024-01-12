@@ -58,11 +58,6 @@ export type CreateEgtDivisionInput = {
   sex: Sex;
 };
 
-export type CreateEgtStarterLinkInput = {
-  divisionID: Scalars['ID']['input'];
-  starterLinkID: Scalars['ID']['input'];
-};
-
 export type CreateStarterInput = {
   birthyear: Scalars['Int']['input'];
   firstname: Scalars['String']['input'];
@@ -109,8 +104,15 @@ export type EgtDivisionStates =
 
 export type EgtStarterLink = {
   __typename?: 'EGTStarterLink';
+  category?: Maybe<Scalars['Int']['output']>;
   division: EgtDivision;
   id: Scalars['ID']['output'];
+};
+
+export type EgtStarterLinkInput = {
+  category?: InputMaybe<Scalars['Int']['input']>;
+  divisionID?: InputMaybe<Scalars['ID']['input']>;
+  starterLinkID: Scalars['ID']['input'];
 };
 
 export type Grade = {
@@ -124,11 +126,11 @@ export type Mutation = {
   __typename?: 'Mutation';
   createClub: Club;
   createCompetition: Competition;
-  createEGTStarterLink: EgtStarterLink;
   createEgtDivision: EgtDivision;
   createStarter: Starter;
   createStarterLink: StarterLink;
   createUser: User;
+  egtStarterLink: EgtStarterLink;
   removeEgtDivision: EgtDivision;
   removeStarterLink: StarterLink;
   updateStarter: Starter;
@@ -143,11 +145,6 @@ export type MutationCreateClubArgs = {
 
 export type MutationCreateCompetitionArgs = {
   competition: CreateCompetition;
-};
-
-
-export type MutationCreateEgtStarterLinkArgs = {
-  data: CreateEgtStarterLinkInput;
 };
 
 
@@ -168,6 +165,11 @@ export type MutationCreateStarterLinkArgs = {
 
 export type MutationCreateUserArgs = {
   user: CreateUserInput;
+};
+
+
+export type MutationEgtStarterLinkArgs = {
+  data: EgtStarterLinkInput;
 };
 
 
@@ -198,6 +200,7 @@ export type Query = {
   competition: Competition;
   competitions: Array<Competition>;
   egtDivisions: Array<EgtDivision>;
+  egtStarterLink?: Maybe<EgtStarterLink>;
   grades: Array<Grade>;
   starterLink?: Maybe<StarterLink>;
   starterLinks: Array<StarterLink>;
@@ -213,6 +216,12 @@ export type QueryCompetitionArgs = {
 
 export type QueryEgtDivisionsArgs = {
   filter: EgtDivisionFilterInput;
+};
+
+
+export type QueryEgtStarterLinkArgs = {
+  id?: InputMaybe<Scalars['ID']['input']>;
+  starterLinkID?: InputMaybe<Scalars['ID']['input']>;
 };
 
 
@@ -372,6 +381,21 @@ export type CreateEgtDivisionMutationVariables = Exact<{
 
 
 export type CreateEgtDivisionMutation = { __typename?: 'Mutation', createEgtDivision: { __typename?: 'EGTDivision', id: string } };
+
+export type EgtStarterLinkMutationMutationVariables = Exact<{
+  data: EgtStarterLinkInput;
+}>;
+
+
+export type EgtStarterLinkMutationMutation = { __typename?: 'Mutation', egtStarterLink: { __typename?: 'EGTStarterLink', id: string, category?: number | null } };
+
+export type EgtStarterLinkQueryVariables = Exact<{
+  id?: InputMaybe<Scalars['ID']['input']>;
+  starterLinkID?: InputMaybe<Scalars['ID']['input']>;
+}>;
+
+
+export type EgtStarterLinkQuery = { __typename?: 'Query', egtStarterLink?: { __typename?: 'EGTStarterLink', id: string, category?: number | null } | null };
 
 export type EgtDivisionsQueryVariables = Exact<{
   competitionID: Scalars['ID']['input'];
@@ -891,6 +915,82 @@ export function useCreateEgtDivisionMutation(baseOptions?: Apollo.MutationHookOp
 export type CreateEgtDivisionMutationHookResult = ReturnType<typeof useCreateEgtDivisionMutation>;
 export type CreateEgtDivisionMutationResult = Apollo.MutationResult<CreateEgtDivisionMutation>;
 export type CreateEgtDivisionMutationOptions = Apollo.BaseMutationOptions<CreateEgtDivisionMutation, CreateEgtDivisionMutationVariables>;
+export const EgtStarterLinkMutationDocument = gql`
+    mutation egtStarterLinkMutation($data: EGTStarterLinkInput!) {
+  egtStarterLink(data: $data) {
+    id
+    category
+  }
+}
+    `;
+export type EgtStarterLinkMutationMutationFn = Apollo.MutationFunction<EgtStarterLinkMutationMutation, EgtStarterLinkMutationMutationVariables>;
+
+/**
+ * __useEgtStarterLinkMutationMutation__
+ *
+ * To run a mutation, you first call `useEgtStarterLinkMutationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useEgtStarterLinkMutationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [egtStarterLinkMutationMutation, { data, loading, error }] = useEgtStarterLinkMutationMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useEgtStarterLinkMutationMutation(baseOptions?: Apollo.MutationHookOptions<EgtStarterLinkMutationMutation, EgtStarterLinkMutationMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<EgtStarterLinkMutationMutation, EgtStarterLinkMutationMutationVariables>(EgtStarterLinkMutationDocument, options);
+      }
+export type EgtStarterLinkMutationMutationHookResult = ReturnType<typeof useEgtStarterLinkMutationMutation>;
+export type EgtStarterLinkMutationMutationResult = Apollo.MutationResult<EgtStarterLinkMutationMutation>;
+export type EgtStarterLinkMutationMutationOptions = Apollo.BaseMutationOptions<EgtStarterLinkMutationMutation, EgtStarterLinkMutationMutationVariables>;
+export const EgtStarterLinkDocument = gql`
+    query egtStarterLink($id: ID, $starterLinkID: ID) {
+  egtStarterLink(id: $id, starterLinkID: $starterLinkID) {
+    id
+    category
+  }
+}
+    `;
+
+/**
+ * __useEgtStarterLinkQuery__
+ *
+ * To run a query within a React component, call `useEgtStarterLinkQuery` and pass it any options that fit your needs.
+ * When your component renders, `useEgtStarterLinkQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useEgtStarterLinkQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *      starterLinkID: // value for 'starterLinkID'
+ *   },
+ * });
+ */
+export function useEgtStarterLinkQuery(baseOptions?: Apollo.QueryHookOptions<EgtStarterLinkQuery, EgtStarterLinkQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<EgtStarterLinkQuery, EgtStarterLinkQueryVariables>(EgtStarterLinkDocument, options);
+      }
+export function useEgtStarterLinkLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<EgtStarterLinkQuery, EgtStarterLinkQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<EgtStarterLinkQuery, EgtStarterLinkQueryVariables>(EgtStarterLinkDocument, options);
+        }
+export function useEgtStarterLinkSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<EgtStarterLinkQuery, EgtStarterLinkQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<EgtStarterLinkQuery, EgtStarterLinkQueryVariables>(EgtStarterLinkDocument, options);
+        }
+export type EgtStarterLinkQueryHookResult = ReturnType<typeof useEgtStarterLinkQuery>;
+export type EgtStarterLinkLazyQueryHookResult = ReturnType<typeof useEgtStarterLinkLazyQuery>;
+export type EgtStarterLinkSuspenseQueryHookResult = ReturnType<typeof useEgtStarterLinkSuspenseQuery>;
+export type EgtStarterLinkQueryResult = Apollo.QueryResult<EgtStarterLinkQuery, EgtStarterLinkQueryVariables>;
 export const EgtDivisionsDocument = gql`
     query egtDivisions($competitionID: ID!) {
   egtDivisions(filter: {competitionID: $competitionID}) {
