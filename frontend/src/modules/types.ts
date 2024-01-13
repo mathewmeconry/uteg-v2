@@ -1,4 +1,4 @@
-import { GridColDef } from "@mui/x-data-grid";
+import { GridActionsColDef, GridColDef } from "@mui/x-data-grid";
 import { RouteObject } from "react-router-dom";
 import { MenuItem } from "../layouts/competitionlayout";
 import { SheetRow } from "../pages/competition/[id]/starters/import/processImport";
@@ -6,6 +6,7 @@ import { StartersReviewStepRowProps } from "../pages/competition/[id]/starters/i
 import { StarterLink } from "../__generated__/graphql";
 import { Dispatch, SetStateAction } from "react";
 import { ImportFailure } from "../pages/competition/[id]/starters/import/steps/importStep";
+import { DocumentTransform } from "@apollo/client";
 
 export type Module = {
   name: string;
@@ -14,6 +15,7 @@ export type Module = {
   menuItems: MenuItem[];
   extensions: ModuleExtensions;
   handlers: ModuleHandlers;
+  transformers: ModuleTransformers;
 };
 
 export type ParseStarterFromSheetHandler = (starters: SheetRow) => Object;
@@ -34,10 +36,9 @@ export type ModuleExtensions = {
   updateStarterForm?: JSX.Element;
   startersReviewStepRow?: (props: StartersReviewStepRowProps) => JSX.Element;
   startersReviewStepHeader?: JSX.Element;
+  starterslistColumns?: Array<GridColDef | GridActionsColDef>
 };
 
-export type SubmitHandler = (data: any) => void;
-
-export type DataGridExtension = {
-  columns: GridColDef[];
+export type ModuleTransformers = {
+  starterLinksQuery?: DocumentTransform
 };

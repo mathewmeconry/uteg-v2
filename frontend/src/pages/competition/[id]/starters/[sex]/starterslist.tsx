@@ -2,8 +2,8 @@ import { useParams } from "react-router-dom";
 import {
   Sex,
   StarterLink,
+  StarterLinksDocument,
   useRemoveStarterLinkMutation,
-  useStarterLinksQuery,
 } from "../../../../../__generated__/graphql";
 import { enqueueSnackbar } from "notistack";
 import { Error } from "../../../../../components/error";
@@ -20,16 +20,17 @@ import {
 import { PaperExtended } from "../../../../../components/paperExtended";
 import { useTranslation } from "react-i18next";
 import { Box } from "@mui/system";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { CreateStarterDialog } from "../../../../../dialogs/createStarterDialog/createStarterDialog";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { UpdateStarterDialog } from "../../../../../dialogs/updateStarterDialog/updateStarterDialog";
-import { ApolloError } from "@apollo/client";
+import { ApolloError, useLazyQuery, useQuery } from "@apollo/client";
 import { StarterslistToolbar } from "./starterslistToolbar";
 import { StarterlistColumnMenu } from "./starterslistColumnMenu";
 import { DeleteConfirmationDialog } from "../../../../../dialogs/deleteConfirmationDialog/deleteConfirmationDialog";
 import { List, ListItem, Typography } from "@mui/material";
+import { useModules } from "../../../../../hooks/useModules/useModules";
 
 export function StartersList() {
   const { sex, id } = useParams();
@@ -38,7 +39,7 @@ export function StartersList() {
   const [toEditLink, setToEditLink] = useState<string>("");
   const [removeStarterLink] = useRemoveStarterLinkMutation();
   const [toDeleteStarters, setToDeleteStarters] = useState<StarterLink[]>([]);
-
+  const modules = useModules(id || "");
   if (!sex) {
     enqueueSnackbar("Ooops", { variant: "error" });
     return <Error />;
@@ -48,11 +49,20 @@ export function StartersList() {
     return <Error />;
   }
 
+  let starterLinksQueryDocument = StarterLinksDocument;
+  for (const module of modules.modules) {
+    if (module.transformers.starterLinksQuery) {
+      starterLinksQueryDocument = module.transformers.starterLinksQuery.transformDocument(
+        starterLinksQueryDocument
+      );
+    }
+  }
+
   const {
     data: starterLinksData,
     loading,
     refetch: refetchStarters,
-  } = useStarterLinksQuery({
+  } = useQuery(starterLinksQueryDocument, {
     variables: {
       competitionID: id,
       sex: sex.toUpperCase() as Sex,
@@ -74,6 +84,21 @@ export function StartersList() {
       };
     },
   };
+
+  const moduleColumns = useMemo(() => {
+    const columns: Array<GridColDef | GridActionsColDef> = [];
+    for (const module of modules.modules) {
+      if (module.extensions.starterslistColumns) {
+        columns.push(
+          ...module.extensions.starterslistColumns.map((col) => ({
+            ...col,
+            headerName: t(col.headerName || ""),
+          }))
+        );
+      }
+    }
+    return columns;
+  }, [modules.modules]);
 
   const columns: Array<GridColDef | GridActionsColDef> = [
     {
@@ -103,6 +128,7 @@ export function StartersList() {
       flex: 1,
       filterOperators: [inFilter],
     },
+    ...moduleColumns,
     {
       type: "actions",
       headerName: t("actions"),
@@ -244,6 +270,6 @@ export function StartersList() {
           ))}
         </List>
       </DeleteConfirmationDialog>
-      </>
+    </>
   );
 }

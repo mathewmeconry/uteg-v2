@@ -8,6 +8,9 @@ import { EGTStartersReviewStepRow } from "./extensions/startersReviewStepRow/sta
 import { parseStarterFromSheet } from "./handlers/parseStarterFromSheet/parseStarterFromSheet";
 import { EGTStartersReviewHeaders } from "./extensions/startersReviewHeaders/startersReviewHeaders";
 import { importStarters } from "./handlers/importStarters/importStarters";
+import { GridActionsColDef, GridColDef } from "@mui/x-data-grid";
+import { DocumentTransform } from "@apollo/client";
+import { Kind, visit } from "graphql";
 
 const routes: RouteObject[] = [
   {
@@ -35,6 +38,93 @@ const routes: RouteObject[] = [
   },
 ];
 
+const starterListColumns: Array<GridColDef | GridActionsColDef> = [
+  {
+    field: "egt.category",
+    headerName: "egt.category",
+    valueGetter: (params) => {
+      if (params.row.egt?.category) {
+        if (params.row.egt?.category === 8) {
+          return `egt.category.${params.row.egt?.category}.${params.row.starter?.sex}`;
+        }
+        return `egt.category.${params.row.egt?.category}`;
+      }
+      return "";
+    },
+    disableColumnMenu: true,
+  },
+  {
+    field: "egt.division",
+    headerName: "egt.division",
+    valueGetter: (params) => params.row.egt?.division?.number,
+    disableColumnMenu: true,
+  },
+];
+
+const starterLinksQueryTransformer = new DocumentTransform((document) => {
+  return visit(document, {
+    Field(field) {
+      console.log(field);
+      if (field.name.value === "starterLinks") {
+        return {
+          ...field,
+          selectionSet: {
+            ...field.selectionSet,
+            selections: [
+              ...(field.selectionSet?.selections || []),
+              {
+                kind: Kind.FIELD,
+                name: {
+                  kind: "Name",
+                  value: "egt",
+                },
+                selectionSet: {
+                  kind: Kind.SELECTION_SET,
+                  selections: [
+                    {
+                      kind: "Field",
+                      name: {
+                        kind: "Name",
+                        value: "category",
+                      },
+                    },
+                    {
+                      kind: "Field",
+                      name: {
+                        kind: "Name",
+                        value: "division",
+                      },
+                      selectionSet: {
+                        kind: Kind.SELECTION_SET,
+                        selections: [
+                          {
+                            kind: "Field",
+                            name: {
+                              kind: "Name",
+                              value: "id",
+                            },
+                          },
+                          {
+                            kind: "Field",
+                            name: {
+                              kind: "Name",
+                              value: "number",
+                            },
+                          },
+                        ],
+                      },
+                    },
+                  ],
+                },
+              },
+            ],
+          },
+        };
+      }
+    },
+  });
+});
+
 export const EGTModule: Module = {
   name: "egt",
   routes: routes,
@@ -42,10 +132,14 @@ export const EGTModule: Module = {
     updateStarterForm: <EGTUpdateStarterForm />,
     startersReviewStepRow: EGTStartersReviewStepRow,
     startersReviewStepHeader: <EGTStartersReviewHeaders />,
+    starterslistColumns: starterListColumns,
   },
   handlers: {
     parseStarterFromSheet: parseStarterFromSheet,
-    importStarters: importStarters
+    importStarters: importStarters,
+  },
+  transformers: {
+    starterLinksQuery: starterLinksQueryTransformer,
   },
   menuItems: [
     {
