@@ -105,13 +105,14 @@ export type EgtDivisionStates =
 export type EgtStarterLink = {
   __typename?: 'EGTStarterLink';
   category?: Maybe<Scalars['Int']['output']>;
-  division: EgtDivision;
+  division?: Maybe<EgtDivision>;
   id: Scalars['ID']['output'];
 };
 
 export type EgtStarterLinkInput = {
   category?: InputMaybe<Scalars['Int']['input']>;
   divisionID?: InputMaybe<Scalars['ID']['input']>;
+  divisionNumber?: InputMaybe<Scalars['Int']['input']>;
   starterLinkID: Scalars['ID']['input'];
 };
 
@@ -395,7 +396,7 @@ export type EgtStarterLinkQueryVariables = Exact<{
 }>;
 
 
-export type EgtStarterLinkQuery = { __typename?: 'Query', egtStarterLink?: { __typename?: 'EGTStarterLink', id: string, category?: number | null } | null };
+export type EgtStarterLinkQuery = { __typename?: 'Query', egtStarterLink?: { __typename?: 'EGTStarterLink', id: string, category?: number | null, division?: { __typename?: 'EGTDivision', id: string } | null } | null };
 
 export type EgtDivisionQueryVariables = Exact<{
   filter: EgtDivisionFilterInput;
@@ -964,6 +965,9 @@ export const EgtStarterLinkDocument = gql`
   egtStarterLink(id: $id, starterLinkID: $starterLinkID) {
     id
     category
+    division {
+      id
+    }
   }
 }
     `;

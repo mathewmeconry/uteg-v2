@@ -62,6 +62,13 @@ export function EGTUpdateStarterForm() {
   useEffect(() => {
     if (starterData?.egtStarterLink?.category) {
       setValue("category", starterData.egtStarterLink.category);
+    } else {
+      setValue("category", "");
+    }
+    if (starterData?.egtStarterLink?.division?.id) {
+      setValue("division", starterData.egtStarterLink.division.id);
+    } else {
+      setValue("division", "");
     }
   }, [starterData]);
 

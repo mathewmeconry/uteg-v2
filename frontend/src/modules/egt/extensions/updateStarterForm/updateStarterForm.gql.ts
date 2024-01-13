@@ -14,6 +14,9 @@ const GET_EGT_STARTER_LINK = gql`
     egtStarterLink(id: $id, starterLinkID: $starterLinkID) {
       id
       category
+      division {
+        id
+      }
     }
   }
 `;

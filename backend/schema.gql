@@ -85,7 +85,7 @@ enum EGTDivisionStates {
 
 type EGTStarterLink {
   category: Int
-  division: EGTDivision!
+  division: EGTDivision
   id: ID!
 }
 

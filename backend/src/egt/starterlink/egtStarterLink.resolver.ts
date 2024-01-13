@@ -106,7 +106,7 @@ export class EGTStarterLinkResolver {
     return this.egtStarterLinkService.save(link);
   }
 
-  @ResolveField(() => EGTDivision)
+  @ResolveField(() => EGTDivision, { nullable: true })
   async division(
     @Parent() egtStarterLink: EGTStarterLink,
   ): Promise<EGTDivision> {
