@@ -25,7 +25,7 @@ import { CreateStarterDialog } from "../../../../../dialogs/createStarterDialog/
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { UpdateStarterDialog } from "../../../../../dialogs/updateStarterDialog/updateStarterDialog";
-import { ApolloError, useLazyQuery, useQuery } from "@apollo/client";
+import { ApolloError, useQuery } from "@apollo/client";
 import { StarterslistToolbar } from "./starterslistToolbar";
 import { StarterlistColumnMenu } from "./starterslistColumnMenu";
 import { DeleteConfirmationDialog } from "../../../../../dialogs/deleteConfirmationDialog/deleteConfirmationDialog";
