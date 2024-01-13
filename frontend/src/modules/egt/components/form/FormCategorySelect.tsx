@@ -1,19 +1,42 @@
-import { MenuItem } from "@mui/material";
+import { MenuItem, TextFieldProps } from "@mui/material";
 import { FormTextInput } from "../../../../components/form/FormTextInput";
 import { useTranslation } from "react-i18next";
-import { useFormContext } from "react-hook-form";
+import {
+  FieldValues,
+  RegisterOptions,
+  useFormContext,
+  useWatch,
+} from "react-hook-form";
 
-export function FormCategorySelect() {
+export type EGTFormCategorySelectProps = {
+  sexField?: string;
+  sexOverride?: string;
+  fieldProps?: TextFieldProps;
+  name?: string;
+  rules:
+    | Omit<
+        RegisterOptions<FieldValues, any>,
+        "valueAsNumber" | "valueAsDate" | "setValueAs" | "disabled"
+      >
+    | undefined;
+};
+
+export function FormCategorySelect(props: EGTFormCategorySelectProps) {
   const { t } = useTranslation();
-  const { getValues } = useFormContext();
+  const { control } = useFormContext();
 
-  const chosenSex = getValues("sex");
+  let chosenSex = useWatch({ name: props.sexField || "sex", control });
+  if (props.sexOverride) {
+    chosenSex = props.sexOverride;
+  }
+
   return (
     <FormTextInput
-      name="category"
-      rules={{ required: true }}
+      name={props.name || "category"}
+      rules={props.rules}
       fieldProps={{
         select: true,
+        ...props.fieldProps,
       }}
     >
       <MenuItem value="1">{t("egt.category.1")}</MenuItem>

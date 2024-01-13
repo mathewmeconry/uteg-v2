@@ -233,7 +233,7 @@ export function StartersList() {
         isOpen={openDialog === "deleteStarter"}
         title={t("Delete Starter")}
         onCancel={() => setOpenDialog("")}
-        onConfirm={() => handleStarterDelete()}
+        onConfirm={handleStarterDelete}
       >
         <Typography>{t("Do you really wanna delete?")}</Typography>
         <List>

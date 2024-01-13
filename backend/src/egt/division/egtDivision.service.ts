@@ -45,6 +45,17 @@ export class EGTDivisionService {
     return qb.orderBy('category', 'ASC').addOrderBy('number', 'ASC').getMany();
   }
 
+  findByNumber(competitionID: number, sex: SEX, category: number, number: number) {
+    return this.egtDivisionRepository
+      .createQueryBuilder('division')
+      .leftJoin('division.competition', 'competition')
+      .where('competition.id = :competitionID', { competitionID })
+      .andWhere('division.sex = :sex', { sex })
+      .andWhere('division.category = :category', { category })
+      .andWhere('division.number = :number', { number })
+      .getOne();
+  }
+
   async create(division: EGTDivision): Promise<EGTDivision> {
     // there are max. 8 categories supported (K1-KD/H)
     if (division.category > 8) {

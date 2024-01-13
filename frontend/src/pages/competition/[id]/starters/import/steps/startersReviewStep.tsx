@@ -13,18 +13,22 @@ import { useTranslation } from "react-i18next";
 import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
 import { Starter } from "../../../../../../__generated__/graphql";
 import { StartersReviewStepRow } from "./startersReviewStepRow";
+import { useParams } from "react-router-dom";
+import { useModules } from "../../../../../../hooks/useModules/useModules";
 
 export function StartersReviewStep() {
   const theme = useTheme();
   const { t } = useTranslation();
+  const { id } = useParams();
+  const modules = useModules(id || "");
   const { control: formControl } = useFormContext();
   const startersFieldArray = useFieldArray({
     control: formControl,
     name: "starters",
     rules: {
       minLength: 1,
-      required: true
-    }
+      required: true,
+    },
   });
 
   function swapFirstLastname(index: number, update = true) {
@@ -59,10 +63,7 @@ export function StartersReviewStep() {
           <TableRow>
             <TableCell>{t("stvID")}</TableCell>
             <TableCell>{t("firstname")}</TableCell>
-            <TableCell
-              sx={{ width: theme.typography.fontSize }}
-              padding="none"
-            >
+            <TableCell sx={{ width: theme.typography.fontSize }} padding="none">
               <IconButton onClick={() => swapAllFirstLastname()}>
                 <SwapHorizIcon />
               </IconButton>
@@ -70,6 +71,11 @@ export function StartersReviewStep() {
             <TableCell>{t("lastname")}</TableCell>
             <TableCell>{t("birthyear")}</TableCell>
             <TableCell>{t("sex")}</TableCell>
+            {...modules.modules.map((module) => {
+              if (module.extensions.startersReviewStepHeader) {
+                return module.extensions.startersReviewStepHeader;
+              }
+            })}
             <TableCell></TableCell>
           </TableRow>
         </TableHead>

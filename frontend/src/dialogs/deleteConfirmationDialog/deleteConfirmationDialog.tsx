@@ -1,5 +1,6 @@
 import {
   Button,
+  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
@@ -7,13 +8,13 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import { PropsWithChildren } from "react";
+import { PropsWithChildren, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 export type DeleteConfirmationDialogProps = {
   title: string;
-  onConfirm: () => void;
-  onCancel: () => void;
+  onConfirm: () => Promise<void>;
+  onCancel: () => void | Promise<void>;
   isOpen: boolean;
 };
 
@@ -23,6 +24,13 @@ export function DeleteConfirmationDialog(
   const { t } = useTranslation();
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
+  const [deleting, setDeleting] = useState(false);
+
+  async function onConfirm() {
+    setDeleting(true);
+    await props.onConfirm();
+    setDeleting(false);
+  }
 
   return (
     <Dialog
@@ -40,9 +48,10 @@ export function DeleteConfirmationDialog(
           variant="contained"
           color="error"
           type="submit"
-          onClick={props.onConfirm}
+          onClick={onConfirm}
         >
-          {t("Delete")}
+          {deleting && <CircularProgress size={24} />}
+          {!deleting && t("Delete")}
         </Button>
       </DialogActions>
     </Dialog>

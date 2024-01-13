@@ -87,7 +87,7 @@ export function CreateDivisionDialog(props: {
       <FormProvider {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <DialogContent>
-            <FormCategorySelect />
+            <FormCategorySelect rules={{ required: true }} />
             <FormSexSelect />
             <FormTextInput
               name="ground"
@@ -101,7 +101,7 @@ export function CreateDivisionDialog(props: {
           <DialogActions>
             <Button onClick={handleCancel}>{t("Cancel")}</Button>
             <Button variant="contained" color="success" type="submit">
-              {loading && <CircularProgress />}
+              {loading && <CircularProgress size={24} />}
               {!loading && t("Save")}
             </Button>
           </DialogActions>

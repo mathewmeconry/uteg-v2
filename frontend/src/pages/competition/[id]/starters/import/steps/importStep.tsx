@@ -1,17 +1,20 @@
 import { Box, Button, LinearProgress, Typography } from "@mui/material";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useWatch } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import {
   Starter,
+  StarterLink,
   useCreateStarterLinkMutation,
   useCreateStarterMutation,
 } from "../../../../../../__generated__/graphql";
 import { useNavigate, useParams } from "react-router-dom";
 import { ApolloError } from "@apollo/client";
+import { useModules } from "../../../../../../hooks/useModules/useModules";
+import { getModulesHandlers } from "../../../../../../modules";
 
-type Failure = {
-  step: "importing" | "linking";
+export type ImportFailure = {
+  step: string;
   starter: Starter;
 };
 
@@ -19,20 +22,40 @@ export function ImportStep() {
   const { t } = useTranslation();
   const { id: competitionID } = useParams();
   const [club, starters] = useWatch({ name: ["club", "starters"] });
-  const [step, setStep] = useState<"importing" | "linking" | "done">();
+  const [step, setStep] = useState<
+    "importing" | "linking" | "processingModules" | "done"
+  >();
   const [progress, setProgress] = useState(20);
   const [createStarterMutation] = useCreateStarterMutation();
   const [linkStarterMutation] = useCreateStarterLinkMutation();
-  const progressPerStep = 100 / (starters.length * 2);
-  const [failures, setFailures] = useState<Failure[]>([]);
+  const modules = useModules(competitionID || "");
+  const moduleImportHandlers = useMemo(() => {
+    return getModulesHandlers(modules.modules, "importStarters");
+  }, [modules.modules]);
+
+  const progressPerStep =
+    100 / (starters.length * (moduleImportHandlers.length + 2));
+  const [failures, setFailures] = useState<ImportFailure[]>([]);
   const navigate = useNavigate();
 
   async function onImportClick() {
     setStep("importing");
     await importStarters();
-    console.log(starters);
     setStep("linking");
-    await linkStarters();
+    const starterLinks = await linkStarters();
+    setStep("processingModules");
+    await moduleImportHandlers.map((handler) => {
+      if (handler) {
+        handler(
+          starters,
+          starterLinks
+            .map((result) => result && result.link)
+            .filter((link) => link) as StarterLink[],
+          setProgress,
+          setFailures
+        );
+      }
+    });
     setStep("done");
   }
 
@@ -47,20 +70,24 @@ export function ImportStep() {
               ...oldFailures,
               { step: "linking", starter: starter },
             ]);
+          } else {
+            return result;
           }
         })
       );
     }
-    await Promise.all(promises);
+    return Promise.all(promises);
   }
 
-  async function linkStarter(starter: Starter): Promise<boolean> {
+  async function linkStarter(
+    starter: Starter
+  ): Promise<{ state: boolean; link?: Partial<StarterLink> }> {
     if (!starter.id) {
-      return false;
+      return { state: false };
     }
 
     try {
-      await linkStarterMutation({
+      const result = await linkStarterMutation({
         variables: {
           input: {
             clubID: club.id,
@@ -69,13 +96,17 @@ export function ImportStep() {
           },
         },
       });
-      return true;
+      if (!result.data?.createStarterLink) {
+        return { state: false };
+      }
+
+      return { state: true, link: result.data?.createStarterLink };
     } catch (e) {
       if (e instanceof ApolloError) {
-        return e.message === "Already Existing";
+        return { state: false };
       }
     }
-    return false;
+    return { state: false };
   }
 
   async function importStarters() {

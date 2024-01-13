@@ -255,7 +255,7 @@ export function Divisionslist() {
           isOpen={openDialog === "deleteDivisions"}
           title={t("Delete Division")}
           onCancel={() => setOpenDialog("")}
-          onConfirm={() => handleDivisionDelete()}
+          onConfirm={handleDivisionDelete}
         >
           <Typography>{t("Do you really wanna delete?")}</Typography>
           <List>

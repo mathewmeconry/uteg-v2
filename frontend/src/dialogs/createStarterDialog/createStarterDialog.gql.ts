@@ -21,6 +21,9 @@ const LINK_STARTER = gql`
   mutation createStarterLink($input: CreateStarterLinkInput!) {
     createStarterLink(data: $input) {
       id
+      starter {
+        id
+      }
     }
   }
 `;

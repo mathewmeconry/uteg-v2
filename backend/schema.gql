@@ -92,6 +92,7 @@ type EGTStarterLink {
 input EGTStarterLinkInput {
   category: Int
   divisionID: ID
+  divisionNumber: Int
   starterLinkID: ID!
 }
 

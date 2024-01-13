@@ -322,7 +322,7 @@ export type CreateStarterLinkMutationVariables = Exact<{
 }>;
 
 
-export type CreateStarterLinkMutation = { __typename?: 'Mutation', createStarterLink: { __typename?: 'StarterLink', id: string } };
+export type CreateStarterLinkMutation = { __typename?: 'Mutation', createStarterLink: { __typename?: 'StarterLink', id: string, starter: { __typename?: 'Starter', id: string } } };
 
 export type StartersAutocompleteQueryVariables = Exact<{
   filter: StarterFilter;
@@ -570,6 +570,9 @@ export const CreateStarterLinkDocument = gql`
     mutation createStarterLink($input: CreateStarterLinkInput!) {
   createStarterLink(data: $input) {
     id
+    starter {
+      id
+    }
   }
 }
     `;

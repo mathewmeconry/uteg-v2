@@ -79,7 +79,7 @@ export function CreateClubDialog(props: {
         <DialogActions>
           <Button onClick={handleCancel}>{t("Cancel")}</Button>
           <Button variant="contained" color="success" type="submit">
-            {loading && <CircularProgress />}
+            {loading && <CircularProgress size={24} />}
             {!loading && t("Save")}
           </Button>
         </DialogActions>

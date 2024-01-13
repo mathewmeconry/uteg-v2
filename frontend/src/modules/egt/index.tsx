@@ -4,6 +4,10 @@ import { Divisionslist } from "./pages/divisions/divisionlist";
 import AccountTreeIcon from "@mui/icons-material/AccountTree";
 import { Lineup } from "./pages/divisions/[id]/lineup/lineup";
 import { EGTUpdateStarterForm } from "./extensions/updateStarterForm/updateStarterForm";
+import { EGTStartersReviewStepRow } from "./extensions/startersReviewStepRow/startersReviewStepRow";
+import { parseStarterFromSheet } from "./handlers/parseStarterFromSheet/parseStarterFromSheet";
+import { EGTStartersReviewHeaders } from "./extensions/startersReviewHeaders/startersReviewHeaders";
+import { importStarters } from "./handlers/importStarters/importStarters";
 
 const routes: RouteObject[] = [
   {
@@ -36,6 +40,12 @@ export const EGTModule: Module = {
   routes: routes,
   extensions: {
     updateStarterForm: <EGTUpdateStarterForm />,
+    startersReviewStepRow: EGTStartersReviewStepRow,
+    startersReviewStepHeader: <EGTStartersReviewHeaders />,
+  },
+  handlers: {
+    parseStarterFromSheet: parseStarterFromSheet,
+    importStarters: importStarters
   },
   menuItems: [
     {

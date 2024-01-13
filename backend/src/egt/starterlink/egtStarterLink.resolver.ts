@@ -8,7 +8,7 @@ import {
   Resolver,
 } from '@nestjs/graphql';
 import { EGTStarterLink } from './egtStarterLink.entity';
-import { Inject, UseGuards } from '@nestjs/common';
+import { BadRequestException, Inject, UseGuards } from '@nestjs/common';
 import { RoleGuard } from 'src/auth/guards/role.guard';
 import { EGTStarterLinkGuard } from './egtStarterLink.guard';
 import { EGTStarterLinkService } from './egtStarterLink.service';
@@ -18,6 +18,7 @@ import { StarterLinkService } from 'src/base/starterLink/starterLink.service';
 import { Role } from 'src/auth/decorators/role.decorator';
 import { ROLES } from 'src/auth/types';
 import { EGTStarterLinkInput } from './egtStarterLink.types';
+import { StarterService } from 'src/base/starter/starter.service';
 
 @Resolver(() => EGTStarterLink)
 @UseGuards(EGTStarterLinkGuard, RoleGuard)
@@ -27,8 +28,12 @@ export class EGTStarterLinkResolver {
 
   @Inject()
   private egtDivisionService: EGTDivisionService;
+
   @Inject()
   private starterLinkService: StarterLinkService;
+
+  @Inject()
+  private starterService: StarterService;
 
   @Role(ROLES.VIEWER)
   @Query(() => EGTStarterLink, { nullable: true, name: 'egtStarterLink' })
@@ -48,12 +53,44 @@ export class EGTStarterLinkResolver {
   async create(
     @Args('data') linkData: EGTStarterLinkInput,
   ): Promise<EGTStarterLink> {
+    if (linkData.divisionID && linkData.divisionNumber) {
+      throw new BadRequestException();
+    }
+
     let link = await this.egtStarterLinkService.findByStarterLink(
       linkData.starterLinkID,
     );
 
     if (!link) {
       link = new EGTStarterLink();
+    }
+
+    if (!(await link.starterLink)) {
+      link.starterLink = Promise.resolve(
+        await this.starterLinkService.findOne(linkData.starterLinkID),
+      );
+    }
+
+    if (linkData.divisionNumber) {
+      if (!linkData.category) {
+        throw new BadRequestException();
+      }
+
+      const starterLink = await link.starterLink;
+      const starter = await starterLink.starter;
+      const division = await this.egtDivisionService.findByNumber(
+        (
+          await starterLink.competition
+        ).id,
+        starter.sex,
+        linkData.category,
+        linkData.divisionNumber,
+      );
+
+      if (!division) {
+        throw new Error('Division not found');
+      }
+      link.division = Promise.resolve(division);
     }
 
     if (linkData.divisionID) {
@@ -64,12 +101,6 @@ export class EGTStarterLinkResolver {
 
     if (linkData.category) {
       link.category = linkData.category;
-    }
-
-    if (!(await link.starterLink)) {
-      link.starterLink = Promise.resolve(
-        await this.starterLinkService.findOne(linkData.starterLinkID),
-      );
     }
 
     return this.egtStarterLinkService.save(link);

@@ -9,7 +9,7 @@ import {
   Stepper,
   Typography,
 } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { FileUploadStep } from "./steps/fileUploadStep";
 import { StartersReviewStep } from "./steps/startersReviewStep";
@@ -18,11 +18,17 @@ import { PaperExtended } from "../../../../../components/paperExtended";
 import { Starter } from "../../../../../__generated__/graphql";
 import { processXLSX } from "./processImport";
 import { ImportStep } from "./steps/importStep";
+import { useParams } from "react-router-dom";
+import { useModules } from "../../../../../hooks/useModules/useModules";
+import { getModulesHandlers } from "../../../../../modules";
 
 export function StartersImport() {
   const { t } = useTranslation();
+  const { id } = useParams();
   const [activeStep, setActiveStep] = useState(0);
   const [files, setFiles] = useState<File[]>([]);
+  const modules = useModules(id || "");
+
   const form = useForm<{
     club: ClubInput | string;
     starters: Starter[];
@@ -35,6 +41,14 @@ export function StartersImport() {
     reValidateMode: "onSubmit",
   });
 
+  const moduleHandlers = useMemo(() => {
+    if (modules.loading) {
+      return [];
+    }
+
+    return getModulesHandlers(modules.modules, "parseStarterFromSheet");
+  }, [modules]);
+
   useEffect(() => {
     (async function() {
       let starters: Starter[] = [];
@@ -44,7 +58,9 @@ export function StartersImport() {
           const fileFetchResponse = await fetch(url);
           const fileBlob = await fileFetchResponse.blob();
           window.URL.revokeObjectURL(url);
-          starters = starters.concat(processXLSX(await fileBlob.arrayBuffer()));
+          starters = starters.concat(
+            processXLSX(await fileBlob.arrayBuffer(), moduleHandlers)
+          );
         }
       }
       form.setValue("starters", starters);

@@ -1,5 +1,6 @@
 import * as xlsx from "xlsx";
 import { Sex, Starter } from "../../../../../__generated__/graphql";
+import { ParseStarterFromSheetHandler } from "../../../../../modules/types";
 
 type Indexes = {
   stvID: string;
@@ -10,9 +11,12 @@ type Indexes = {
   [key: string]: string;
 };
 
-type SheetRow = { [index: string]: number | string };
+export type SheetRow = { [index: string]: number | string };
 
-export function processXLSX(data: ArrayBuffer) {
+export function processXLSX(
+  data: ArrayBuffer,
+  moduleParsers: Array<ParseStarterFromSheetHandler | undefined>
+) {
   let starters: Starter[] = [];
   const file = xlsx.read(data);
   for (const sheetName of file.SheetNames) {
@@ -20,17 +24,20 @@ export function processXLSX(data: ArrayBuffer) {
       header: 0,
     });
     if (detectStarterSheet(sheet[0])) {
-      starters = starters.concat(parseSheet(sheet));
+      starters = starters.concat(parseSheet(sheet, moduleParsers));
     }
   }
   return starters;
 }
 
-function parseSheet(sheet: SheetRow[]): Starter[] {
+function parseSheet(
+  sheet: SheetRow[],
+  moduleParsers: Array<ParseStarterFromSheetHandler | undefined>
+): Starter[] {
   const starters: Starter[] = [];
   const indexes = getFieldIndexes(sheet[0]);
   for (const row of sheet) {
-    const starter: Starter = {
+    let starter: Starter = {
       id: "",
       stvID: normalizeField(row[indexes.stvID]),
       firstname: capitalizeNames(normalizeField(row[indexes.firstname])),
@@ -39,13 +46,21 @@ function parseSheet(sheet: SheetRow[]): Starter[] {
       sex: detectSex(normalizeField(row[indexes.sex])),
       starterLinks: [],
     };
+    for(const parser of moduleParsers) {
+      if(parser) {
+        starter = {
+          ...starter,
+          ...parser(row)
+        }
+      }
+    }
     starters.push(starter);
   }
 
   return starters;
 }
 
-function normalizeField(field: string | number): string {
+export function normalizeField(field: string | number): string {
   return field.toString().trim();
 }
 

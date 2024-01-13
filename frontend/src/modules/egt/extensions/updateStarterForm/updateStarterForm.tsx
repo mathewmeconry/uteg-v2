@@ -12,6 +12,7 @@ import { useFormSubmit } from "../../../../hooks/useFormSubmit/useFormSubmit";
 import { ApolloError } from "@apollo/client";
 import { enqueueSnackbar } from "notistack";
 import { useParams } from "react-router-dom";
+import { FormCategorySelect } from "../../components/form/FormCategorySelect";
 
 export function EGTUpdateStarterForm() {
   const { t } = useTranslation();
@@ -93,25 +94,7 @@ export function EGTUpdateStarterForm() {
       return <Skeleton variant="text" />;
     }
 
-    return (
-      <FormTextInput
-        name="category"
-        rules={{ required: false }}
-        defaultValue=""
-        fieldProps={{
-          select: true,
-        }}
-      >
-        <MenuItem value="1">{t("egt.category.1")}</MenuItem>
-        <MenuItem value="2">{t("egt.category.2")}</MenuItem>
-        <MenuItem value="3">{t("egt.category.3")}</MenuItem>
-        <MenuItem value="4">{t("egt.category.4")}</MenuItem>
-        <MenuItem value="5">{t("egt.category.5")}</MenuItem>
-        <MenuItem value="6">{t("egt.category.6")}</MenuItem>
-        <MenuItem value="7">{t("egt.category.7")}</MenuItem>
-        <MenuItem value="8">{t(`egt.category.8.${sex}`)}</MenuItem>
-      </FormTextInput>
-    );
+    return <FormCategorySelect rules={{ required: false }} />;
   }
 
   function renderDivisionSelection() {

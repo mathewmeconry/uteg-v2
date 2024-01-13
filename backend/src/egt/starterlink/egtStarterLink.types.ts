@@ -1,4 +1,4 @@
-import { Field, ID, InputType } from '@nestjs/graphql';
+import { Field, ID, InputType, Int } from '@nestjs/graphql';
 
 @InputType()
 export class EGTStarterLinkInput {
@@ -7,6 +7,9 @@ export class EGTStarterLinkInput {
 
   @Field(() => ID, { nullable: true })
   divisionID?: number;
+
+  @Field(() => Int, { nullable: true })
+  divisionNumber?: number;
 
   @Field({ nullable: true })
   category?: number;

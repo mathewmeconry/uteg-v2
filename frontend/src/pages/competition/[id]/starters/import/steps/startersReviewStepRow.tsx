@@ -1,21 +1,36 @@
 import { memo } from "react";
 import { Starter } from "../../../../../../__generated__/graphql";
-import { TableRow, TableCell, IconButton, MenuItem } from "@mui/material";
+import {
+  TableRow,
+  TableCell,
+  IconButton,
+  MenuItem,
+  Skeleton,
+} from "@mui/material";
 import { ClearIcon } from "@mui/x-date-pickers";
 import { FormTextInput } from "../../../../../../components/form/FormTextInput";
-import { useFormContext } from "react-hook-form";
+import { useFormContext, useWatch } from "react-hook-form";
 import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
 import { useTranslation } from "react-i18next";
+import { useParams } from "react-router-dom";
+import { useModules } from "../../../../../../hooks/useModules/useModules";
 
-type RowProps = {
+export type StartersReviewStepRowProps = {
   starter: Starter;
   index: number;
   onRemove: (index: number) => void;
 };
 
-function Row(props: RowProps) {
+function Row(props: StartersReviewStepRowProps) {
   const { t } = useTranslation();
-  const form = useFormContext();
+  const { setValue, control } = useFormContext();
+  const { id } = useParams();
+  const modules = useModules(id || "");
+  const starter = useWatch({ name: `starters.${props.index}`, control });
+
+  if (modules.loading) {
+    return <Skeleton variant="text" />;
+  }
 
   function swapFirstLastname(index: number, update = true) {
     const starter = props.starter;
@@ -23,7 +38,7 @@ function Row(props: RowProps) {
     starter.firstname = starter.lastname;
     starter.lastname = firstname;
     if (update) {
-      form.setValue(`starters.${index}`, starter);
+      setValue(`starters.${index}`, starter);
     }
     return starter;
   }
@@ -85,6 +100,18 @@ function Row(props: RowProps) {
           <MenuItem value="FEMALE">{t("Female")}</MenuItem>
         </FormTextInput>
       </TableCell>
+      {...modules.modules.map((module, index) => {
+        if (module.extensions.startersReviewStepRow) {
+          return (
+            <module.extensions.startersReviewStepRow
+              index={props.index}
+              onRemove={props.onRemove}
+              starter={starter}
+              key={`${index}_${props.index}`}
+            />
+          );
+        }
+      })}
       <TableCell>
         <IconButton onClick={() => props.onRemove(props.index)}>
           <ClearIcon />
@@ -94,4 +121,4 @@ function Row(props: RowProps) {
   );
 }
 
-export const StartersReviewStepRow = memo<RowProps>(Row);
+export const StartersReviewStepRow = memo<StartersReviewStepRowProps>(Row);
