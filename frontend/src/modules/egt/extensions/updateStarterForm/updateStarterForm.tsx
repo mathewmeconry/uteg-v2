@@ -3,6 +3,7 @@ import { FormTextInput } from "../../../../components/form/FormTextInput";
 import { MenuItem, Skeleton } from "@mui/material";
 import { useFormContext, useWatch } from "react-hook-form";
 import {
+  useEgtDivisionLazyQuery,
   useEgtStarterLinkLazyQuery,
   useEgtStarterLinkMutationMutation,
 } from "../../../../__generated__/graphql";
@@ -10,14 +11,24 @@ import { useEffect } from "react";
 import { useFormSubmit } from "../../../../hooks/useFormSubmit/useFormSubmit";
 import { ApolloError } from "@apollo/client";
 import { enqueueSnackbar } from "notistack";
+import { useParams } from "react-router-dom";
 
 export function EGTUpdateStarterForm() {
   const { t } = useTranslation();
+  const { id } = useParams();
   const { control: formControl, setValue } = useFormContext();
   const formSubmit = useFormSubmit();
   const sex = useWatch({ name: "sex", control: formControl });
   const linkId = useWatch({ name: "id", control: formControl });
-  const [query, { loading, data }] = useEgtStarterLinkLazyQuery();
+  const category = useWatch({ name: "category", control: formControl });
+  const [
+    starterQuery,
+    { loading: starterLoading, data: starterData },
+  ] = useEgtStarterLinkLazyQuery();
+  const [
+    divisionQuery,
+    { loading: divisionLoading, data: divisionData },
+  ] = useEgtDivisionLazyQuery();
   const [mutation] = useEgtStarterLinkMutationMutation();
 
   async function onSubmit(data: any) {
@@ -27,11 +38,12 @@ export function EGTUpdateStarterForm() {
           data: {
             starterLinkID: data.id,
             category: parseInt(data.category),
+            divisionID: data.division,
           },
         },
         update: (cache) => {
           cache.evict({ fieldName: "category" });
-        }
+        },
       });
       enqueueSnackbar(t("Starter EGT link updated"), { variant: "success" });
     } catch (e) {
@@ -47,14 +59,14 @@ export function EGTUpdateStarterForm() {
   }, []);
 
   useEffect(() => {
-    if (data?.egtStarterLink?.category) {
-      setValue("category", data.egtStarterLink.category);
+    if (starterData?.egtStarterLink?.category) {
+      setValue("category", starterData.egtStarterLink.category);
     }
-  }, [data]);
+  }, [starterData]);
 
   useEffect(() => {
     if (linkId) {
-      query({
+      starterQuery({
         variables: {
           starterLinkID: linkId,
         },
@@ -62,12 +74,26 @@ export function EGTUpdateStarterForm() {
     }
   }, [linkId]);
 
-  if (loading || !linkId) {
-    return <Skeleton variant="text" />;
-  }
+  useEffect(() => {
+    if (category && sex) {
+      divisionQuery({
+        variables: {
+          filter: {
+            competitionID: id || "",
+            category: parseInt(category),
+            sex,
+          },
+        },
+      });
+    }
+  }, [category, sex]);
 
-  return (
-    <>
+  function renderCategorySelection() {
+    if (starterLoading || !linkId) {
+      return <Skeleton variant="text" />;
+    }
+
+    return (
       <FormTextInput
         name="category"
         rules={{ required: false }}
@@ -85,6 +111,36 @@ export function EGTUpdateStarterForm() {
         <MenuItem value="7">{t("egt.category.7")}</MenuItem>
         <MenuItem value="8">{t(`egt.category.8.${sex}`)}</MenuItem>
       </FormTextInput>
+    );
+  }
+
+  function renderDivisionSelection() {
+    if (divisionLoading || !linkId || !category) {
+      return <Skeleton variant="text" />;
+    }
+
+    return (
+      <FormTextInput
+        name="division"
+        rules={{ required: false }}
+        defaultValue=""
+        fieldProps={{
+          select: true,
+        }}
+      >
+        {divisionData?.egtDivisions.map((division) => (
+          <MenuItem key={division.id} value={division.id}>
+            {t("egt.division")} {division.number}
+          </MenuItem>
+        ))}
+      </FormTextInput>
+    );
+  }
+
+  return (
+    <>
+      {renderCategorySelection()}
+      {renderDivisionSelection()}
     </>
   );
 }

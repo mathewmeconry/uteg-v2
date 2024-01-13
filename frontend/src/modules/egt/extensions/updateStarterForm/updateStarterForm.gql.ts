@@ -17,3 +17,13 @@ const GET_EGT_STARTER_LINK = gql`
     }
   }
 `;
+
+const GET_EGT_DIVISIONS = gql`
+  query egtDivision($filter: EGTDivisionFilterInput!) {
+    egtDivisions(filter: $filter) {
+        id
+        number
+        ground
+    }
+  }
+`

@@ -397,6 +397,13 @@ export type EgtStarterLinkQueryVariables = Exact<{
 
 export type EgtStarterLinkQuery = { __typename?: 'Query', egtStarterLink?: { __typename?: 'EGTStarterLink', id: string, category?: number | null } | null };
 
+export type EgtDivisionQueryVariables = Exact<{
+  filter: EgtDivisionFilterInput;
+}>;
+
+
+export type EgtDivisionQuery = { __typename?: 'Query', egtDivisions: Array<{ __typename?: 'EGTDivision', id: string, number: number, ground: number }> };
+
 export type EgtDivisionsQueryVariables = Exact<{
   competitionID: Scalars['ID']['input'];
 }>;
@@ -991,6 +998,48 @@ export type EgtStarterLinkQueryHookResult = ReturnType<typeof useEgtStarterLinkQ
 export type EgtStarterLinkLazyQueryHookResult = ReturnType<typeof useEgtStarterLinkLazyQuery>;
 export type EgtStarterLinkSuspenseQueryHookResult = ReturnType<typeof useEgtStarterLinkSuspenseQuery>;
 export type EgtStarterLinkQueryResult = Apollo.QueryResult<EgtStarterLinkQuery, EgtStarterLinkQueryVariables>;
+export const EgtDivisionDocument = gql`
+    query egtDivision($filter: EGTDivisionFilterInput!) {
+  egtDivisions(filter: $filter) {
+    id
+    number
+    ground
+  }
+}
+    `;
+
+/**
+ * __useEgtDivisionQuery__
+ *
+ * To run a query within a React component, call `useEgtDivisionQuery` and pass it any options that fit your needs.
+ * When your component renders, `useEgtDivisionQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useEgtDivisionQuery({
+ *   variables: {
+ *      filter: // value for 'filter'
+ *   },
+ * });
+ */
+export function useEgtDivisionQuery(baseOptions: Apollo.QueryHookOptions<EgtDivisionQuery, EgtDivisionQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<EgtDivisionQuery, EgtDivisionQueryVariables>(EgtDivisionDocument, options);
+      }
+export function useEgtDivisionLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<EgtDivisionQuery, EgtDivisionQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<EgtDivisionQuery, EgtDivisionQueryVariables>(EgtDivisionDocument, options);
+        }
+export function useEgtDivisionSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<EgtDivisionQuery, EgtDivisionQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<EgtDivisionQuery, EgtDivisionQueryVariables>(EgtDivisionDocument, options);
+        }
+export type EgtDivisionQueryHookResult = ReturnType<typeof useEgtDivisionQuery>;
+export type EgtDivisionLazyQueryHookResult = ReturnType<typeof useEgtDivisionLazyQuery>;
+export type EgtDivisionSuspenseQueryHookResult = ReturnType<typeof useEgtDivisionSuspenseQuery>;
+export type EgtDivisionQueryResult = Apollo.QueryResult<EgtDivisionQuery, EgtDivisionQueryVariables>;
 export const EgtDivisionsDocument = gql`
     query egtDivisions($competitionID: ID!) {
   egtDivisions(filter: {competitionID: $competitionID}) {
