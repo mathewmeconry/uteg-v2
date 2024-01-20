@@ -31,10 +31,6 @@ export class EGTDivision {
 
   @Field(() => Int)
   @Column({ default: 0 })
-  round: number;
-
-  @Field(() => Int)
-  @Column({ default: 0 })
   currentRound: number;
 
   @OneToMany(() => EGTLineup, (lineup) => lineup.division)

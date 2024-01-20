@@ -167,11 +167,6 @@ export function Divisionslist() {
       },
     },
     {
-      field: "round",
-      headerName: t("round"),
-      disableColumnMenu: true,
-    },
-    {
       type: "actions",
       headerName: t("actions"),
       field: "actions",
@@ -195,7 +190,7 @@ export function Divisionslist() {
         className="textPrimary"
         color="inherit"
         onClick={() =>
-          navigate(`/competition/${id}/egt/division/${division.id}/lineup`)
+          navigate(`/competition/${id}/egt/division/${division.id}/lineups`)
         }
       />,
       <GridActionsCellItem

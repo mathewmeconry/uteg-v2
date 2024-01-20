@@ -6,7 +6,6 @@ const GET_DIVISIONS = gql`
       id
       ground
       state
-      round
       currentRound
       totalRounds
       category
