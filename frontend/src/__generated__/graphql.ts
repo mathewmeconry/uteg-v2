@@ -482,7 +482,7 @@ export type StarterLinksQueryVariables = Exact<{
 }>;
 
 
-export type StarterLinksQuery = { __typename?: 'Query', starterLinks: Array<{ __typename?: 'StarterLink', id: string, starter: { __typename?: 'Starter', id: string, firstname: string, lastname: string, birthyear: number, stvID?: string | null, sex: Sex }, club: { __typename?: 'Club', id: string, name: string } }> };
+export type StarterLinksQuery = { __typename?: 'Query', starterLinks: Array<{ __typename?: 'StarterLink', id: string, starter: { __typename?: 'Starter', id: string, firstname: string, lastname: string, birthyear: number, stvID?: string | null, sex: Sex }, club: { __typename?: 'Club', id: string, name: string, location: string } }> };
 
 export type RemoveStarterLinkMutationVariables = Exact<{
   id: Scalars['ID']['input'];
@@ -1392,6 +1392,7 @@ export const StarterLinksDocument = gql`
     club {
       id
       name
+      location
     }
   }
 }

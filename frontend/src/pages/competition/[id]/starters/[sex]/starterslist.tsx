@@ -129,6 +129,13 @@ export function StartersList() {
       flex: 1,
       filterOperators: [inFilter],
     },
+    {
+      field: "club.location",
+      headerName: t("club location"),
+      valueGetter: (params) => params.row.club.location,
+      flex: 1,
+      filterOperators: [inFilter],
+    },
     ...moduleColumns.map((column) => ({
       ...column,
       valueGetter: (params) =>
@@ -225,6 +232,11 @@ export function StartersList() {
                   },
                 ],
               },
+              columns: {
+                columnVisibilityModel: {
+                  'club.location': false
+                }
+              }
             }}
             pageSizeOptions={[20, 50, 100]}
             checkboxSelection
@@ -238,7 +250,7 @@ export function StartersList() {
               },
               toolbar: {
                 openDialog: setOpenDialog,
-                onRowDeletionClick: onRemoveRows,
+                onRowDeletionClick: onRemoveRows
               },
             }}
             ignoreDiacritics={false}

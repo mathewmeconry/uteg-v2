@@ -15,6 +15,7 @@ const STARTER_LINKS = gql`
       club {
         id
         name
+        location
       }
     }
   }
