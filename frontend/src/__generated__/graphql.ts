@@ -102,11 +102,18 @@ export type EgtDivisionStates =
   | 'PENDING'
   | 'RUNNING';
 
+export type EgtLineup = {
+  __typename?: 'EGTLineup';
+  device: Scalars['ID']['output'];
+  id: Scalars['ID']['output'];
+};
+
 export type EgtStarterLink = {
   __typename?: 'EGTStarterLink';
   category?: Maybe<Scalars['Int']['output']>;
   division?: Maybe<EgtDivision>;
   id: Scalars['ID']['output'];
+  lineup?: Maybe<EgtLineup>;
 };
 
 export type EgtStarterLinkInput = {

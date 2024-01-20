@@ -59,6 +59,12 @@ const starterListColumns: Array<GridColDef | GridActionsColDef> = [
     valueGetter: (params) => params.row.egt?.division?.number,
     disableColumnMenu: true,
   },
+  {
+    field: "egt.device",
+    headerName: "egt.device",
+    valueGetter: (params) => params.row.egt?.lineup?.device,
+    disableColumnMenu: true,
+  },
 ];
 
 const starterLinksQueryTransformer = new DocumentTransform((document) => {
@@ -75,40 +81,66 @@ const starterLinksQueryTransformer = new DocumentTransform((document) => {
               {
                 kind: Kind.FIELD,
                 name: {
-                  kind: "Name",
+                  kind: Kind.NAME,
                   value: "egt",
                 },
                 selectionSet: {
                   kind: Kind.SELECTION_SET,
                   selections: [
                     {
-                      kind: "Field",
+                      kind: Kind.FIELD,
                       name: {
-                        kind: "Name",
+                        kind: Kind.NAME,
                         value: "category",
                       },
                     },
                     {
-                      kind: "Field",
+                      kind: Kind.FIELD,
                       name: {
-                        kind: "Name",
+                        kind: Kind.NAME,
                         value: "division",
                       },
                       selectionSet: {
                         kind: Kind.SELECTION_SET,
                         selections: [
                           {
-                            kind: "Field",
+                            kind: Kind.FIELD,
                             name: {
-                              kind: "Name",
+                              kind: Kind.NAME,
                               value: "id",
                             },
                           },
                           {
-                            kind: "Field",
+                            kind: Kind.FIELD,
                             name: {
-                              kind: "Name",
+                              kind: Kind.NAME,
                               value: "number",
+                            },
+                          },
+                        ],
+                      },
+                    },
+                    {
+                      kind: Kind.FIELD,
+                      name: {
+                        kind: Kind.NAME,
+                        value: "lineup",
+                      },
+                      selectionSet: {
+                        kind: Kind.SELECTION_SET,
+                        selections: [
+                          {
+                            kind: Kind.FIELD,
+                            name: {
+                              kind: Kind.NAME,
+                              value: "id",
+                            },
+                          },
+                          {
+                            kind: Kind.FIELD,
+                            name: {
+                              kind: Kind.NAME,
+                              value: "device",
                             },
                           },
                         ],

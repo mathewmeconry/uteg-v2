@@ -83,10 +83,16 @@ enum EGTDivisionStates {
   RUNNING
 }
 
+type EGTLineup {
+  device: ID!
+  id: ID!
+}
+
 type EGTStarterLink {
   category: Int
   division: EGTDivision
   id: ID!
+  lineup: EGTLineup
 }
 
 input EGTStarterLinkInput {

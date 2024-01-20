@@ -19,6 +19,7 @@ import { Role } from 'src/auth/decorators/role.decorator';
 import { ROLES } from 'src/auth/types';
 import { EGTStarterLinkInput } from './egtStarterLink.types';
 import { StarterService } from 'src/base/starter/starter.service';
+import { EGTLineup } from '../lineup/egtLineup.entity';
 
 @Resolver(() => EGTStarterLink)
 @UseGuards(EGTStarterLinkGuard, RoleGuard)
@@ -111,5 +112,10 @@ export class EGTStarterLinkResolver {
     @Parent() egtStarterLink: EGTStarterLink,
   ): Promise<EGTDivision> {
     return egtStarterLink.division;
+  }
+
+  @ResolveField(() => EGTLineup, { nullable: true })
+  async lineup(@Parent() egtStarterLink: EGTStarterLink): Promise<EGTLineup> {
+    return egtStarterLink.lineup;
   }
 }
