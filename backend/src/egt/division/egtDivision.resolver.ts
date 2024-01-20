@@ -20,9 +20,9 @@ import {
 } from './egtDivision.types';
 import { EGTDivisionService } from './egtDivision.service';
 import { CompetitionService } from 'src/base/competition/competition.service';
-import { SEX } from 'src/base/starter/starter.types';
 import { StarterLink } from 'src/base/starterLink/starterLink.entity';
 import { EGTStarterLink } from '../starterlink/egtStarterLink.entity';
+import { EGTLineup } from '../lineup/egtLineup.entity';
 
 @Resolver(() => EGTDivision)
 @UseGuards(EGTDivisionGuard, RoleGuard)
@@ -39,6 +39,14 @@ export class EGTDivisionResolver {
     @Args('filter') filter: EGTDivisionFilterInput,
   ): Promise<EGTDivision[]> {
     return this.egtDivisionService.findAll(filter);
+  }
+
+  @Role(ROLES.VIEWER)
+  @Query(() => EGTDivision, { name: 'egtDivision', nullable: true })
+  findOne(
+    @Args('id', { type: () => ID }) id: number,
+  ): Promise<EGTDivision | null> {
+    return this.egtDivisionService.findOne(id);
   }
 
   @Role(ROLES.ADMIN)
@@ -86,5 +94,10 @@ export class EGTDivisionResolver {
         async (egtStarterLink) => await egtStarterLink.starterLink,
       ),
     );
+  }
+
+  @ResolveField(() => [EGTLineup])
+  async lineups(@Parent() division: EGTDivision): Promise<EGTLineup[]> {
+    return division.lineups;
   }
 }
