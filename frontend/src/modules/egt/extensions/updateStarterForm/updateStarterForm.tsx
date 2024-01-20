@@ -3,7 +3,7 @@ import { FormTextInput } from "../../../../components/form/FormTextInput";
 import { MenuItem, Skeleton } from "@mui/material";
 import { useFormContext, useWatch } from "react-hook-form";
 import {
-  useEgtDivisionLazyQuery,
+  useEgtDivisionsUpdateStarterFormLazyQuery,
   useEgtStarterLinkLazyQuery,
   useEgtStarterLinkMutationMutation,
 } from "../../../../__generated__/graphql";
@@ -29,7 +29,7 @@ export function EGTUpdateStarterForm() {
   const [
     divisionQuery,
     { loading: divisionLoading, data: divisionData },
-  ] = useEgtDivisionLazyQuery();
+  ] = useEgtDivisionsUpdateStarterFormLazyQuery();
   const [mutation] = useEgtStarterLinkMutationMutation();
 
   async function onSubmit(data: any) {
@@ -87,7 +87,7 @@ export function EGTUpdateStarterForm() {
       divisionQuery({
         variables: {
           filter: {
-            competitionID: id || "",
+            competitionID: parseInt(id || ""),
             category: parseInt(category),
             sex,
           },
