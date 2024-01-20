@@ -56,7 +56,7 @@ export function LineupToolbar(props: { lineups: EgtLineup[] }) {
 
   return (
     <GridToolbarContainer
-      sx={{ display: "flex", justifyContent: "space-between" }}
+      sx={{ display: "flex", justifyContent: "space-between", p: 1, height: "3rem" }}
     >
       {renderAssignButtons()}
     </GridToolbarContainer>

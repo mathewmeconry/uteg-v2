@@ -122,8 +122,9 @@ export type EgtStarterLinkInput = {
   category?: InputMaybe<Scalars['Int']['input']>;
   divisionID?: InputMaybe<Scalars['ID']['input']>;
   divisionNumber?: InputMaybe<Scalars['Int']['input']>;
+  id?: InputMaybe<Scalars['ID']['input']>;
   lineupID?: InputMaybe<Scalars['ID']['input']>;
-  starterLinkID: Scalars['ID']['input'];
+  starterLinkID?: InputMaybe<Scalars['ID']['input']>;
 };
 
 export type Grade = {
