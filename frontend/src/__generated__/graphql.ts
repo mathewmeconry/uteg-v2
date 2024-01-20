@@ -83,8 +83,8 @@ export type EgtDivision = {
   currentRound: Scalars['Int']['output'];
   ground: Scalars['Int']['output'];
   id: Scalars['ID']['output'];
+  lineups: Array<EgtLineup>;
   number: Scalars['Int']['output'];
-  round: Scalars['Int']['output'];
   sex: Sex;
   starters: StarterLink;
   state: EgtDivisionStates;
@@ -106,6 +106,7 @@ export type EgtLineup = {
   __typename?: 'EGTLineup';
   device: Scalars['ID']['output'];
   id: Scalars['ID']['output'];
+  starterlinks: Array<EgtStarterLink>;
 };
 
 export type EgtStarterLink = {
@@ -114,12 +115,14 @@ export type EgtStarterLink = {
   division?: Maybe<EgtDivision>;
   id: Scalars['ID']['output'];
   lineup?: Maybe<EgtLineup>;
+  starterlink: StarterLink;
 };
 
 export type EgtStarterLinkInput = {
   category?: InputMaybe<Scalars['Int']['input']>;
   divisionID?: InputMaybe<Scalars['ID']['input']>;
   divisionNumber?: InputMaybe<Scalars['Int']['input']>;
+  lineupID?: InputMaybe<Scalars['ID']['input']>;
   starterLinkID: Scalars['ID']['input'];
 };
 
@@ -207,8 +210,11 @@ export type Query = {
   clubs: Array<Club>;
   competition: Competition;
   competitions: Array<Competition>;
+  egtDivision?: Maybe<EgtDivision>;
   egtDivisions: Array<EgtDivision>;
+  egtLineup?: Maybe<EgtLineup>;
   egtStarterLink?: Maybe<EgtStarterLink>;
+  egtStarterLinkUnassigned: Array<EgtStarterLink>;
   grades: Array<Grade>;
   starterLink?: Maybe<StarterLink>;
   starterLinks: Array<StarterLink>;
@@ -222,14 +228,29 @@ export type QueryCompetitionArgs = {
 };
 
 
+export type QueryEgtDivisionArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
 export type QueryEgtDivisionsArgs = {
   filter: EgtDivisionFilterInput;
+};
+
+
+export type QueryEgtLineupArgs = {
+  id: Scalars['ID']['input'];
 };
 
 
 export type QueryEgtStarterLinkArgs = {
   id?: InputMaybe<Scalars['ID']['input']>;
   starterLinkID?: InputMaybe<Scalars['ID']['input']>;
+};
+
+
+export type QueryEgtStarterLinkUnassignedArgs = {
+  divisionID: Scalars['ID']['input'];
 };
 
 
@@ -376,6 +397,20 @@ export type CompetitionNameQueryVariables = Exact<{
 
 export type CompetitionNameQuery = { __typename?: 'Query', competition: { __typename?: 'Competition', name: string } };
 
+export type EgtLineupQueryVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type EgtLineupQuery = { __typename?: 'Query', egtLineup?: { __typename?: 'EGTLineup', id: string, device: string, starterlinks: Array<{ __typename?: 'EGTStarterLink', id: string, starterlink: { __typename?: 'StarterLink', id: string, starter: { __typename?: 'Starter', id: string, firstname: string, lastname: string, birthyear: number }, club: { __typename?: 'Club', id: string, name: string } } }> } | null };
+
+export type AssignEgtLineupMutationVariables = Exact<{
+  data: EgtStarterLinkInput;
+}>;
+
+
+export type AssignEgtLineupMutation = { __typename?: 'Mutation', egtStarterLink: { __typename?: 'EGTStarterLink', id: string } };
+
 export type CompetitionGroundsQueryVariables = Exact<{
   id: Scalars['ID']['input'];
 }>;
@@ -405,19 +440,33 @@ export type EgtStarterLinkQueryVariables = Exact<{
 
 export type EgtStarterLinkQuery = { __typename?: 'Query', egtStarterLink?: { __typename?: 'EGTStarterLink', id: string, category?: number | null, division?: { __typename?: 'EGTDivision', id: string } | null } | null };
 
-export type EgtDivisionQueryVariables = Exact<{
+export type EgtDivisionsUpdateStarterFormQueryVariables = Exact<{
   filter: EgtDivisionFilterInput;
 }>;
 
 
-export type EgtDivisionQuery = { __typename?: 'Query', egtDivisions: Array<{ __typename?: 'EGTDivision', id: string, number: number, ground: number }> };
+export type EgtDivisionsUpdateStarterFormQuery = { __typename?: 'Query', egtDivisions: Array<{ __typename?: 'EGTDivision', id: string, number: number, ground: number }> };
+
+export type EgtDivisionQueryVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type EgtDivisionQuery = { __typename?: 'Query', egtDivision?: { __typename?: 'EGTDivision', id: string, category: number, ground: number, currentRound: number, totalRounds: number, sex: Sex, number: number, lineups: Array<{ __typename?: 'EGTLineup', id: string, device: string }> } | null };
+
+export type EgtStarterLinkUnassignedQueryVariables = Exact<{
+  divisionID: Scalars['ID']['input'];
+}>;
+
+
+export type EgtStarterLinkUnassignedQuery = { __typename?: 'Query', egtStarterLinkUnassigned: Array<{ __typename?: 'EGTStarterLink', id: string, starterlink: { __typename?: 'StarterLink', id: string, starter: { __typename?: 'Starter', id: string, firstname: string, lastname: string, birthyear: number }, club: { __typename?: 'Club', id: string, name: string } } }> };
 
 export type EgtDivisionsQueryVariables = Exact<{
   competitionID: Scalars['ID']['input'];
 }>;
 
 
-export type EgtDivisionsQuery = { __typename?: 'Query', egtDivisions: Array<{ __typename?: 'EGTDivision', id: string, ground: number, state: EgtDivisionStates, round: number, currentRound: number, totalRounds: number, category: number, sex: Sex, number: number }> };
+export type EgtDivisionsQuery = { __typename?: 'Query', egtDivisions: Array<{ __typename?: 'EGTDivision', id: string, ground: number, state: EgtDivisionStates, currentRound: number, totalRounds: number, category: number, sex: Sex, number: number }> };
 
 export type RemoveEgtDivisionMutationVariables = Exact<{
   id: Scalars['ID']['input'];
@@ -859,6 +908,96 @@ export type CompetitionNameQueryHookResult = ReturnType<typeof useCompetitionNam
 export type CompetitionNameLazyQueryHookResult = ReturnType<typeof useCompetitionNameLazyQuery>;
 export type CompetitionNameSuspenseQueryHookResult = ReturnType<typeof useCompetitionNameSuspenseQuery>;
 export type CompetitionNameQueryResult = Apollo.QueryResult<CompetitionNameQuery, CompetitionNameQueryVariables>;
+export const EgtLineupDocument = gql`
+    query egtLineup($id: ID!) {
+  egtLineup(id: $id) {
+    id
+    device
+    starterlinks {
+      id
+      starterlink {
+        id
+        starter {
+          id
+          firstname
+          lastname
+          birthyear
+        }
+        club {
+          id
+          name
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useEgtLineupQuery__
+ *
+ * To run a query within a React component, call `useEgtLineupQuery` and pass it any options that fit your needs.
+ * When your component renders, `useEgtLineupQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useEgtLineupQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useEgtLineupQuery(baseOptions: Apollo.QueryHookOptions<EgtLineupQuery, EgtLineupQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<EgtLineupQuery, EgtLineupQueryVariables>(EgtLineupDocument, options);
+      }
+export function useEgtLineupLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<EgtLineupQuery, EgtLineupQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<EgtLineupQuery, EgtLineupQueryVariables>(EgtLineupDocument, options);
+        }
+export function useEgtLineupSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<EgtLineupQuery, EgtLineupQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<EgtLineupQuery, EgtLineupQueryVariables>(EgtLineupDocument, options);
+        }
+export type EgtLineupQueryHookResult = ReturnType<typeof useEgtLineupQuery>;
+export type EgtLineupLazyQueryHookResult = ReturnType<typeof useEgtLineupLazyQuery>;
+export type EgtLineupSuspenseQueryHookResult = ReturnType<typeof useEgtLineupSuspenseQuery>;
+export type EgtLineupQueryResult = Apollo.QueryResult<EgtLineupQuery, EgtLineupQueryVariables>;
+export const AssignEgtLineupDocument = gql`
+    mutation assignEgtLineup($data: EGTStarterLinkInput!) {
+  egtStarterLink(data: $data) {
+    id
+  }
+}
+    `;
+export type AssignEgtLineupMutationFn = Apollo.MutationFunction<AssignEgtLineupMutation, AssignEgtLineupMutationVariables>;
+
+/**
+ * __useAssignEgtLineupMutation__
+ *
+ * To run a mutation, you first call `useAssignEgtLineupMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAssignEgtLineupMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [assignEgtLineupMutation, { data, loading, error }] = useAssignEgtLineupMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useAssignEgtLineupMutation(baseOptions?: Apollo.MutationHookOptions<AssignEgtLineupMutation, AssignEgtLineupMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AssignEgtLineupMutation, AssignEgtLineupMutationVariables>(AssignEgtLineupDocument, options);
+      }
+export type AssignEgtLineupMutationHookResult = ReturnType<typeof useAssignEgtLineupMutation>;
+export type AssignEgtLineupMutationResult = Apollo.MutationResult<AssignEgtLineupMutation>;
+export type AssignEgtLineupMutationOptions = Apollo.BaseMutationOptions<AssignEgtLineupMutation, AssignEgtLineupMutationVariables>;
 export const CompetitionGroundsDocument = gql`
     query competitionGrounds($id: ID!) {
   competition(id: $id) {
@@ -1012,12 +1151,62 @@ export type EgtStarterLinkQueryHookResult = ReturnType<typeof useEgtStarterLinkQ
 export type EgtStarterLinkLazyQueryHookResult = ReturnType<typeof useEgtStarterLinkLazyQuery>;
 export type EgtStarterLinkSuspenseQueryHookResult = ReturnType<typeof useEgtStarterLinkSuspenseQuery>;
 export type EgtStarterLinkQueryResult = Apollo.QueryResult<EgtStarterLinkQuery, EgtStarterLinkQueryVariables>;
-export const EgtDivisionDocument = gql`
-    query egtDivision($filter: EGTDivisionFilterInput!) {
+export const EgtDivisionsUpdateStarterFormDocument = gql`
+    query egtDivisionsUpdateStarterForm($filter: EGTDivisionFilterInput!) {
   egtDivisions(filter: $filter) {
     id
     number
     ground
+  }
+}
+    `;
+
+/**
+ * __useEgtDivisionsUpdateStarterFormQuery__
+ *
+ * To run a query within a React component, call `useEgtDivisionsUpdateStarterFormQuery` and pass it any options that fit your needs.
+ * When your component renders, `useEgtDivisionsUpdateStarterFormQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useEgtDivisionsUpdateStarterFormQuery({
+ *   variables: {
+ *      filter: // value for 'filter'
+ *   },
+ * });
+ */
+export function useEgtDivisionsUpdateStarterFormQuery(baseOptions: Apollo.QueryHookOptions<EgtDivisionsUpdateStarterFormQuery, EgtDivisionsUpdateStarterFormQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<EgtDivisionsUpdateStarterFormQuery, EgtDivisionsUpdateStarterFormQueryVariables>(EgtDivisionsUpdateStarterFormDocument, options);
+      }
+export function useEgtDivisionsUpdateStarterFormLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<EgtDivisionsUpdateStarterFormQuery, EgtDivisionsUpdateStarterFormQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<EgtDivisionsUpdateStarterFormQuery, EgtDivisionsUpdateStarterFormQueryVariables>(EgtDivisionsUpdateStarterFormDocument, options);
+        }
+export function useEgtDivisionsUpdateStarterFormSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<EgtDivisionsUpdateStarterFormQuery, EgtDivisionsUpdateStarterFormQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<EgtDivisionsUpdateStarterFormQuery, EgtDivisionsUpdateStarterFormQueryVariables>(EgtDivisionsUpdateStarterFormDocument, options);
+        }
+export type EgtDivisionsUpdateStarterFormQueryHookResult = ReturnType<typeof useEgtDivisionsUpdateStarterFormQuery>;
+export type EgtDivisionsUpdateStarterFormLazyQueryHookResult = ReturnType<typeof useEgtDivisionsUpdateStarterFormLazyQuery>;
+export type EgtDivisionsUpdateStarterFormSuspenseQueryHookResult = ReturnType<typeof useEgtDivisionsUpdateStarterFormSuspenseQuery>;
+export type EgtDivisionsUpdateStarterFormQueryResult = Apollo.QueryResult<EgtDivisionsUpdateStarterFormQuery, EgtDivisionsUpdateStarterFormQueryVariables>;
+export const EgtDivisionDocument = gql`
+    query egtDivision($id: ID!) {
+  egtDivision(id: $id) {
+    id
+    category
+    ground
+    currentRound
+    totalRounds
+    sex
+    number
+    lineups {
+      id
+      device
+    }
   }
 }
     `;
@@ -1034,7 +1223,7 @@ export const EgtDivisionDocument = gql`
  * @example
  * const { data, loading, error } = useEgtDivisionQuery({
  *   variables: {
- *      filter: // value for 'filter'
+ *      id: // value for 'id'
  *   },
  * });
  */
@@ -1054,13 +1243,65 @@ export type EgtDivisionQueryHookResult = ReturnType<typeof useEgtDivisionQuery>;
 export type EgtDivisionLazyQueryHookResult = ReturnType<typeof useEgtDivisionLazyQuery>;
 export type EgtDivisionSuspenseQueryHookResult = ReturnType<typeof useEgtDivisionSuspenseQuery>;
 export type EgtDivisionQueryResult = Apollo.QueryResult<EgtDivisionQuery, EgtDivisionQueryVariables>;
+export const EgtStarterLinkUnassignedDocument = gql`
+    query egtStarterLinkUnassigned($divisionID: ID!) {
+  egtStarterLinkUnassigned(divisionID: $divisionID) {
+    id
+    starterlink {
+      id
+      starter {
+        id
+        firstname
+        lastname
+        birthyear
+      }
+      club {
+        id
+        name
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useEgtStarterLinkUnassignedQuery__
+ *
+ * To run a query within a React component, call `useEgtStarterLinkUnassignedQuery` and pass it any options that fit your needs.
+ * When your component renders, `useEgtStarterLinkUnassignedQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useEgtStarterLinkUnassignedQuery({
+ *   variables: {
+ *      divisionID: // value for 'divisionID'
+ *   },
+ * });
+ */
+export function useEgtStarterLinkUnassignedQuery(baseOptions: Apollo.QueryHookOptions<EgtStarterLinkUnassignedQuery, EgtStarterLinkUnassignedQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<EgtStarterLinkUnassignedQuery, EgtStarterLinkUnassignedQueryVariables>(EgtStarterLinkUnassignedDocument, options);
+      }
+export function useEgtStarterLinkUnassignedLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<EgtStarterLinkUnassignedQuery, EgtStarterLinkUnassignedQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<EgtStarterLinkUnassignedQuery, EgtStarterLinkUnassignedQueryVariables>(EgtStarterLinkUnassignedDocument, options);
+        }
+export function useEgtStarterLinkUnassignedSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<EgtStarterLinkUnassignedQuery, EgtStarterLinkUnassignedQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<EgtStarterLinkUnassignedQuery, EgtStarterLinkUnassignedQueryVariables>(EgtStarterLinkUnassignedDocument, options);
+        }
+export type EgtStarterLinkUnassignedQueryHookResult = ReturnType<typeof useEgtStarterLinkUnassignedQuery>;
+export type EgtStarterLinkUnassignedLazyQueryHookResult = ReturnType<typeof useEgtStarterLinkUnassignedLazyQuery>;
+export type EgtStarterLinkUnassignedSuspenseQueryHookResult = ReturnType<typeof useEgtStarterLinkUnassignedSuspenseQuery>;
+export type EgtStarterLinkUnassignedQueryResult = Apollo.QueryResult<EgtStarterLinkUnassignedQuery, EgtStarterLinkUnassignedQueryVariables>;
 export const EgtDivisionsDocument = gql`
     query egtDivisions($competitionID: ID!) {
   egtDivisions(filter: {competitionID: $competitionID}) {
     id
     ground
     state
-    round
     currentRound
     totalRounds
     category

@@ -28,11 +28,11 @@ export class EGTLineupGuard implements CanActivate {
       division = await lineup.division;
     }
 
-    if (args.data.divisionID) {
+    if (args.data?.divisionID) {
       division = await this.egtDivisionService.findOne(args.data.divisionID);
     }
 
-    if (args.filter.divisionID) {
+    if (args.filter?.divisionID) {
       division = await this.egtDivisionService.findOne(args.filter.divisionID);
     }
 

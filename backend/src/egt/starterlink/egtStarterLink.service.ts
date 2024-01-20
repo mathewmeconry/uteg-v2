@@ -21,6 +21,15 @@ export class EGTStarterLinkService {
       .getOne();
   }
 
+  findUnassignedForDivision(divisionID: number): Promise<EGTStarterLink[]> {
+    return this.egtStarterLinkRepository
+      .createQueryBuilder('egtStarterLink')
+      .leftJoin('egtStarterLink.division', 'division')
+      .where('division.id = :divisionID', { divisionID })
+      .andWhere('egtStarterLink.lineup IS NULL')
+      .getMany();
+  }
+
   async save(starterLink: EGTStarterLink): Promise<EGTStarterLink> {
     return this.egtStarterLinkRepository.save(starterLink);
   }

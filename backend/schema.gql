@@ -63,8 +63,8 @@ type EGTDivision {
   currentRound: Int!
   ground: Int!
   id: ID!
+  lineups: [EGTLineup!]!
   number: Int!
-  round: Int!
   sex: Sex!
   starters: StarterLink!
   state: EGTDivisionStates!
@@ -86,6 +86,7 @@ enum EGTDivisionStates {
 type EGTLineup {
   device: ID!
   id: ID!
+  starterlinks: [EGTStarterLink!]!
 }
 
 type EGTStarterLink {
@@ -93,13 +94,16 @@ type EGTStarterLink {
   division: EGTDivision
   id: ID!
   lineup: EGTLineup
+  starterlink: StarterLink!
 }
 
 input EGTStarterLinkInput {
   category: Int
   divisionID: ID
   divisionNumber: Int
-  starterLinkID: ID!
+  id: ID
+  lineupID: ID
+  starterLinkID: ID
 }
 
 type Grade {
@@ -126,8 +130,11 @@ type Query {
   clubs: [Club!]!
   competition(id: ID!): Competition!
   competitions: [Competition!]!
+  egtDivision(id: ID!): EGTDivision
   egtDivisions(filter: EGTDivisionFilterInput!): [EGTDivision!]!
+  egtLineup(id: ID!): EGTLineup
   egtStarterLink(id: ID, starterLinkID: ID): EGTStarterLink
+  egtStarterLinkUnassigned(divisionID: ID!): [EGTStarterLink!]!
   grades: [Grade!]!
   starterLink(id: ID!): StarterLink
   starterLinks(competitionID: ID!, sex: String): [StarterLink!]!

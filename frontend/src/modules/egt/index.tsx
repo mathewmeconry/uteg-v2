@@ -2,7 +2,7 @@ import { Module } from "../types";
 import { RouteObject } from "react-router-dom";
 import { Divisionslist } from "./pages/divisions/divisionlist";
 import AccountTreeIcon from "@mui/icons-material/AccountTree";
-import { Lineup } from "./pages/divisions/[id]/lineup/lineup";
+import { Lineups } from "./pages/divisions/[id]/lineups/lineups";
 import { EGTUpdateStarterForm } from "./extensions/updateStarterForm/updateStarterForm";
 import { EGTStartersReviewStepRow } from "./extensions/startersReviewStepRow/startersReviewStepRow";
 import { parseStarterFromSheet } from "./handlers/parseStarterFromSheet/parseStarterFromSheet";
@@ -24,11 +24,11 @@ const routes: RouteObject[] = [
         path: "division",
         children: [
           {
-            path: ":id",
+            path: ":divisionID",
             children: [
               {
-                path: "lineup",
-                element: <Lineup />,
+                path: "lineups",
+                element: <Lineups />,
               },
             ],
           },

@@ -2,8 +2,11 @@ import { Field, ID, InputType, Int } from '@nestjs/graphql';
 
 @InputType()
 export class EGTStarterLinkInput {
-  @Field(() => ID)
-  starterLinkID: number;
+  @Field(() => ID, { nullable: true })
+  id?: number;
+
+  @Field(() => ID, { nullable: true })
+  starterLinkID?: number;
 
   @Field(() => ID, { nullable: true })
   divisionID?: number;
@@ -13,4 +16,7 @@ export class EGTStarterLinkInput {
 
   @Field({ nullable: true })
   category?: number;
+
+  @Field(() => ID, { nullable: true })
+  lineupID?: number;
 }

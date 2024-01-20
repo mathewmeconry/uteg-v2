@@ -26,7 +26,7 @@ export class EGTStarterLink {
   starterLink: Promise<StarterLink>;
 
   @ManyToOne(() => EGTLineup, { nullable: true, onDelete: 'SET NULL' })
-  lineup?: EGTLineup;
+  lineup?: Promise<EGTLineup>;
 
   @Column({ nullable: true })
   @Field({ nullable: true })

@@ -18,8 +18,9 @@ import { StarterLinkService } from 'src/base/starterLink/starterLink.service';
 import { Role } from 'src/auth/decorators/role.decorator';
 import { ROLES } from 'src/auth/types';
 import { EGTStarterLinkInput } from './egtStarterLink.types';
-import { StarterService } from 'src/base/starter/starter.service';
 import { EGTLineup } from '../lineup/egtLineup.entity';
+import { StarterLink } from 'src/base/starterLink/starterLink.entity';
+import { EGTLineupService } from '../lineup/egtLineup.service';
 
 @Resolver(() => EGTStarterLink)
 @UseGuards(EGTStarterLinkGuard, RoleGuard)
@@ -34,7 +35,7 @@ export class EGTStarterLinkResolver {
   private starterLinkService: StarterLinkService;
 
   @Inject()
-  private starterService: StarterService;
+  private egtLineupService: EGTLineupService;
 
   @Role(ROLES.VIEWER)
   @Query(() => EGTStarterLink, { nullable: true, name: 'egtStarterLink' })
@@ -49,6 +50,14 @@ export class EGTStarterLinkResolver {
     return this.egtStarterLinkService.findByStarterLink(starterLinkID);
   }
 
+  @Role(ROLES.VIEWER)
+  @Query(() => [EGTStarterLink], { name: 'egtStarterLinkUnassigned' })
+  async egtStarterLinkUnassigned(
+    @Args('divisionID', { type: () => ID }) divisionID: number,
+  ): Promise<EGTStarterLink[]> {
+    return this.egtStarterLinkService.findUnassignedForDivision(divisionID);
+  }
+
   @Role(ROLES.ADMIN)
   @Mutation(() => EGTStarterLink, { name: 'egtStarterLink' })
   async create(
@@ -58,9 +67,24 @@ export class EGTStarterLinkResolver {
       throw new BadRequestException();
     }
 
-    let link = await this.egtStarterLinkService.findByStarterLink(
-      linkData.starterLinkID,
-    );
+    if (!linkData.id && !linkData.starterLinkID) {
+      throw new BadRequestException();
+    }
+
+    if (linkData.id && linkData.starterLinkID) {
+      throw new BadRequestException();
+    }
+
+    let link: EGTStarterLink | null = null;
+    if (linkData.starterLinkID) {
+      link = await this.egtStarterLinkService.findByStarterLink(
+        linkData.starterLinkID,
+      );
+    }
+
+    if (linkData.id) {
+      link = await this.egtStarterLinkService.findOne(linkData.id);
+    }
 
     if (!link) {
       link = new EGTStarterLink();
@@ -104,6 +128,10 @@ export class EGTStarterLinkResolver {
       link.category = linkData.category;
     }
 
+    link.lineup = Promise.resolve(
+      await this.egtLineupService.findOne(linkData.lineupID),
+    );
+
     return this.egtStarterLinkService.save(link);
   }
 
@@ -117,5 +145,12 @@ export class EGTStarterLinkResolver {
   @ResolveField(() => EGTLineup, { nullable: true })
   async lineup(@Parent() egtStarterLink: EGTStarterLink): Promise<EGTLineup> {
     return egtStarterLink.lineup;
+  }
+
+  @ResolveField(() => StarterLink)
+  async starterlink(
+    @Parent() egtStarterLink: EGTStarterLink,
+  ): Promise<StarterLink> {
+    return egtStarterLink.starterLink;
   }
 }

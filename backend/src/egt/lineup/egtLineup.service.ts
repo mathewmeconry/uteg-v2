@@ -9,6 +9,9 @@ export class EGTLineupService {
   private egtLineupRepository: Repository<EGTLineup>;
 
   findOne(id: number): Promise<EGTLineup | null> {
+    if (!id) {
+      return null;
+    }
     return this.egtLineupRepository.findOneBy({ id });
   }
 
