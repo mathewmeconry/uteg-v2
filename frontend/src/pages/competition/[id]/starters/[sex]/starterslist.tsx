@@ -67,6 +67,7 @@ export function StartersList() {
       competitionID: id,
       sex: sex.toUpperCase() as Sex,
     },
+    fetchPolicy: "cache-and-network",
   });
 
   const inFilter: GridFilterOperator = {
@@ -128,7 +129,11 @@ export function StartersList() {
       flex: 1,
       filterOperators: [inFilter],
     },
-    ...moduleColumns,
+    ...moduleColumns.map((column) => ({
+      ...column,
+      valueGetter: (params) =>
+        column.valueGetter(params) ? t(column.valueGetter(params)) : "",
+    })),
     {
       type: "actions",
       headerName: t("actions"),

@@ -168,7 +168,12 @@ export function Lineups() {
     return (
       <>
         <Box sx={{ flexGrow: 1, mt: 2 }}>
-          <Typography variant="h5">{t("egt.unassigned")}</Typography>
+          <Typography variant="h5">
+            {t("egt.unassigned")}
+            <Typography variant="caption" sx={{ ml: 1 }}>
+              {(unassignedStarters?.egtStarterLinkUnassigned || []).length}
+            </Typography>
+          </Typography>
           <DataGrid
             rows={unassignedStarters?.egtStarterLinkUnassigned || []}
             sx={{

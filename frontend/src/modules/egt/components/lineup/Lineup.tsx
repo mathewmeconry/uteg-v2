@@ -81,6 +81,9 @@ export function Lineup(props: { id: string; lineups: EgtLineup[] }) {
       <Box sx={{ flexGrow: 1, mt: 2 }}>
         <Typography variant="h5">
           {t(`egt.device.${lineup?.egtLineup?.device}`)}
+          <Typography variant="caption" sx={{ ml: 1 }}>
+            {(lineup?.egtLineup?.starterlinks || []).length}
+          </Typography>
         </Typography>
         <DataGrid
           rows={lineup?.egtLineup?.starterlinks || []}
