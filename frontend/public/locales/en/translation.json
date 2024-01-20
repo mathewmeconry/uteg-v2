@@ -1,0 +1,18 @@
+{
+  "Login": "Login",
+  "E-Mail": "E-Mail",
+  "Password": "Password",
+  "Assign to device": "Assign to {{device}}",
+  "egt": {
+    "category": {
+      "1": "K1"
+    },
+    "device": {
+      "1": "Reck",
+      "2": "Boden",
+      "3": "Schaukelringe",
+      "4": "Sprung",
+      "5": "Barren"
+    }
+  }
+}
