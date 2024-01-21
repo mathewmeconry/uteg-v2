@@ -96,8 +96,8 @@ function Row(props: StartersReviewStepRowProps) {
           }}
           rules={{ required: true }}
         >
-          <MenuItem value="MALE">{t("Male")}</MenuItem>
-          <MenuItem value="FEMALE">{t("Female")}</MenuItem>
+          <MenuItem value="MALE">{t("male")}</MenuItem>
+          <MenuItem value="FEMALE">{t("female")}</MenuItem>
         </FormTextInput>
       </TableCell>
       {...modules.modules.map((module, index) => {

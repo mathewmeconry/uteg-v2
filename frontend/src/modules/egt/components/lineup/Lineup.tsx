@@ -13,7 +13,7 @@ import { useState } from "react";
 import { UpdateStarterDialog } from "../../../../dialogs/updateStarterDialog/updateStarterDialog";
 
 export function Lineup(props: { id: string; lineups: EgtLineup[] }) {
-  const { t } = useTranslation();
+  const { t } = useTranslation(["common", "egt"]);
   const [editDialog, setEditDialog] = useState(false);
   const [toEditLink, setToEditLink] = useState<string>("");
   const { data: lineup, loading, refetch: refetchLineup } = useEgtLineupQuery({
@@ -80,7 +80,7 @@ export function Lineup(props: { id: string; lineups: EgtLineup[] }) {
     <>
       <Box sx={{ flexGrow: 1, mt: 2 }}>
         <Typography variant="h5">
-          {t(`egt.device.${lineup?.egtLineup?.device}`)}
+          {t(`device_${lineup?.egtLineup?.device}`, { ns: "egt" })}
           <Typography variant="caption" sx={{ ml: 1 }}>
             {(lineup?.egtLineup?.starterlinks || []).length}
           </Typography>

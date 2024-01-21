@@ -10,6 +10,8 @@ import { useTranslation } from "react-i18next";
 
 export type FormTextInputProps = PropsWithChildren & {
   name: string;
+  label?: string;
+  ns?: string;
   fieldProps?: TextFieldProps;
   defaultValue?: string;
   rules:
@@ -37,7 +39,7 @@ export function FormTextInput(props: FormTextInputProps) {
     <TextField
       key={props.name}
       id={props.name}
-      label={t(props.name)}
+      label={t(props.label || props.name, { ns : props.ns })}
       variant="standard"
       margin="normal"
       fullWidth

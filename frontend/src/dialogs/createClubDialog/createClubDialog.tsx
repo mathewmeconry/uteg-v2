@@ -22,15 +22,15 @@ export function CreateClubDialog(props: {
 }) {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
-  const { t } = useTranslation();
+  const { t } = useTranslation("common");
   const form = useForm({
     defaultValues: {
       name: "",
       location: "",
     },
     values: {
-      name: props.name || ''
-    }
+      name: props.name || "",
+    },
   });
   const [createClub, { loading }] = useCreateClubMutation();
 
@@ -50,7 +50,9 @@ export function CreateClubDialog(props: {
             },
           },
         });
-        enqueueSnackbar(t("Club created"), { variant: "success" });
+        enqueueSnackbar(t("created", { name: data.name }), {
+          variant: "success",
+        });
         form.reset();
         props.onClose(club.data?.createClub);
       } catch (e) {
@@ -63,27 +65,21 @@ export function CreateClubDialog(props: {
 
   return (
     <Dialog open={props.isOpen} fullScreen={fullScreen} maxWidth="sm" fullWidth>
-      <DialogTitle>{t("Add Club")}</DialogTitle>
+      <DialogTitle>{t("add", {name: t("club")})}</DialogTitle>
       <FormProvider {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)}>
-        <DialogContent>
-          <FormTextInput
-            name="name"
-            rules={{ required: true }}
-          />
-          <FormTextInput
-            name="location"
-            rules={{ required: true }}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCancel}>{t("Cancel")}</Button>
-          <Button variant="contained" color="success" type="submit">
-            {loading && <CircularProgress size={24} />}
-            {!loading && t("Save")}
-          </Button>
-        </DialogActions>
-      </form>
+        <form onSubmit={form.handleSubmit(onSubmit)}>
+          <DialogContent>
+            <FormTextInput name="name" rules={{ required: true }} />
+            <FormTextInput name="location" rules={{ required: true }} />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCancel}>{t("cancel")}</Button>
+            <Button variant="contained" color="success" type="submit">
+              {loading && <CircularProgress size={24} />}
+              {!loading && t("save")}
+            </Button>
+          </DialogActions>
+        </form>
       </FormProvider>
     </Dialog>
   );

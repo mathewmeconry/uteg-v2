@@ -22,7 +22,7 @@ export type EGTFormCategorySelectProps = {
 };
 
 export function FormCategorySelect(props: EGTFormCategorySelectProps) {
-  const { t } = useTranslation();
+  const { t } = useTranslation("egt");
   const { control } = useFormContext();
 
   let chosenSex = useWatch({ name: props.sexField || "sex", control });
@@ -33,22 +33,21 @@ export function FormCategorySelect(props: EGTFormCategorySelectProps) {
   return (
     <FormTextInput
       name={props.name || "category"}
+      ns="egt"
       rules={props.rules}
       fieldProps={{
         select: true,
         ...props.fieldProps,
       }}
     >
-      <MenuItem value="1">{t("egt.category.1")}</MenuItem>
-      <MenuItem value="2">{t("egt.category.2")}</MenuItem>
-      <MenuItem value="3">{t("egt.category.3")}</MenuItem>
-      <MenuItem value="4">{t("egt.category.4")}</MenuItem>
-      <MenuItem value="5">{t("egt.category.5")}</MenuItem>
-      <MenuItem value="6">{t("egt.category.6")}</MenuItem>
-      <MenuItem value="7">{t("egt.category.7")}</MenuItem>
-      <MenuItem value="8">
-        {chosenSex ? t(`egt.category.8.${chosenSex}`) : t("egt.category.8")}
-      </MenuItem>
+      <MenuItem value="1">{t("category_1")}</MenuItem>
+      <MenuItem value="2">{t("category_2")}</MenuItem>
+      <MenuItem value="3">{t("category_3")}</MenuItem>
+      <MenuItem value="4">{t("category_4")}</MenuItem>
+      <MenuItem value="5">{t("category_5")}</MenuItem>
+      <MenuItem value="6">{t("category_6")}</MenuItem>
+      <MenuItem value="7">{t("category_7")}</MenuItem>
+      <MenuItem value="8">{t(`category_8`, { context: chosenSex?.toLowerCase() })}</MenuItem>
     </FormTextInput>
   );
 }

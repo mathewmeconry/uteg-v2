@@ -50,12 +50,12 @@ export function HomeLayout() {
   );
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { t } = useTranslation("common");
   const theme = useTheme();
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   if (!isTokenValid()) {
-    enqueueSnackbar(t("Permission Denied!"), {
+    enqueueSnackbar(t("permission_denied"), {
       variant: "error",
       key: "permissionDenied",
     });
@@ -81,7 +81,7 @@ export function HomeLayout() {
 
   const handleLogout = () => {
     removeToken();
-    enqueueSnackbar(t("Logged out"), { variant: "success" });
+    enqueueSnackbar(t("logged_out"), { variant: "success" });
     navigate("/login");
   };
 

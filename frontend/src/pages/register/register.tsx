@@ -28,10 +28,10 @@ export function Register() {
 
     if (data.password !== data.passwordRepeat) {
       form.setError("password", {
-        message: t("Passwords don't match"),
+        message: t("passwords_do_not_match"),
       });
       form.setError("passwordRepeat", {
-        message: t("Passwords don't match"),
+        message: t("passwords_do_not_match"),
       });
       return;
     }
@@ -44,14 +44,14 @@ export function Register() {
         },
       });
       await getToken(data.email, data.password);
-      enqueueSnackbar(t("User created"), {
+      enqueueSnackbar(t("created", { name: t("user", { count: 1 }) }), {
         variant: "success",
       });
       navigate("/home");
     } catch {
       if (error?.message.includes("Duplicate entry")) {
         form.setError("email", {
-          message: t("E-Mail already exists"),
+          message: t("email_already_exists"),
         });
       }
     }
@@ -81,13 +81,13 @@ export function Register() {
               rules={{ required: true }}
             />
             <FormTextInput
-              name="passwordRepeat"
+              name="repeat_password"
               fieldProps={{ type: "password" }}
               rules={{ required: true }}
             />
             <Button type="submit" variant="contained" sx={{ mt: 2, width: 1 }}>
               {loading && <CircularProgress />}
-              {!loading && t("Register")}
+              {!loading && t("register")}
             </Button>
           </form>
         </FormProvider>
@@ -95,7 +95,7 @@ export function Register() {
           {t("or")}
         </Divider>
         <Button href="/login" variant="outlined" sx={{ mt: 2, width: 1 }}>
-          {t("Login")}
+          {t("login")}
         </Button>
       </Box>
     </LandingPageLayout>

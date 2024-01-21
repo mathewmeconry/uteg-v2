@@ -11,7 +11,7 @@ export type ModuleExtensionProps = {
 
 export function ModuleExtensions(props: ModuleExtensionProps) {
   const modules = useModules(props.competitionId);
-  const { t } = useTranslation();
+  const { t } = useTranslation("common");
 
   const components = useMemo(() => {
     if (modules.loading) {
@@ -22,7 +22,7 @@ export function ModuleExtensions(props: ModuleExtensionProps) {
       if (module.extensions[props.extensionName]) {
         return (
           <>
-            <Divider>{t(module.name)}</Divider>
+            <Divider>{t(module.name, { ns: module.name })}</Divider>
             {module.extensions[props.extensionName]}
           </>
         );

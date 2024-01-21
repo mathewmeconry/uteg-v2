@@ -16,7 +16,8 @@ export function Setup() {
   return (
     <Box sx={{ display: "flex", width: 1, flexDirection: "column" }}>
       <FormTextInput
-        name="grounds"
+        name="setup.grounds"
+        label="grounds"
         fieldProps={{ type: "number" }}
         control={formControl}
         rules={{
@@ -25,9 +26,9 @@ export function Setup() {
         }}
       />
       <FormControl sx={{ mt: 1 }}>
-        <FormLabel>{t("Modules")}</FormLabel>
+        <FormLabel>{t("module", { count: 2 })}</FormLabel>
         <FormControlLabel
-          label={t("EGT")}
+          label={t("egt", {ns: "egt"})}
           value={watch("basic.modules.egt")}
           control={
             <Checkbox defaultChecked {...register("setup.modules.egt")} />

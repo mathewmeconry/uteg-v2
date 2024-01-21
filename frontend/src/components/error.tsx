@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
 
 export function Error() {
-  const { t } = useTranslation();
+  const { t } = useTranslation('common');
 
-  return <>{t("Something went wrong")}</>;
+  return <>{t("error")}</>;
 }

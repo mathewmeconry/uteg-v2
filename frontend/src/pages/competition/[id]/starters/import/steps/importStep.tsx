@@ -151,7 +151,7 @@ export function ImportStep() {
       <>
         <Typography textAlign="center">{t("club")}</Typography>
         <Typography textAlign="center">{club.label}</Typography>
-        <Typography mt={3}>{t("starters")}</Typography>
+        <Typography mt={3}>{t("starters", {count: 2})}</Typography>
         <Typography>{starters.length}</Typography>
         <Button
           variant="contained"
@@ -159,7 +159,7 @@ export function ImportStep() {
           sx={{ mt: 3 }}
           onClick={onImportClick}
         >
-          {t("Import")}
+          {t("import")}
         </Button>
       </>
     );
@@ -169,10 +169,10 @@ export function ImportStep() {
     return (
       <>
         {step === "importing" && (
-          <Typography>{t("Importing starters...")}</Typography>
+          <Typography>{t("importing", {name: t('starter', {count: 2})})}</Typography>
         )}
         {step === "linking" && (
-          <Typography>{t("Linking starters...")}</Typography>
+          <Typography>{t("linking", {name: t('starter', {count: 2})})}</Typography>
         )}
         <LinearProgress
           variant="determinate"
@@ -187,11 +187,11 @@ export function ImportStep() {
     return (
       <>
         <Typography textAlign="center" variant="h2">
-          {t("Imported")}
+          {t("imported")}
         </Typography>
         {failures.length > 0 && (
           <Typography textAlign="center" variant="h6" mt={3}>
-            {t("Failures")}
+            {t("failure", {count: failures.length})}
           </Typography>
         )}
         {failures.map((failure) => (
@@ -206,10 +206,10 @@ export function ImportStep() {
           onClick={() => navigate(`/competition/${competitionID}/dashboard`)}
           sx={{ mt: 2 }}
         >
-          {t("Go to Dashbaord")}
+          {t("go_to", {name: t('dashboard')})}
         </Button>
         <Button variant="outlined" onClick={() => navigate(0)} sx={{ mt: 2 }}>
-          {t("Start over")}
+          {t("start_over")}
         </Button>
       </>
     );

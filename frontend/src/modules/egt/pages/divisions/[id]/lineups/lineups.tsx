@@ -23,7 +23,7 @@ import { UpdateStarterDialog } from "../../../../../../dialogs/updateStarterDial
 
 export function Lineups() {
   const { divisionID } = useParams();
-  const { t } = useTranslation();
+  const { t } = useTranslation(["common", "egt"]);
   const [editDialog, setEditDialog] = useState(false);
   const [toEditLink, setToEditLink] = useState<string>("");
   const { data: division, loading } = useEgtDivisionQuery({
@@ -58,27 +58,27 @@ export function Lineups() {
     return (
       <List sx={{ display: "flex", flexDirection: "column" }}>
         <ListItemText
-          primary={t("egt.category")}
+          primary={t("category", { ns: "egt" })}
           secondary={division?.egtDivision?.category}
         />
         <ListItemText
-          primary={t("egt.number")}
+          primary={t("number", { ns: "common" })}
           secondary={division?.egtDivision?.number}
         />
         <ListItemText
-          primary={t("egt.sex")}
-          secondary={t(`sex.${division?.egtDivision?.sex}`)}
+          primary={t("sex", { ns: "common" })}
+          secondary={t(division?.egtDivision?.sex)}
         />
         <ListItemText
-          primary={t("egt.ground")}
+          primary={t("ground", { ns: "common" })}
           secondary={division?.egtDivision?.ground}
         />
         <ListItemText
-          primary={t("egt.currentRound")}
+          primary={t("currentRound", { ns: "egt" })}
           secondary={division?.egtDivision?.currentRound}
         />
         <ListItemText
-          primary={t("egt.totalRounds")}
+          primary={t("totalRounds", { ns: "egt" })}
           secondary={division?.egtDivision?.totalRounds}
         />
       </List>
@@ -137,28 +137,28 @@ export function Lineups() {
     const columns = [
       {
         field: "starter.firstname",
-        headerName: t("firstname"),
+        headerName: t("firstname", { ns: "common" }),
         valueGetter: (params) => params.row.starterlink.starter.firstname,
         flex: 1,
         disableColumnMenu: true,
       },
       {
         field: "starter.lastname",
-        headerName: t("lastname"),
+        headerName: t("lastname", { ns: "common" }),
         valueGetter: (params) => params.row.starterlink.starter.lastname,
         flex: 1,
         disableColumnMenu: true,
       },
       {
         field: "club.name",
-        headerName: t("club"),
+        headerName: t("club", { ns: "common" }),
         valueGetter: (params) => params.row.starterlink.club.name,
         flex: 1,
         disableColumnMenu: true,
       },
       {
         type: "actions",
-        headerName: t("actions"),
+        headerName: t("actions", { ns: "common" }),
         field: "actions",
         getActions: getColumnActions,
         disableColumnMenu: true,
@@ -169,7 +169,7 @@ export function Lineups() {
       <>
         <Box sx={{ flexGrow: 1, mt: 2 }}>
           <Typography variant="h5">
-            {t("egt.unassigned")}
+            {t("unassigned", { ns: "egt" })}
             <Typography variant="caption" sx={{ ml: 1 }}>
               {(unassignedStarters?.egtStarterLinkUnassigned || []).length}
             </Typography>
@@ -212,10 +212,13 @@ export function Lineups() {
 
   return (
     <>
-      <PaperExtended title={t("egt.division.info")}>
+      <PaperExtended title={t("division_info", { ns: "egt" })}>
         {renderInfo()}
       </PaperExtended>
-      <PaperExtended sx={{ mt: 2 }} title={t("egt.lineups")}>
+      <PaperExtended
+        sx={{ mt: 2 }}
+        title={t("lineup", { count: 2, ns: "egt" })}
+      >
         <Box sx={{ display: "flex", flexDirection: "column" }}>
           {renderUnassigned()}
           {renderLineups()}

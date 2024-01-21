@@ -32,7 +32,7 @@ type FormClubAutocompleteProps = {
 
 export function FormClubAutocomplete(props: FormClubAutocompleteProps) {
   const { control: formControl, trigger: formTrigger } = useFormContext();
-  const { t } = useTranslation();
+  const { t } = useTranslation('common');
   const [
     fetchClubs,
     { data: clubs, loading: clubsLoading, refetch: refetchClubs },
@@ -96,7 +96,7 @@ export function FormClubAutocomplete(props: FormClubAutocompleteProps) {
           if (params.inputValue !== "") {
             filtered.push({
               id: "new",
-              label: `${t("Add")} "${params.inputValue}"`,
+              label: `${t("add")} "${params.inputValue}"`,
               inputValue: params.inputValue,
             });
           }
@@ -107,7 +107,7 @@ export function FormClubAutocomplete(props: FormClubAutocompleteProps) {
         renderInput={(params) => (
           <TextField
             {...params}
-            label={t("Club")}
+            label={t("club")}
             variant="standard"
             margin="normal"
             name="club"

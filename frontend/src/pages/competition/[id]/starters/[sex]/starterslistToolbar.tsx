@@ -19,7 +19,7 @@ export function StarterslistToolbar(props: {
   openDialog: Dispatch<SetStateAction<string>>;
   onRowDeletionClick: (rows: Map<GridRowId, GridValidRowModel>) => void;
 }) {
-  const { t } = useTranslation();
+  const { t } = useTranslation("common");
   const gridApi = useGridApiContext();
   const selectedRows = gridApi.current.getSelectedRows();
 
@@ -44,8 +44,15 @@ export function StarterslistToolbar(props: {
 
     const sheet = xlsx.utils.json_to_sheet(starters);
     const workbook = xlsx.utils.book_new();
-    xlsx.utils.book_append_sheet(workbook, sheet, t("Starters"));
-    xlsx.writeFile(workbook, `${t('Starters')}.xlsx`);
+    xlsx.utils.book_append_sheet(
+      workbook,
+      sheet,
+      t("starter", { count: starters.length })
+    );
+    xlsx.writeFile(
+      workbook,
+      `${t("starter", { count: starters.length })}.xlsx`
+    );
   }
 
   return (
@@ -64,11 +71,11 @@ export function StarterslistToolbar(props: {
         <GridToolbarDensitySelector />
         <Button onClick={onExportClick} size="small">
           <FileDownloadIcon />
-          {t("Export")}
+          {t("export")}
         </Button>
         <Button onClick={() => props.openDialog("addStarter")} size="small">
           <PersonAddIcon />
-          {t("Add Starter")}
+          {t("add", { name: t("starter", {count: 1}) })}
         </Button>
       </ButtonGroup>
     </GridToolbarContainer>

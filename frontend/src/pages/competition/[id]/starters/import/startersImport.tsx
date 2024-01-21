@@ -70,7 +70,7 @@ export function StartersImport() {
 
   const steps = [
     {
-      label: t("File upload"),
+      label: t("upload"),
       component: (
         <FileUploadStep
           files={files}
@@ -79,11 +79,11 @@ export function StartersImport() {
       ),
     },
     {
-      label: t("Starters"),
+      label: t("starter", {count: 2}),
       component: <StartersReviewStep />,
     },
     {
-      label: t("Import"),
+      label: t("import"),
       component: <ImportStep />,
     },
   ];
@@ -116,13 +116,13 @@ export function StartersImport() {
             onClick={handleBack}
             sx={{ mr: 1 }}
           >
-            {t("Back")}
+            {t("back")}
           </Button>
           <Box sx={{ flex: "1 1 auto" }} />
           {activeStep < steps.length - 1 && (
             <Button variant="outlined" onClick={handleNext} sx={{ mr: 1 }}>
               {form.formState.isValidating && <CircularProgress size={24} />}
-              {!form.formState.isValidating && t("Next")}
+              {!form.formState.isValidating && t("next")}
             </Button>
           )}
         </Box>
@@ -131,7 +131,7 @@ export function StartersImport() {
   }
 
   return (
-    <PaperExtended title={t("Starters import")}>
+    <PaperExtended title={t("starters_import")}>
       <Stepper activeStep={activeStep}>
         {steps.map((step) => (
           <Step key={step.label}>

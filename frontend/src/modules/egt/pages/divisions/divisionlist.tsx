@@ -37,7 +37,7 @@ import { ApolloError } from "@apollo/client";
 
 export function Divisionslist() {
   const { id } = useParams();
-  const { t } = useTranslation();
+  const { t } = useTranslation(["egt", "common"]);
   const navigate = useNavigate();
   const [openDialog, setOpenDialog] = useState("");
   const [toDeleteDivisions, setToDeleteDivisions] = useState<EgtDivision[]>([]);
@@ -84,10 +84,12 @@ export function Divisionslist() {
           },
         });
       }
-      enqueueSnackbar(t("Division deleted"), { variant: "success" });
+      enqueueSnackbar(t("deleted", { name: t("division", { ns: "common" }) }), {
+        variant: "success",
+      });
     } catch (e) {
       if (e instanceof ApolloError) {
-        enqueueSnackbar(t(e.message), { variant: "error" });
+        enqueueSnackbar(t(e.message, { ns: "common" }), { variant: "error" });
       }
       console.error(e);
     }
@@ -99,29 +101,33 @@ export function Divisionslist() {
   const columns: Array<GridColDef | GridActionsColDef> = [
     {
       field: "number",
-      headerName: t("number"),
+      headerName: t("number", { ns: "common" }),
       disableColumnMenu: true,
     },
     {
       field: "category",
-      headerName: t("category"),
+      headerName: t("category", { ns: "egt" }),
       disableColumnMenu: true,
       valueGetter: (params) =>
-        t(`egt.category.${params.row.category}.${params.row.sex}`),
+        t(`category_${params.row.category}`, {
+          ns: "egt",
+          conext: params.row.sex,
+        }),
     },
     {
       field: "sex",
-      headerName: t("sex"),
+      headerName: t("sex", { ns: "common" }),
+      valueGetter: (params) => t(params.row.sex, { ns: "common" }),
       disableColumnMenu: true,
     },
     {
       field: "ground",
-      headerName: t("ground"),
+      headerName: t("ground", { ns: "common", count: 1 }),
       disableColumnMenu: true,
     },
     {
       field: "state",
-      headerName: t("state"),
+      headerName: t("state", { ns: "common" }),
       disableColumnMenu: true,
       renderCell: (params) => {
         const divisionState: EgtDivisionStates = params.row.state;
@@ -168,7 +174,7 @@ export function Divisionslist() {
     },
     {
       type: "actions",
-      headerName: t("actions"),
+      headerName: t("actions", { ns: "common" }),
       field: "actions",
       getActions: getColumnActions,
       disableColumnMenu: true,
@@ -204,7 +210,7 @@ export function Divisionslist() {
 
   return (
     <>
-      <PaperExtended title={t("divisions")}>
+      <PaperExtended title={t("division", { count: 2, ns: "egt" })}>
         <Box sx={{ height: "80vh", width: "100%" }}>
           <DataGrid
             loading={loading}
@@ -248,16 +254,22 @@ export function Divisionslist() {
         />
         <DeleteConfirmationDialog
           isOpen={openDialog === "deleteDivisions"}
-          title={t("Delete Division")}
+          title={t("delete", {
+            ns: "common",
+            name: t("division", { count: 1, ns: "egt" }),
+          })}
           onCancel={() => setOpenDialog("")}
           onConfirm={handleDivisionDelete}
         >
-          <Typography>{t("Do you really wanna delete?")}</Typography>
+          <Typography>{t("delete_confirmation", { ns: "common" })}</Typography>
           <List>
             {toDeleteDivisions.map((division) => (
               <ListItem key={division.id}>
-                {t(`egt.category.${division.category}.${division.sex}`)} (
-                {t(division.sex)}) #{division.number}
+                {t(`category_${division.category}`, {
+                  context: division.sex,
+                  ns: "egt",
+                })}{" "}
+                ({t(division.sex, { ns: "common" })}) #{division.number}
               </ListItem>
             ))}
           </List>

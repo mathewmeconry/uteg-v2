@@ -50,37 +50,37 @@ export function CompetitionLayout() {
     if (loading) {
       return <Skeleton variant="text" />;
     }
-    return data?.competition.name || t("Loading failed");
+    return data?.competition.name || t("error");
   }
 
   const menuItems: MenuItem[] = [
     {
       icon: <DashboardIcon />,
-      text: "Dashboard",
+      text: "dashboard",
       key: "dashboard",
       to: `/competition/:id/dashboard`,
     },
     {
       icon: <PeopleIcon />,
-      text: "Starters",
+      text: "starters",
       key: "starters",
       children: [
         {
           icon: <WomanIcon />,
-          text: "Female",
+          text: "female",
           key: "starters.female",
           to: `/competition/:id/starters/female`,
         },
 
         {
           icon: <ManIcon />,
-          text: "Male",
+          text: "male",
           key: "starters.male",
           to: `/competition/:id/starters/male`,
         },
         {
           icon: <UploadFileIcon />,
-          text: "Import",
+          text: "import",
           key: "starters.import",
           to: `/competition/:id/starters/import`,
         },
@@ -88,7 +88,7 @@ export function CompetitionLayout() {
     },
     {
       icon: <SettingsIcon />,
-      text: "Settings",
+      text: "settings",
       key: "settings",
       to: `/competition/:id/settings`,
     },
@@ -102,7 +102,7 @@ export function CompetitionLayout() {
     setSubmenuStates(cloned);
   }
 
-  function renderMenuItem(item: MenuItem) {
+  function renderMenuItem(item: MenuItem, ns: string = "common") {
     if (item.to) {
       return (
         <NavLink
@@ -116,7 +116,7 @@ export function CompetitionLayout() {
             <ListItem key={item.key} disablePadding>
               <ListItemButton selected={isActive}>
                 <ListItemIcon>{item.icon}</ListItemIcon>
-                <ListItemText primary={t(item.text)}></ListItemText>
+                <ListItemText primary={t(item.text, { ns })}></ListItemText>
               </ListItemButton>
             </ListItem>
           )}
@@ -129,7 +129,7 @@ export function CompetitionLayout() {
         <ListItem key={item.key} sx={{ display: "block" }} disablePadding>
           <ListItemButton onClick={() => toggleSubmenu(item.key)}>
             <ListItemIcon>{item.icon}</ListItemIcon>
-            <ListItemText>{item.text}</ListItemText>
+            <ListItemText>{t(item.text, { ns })}</ListItemText>
             {submenuStates[item.key] ? <ExpandLess /> : <ExpandMore />}
           </ListItemButton>
           <Collapse in={submenuStates[item.key]} timeout="auto" unmountOnExit>
@@ -145,7 +145,7 @@ export function CompetitionLayout() {
       <ListItem key={item.key} disablePadding>
         <ListItemButton>
           <ListItemIcon>{item.icon}</ListItemIcon>
-          <ListItemText primary={item.text}></ListItemText>
+          <ListItemText primary={t(item.text, { ns })}></ListItemText>
         </ListItemButton>
       </ListItem>
     );
@@ -173,15 +173,19 @@ export function CompetitionLayout() {
               {renderName()}
             </Typography>
             <Button href="/home">
-              <Typography variant="caption">{t("Go back home")}</Typography>
+              <Typography variant="caption">
+                {t("go_back", { name: t("home") })}
+              </Typography>
             </Button>
           </Toolbar>
           <Divider>{t("competition")}</Divider>
           <List>{menuItems.map((item) => renderMenuItem(item))}</List>
           {competitionModules.map((module) => (
             <Fragment key={module.name}>
-              <Divider>{t(module.name)}</Divider>
-              {module.menuItems.map((item) => renderMenuItem(item))}
+              <Divider>{t(module.name, { ns: module.name })}</Divider>
+              {module.menuItems.map((item) =>
+                renderMenuItem(item, module.name)
+              )}
             </Fragment>
           ))}
         </Box>

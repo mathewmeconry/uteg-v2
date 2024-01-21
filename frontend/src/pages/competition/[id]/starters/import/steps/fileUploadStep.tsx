@@ -61,7 +61,7 @@ export function FileUploadStep(props: FileUploadStepProps) {
         >
           <Typography textAlign="center">
             <UploadFileIcon />
-            <Typography>{t("Select file")}</Typography>
+            <Typography>{t("select_file")}</Typography>
           </Typography>
           <VisuallyHiddenInput
             type="file"

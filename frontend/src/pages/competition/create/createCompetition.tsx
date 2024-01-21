@@ -50,7 +50,7 @@ export function CreateCompetition() {
           location: formValues.basic.location,
           startDate: formValues.basic.startDate,
           endDate: formValues.basic.endDate,
-          grounds: formValues.setup.grounds,
+          grounds: parseInt(formValues.setup.grounds),
           modules: Object.keys(formValues.setup.modules).filter(
             (key) => formValues.setup.modules[key]
           ),
@@ -62,7 +62,7 @@ export function CreateCompetition() {
       }
       setCompetitionId(competition.data.createCompetition.id);
     } catch {
-      enqueueSnackbar(t("Something went wrong... Please try again later"), {
+      enqueueSnackbar(t("error"), {
         variant: "error",
       });
     }
@@ -71,23 +71,23 @@ export function CreateCompetition() {
   const steps = useMemo(
     () => [
       {
-        label: t("Basic Information"),
+        label: t("basic_information"),
         component: <BasicInformation />,
       },
       {
-        label: t("Setup"),
+        label: t("setup"),
         component: <Setup />,
       },
       {
-        label: t("Modules"),
+        label: t("module", { count: 2 }),
         component: <ModulesSettings />,
       },
       {
-        label: t("Users"),
+        label: t("user", { count: 2 }),
         component: <Users />,
       },
       {
-        label: t("Review"),
+        label: t("review"),
         component: <Review />,
       },
     ],
@@ -106,7 +106,9 @@ export function CreateCompetition() {
           }}
         >
           <CircularProgress />
-          <Typography variant="h5">{t("Creating...")}</Typography>
+          <Typography variant="h5">
+            {t("creating", { name: t("competition") })}
+          </Typography>
         </Box>
       );
     }
@@ -122,7 +124,10 @@ export function CreateCompetition() {
           }}
         >
           <Typography variant="h5">
-            {t("Competition")} {form.getValues("basic.name")} {t("created")}
+            {t("created", {
+              type: t("competition"),
+              name: form.getValues("basic.name"),
+            })}
           </Typography>
           <Button
             variant="contained"
@@ -130,14 +135,14 @@ export function CreateCompetition() {
             sx={{ mt: 2 }}
             onClick={() => navigate(`/competition/${competitionId}/dashboard`)}
           >
-            {t("Open")}
+            {t("open")}
           </Button>
           <Button
             variant="outlined"
             sx={{ mt: 2 }}
             onClick={() => navigate(`/home`)}
           >
-            {t("Home")}
+            {t("home")}
           </Button>
         </Box>
       );
@@ -158,12 +163,12 @@ export function CreateCompetition() {
             onClick={handleBack}
             sx={{ mr: 1 }}
           >
-            {t("Back")}
+            {t("back")}
           </Button>
           <Box sx={{ flex: "1 1 auto" }} />
           {activeStep !== steps.length - 1 && (
             <Button variant="outlined" onClick={handleNext} sx={{ mr: 1 }}>
-              {t("Next")}
+              {t("next")}
             </Button>
           )}
           {activeStep === steps.length - 1 && (
@@ -173,7 +178,7 @@ export function CreateCompetition() {
               onClick={handleCreate}
               sx={{ mr: 1 }}
             >
-              {t("Create")}
+              {t("create")}
             </Button>
           )}
         </Box>

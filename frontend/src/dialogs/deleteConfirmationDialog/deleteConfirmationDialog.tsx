@@ -21,7 +21,7 @@ export type DeleteConfirmationDialogProps = {
 export function DeleteConfirmationDialog(
   props: DeleteConfirmationDialogProps & PropsWithChildren
 ) {
-  const { t } = useTranslation();
+  const { t } = useTranslation("common");
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
   const [deleting, setDeleting] = useState(false);
@@ -43,7 +43,7 @@ export function DeleteConfirmationDialog(
       <DialogTitle>{props.title}</DialogTitle>
       <DialogContent>{props.children}</DialogContent>
       <DialogActions>
-        <Button onClick={props.onCancel}>{t("Cancel")}</Button>
+        <Button onClick={props.onCancel}>{t("cancel")}</Button>
         <Button
           variant="contained"
           color="error"
@@ -51,7 +51,7 @@ export function DeleteConfirmationDialog(
           onClick={onConfirm}
         >
           {deleting && <CircularProgress size={24} />}
-          {!deleting && t("Delete")}
+          {!deleting && t("delete")}
         </Button>
       </DialogActions>
     </Dialog>

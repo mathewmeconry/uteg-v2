@@ -44,7 +44,7 @@ export type UpdateStarterForm = {
 };
 
 export function UpdateStarterDialog(props: UpdateStarterDialogProps) {
-  const { t } = useTranslation();
+  const { t } = useTranslation("common");
   const { id } = useParams();
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
@@ -107,7 +107,7 @@ export function UpdateStarterDialog(props: UpdateStarterDialogProps) {
       !starterLinkData.starterLink.id ||
       !starterLinkData.starterLink.competition.id
     ) {
-      enqueueSnackbar(t("Ooops"), { variant: "error" });
+      enqueueSnackbar(t("error"), { variant: "error" });
       return;
     }
 
@@ -123,9 +123,11 @@ export function UpdateStarterDialog(props: UpdateStarterDialogProps) {
               birthyear: parseInt(data.birthyear.toString()),
               sex: data.sex,
             },
-          }
+          },
         });
-        enqueueSnackbar(t("Starter updated"), { variant: "success" });
+        enqueueSnackbar(t("updated", { name: data.firstname }), {
+          variant: "success",
+        });
       } catch (e) {
         if (e instanceof ApolloError) {
           enqueueSnackbar(t(e.message), { variant: "error" });
@@ -146,7 +148,9 @@ export function UpdateStarterDialog(props: UpdateStarterDialogProps) {
             },
           },
         });
-        enqueueSnackbar(t("Starter Link updated"), { variant: "success" });
+        enqueueSnackbar(t("link_updated", { name: t("starter") }), {
+          variant: "success",
+        });
       } catch (e) {
         if (e instanceof ApolloError) {
           enqueueSnackbar(t(e.message), { variant: "error" });
@@ -178,7 +182,12 @@ export function UpdateStarterDialog(props: UpdateStarterDialogProps) {
       maxWidth="sm"
       fullWidth
     >
-      <DialogTitle>{t("Update Starter")}</DialogTitle>
+      <DialogTitle>
+        {t("update", {
+          name: `${starterLinkData?.starterLink?.starter.firstname} 
+      ${starterLinkData?.starterLink?.starter.lastname}`,
+        })}
+      </DialogTitle>
 
       <FormProvider {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -196,8 +205,8 @@ export function UpdateStarterDialog(props: UpdateStarterDialogProps) {
               fieldProps={{ select: true }}
               rules={{ required: true }}
             >
-              <MenuItem value="MALE">{t("Male")}</MenuItem>
-              <MenuItem value="FEMALE">{t("Female")}</MenuItem>
+              <MenuItem value="MALE">{t("male")}</MenuItem>
+              <MenuItem value="FEMALE">{t("female")}</MenuItem>
             </FormTextInput>
             <FormClubAutocomplete rules={{ required: true }} />
             <ModuleExtensions
@@ -206,9 +215,9 @@ export function UpdateStarterDialog(props: UpdateStarterDialogProps) {
             />
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleCancel}>{t("Cancel")}</Button>
+            <Button onClick={handleCancel}>{t("cancel")}</Button>
             <Button variant="contained" color="success" type="submit">
-              {t("Save")}
+              {t("save")}
             </Button>
           </DialogActions>
         </form>

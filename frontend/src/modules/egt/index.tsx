@@ -41,13 +41,13 @@ const routes: RouteObject[] = [
 const starterListColumns: Array<GridColDef | GridActionsColDef> = [
   {
     field: "egt.category",
-    headerName: "egt.category",
+    headerName: "category",
     valueGetter: (params) => {
       if (params.row.egt?.category) {
         if (params.row.egt?.category === 8) {
-          return `egt.category.${params.row.egt?.category}.${params.row.starter?.sex}`;
+          return `category_${params.row.egt?.category}_${params.row.starter?.sex}`;
         }
-        return `egt.category.${params.row.egt?.category}`;
+        return `category_${params.row.egt?.category}`;
       }
       return "";
     },
@@ -55,16 +55,16 @@ const starterListColumns: Array<GridColDef | GridActionsColDef> = [
   },
   {
     field: "egt.division",
-    headerName: "egt.division",
+    headerName: "division",
     valueGetter: (params) => params.row.egt?.division?.number,
     disableColumnMenu: true,
   },
   {
     field: "egt.device",
-    headerName: "egt.device",
+    headerName: "device",
     valueGetter: (params) =>
       params.row.egt?.lineup?.device
-        ? `egt.device.${params.row.egt?.lineup?.device}`
+        ? `device_${params.row.egt?.lineup?.device}`
         : "",
     disableColumnMenu: true,
   },

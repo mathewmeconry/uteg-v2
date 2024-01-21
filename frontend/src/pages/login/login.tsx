@@ -24,17 +24,17 @@ export function Login() {
     setLoading(true);
     try {
       await getToken(data.email, data.password);
-      enqueueSnackbar(t("Logged In"), { variant: "success" });
+      enqueueSnackbar(t("logged_in"), { variant: "success" });
       navigate("/home");
     } catch (e) {
       if ((e as Error).message === "Unauthorized") {
-        enqueueSnackbar(t("Invalid username or password"), {
+        enqueueSnackbar(t("invalid_username_or_password"), {
           variant: "error",
         });
         setLoading(false);
         return;
       }
-      enqueueSnackbar(t("Something went wrong... Please try again later"), {
+      enqueueSnackbar(t("error"), {
         variant: "error",
       });
     }
@@ -68,7 +68,7 @@ export function Login() {
               {loading && (
                 <CircularProgress size={24} sx={{ color: blue[500] }} />
               )}
-              {!loading && t("Login")}
+              {!loading && t("login")}
             </Button>
           </form>
         </FormProvider>
@@ -76,7 +76,7 @@ export function Login() {
           {t("or")}
         </Divider>
         <Button href="/register" variant="outlined" sx={{ mt: 2, width: 1 }}>
-          {t("Register")}
+          {t("register")}
         </Button>
       </Box>
     </LandingPageLayout>

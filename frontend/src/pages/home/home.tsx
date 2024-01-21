@@ -23,7 +23,7 @@ export function Home() {
     }
 
     if (!competitions || !competitions.competitions) {
-      enqueueSnackbar(t("Failed to load data... Please try again later"), {
+      enqueueSnackbar(t("error"), {
         variant: "error",
       });
       return [];
@@ -47,7 +47,7 @@ export function Home() {
         variant="outlined"
         sx={{ mt: 1, mb: 1, float: "right" }}
       >
-        {t("Create Competition")}
+        {t("create", { name: t("competition") })}
       </Button>
       <Grid container spacing={2}>
         {renderCompetitions()}

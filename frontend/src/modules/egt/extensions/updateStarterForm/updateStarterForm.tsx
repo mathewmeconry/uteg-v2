@@ -15,7 +15,7 @@ import { useParams } from "react-router-dom";
 import { FormCategorySelect } from "../../components/form/FormCategorySelect";
 
 export function EGTUpdateStarterForm() {
-  const { t } = useTranslation();
+  const { t } = useTranslation("egt");
   const { id } = useParams();
   const { control: formControl, setValue } = useFormContext();
   const formSubmit = useFormSubmit();
@@ -46,7 +46,7 @@ export function EGTUpdateStarterForm() {
           cache.evict({ fieldName: "category" });
         },
       });
-      enqueueSnackbar(t("Starter EGT link updated"), { variant: "success" });
+      enqueueSnackbar(t("link_updated", {name: t('egt_starter'), ns: "common"}), { variant: "success" });
     } catch (e) {
       if (e instanceof ApolloError) {
         enqueueSnackbar(t(e.message), { variant: "error" });
@@ -112,6 +112,7 @@ export function EGTUpdateStarterForm() {
     return (
       <FormTextInput
         name="division"
+        ns="egt"
         rules={{ required: false }}
         defaultValue=""
         fieldProps={{
@@ -120,7 +121,7 @@ export function EGTUpdateStarterForm() {
       >
         {divisionData?.egtDivisions.map((division) => (
           <MenuItem key={division.id} value={division.id}>
-            {t("egt.division")} {division.number}
+            {t("division", {count: 1})} {division.number}
           </MenuItem>
         ))}
       </FormTextInput>

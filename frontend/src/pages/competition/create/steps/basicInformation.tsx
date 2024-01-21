@@ -19,19 +19,21 @@ export function BasicInformation() {
   return (
     <Box sx={{ display: "flex", width: 1, flexDirection: "column" }}>
       <FormTextInput
-        name="email"
-        fieldProps={{ type: "email" }}
+        name="basic.name"
+        label="name"
+        fieldProps={{ type: "name" }}
         control={formControl}
         rules={{ required: true }}
       />
       <FormTextInput
-        name="location"
+        name="basic.location"
+        label="location"
         fieldProps={{ type: "string" }}
         control={formControl}
         rules={{ required: true }}
       />
       <DatePicker
-        label={t("Start Date")}
+        label={t("start_date")}
         minDate={dayjs()}
         onChange={(value): void => setValue("basic.startDate", value)}
         value={getValues("basic.startDate")}
@@ -50,7 +52,7 @@ export function BasicInformation() {
         }}
       />
       <DatePicker
-        label={t("End Date")}
+        label={t("end_date")}
         minDate={watch("basic.startDate") || dayjs()}
         onChange={(value): void => setValue("basic.endDate", value)}
         value={getValues("basic.endDate")}

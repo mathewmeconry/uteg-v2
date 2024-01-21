@@ -56,7 +56,7 @@ export function CreateStarterDialog(props: {
   const { id } = useParams();
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
-  const { t } = useTranslation();
+  const { t } = useTranslation("common");
   const {
     control: formControl,
     register,
@@ -191,14 +191,20 @@ export function CreateStarterDialog(props: {
           },
         });
         if (!createStarterResponse.data?.createStarter.id) {
-          enqueueSnackbar(t("Ooops"), { variant: "error" });
+          enqueueSnackbar(t("error"), { variant: "error" });
           return;
         }
-        enqueueSnackbar(t("Starter created"), { variant: "success" });
+        enqueueSnackbar(
+          t("created", {
+            name: data.firstname,
+            type: t("starter", { count: 1 }),
+          }),
+          { variant: "success" }
+        );
         starterID = createStarterResponse.data.createStarter.id;
       } catch (err) {
         if (err instanceof ApolloError && err.message) {
-          enqueueSnackbar(t(`Starter ${err.message}`), { variant: "error" });
+          enqueueSnackbar(t(`${err.message}`), { variant: "error" });
           return;
         }
       }
@@ -206,7 +212,7 @@ export function CreateStarterDialog(props: {
 
     try {
       if (!starterID) {
-        enqueueSnackbar(t("Ooops"), { variant: "error" });
+        enqueueSnackbar(t("error"), { variant: "error" });
         return;
       }
       await createStarterLinkMutation({
@@ -218,12 +224,14 @@ export function CreateStarterDialog(props: {
           },
         },
       });
-      enqueueSnackbar(t("Starter linked"), { variant: "success" });
+      enqueueSnackbar(t("linked", { name: data.firstname }), {
+        variant: "success",
+      });
       reset();
       props.onClose();
     } catch (err) {
       if (err instanceof ApolloError && err.message) {
-        enqueueSnackbar(t(`Link ${err.message}`), { variant: "error" });
+        enqueueSnackbar(t(`${err.message}`), { variant: "error" });
       }
     }
   }
@@ -237,7 +245,7 @@ export function CreateStarterDialog(props: {
         maxWidth="sm"
         fullWidth
       >
-        <DialogTitle>{t("Create Starter")}</DialogTitle>
+        <DialogTitle>{t("add", { name: t("starter") })}</DialogTitle>
         <FormProvider control={formControl}>
           <form onSubmit={handleSubmit(onSubmit)}>
             <DialogContent sx={{ mt: 2 }}>
@@ -313,9 +321,9 @@ export function CreateStarterDialog(props: {
               <FormClubAutocomplete rules={{ required: true }} />
             </DialogContent>
             <DialogActions>
-              <Button onClick={handleCancel}>{t("Cancel")}</Button>
+              <Button onClick={handleCancel}>{t("cancel")}</Button>
               <Button variant="contained" color="success" type="submit">
-                {t("Save")}
+                {t("save")}
               </Button>
             </DialogActions>
           </form>

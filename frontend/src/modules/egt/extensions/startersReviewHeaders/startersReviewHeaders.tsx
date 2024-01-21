@@ -2,11 +2,11 @@ import { TableCell } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
 export function EGTStartersReviewHeaders() {
-  const { t } = useTranslation();
+  const { t } = useTranslation('egt');
   return (
     <>
-      <TableCell>{t("egt.category")}</TableCell>
-      <TableCell>{t("egt.divisionNumber")}</TableCell>
+      <TableCell>{t("category")}</TableCell>
+      <TableCell>{t("division_number")}</TableCell>
     </>
   );
 }

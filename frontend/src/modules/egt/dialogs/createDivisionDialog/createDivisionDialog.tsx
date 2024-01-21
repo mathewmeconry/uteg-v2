@@ -42,7 +42,7 @@ export function CreateDivisionDialog(props: {
   const [createDivisionMutation] = useCreateEgtDivisionMutation();
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
-  const { t } = useTranslation();
+  const { t } = useTranslation(["common", "egt"]);
   const form = useForm<CreateDivisionForm>({
     defaultValues: {
       category: "",
@@ -65,7 +65,10 @@ export function CreateDivisionDialog(props: {
             },
           },
         });
-        enqueueSnackbar(t("Division created"), { variant: "success" });
+        enqueueSnackbar(
+          t("created", { name: t("division", { ns: "egt" }), ns: "common" }),
+          { variant: "success" }
+        );
         form.reset();
         props.onClose();
       } catch (e) {
@@ -83,14 +86,17 @@ export function CreateDivisionDialog(props: {
 
   return (
     <Dialog open={props.isOpen} fullScreen={fullScreen} maxWidth="sm" fullWidth>
-      <DialogTitle>{t("Add Division")}</DialogTitle>
+      <DialogTitle>
+        {t("add", { name: t("division", { ns: "egt" }) })}
+      </DialogTitle>
       <FormProvider {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <DialogContent>
-            <FormCategorySelect rules={{ required: true }} />
             <FormSexSelect />
+            <FormCategorySelect rules={{ required: true }} />
             <FormTextInput
               name="ground"
+              ns="common"
               rules={{
                 required: true,
                 min: 1,
@@ -99,10 +105,10 @@ export function CreateDivisionDialog(props: {
             />
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleCancel}>{t("Cancel")}</Button>
+            <Button onClick={handleCancel}>{t("cancel")}</Button>
             <Button variant="contained" color="success" type="submit">
               {loading && <CircularProgress size={24} />}
-              {!loading && t("Save")}
+              {!loading && t("save")}
             </Button>
           </DialogActions>
         </form>

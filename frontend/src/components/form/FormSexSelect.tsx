@@ -3,7 +3,7 @@ import { FormTextInput } from "./FormTextInput";
 import { useTranslation } from "react-i18next";
 
 export function FormSexSelect() {
-  const { t } = useTranslation();
+  const { t } = useTranslation('common');
 
   return (
     <FormTextInput
@@ -11,8 +11,8 @@ export function FormSexSelect() {
       rules={{ required: true }}
       fieldProps={{ select: true }}
     >
-      <MenuItem value="MALE">{t("Male")}</MenuItem>
-      <MenuItem value="FEMALE">{t("Female")}</MenuItem>
+      <MenuItem value="MALE">{t("male")}</MenuItem>
+      <MenuItem value="FEMALE">{t("female")}</MenuItem>
     </FormTextInput>
   );
 }

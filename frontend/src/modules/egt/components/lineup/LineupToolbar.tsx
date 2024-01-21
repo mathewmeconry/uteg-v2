@@ -9,7 +9,7 @@ import {
 } from "../../../../__generated__/graphql";
 
 export function LineupToolbar(props: { lineups: EgtLineup[] }) {
-  const { t } = useTranslation();
+  const { t } = useTranslation(["common", "egt"]);
   const gridApi = useGridApiContext();
   const selectedRows = gridApi.current.getSelectedRows();
   const [assignMutation] = useAssignEgtLineupMutation();
@@ -32,7 +32,13 @@ export function LineupToolbar(props: { lineups: EgtLineup[] }) {
       );
     });
     await Promise.all(promises);
-    enqueueSnackbar(t("Starters assigned"), { variant: "success" });
+    enqueueSnackbar(
+      t("assigned", {
+        name: t("starter", { ns: "common", count: promises.length }),
+        ns: "common",
+      }),
+      { variant: "success" }
+    );
     setAssigning(false);
   }
 
@@ -46,7 +52,10 @@ export function LineupToolbar(props: { lineups: EgtLineup[] }) {
           disabled={assigning}
         >
           {!assigning &&
-            t("Assign to device", { device: t(`egt.device.${lineup.device}`) })}
+            t("assign_to", {
+              name: t(`device_${lineup.device}`, { ns: "egt" }),
+              ns: "common",
+            })}
           {assigning && <CircularProgress />}
         </Button>
       ));
@@ -56,7 +65,12 @@ export function LineupToolbar(props: { lineups: EgtLineup[] }) {
 
   return (
     <GridToolbarContainer
-      sx={{ display: "flex", justifyContent: "space-between", p: 1, height: "3rem" }}
+      sx={{
+        display: "flex",
+        justifyContent: "space-between",
+        p: 1,
+        height: "3rem",
+      }}
     >
       {renderAssignButtons()}
     </GridToolbarContainer>

@@ -34,7 +34,7 @@ import { useModules } from "../../../../../hooks/useModules/useModules";
 
 export function StartersList() {
   const { sex, id } = useParams();
-  const { t } = useTranslation();
+  const { t } = useTranslation("common");
   const [openDialog, setOpenDialog] = useState("");
   const [toEditLink, setToEditLink] = useState<string>("");
   const [removeStarterLink] = useRemoveStarterLinkMutation();
@@ -93,7 +93,9 @@ export function StartersList() {
         columns.push(
           ...module.extensions.starterslistColumns.map((col) => ({
             ...col,
-            headerName: t(col.headerName || ""),
+            headerName: t(col.headerName || "", { ns: module.name }),
+            valueGetter: (params) =>
+              t(col.valueGetter?.(params) || "", { ns: module.name }),
           }))
         );
       }
@@ -131,16 +133,12 @@ export function StartersList() {
     },
     {
       field: "club.location",
-      headerName: t("club location"),
+      headerName: t("location"),
       valueGetter: (params) => params.row.club.location,
       flex: 1,
       filterOperators: [inFilter],
     },
-    ...moduleColumns.map((column) => ({
-      ...column,
-      valueGetter: (params) =>
-        column.valueGetter(params) ? t(column.valueGetter(params)) : "",
-    })),
+    ...moduleColumns,
     {
       type: "actions",
       headerName: t("actions"),
@@ -180,7 +178,12 @@ export function StartersList() {
           },
         });
       }
-      enqueueSnackbar(t("Starters unlinked"), { variant: "success" });
+      enqueueSnackbar(
+        t("unlinked", {
+          name: t("starter", { count: toDeleteStarters.length }),
+        }),
+        { variant: "success" }
+      );
     } catch (e) {
       if (e instanceof ApolloError) {
         enqueueSnackbar(t(e.message), { variant: "error" });
@@ -212,7 +215,9 @@ export function StartersList() {
 
   return (
     <>
-      <PaperExtended title={t(`${sex} Starters`)}>
+      <PaperExtended
+        title={t(`starters`, { name: t(sex.toLowerCase()), count: 2 })}
+      >
         <Box sx={{ height: "80vh", width: "100%" }}>
           <DataGrid
             loading={loading}
@@ -234,9 +239,9 @@ export function StartersList() {
               },
               columns: {
                 columnVisibilityModel: {
-                  'club.location': false
-                }
-              }
+                  "club.location": false,
+                },
+              },
             }}
             pageSizeOptions={[20, 50, 100]}
             checkboxSelection
@@ -250,7 +255,7 @@ export function StartersList() {
               },
               toolbar: {
                 openDialog: setOpenDialog,
-                onRowDeletionClick: onRemoveRows
+                onRowDeletionClick: onRemoveRows,
               },
             }}
             ignoreDiacritics={false}
@@ -274,11 +279,13 @@ export function StartersList() {
       />
       <DeleteConfirmationDialog
         isOpen={openDialog === "deleteStarter"}
-        title={t("Delete Starter")}
+        title={t("delete", {
+          name: t("starter", { count: toDeleteStarters.length }),
+        })}
         onCancel={() => setOpenDialog("")}
         onConfirm={handleStarterDelete}
       >
-        <Typography>{t("Do you really wanna delete?")}</Typography>
+        <Typography>{t("delete_confirmation")}</Typography>
         <List>
           {toDeleteStarters.map((starterLink) => (
             <ListItem key={starterLink.id}>
