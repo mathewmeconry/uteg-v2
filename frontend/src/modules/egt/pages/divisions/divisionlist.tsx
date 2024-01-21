@@ -103,11 +103,13 @@ export function Divisionslist() {
       field: "number",
       headerName: t("number", { ns: "common" }),
       disableColumnMenu: true,
+      flex: 1,
     },
     {
       field: "category",
       headerName: t("category", { ns: "egt" }),
       disableColumnMenu: true,
+      flex: 1,
       valueGetter: (params) =>
         t(`category_${params.row.category}`, {
           ns: "egt",
@@ -119,16 +121,19 @@ export function Divisionslist() {
       headerName: t("sex", { ns: "common" }),
       valueGetter: (params) => t(params.row.sex, { ns: "common" }),
       disableColumnMenu: true,
+      flex: 1,
     },
     {
       field: "ground",
       headerName: t("ground", { ns: "common", count: 1 }),
       disableColumnMenu: true,
+      flex: 1,
     },
     {
       field: "state",
       headerName: t("state", { ns: "common" }),
       disableColumnMenu: true,
+      flex: 1,
       renderCell: (params) => {
         const divisionState: EgtDivisionStates = params.row.state;
         switch (divisionState) {
@@ -178,6 +183,7 @@ export function Divisionslist() {
       field: "actions",
       getActions: getColumnActions,
       disableColumnMenu: true,
+      flex: 1,
     },
   ];
 

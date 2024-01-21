@@ -1,5 +1,6 @@
 import {
   IconButton,
+  Paper,
   Table,
   TableBody,
   TableCell,
@@ -15,6 +16,8 @@ import { Starter } from "../../../../../../__generated__/graphql";
 import { StartersReviewStepRow } from "./startersReviewStepRow";
 import { useParams } from "react-router-dom";
 import { useModules } from "../../../../../../hooks/useModules/useModules";
+import React from "react";
+import { TableVirtuoso } from "react-virtuoso";
 
 export function StartersReviewStep() {
   const theme = useTheme();
@@ -51,6 +54,57 @@ export function StartersReviewStep() {
     startersFieldArray.replace(starters as any[]);
   }
 
+  const TableComponents = {
+    Scroller: React.forwardRef((props, ref) => (
+      <TableContainer component={Paper} {...props} ref={ref} />
+    )),
+    Table: (props) => (
+      <Table {...props} style={{ borderCollapse: "separate" }} />
+    ),
+    TableHead: TableHead,
+    TableRow: TableRow,
+    TableBody: React.forwardRef((props, ref) => (
+      <TableBody {...props} ref={ref} />
+    )),
+  };
+
+  return (
+    <TableVirtuoso
+      style={{ height: 400, minWidth: 650  }}
+      components={TableComponents}
+      data={startersFieldArray.fields}
+      useWindowScroll
+      fixedHeaderContent={() => (
+        <TableRow>
+          <TableCell>{t("stvID")}</TableCell>
+          <TableCell>{t("firstname")}</TableCell>
+          <TableCell sx={{ width: theme.typography.fontSize }} padding="none">
+            <IconButton onClick={() => swapAllFirstLastname()}>
+              <SwapHorizIcon />
+            </IconButton>
+          </TableCell>
+          <TableCell>{t("lastname")}</TableCell>
+          <TableCell>{t("birthyear")}</TableCell>
+          <TableCell>{t("sex")}</TableCell>
+          {...modules.modules.map((module) => {
+            if (module.extensions.startersReviewStepHeader) {
+              return module.extensions.startersReviewStepHeader;
+            }
+          })}
+          <TableCell></TableCell>
+        </TableRow>
+      )}
+      itemContent={(index, starter) => (
+          <StartersReviewStepRow
+            key={starter.id}
+            starter={(starter as any) as Starter}
+            index={index}
+            onRemove={startersFieldArray.remove}
+          />
+      )}
+    />
+  );
+
   return (
     <TableContainer>
       <Table
@@ -59,26 +113,7 @@ export function StartersReviewStep() {
         size="small"
         aria-label="a dense table"
       >
-        <TableHead>
-          <TableRow>
-            <TableCell>{t("stvID")}</TableCell>
-            <TableCell>{t("firstname")}</TableCell>
-            <TableCell sx={{ width: theme.typography.fontSize }} padding="none">
-              <IconButton onClick={() => swapAllFirstLastname()}>
-                <SwapHorizIcon />
-              </IconButton>
-            </TableCell>
-            <TableCell>{t("lastname")}</TableCell>
-            <TableCell>{t("birthyear")}</TableCell>
-            <TableCell>{t("sex")}</TableCell>
-            {...modules.modules.map((module) => {
-              if (module.extensions.startersReviewStepHeader) {
-                return module.extensions.startersReviewStepHeader;
-              }
-            })}
-            <TableCell></TableCell>
-          </TableRow>
-        </TableHead>
+        <TableHead></TableHead>
         <TableBody>
           {startersFieldArray.fields.map((starter, index: number) => (
             <StartersReviewStepRow

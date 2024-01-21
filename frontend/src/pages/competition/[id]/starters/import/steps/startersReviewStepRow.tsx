@@ -44,10 +44,7 @@ function Row(props: StartersReviewStepRowProps) {
   }
 
   return (
-    <TableRow
-      sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-      key={props.starter.id}
-    >
+    <>
       <TableCell>
         <FormTextInput
           key="stvID"
@@ -117,7 +114,7 @@ function Row(props: StartersReviewStepRowProps) {
           <ClearIcon />
         </IconButton>
       </TableCell>
-    </TableRow>
+    </>
   );
 }
 
