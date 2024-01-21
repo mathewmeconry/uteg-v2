@@ -62,8 +62,8 @@ export function StarterslistToolbar(props: {
           color="error"
           onClick={() => props.onRowDeletionClick(selectedRows)}
         >
-          <Typography variant="body1"> ({selectedRows.size})</Typography>
           <DeleteIcon />
+          <Typography variant="body1"> ({selectedRows.size})</Typography>
         </Button>
       )}
       <GridToolbarQuickFilter sx={{ m: 1, flex: 1 }} />
@@ -75,7 +75,7 @@ export function StarterslistToolbar(props: {
         </Button>
         <Button onClick={() => props.openDialog("addStarter")} size="small">
           <PersonAddIcon />
-          {t("add", { name: t("starter", {count: 1}) })}
+          {t("add", { name: t("starter", { count: 1 }) })}
         </Button>
       </ButtonGroup>
     </GridToolbarContainer>

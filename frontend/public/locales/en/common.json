@@ -78,5 +78,7 @@
   "password": "Password",
   "repeat_password": "Repeat Password",
   "dashboard": "Dashboard",
-  "export": "Export"
+  "export": "Export",
+  "start": "Start {{name}}",
+  "start_confirmation": "Do you really want to start?"
 }

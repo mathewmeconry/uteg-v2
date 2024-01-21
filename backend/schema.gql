@@ -122,6 +122,7 @@ type Mutation {
   egtStarterLink(data: EGTStarterLinkInput!): EGTStarterLink!
   removeEgtDivision(id: ID!): EGTDivision!
   removeStarterLink(id: ID!): StarterLink!
+  updateEgtDivisionState(data: UpdateEGTDivisionStateInput!): EGTDivision!
   updateStarter(data: UpdateStarterInput!, id: ID!): Starter!
   updateStarterLink(data: UpdateStarterLinkInput!, id: ID!): StarterLink!
 }
@@ -184,6 +185,12 @@ type StarterLink {
 `Date` type as integer. Type represents date and time as number of milliseconds from start of UNIX epoch.
 """
 scalar Timestamp
+
+input UpdateEGTDivisionStateInput {
+  currentRound: Int!
+  id: ID!
+  state: EGTDivisionStates!
+}
 
 input UpdateStarterInput {
   birthyear: Int

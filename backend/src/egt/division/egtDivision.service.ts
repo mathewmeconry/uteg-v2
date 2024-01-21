@@ -8,7 +8,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { EGTDivision } from './egtDivision.entity';
 import { Repository } from 'typeorm';
 import { SEX } from 'src/base/starter/starter.types';
-import { EGTDivisionFilterInput } from './egtDivision.types';
+import {
+  EGTDivisionFilterInput,
+  UpdateEGTDivisionStateInput,
+} from './egtDivision.types';
 import { EGTLineup } from '../lineup/egtLineup.entity';
 import { EGTLineupService } from '../lineup/egtLineup.service';
 
@@ -45,7 +48,12 @@ export class EGTDivisionService {
     return qb.orderBy('category', 'ASC').addOrderBy('number', 'ASC').getMany();
   }
 
-  findByNumber(competitionID: number, sex: SEX, category: number, number: number) {
+  findByNumber(
+    competitionID: number,
+    sex: SEX,
+    category: number,
+    number: number,
+  ) {
     return this.egtDivisionRepository
       .createQueryBuilder('division')
       .leftJoin('division.competition', 'competition')
@@ -99,6 +107,16 @@ export class EGTDivisionService {
     await this.egtDivisionRepository.remove(division);
     await this.renumberDivisions(competition.id, cloned.category, cloned.sex);
     return cloned;
+  }
+
+  async updateState(data: UpdateEGTDivisionStateInput): Promise<EGTDivision> {
+    const division = await this.findOne(data.id);
+    if (data.currentRound > division.totalRounds) {
+      throw new BadRequestException();
+    }
+    division.state = data.state;
+    division.currentRound = data.currentRound;
+    return this.egtDivisionRepository.save(division);
   }
 
   async getNextDivisionNumber(

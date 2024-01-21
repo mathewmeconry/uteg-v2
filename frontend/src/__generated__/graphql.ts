@@ -145,6 +145,7 @@ export type Mutation = {
   egtStarterLink: EgtStarterLink;
   removeEgtDivision: EgtDivision;
   removeStarterLink: StarterLink;
+  updateEgtDivisionState: EgtDivision;
   updateStarter: Starter;
   updateStarterLink: StarterLink;
 };
@@ -192,6 +193,11 @@ export type MutationRemoveEgtDivisionArgs = {
 
 export type MutationRemoveStarterLinkArgs = {
   id: Scalars['ID']['input'];
+};
+
+
+export type MutationUpdateEgtDivisionStateArgs = {
+  data: UpdateEgtDivisionStateInput;
 };
 
 
@@ -306,6 +312,12 @@ export type StarterLink = {
   egt?: Maybe<EgtStarterLink>;
   id: Scalars['ID']['output'];
   starter: Starter;
+};
+
+export type UpdateEgtDivisionStateInput = {
+  currentRound: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
+  state: EgtDivisionStates;
 };
 
 export type UpdateStarterInput = {
@@ -425,6 +437,13 @@ export type CreateEgtDivisionMutationVariables = Exact<{
 
 
 export type CreateEgtDivisionMutation = { __typename?: 'Mutation', createEgtDivision: { __typename?: 'EGTDivision', id: string } };
+
+export type UpdateEgtDivisionStateMutationVariables = Exact<{
+  data: UpdateEgtDivisionStateInput;
+}>;
+
+
+export type UpdateEgtDivisionStateMutation = { __typename?: 'Mutation', updateEgtDivisionState: { __typename?: 'EGTDivision', id: string, state: EgtDivisionStates, currentRound: number } };
 
 export type EgtStarterLinkMutationMutationVariables = Exact<{
   data: EgtStarterLinkInput;
@@ -1073,6 +1092,41 @@ export function useCreateEgtDivisionMutation(baseOptions?: Apollo.MutationHookOp
 export type CreateEgtDivisionMutationHookResult = ReturnType<typeof useCreateEgtDivisionMutation>;
 export type CreateEgtDivisionMutationResult = Apollo.MutationResult<CreateEgtDivisionMutation>;
 export type CreateEgtDivisionMutationOptions = Apollo.BaseMutationOptions<CreateEgtDivisionMutation, CreateEgtDivisionMutationVariables>;
+export const UpdateEgtDivisionStateDocument = gql`
+    mutation updateEgtDivisionState($data: UpdateEGTDivisionStateInput!) {
+  updateEgtDivisionState(data: $data) {
+    id
+    state
+    currentRound
+  }
+}
+    `;
+export type UpdateEgtDivisionStateMutationFn = Apollo.MutationFunction<UpdateEgtDivisionStateMutation, UpdateEgtDivisionStateMutationVariables>;
+
+/**
+ * __useUpdateEgtDivisionStateMutation__
+ *
+ * To run a mutation, you first call `useUpdateEgtDivisionStateMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateEgtDivisionStateMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateEgtDivisionStateMutation, { data, loading, error }] = useUpdateEgtDivisionStateMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useUpdateEgtDivisionStateMutation(baseOptions?: Apollo.MutationHookOptions<UpdateEgtDivisionStateMutation, UpdateEgtDivisionStateMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateEgtDivisionStateMutation, UpdateEgtDivisionStateMutationVariables>(UpdateEgtDivisionStateDocument, options);
+      }
+export type UpdateEgtDivisionStateMutationHookResult = ReturnType<typeof useUpdateEgtDivisionStateMutation>;
+export type UpdateEgtDivisionStateMutationResult = Apollo.MutationResult<UpdateEgtDivisionStateMutation>;
+export type UpdateEgtDivisionStateMutationOptions = Apollo.BaseMutationOptions<UpdateEgtDivisionStateMutation, UpdateEgtDivisionStateMutationVariables>;
 export const EgtStarterLinkMutationDocument = gql`
     mutation egtStarterLinkMutation($data: EGTStarterLinkInput!) {
   egtStarterLink(data: $data) {

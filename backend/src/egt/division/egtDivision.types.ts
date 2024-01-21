@@ -28,6 +28,18 @@ export class CreateEGTDivisionInput {
   ground: number;
 }
 
+@InputType()
+export class UpdateEGTDivisionStateInput {
+  @Field(() => ID)
+  id: number;
+
+  @Field(() => EGTDivisionStates)  
+  state: EGTDivisionStates
+
+  @Field(() => Int)
+  currentRound: number
+}
+
 export enum EGTDivisionStates {
   PENDING = 'PENDING',
   RUNNING = 'RUNNING',

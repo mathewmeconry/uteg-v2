@@ -29,11 +29,13 @@ import {
 } from "@mui/material";
 import DoneIcon from "@mui/icons-material/Done";
 import EditIcon from "@mui/icons-material/Edit";
+import StartIcon from "@mui/icons-material/Start";
 import DeleteIcon from "@mui/icons-material/Delete";
 import GroupsIcon from "@mui/icons-material/Groups";
 import { CreateDivisionDialog } from "../../dialogs/createDivisionDialog/createDivisionDialog";
 import { DeleteConfirmationDialog } from "../../../../dialogs/deleteConfirmationDialog/deleteConfirmationDialog";
 import { ApolloError } from "@apollo/client";
+import { StartDivisionsDialog } from "../../dialogs/startDivisionsDialog/startDivisionsDialog";
 
 export function Divisionslist() {
   const { id } = useParams();
@@ -41,6 +43,7 @@ export function Divisionslist() {
   const navigate = useNavigate();
   const [openDialog, setOpenDialog] = useState("");
   const [toDeleteDivisions, setToDeleteDivisions] = useState<EgtDivision[]>([]);
+  const [toStartDivisions, setToStartDivisions] = useState<EgtDivision[]>([]);
   const [removeDivision] = useRemoveEgtDivisionMutation();
   const {
     data: divisionsData,
@@ -64,6 +67,13 @@ export function Divisionslist() {
     setOpenDialog("deleteDivisions");
   }
 
+  async function onStartRows(rows: Map<GridRowId, GridValidRowModel>) {
+    const startArray: EgtDivision[] = [];
+    rows.forEach((row) => startArray.push(row));
+    setToStartDivisions(startArray);
+    setOpenDialog("startDivision");
+  }
+
   function onEdit() {
     return () => {};
   }
@@ -72,6 +82,13 @@ export function Divisionslist() {
     return () => {
       setOpenDialog("deleteDivisions");
       setToDeleteDivisions([division]);
+    };
+  }
+
+  function onStart(division: EgtDivision) {
+    return () => {
+      setOpenDialog("startDivision");
+      setToStartDivisions([division]);
     };
   }
 
@@ -113,7 +130,7 @@ export function Divisionslist() {
       valueGetter: (params) =>
         t(`category_${params.row.category}`, {
           ns: "egt",
-          conext: params.row.sex,
+          context: params.row.sex.toLowerCase(),
         }),
     },
     {
@@ -188,14 +205,15 @@ export function Divisionslist() {
   ];
 
   function getColumnActions({ row: division }: { row: EgtDivision }) {
-    return [
-      <GridActionsCellItem
+    const actions = [
+      // TODO: Add edits capabilities to reset rounds and if division is started
+      /*       <GridActionsCellItem
         icon={<EditIcon />}
         label="Edit"
         className="textPrimary"
         onClick={onEdit()}
         color="inherit"
-      />,
+      />, */
       <GridActionsCellItem
         icon={<GroupsIcon />}
         label="Lineup"
@@ -212,6 +230,20 @@ export function Divisionslist() {
         color="inherit"
       />,
     ];
+
+    if (division.state === "PENDING") {
+      actions.push(
+        <GridActionsCellItem
+          icon={<StartIcon />}
+          label="Start"
+          className="textWarning"
+          color="warning"
+          onClick={onStart(division)}
+        />
+      );
+    }
+
+    return actions;
   }
 
   return (
@@ -246,6 +278,7 @@ export function Divisionslist() {
               toolbar: {
                 openDialog: setOpenDialog,
                 onRowDeletionClick: onRemoveRows,
+                onRowStartClick: onStartRows,
               },
             }}
             ignoreDiacritics={false}
@@ -280,6 +313,13 @@ export function Divisionslist() {
             ))}
           </List>
         </DeleteConfirmationDialog>
+        <StartDivisionsDialog
+          isOpen={openDialog === "startDivision"}
+          onClose={() => {
+            setOpenDialog("");
+          }}
+          divisions={toStartDivisions}
+        />
       </PaperExtended>
     </>
   );

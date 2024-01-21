@@ -17,6 +17,7 @@ import { ROLES } from 'src/auth/types';
 import {
   CreateEGTDivisionInput,
   EGTDivisionFilterInput,
+  UpdateEGTDivisionStateInput,
 } from './egtDivision.types';
 import { EGTDivisionService } from './egtDivision.service';
 import { CompetitionService } from 'src/base/competition/competition.service';
@@ -74,6 +75,12 @@ export class EGTDivisionResolver {
   @Mutation(() => EGTDivision, { name: 'removeEgtDivision' })
   remove(@Args('id', { type: () => ID }) id: number): Promise<EGTDivision> {
     return this.egtDivisionService.remove(id);
+  }
+
+  @Role(ROLES.ADMIN)
+  @Mutation(() => EGTDivision, {name: 'updateEgtDivisionState'})
+  updateState(@Args('data', {type: () => UpdateEGTDivisionStateInput}) data: UpdateEGTDivisionStateInput): Promise<EGTDivision> {
+    return this.egtDivisionService.updateState(data);
   }
 
   @ResolveField(() => Int)
