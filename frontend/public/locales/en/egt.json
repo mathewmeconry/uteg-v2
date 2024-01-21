@@ -42,5 +42,6 @@
   "division_info": "Division Infos",
   "lineup_one": "Lineup",
   "lineup_other": "Lineups",
-  "egt": "EGT"
+  "egt": "EGT",
+  "assign_to": "Assign {{what}} to {{to}}"
 }

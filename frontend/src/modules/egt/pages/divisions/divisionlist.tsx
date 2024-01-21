@@ -26,6 +26,7 @@ import {
   ListItem,
   Typography,
   List,
+  Tooltip,
 } from "@mui/material";
 import DoneIcon from "@mui/icons-material/Done";
 import EditIcon from "@mui/icons-material/Edit";
@@ -215,7 +216,16 @@ export function Divisionslist() {
         color="inherit"
       />, */
       <GridActionsCellItem
-        icon={<GroupsIcon />}
+        icon={
+          <Tooltip
+            title={t("assign_to", {
+              what: t("starters", { ns: "common" }),
+              to: t("division"),
+            })}
+          >
+            <GroupsIcon />
+          </Tooltip>
+        }
         label="Lineup"
         className="textPrimary"
         color="inherit"
@@ -224,7 +234,11 @@ export function Divisionslist() {
         }
       />,
       <GridActionsCellItem
-        icon={<DeleteIcon />}
+        icon={
+          <Tooltip title={t("delete", { ns: "common" })}>
+            <DeleteIcon />
+          </Tooltip>
+        }
         label="Delete"
         onClick={onRemove(division)}
         color="inherit"
@@ -234,7 +248,11 @@ export function Divisionslist() {
     if (division.state === "PENDING") {
       actions.push(
         <GridActionsCellItem
-          icon={<StartIcon />}
+          icon={
+            <Tooltip title={t("start", { ns: "common", name: t("division") })}>
+              <StartIcon />
+            </Tooltip>
+          }
           label="Start"
           className="textWarning"
           color="warning"

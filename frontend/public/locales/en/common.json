@@ -13,6 +13,7 @@
   "starter_other": "Starters",
   "starters": "Starters",
   "delete": "Delete",
+  "delete_typed": "Delete {{count}} {{type}}",
   "updated": "{{name}} updated",
   "link_updated": "{{name}} link updated",
   "update": "Update {{name}}",
@@ -80,5 +81,6 @@
   "dashboard": "Dashboard",
   "export": "Export",
   "start": "Start {{name}}",
+  "start_typed": "Start {{count}} {{type}}",
   "start_confirmation": "Do you really want to start?"
 }
