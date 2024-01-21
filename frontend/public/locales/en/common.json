@@ -12,6 +12,8 @@
   "starter_one": "Starter",
   "starter_other": "Starters",
   "starters": "Starters",
+  "starter_count_one": "{{count}} Starter",
+  "starter_count_other": "{{count}} Starters",
   "delete": "Delete",
   "delete_typed": "Delete {{count}} {{type}}",
   "updated": "{{name}} updated",

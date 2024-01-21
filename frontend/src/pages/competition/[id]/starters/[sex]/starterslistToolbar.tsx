@@ -1,4 +1,4 @@
-import { Button, ButtonGroup, Typography } from "@mui/material";
+import { Button, ButtonGroup, Tooltip, Typography } from "@mui/material";
 import {
   GridRowId,
   GridToolbarContainer,
@@ -14,6 +14,8 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import { useTranslation } from "react-i18next";
 import * as xlsx from "xlsx";
+import { useParams } from "react-router-dom";
+import { useModules } from "../../../../../hooks/useModules/useModules";
 
 export function StarterslistToolbar(props: {
   openDialog: Dispatch<SetStateAction<string>>;
@@ -22,6 +24,8 @@ export function StarterslistToolbar(props: {
   const { t } = useTranslation("common");
   const gridApi = useGridApiContext();
   const selectedRows = gridApi.current.getSelectedRows();
+  const { id } = useParams();
+  const modules = useModules(id!);
 
   function onExportClick() {
     const rows = gridExpandedSortedRowEntriesSelector(gridApi);
@@ -58,13 +62,29 @@ export function StarterslistToolbar(props: {
   return (
     <GridToolbarContainer>
       {selectedRows.size > 0 && (
-        <Button
-          color="error"
-          onClick={() => props.onRowDeletionClick(selectedRows)}
-        >
-          <DeleteIcon />
-          <Typography variant="body1"> ({selectedRows.size})</Typography>
-        </Button>
+        <>
+          <Tooltip
+            title={t("delete_typed", {
+              ns: "common",
+              count: selectedRows.size,
+              type: t("starter", { count: selectedRows.size }),
+            })}
+          >
+            <Button
+              color="error"
+              onClick={() => props.onRowDeletionClick(selectedRows)}
+            >
+              <DeleteIcon />
+              <Typography variant="body1"> ({selectedRows.size})</Typography>
+            </Button>
+          </Tooltip>
+          {...modules.modules.map(
+            (module) =>
+              module.extensions.starterslistSelectedRowsActions && (
+                <module.extensions.starterslistSelectedRowsActions />
+              )
+          )}
+        </>
       )}
       <GridToolbarQuickFilter sx={{ m: 1, flex: 1 }} />
       <ButtonGroup variant="text">

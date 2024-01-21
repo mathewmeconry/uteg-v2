@@ -424,6 +424,20 @@ export type AssignEgtLineupMutationVariables = Exact<{
 
 export type AssignEgtLineupMutation = { __typename?: 'Mutation', egtStarterLink: { __typename?: 'EGTStarterLink', id: string } };
 
+export type EgtAssignToDivisionDialogQueryVariables = Exact<{
+  filter: EgtDivisionFilterInput;
+}>;
+
+
+export type EgtAssignToDivisionDialogQuery = { __typename?: 'Query', egtDivisions: Array<{ __typename?: 'EGTDivision', id: string, number: number, ground: number }> };
+
+export type EgtAssignToDivisionDialogMutationMutationVariables = Exact<{
+  data: EgtStarterLinkInput;
+}>;
+
+
+export type EgtAssignToDivisionDialogMutationMutation = { __typename?: 'Mutation', egtStarterLink: { __typename?: 'EGTStarterLink', id: string, category?: number | null, division?: { __typename?: 'EGTDivision', id: string, number: number } | null, lineup?: { __typename?: 'EGTLineup', id: string } | null } };
+
 export type CompetitionGroundsQueryVariables = Exact<{
   id: Scalars['ID']['input'];
 }>;
@@ -450,7 +464,7 @@ export type EgtStarterLinkMutationMutationVariables = Exact<{
 }>;
 
 
-export type EgtStarterLinkMutationMutation = { __typename?: 'Mutation', egtStarterLink: { __typename?: 'EGTStarterLink', id: string, category?: number | null } };
+export type EgtStarterLinkMutationMutation = { __typename?: 'Mutation', egtStarterLink: { __typename?: 'EGTStarterLink', id: string, category?: number | null, division?: { __typename?: 'EGTDivision', id: string, number: number } | null } };
 
 export type EgtStarterLinkQueryVariables = Exact<{
   id?: InputMaybe<Scalars['ID']['input']>;
@@ -1018,6 +1032,89 @@ export function useAssignEgtLineupMutation(baseOptions?: Apollo.MutationHookOpti
 export type AssignEgtLineupMutationHookResult = ReturnType<typeof useAssignEgtLineupMutation>;
 export type AssignEgtLineupMutationResult = Apollo.MutationResult<AssignEgtLineupMutation>;
 export type AssignEgtLineupMutationOptions = Apollo.BaseMutationOptions<AssignEgtLineupMutation, AssignEgtLineupMutationVariables>;
+export const EgtAssignToDivisionDialogDocument = gql`
+    query egtAssignToDivisionDialog($filter: EGTDivisionFilterInput!) {
+  egtDivisions(filter: $filter) {
+    id
+    number
+    ground
+  }
+}
+    `;
+
+/**
+ * __useEgtAssignToDivisionDialogQuery__
+ *
+ * To run a query within a React component, call `useEgtAssignToDivisionDialogQuery` and pass it any options that fit your needs.
+ * When your component renders, `useEgtAssignToDivisionDialogQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useEgtAssignToDivisionDialogQuery({
+ *   variables: {
+ *      filter: // value for 'filter'
+ *   },
+ * });
+ */
+export function useEgtAssignToDivisionDialogQuery(baseOptions: Apollo.QueryHookOptions<EgtAssignToDivisionDialogQuery, EgtAssignToDivisionDialogQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<EgtAssignToDivisionDialogQuery, EgtAssignToDivisionDialogQueryVariables>(EgtAssignToDivisionDialogDocument, options);
+      }
+export function useEgtAssignToDivisionDialogLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<EgtAssignToDivisionDialogQuery, EgtAssignToDivisionDialogQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<EgtAssignToDivisionDialogQuery, EgtAssignToDivisionDialogQueryVariables>(EgtAssignToDivisionDialogDocument, options);
+        }
+export function useEgtAssignToDivisionDialogSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<EgtAssignToDivisionDialogQuery, EgtAssignToDivisionDialogQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<EgtAssignToDivisionDialogQuery, EgtAssignToDivisionDialogQueryVariables>(EgtAssignToDivisionDialogDocument, options);
+        }
+export type EgtAssignToDivisionDialogQueryHookResult = ReturnType<typeof useEgtAssignToDivisionDialogQuery>;
+export type EgtAssignToDivisionDialogLazyQueryHookResult = ReturnType<typeof useEgtAssignToDivisionDialogLazyQuery>;
+export type EgtAssignToDivisionDialogSuspenseQueryHookResult = ReturnType<typeof useEgtAssignToDivisionDialogSuspenseQuery>;
+export type EgtAssignToDivisionDialogQueryResult = Apollo.QueryResult<EgtAssignToDivisionDialogQuery, EgtAssignToDivisionDialogQueryVariables>;
+export const EgtAssignToDivisionDialogMutationDocument = gql`
+    mutation egtAssignToDivisionDialogMutation($data: EGTStarterLinkInput!) {
+  egtStarterLink(data: $data) {
+    id
+    category
+    division {
+      id
+      number
+    }
+    lineup {
+      id
+    }
+  }
+}
+    `;
+export type EgtAssignToDivisionDialogMutationMutationFn = Apollo.MutationFunction<EgtAssignToDivisionDialogMutationMutation, EgtAssignToDivisionDialogMutationMutationVariables>;
+
+/**
+ * __useEgtAssignToDivisionDialogMutationMutation__
+ *
+ * To run a mutation, you first call `useEgtAssignToDivisionDialogMutationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useEgtAssignToDivisionDialogMutationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [egtAssignToDivisionDialogMutationMutation, { data, loading, error }] = useEgtAssignToDivisionDialogMutationMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useEgtAssignToDivisionDialogMutationMutation(baseOptions?: Apollo.MutationHookOptions<EgtAssignToDivisionDialogMutationMutation, EgtAssignToDivisionDialogMutationMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<EgtAssignToDivisionDialogMutationMutation, EgtAssignToDivisionDialogMutationMutationVariables>(EgtAssignToDivisionDialogMutationDocument, options);
+      }
+export type EgtAssignToDivisionDialogMutationMutationHookResult = ReturnType<typeof useEgtAssignToDivisionDialogMutationMutation>;
+export type EgtAssignToDivisionDialogMutationMutationResult = Apollo.MutationResult<EgtAssignToDivisionDialogMutationMutation>;
+export type EgtAssignToDivisionDialogMutationMutationOptions = Apollo.BaseMutationOptions<EgtAssignToDivisionDialogMutationMutation, EgtAssignToDivisionDialogMutationMutationVariables>;
 export const CompetitionGroundsDocument = gql`
     query competitionGrounds($id: ID!) {
   competition(id: $id) {
@@ -1132,6 +1229,10 @@ export const EgtStarterLinkMutationDocument = gql`
   egtStarterLink(data: $data) {
     id
     category
+    division {
+      id
+      number
+    }
   }
 }
     `;

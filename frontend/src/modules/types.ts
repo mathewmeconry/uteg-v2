@@ -34,11 +34,12 @@ export type ModuleHandlers = {
 export type ModuleExtensions = {
   addStarterForm?: JSX.Element;
   updateStarterForm?: JSX.Element;
-  startersReviewStepRow?: (props: StartersReviewStepRowProps) => JSX.Element;
+  startersReviewStepRow?: React.FunctionComponent<StartersReviewStepRowProps>;
   startersReviewStepHeader?: JSX.Element;
-  starterslistColumns?: Array<GridColDef | GridActionsColDef>
+  starterslistColumns?: Array<GridColDef | GridActionsColDef>;
+  starterslistSelectedRowsActions?: React.FunctionComponent;
 };
 
 export type ModuleTransformers = {
-  starterLinksQuery?: DocumentTransform
+  starterLinksQuery?: DocumentTransform;
 };

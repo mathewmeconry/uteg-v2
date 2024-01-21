@@ -11,6 +11,7 @@ import { importStarters } from "./handlers/importStarters/importStarters";
 import { GridActionsColDef, GridColDef } from "@mui/x-data-grid";
 import { DocumentTransform } from "@apollo/client";
 import { Kind, visit } from "graphql";
+import { StarterslistSelectedRowsActions } from "./extensions/starterslistSelectedRowsActions/starterslistSelectedRowsActions";
 
 const routes: RouteObject[] = [
   {
@@ -32,7 +33,7 @@ const routes: RouteObject[] = [
                 handle: {
                   layout: {
                     returnable: true,
-                    hasDrawer: false
+                    hasDrawer: false,
                   },
                 },
               },
@@ -96,6 +97,13 @@ const starterLinksQueryTransformer = new DocumentTransform((document) => {
                 selectionSet: {
                   kind: Kind.SELECTION_SET,
                   selections: [
+                    {
+                      kind: Kind.FIELD,
+                      name: {
+                        kind: Kind.NAME,
+                        value: "id",
+                      },
+                    },
                     {
                       kind: Kind.FIELD,
                       name: {
@@ -174,6 +182,7 @@ export const EGTModule: Module = {
     startersReviewStepRow: EGTStartersReviewStepRow,
     startersReviewStepHeader: <EGTStartersReviewHeaders />,
     starterslistColumns: starterListColumns,
+    starterslistSelectedRowsActions: StarterslistSelectedRowsActions,
   },
   handlers: {
     parseStarterFromSheet: parseStarterFromSheet,

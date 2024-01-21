@@ -47,7 +47,9 @@ export function FormCategorySelect(props: EGTFormCategorySelectProps) {
       <MenuItem value="5">{t("category_5")}</MenuItem>
       <MenuItem value="6">{t("category_6")}</MenuItem>
       <MenuItem value="7">{t("category_7")}</MenuItem>
-      <MenuItem value="8">{t(`category_8`, { context: chosenSex?.toLowerCase() })}</MenuItem>
+      <MenuItem value="8">
+        {t(`category_8`, { context: chosenSex?.toLowerCase() })}
+      </MenuItem>
     </FormTextInput>
   );
 }

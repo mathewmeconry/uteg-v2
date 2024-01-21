@@ -5,6 +5,10 @@ const EGT_STARTER_LINK_MUTATION = gql`
     egtStarterLink(data: $data) {
       id
       category
+      division {
+        id
+        number
+      }
     }
   }
 `;
