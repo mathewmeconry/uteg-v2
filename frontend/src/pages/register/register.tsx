@@ -21,16 +21,13 @@ export function Register() {
   }
 
   async function onSubmit(data: FieldValues) {
-    await form.trigger();
-    if (!form.formState.isValid) {
-      return;
-    }
+    form.clearErrors();
 
-    if (data.password !== data.passwordRepeat) {
+    if (data.password !== data.repeat_password) {
       form.setError("password", {
         message: t("passwords_do_not_match"),
       });
-      form.setError("passwordRepeat", {
+      form.setError("repeat_password", {
         message: t("passwords_do_not_match"),
       });
       return;
@@ -44,9 +41,12 @@ export function Register() {
         },
       });
       await getToken(data.email, data.password);
-      enqueueSnackbar(t("created", { name: t("user", { count: 1 }) }), {
-        variant: "success",
-      });
+      enqueueSnackbar(
+        t("created", { name: data.email, type: t("user", { count: 1 }) }),
+        {
+          variant: "success",
+        }
+      );
       navigate("/home");
     } catch {
       if (error?.message.includes("Duplicate entry")) {
@@ -69,7 +69,10 @@ export function Register() {
         }}
       >
         <FormProvider {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            style={{ width: "100%" }}
+          >
             <FormTextInput
               name="email"
               fieldProps={{ type: "email" }}

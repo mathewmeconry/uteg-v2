@@ -53,7 +53,10 @@ export function Login() {
         }}
       >
         <FormProvider {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            style={{ width: "100%" }}
+          >
             <FormTextInput
               name="email"
               fieldProps={{ type: "email" }}
