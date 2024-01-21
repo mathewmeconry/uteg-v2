@@ -11,7 +11,6 @@ import {
   DataGrid,
   GridActionsCellItem,
   GridActionsColDef,
-  GridColDef,
   GridFilterItem,
   GridFilterOperator,
   GridRowId,
@@ -31,6 +30,7 @@ import { StarterlistColumnMenu } from "./starterslistColumnMenu";
 import { DeleteConfirmationDialog } from "../../../../../dialogs/deleteConfirmationDialog/deleteConfirmationDialog";
 import { List, ListItem, Typography } from "@mui/material";
 import { useModules } from "../../../../../hooks/useModules/useModules";
+import { GridColDefExtension } from "../../../../../types/GridColDefExtension";
 
 export function StartersList() {
   const { sex, id } = useParams();
@@ -87,7 +87,7 @@ export function StartersList() {
   };
 
   const moduleColumns = useMemo(() => {
-    const columns: Array<GridColDef | GridActionsColDef> = [];
+    const columns: Array<GridColDefExtension | GridActionsColDef> = [];
     for (const module of modules.modules) {
       if (module.extensions.starterslistColumns) {
         columns.push(
@@ -103,13 +103,15 @@ export function StartersList() {
     return columns;
   }, [modules.modules]);
 
-  const columns: Array<GridColDef | GridActionsColDef> = [
+  const columns: Array<GridColDefExtension | GridActionsColDef> = [
     {
       field: "starter.firstname",
       headerName: t("firstname"),
       valueGetter: (params) => params.row.starter.firstname,
       flex: 1,
       disableColumnMenu: true,
+      renderInPdf: true,
+      renderInXlsx: true
     },
     {
       field: "starter.lastname",
@@ -117,12 +119,16 @@ export function StartersList() {
       valueGetter: (params) => params.row.starter.lastname,
       flex: 1,
       disableColumnMenu: true,
+      renderInPdf: true,
+      renderInXlsx: true
     },
     {
       field: "starter.birthyear",
       headerName: t("birthyear"),
       valueGetter: (params) => params.row.starter.birthyear,
       disableColumnMenu: true,
+      renderInPdf: true,
+      renderInXlsx: true
     },
     {
       field: "club.name",
@@ -130,6 +136,8 @@ export function StartersList() {
       valueGetter: (params) => params.row.club.name,
       flex: 1,
       filterOperators: [inFilter],
+      renderInPdf: false,
+      renderInXlsx: true
     },
     {
       field: "club.location",
@@ -137,6 +145,8 @@ export function StartersList() {
       valueGetter: (params) => params.row.club.location,
       flex: 1,
       filterOperators: [inFilter],
+      renderInPdf: false,
+      renderInXlsx: true
     },
     ...moduleColumns,
     {

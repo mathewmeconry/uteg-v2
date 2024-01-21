@@ -8,10 +8,11 @@ import { EGTStartersReviewStepRow } from "./extensions/startersReviewStepRow/sta
 import { parseStarterFromSheet } from "./handlers/parseStarterFromSheet/parseStarterFromSheet";
 import { EGTStartersReviewHeaders } from "./extensions/startersReviewHeaders/startersReviewHeaders";
 import { importStarters } from "./handlers/importStarters/importStarters";
-import { GridActionsColDef, GridColDef } from "@mui/x-data-grid";
+import { GridActionsColDef } from "@mui/x-data-grid";
 import { DocumentTransform } from "@apollo/client";
 import { Kind, visit } from "graphql";
 import { StarterslistSelectedRowsActions } from "./extensions/starterslistSelectedRowsActions/starterslistSelectedRowsActions";
+import { GridColDefExtension } from "../../types/GridColDefExtension";
 
 const routes: RouteObject[] = [
   {
@@ -45,7 +46,7 @@ const routes: RouteObject[] = [
   },
 ];
 
-const starterListColumns: Array<GridColDef | GridActionsColDef> = [
+const starterListColumns: Array<GridColDefExtension | GridActionsColDef> = [
   {
     field: "egt.category",
     headerName: "category",
@@ -59,12 +60,16 @@ const starterListColumns: Array<GridColDef | GridActionsColDef> = [
       return "";
     },
     disableColumnMenu: true,
+    renderInPdf: true,
+    renderInXlsx: true,
   },
   {
     field: "egt.division",
     headerName: "division",
     valueGetter: (params) => params.row.egt?.division?.number,
     disableColumnMenu: true,
+    renderInPdf: true,
+    renderInXlsx: true,
   },
   {
     field: "egt.device",
@@ -74,13 +79,14 @@ const starterListColumns: Array<GridColDef | GridActionsColDef> = [
         ? `device_${params.row.egt?.lineup?.device}`
         : "",
     disableColumnMenu: true,
+    renderInPdf: true,
+    renderInXlsx: true,
   },
 ];
 
 const starterLinksQueryTransformer = new DocumentTransform((document) => {
   return visit(document, {
     Field(field) {
-      console.log(field);
       if (field.name.value === "starterLinks") {
         return {
           ...field,

@@ -1,21 +1,38 @@
-import { Button, ButtonGroup, Tooltip, Typography } from "@mui/material";
+import {
+  Button,
+  ButtonGroup,
+  LinearProgress,
+  ListItemIcon,
+  ListItemText,
+  Menu,
+  MenuItem,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import {
   GridRowId,
   GridToolbarContainer,
   GridToolbarDensitySelector,
   GridToolbarQuickFilter,
   GridValidRowModel,
+  GridValueGetterParams,
   gridExpandedSortedRowEntriesSelector,
   useGridApiContext,
 } from "@mui/x-data-grid";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import { useTranslation } from "react-i18next";
 import * as xlsx from "xlsx";
 import { useParams } from "react-router-dom";
 import { useModules } from "../../../../../hooks/useModules/useModules";
+import ListIcon from "@mui/icons-material/List";
+import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
+import { usePDF } from "@react-pdf/renderer";
+import { StarterslistDocument } from "../../../../../documents/starterslistDocument/starterslistDocument";
+import { StarterLink } from "../../../../../__generated__/graphql";
+import { GridColDefExtension } from "../../../../../types/GridColDefExtension";
 
 export function StarterslistToolbar(props: {
   openDialog: Dispatch<SetStateAction<string>>;
@@ -24,28 +41,38 @@ export function StarterslistToolbar(props: {
   const { t } = useTranslation("common");
   const gridApi = useGridApiContext();
   const selectedRows = gridApi.current.getSelectedRows();
+  const rows = gridExpandedSortedRowEntriesSelector(gridApi);
   const { id } = useParams();
   const modules = useModules(id!);
+  const [exportAnchorEl, setExportAnchorEl] = useState<null | HTMLElement>(
+    null
+  );
+  const exportMenuOpen = Boolean(exportAnchorEl);
+  const [downloadingPdf, setDownloadingPdf] = useState(false);
 
-  function onExportClick() {
-    const rows = gridExpandedSortedRowEntriesSelector(gridApi);
-    const columns = gridApi.current.getAllColumns();
+  function handleExportClick(event: React.MouseEvent<HTMLButtonElement>) {
+    setExportAnchorEl(event.currentTarget);
+  }
+  function handleExportMenuClose() {
+    setExportAnchorEl(null);
+  }
+
+  const columns: GridColDefExtension[] = gridApi.current.getAllColumns();
+  const [pdfInstance, updatePdfInstance] = usePDF();
+
+  function exportExcel() {
     const starters = [];
     for (const row of rows) {
       const starter: { [index: string]: string | undefined } = {};
       for (const column of columns) {
-        if (["__check__", "actions"].includes(column.field)) {
-          continue;
-        }
-        if (column.valueGetter) {
+        if (column.renderInXlsx && column.valueGetter) {
           starter[column.headerName || "undefined"] = column.valueGetter({
             row: row.model,
-          });
+          } as GridValueGetterParams);
         }
       }
       starters.push(starter);
     }
-
     const sheet = xlsx.utils.json_to_sheet(starters);
     const workbook = xlsx.utils.book_new();
     xlsx.utils.book_append_sheet(
@@ -57,7 +84,47 @@ export function StarterslistToolbar(props: {
       workbook,
       `${t("starter", { count: starters.length })}.xlsx`
     );
+    handleExportMenuClose();
   }
+
+  function exportPdf() {
+    setDownloadingPdf(true);
+    updatePdfInstance(
+      StarterslistDocument({
+        starters: rows.map((row) => row.model) as StarterLink[],
+        columns,
+      })
+    );
+  }
+
+  useEffect(() => {
+    if (
+      (pdfInstance && pdfInstance.loading) ||
+      !pdfInstance.url ||
+      !downloadingPdf
+    ) {
+      return;
+    }
+
+    const link = document.createElement("a");
+    link.href = pdfInstance.url;
+    link.setAttribute(
+      "download",
+      `${t("starter", { count: rows.length })}.pdf`
+    );
+
+    // Append to html link element page
+    document.body.appendChild(link);
+
+    // Start download
+    link.click();
+
+    // Clean up and remove the link
+    link.parentNode?.removeChild(link);
+
+    setDownloadingPdf(false);
+    handleExportMenuClose();
+  }, [pdfInstance, downloadingPdf]);
 
   return (
     <GridToolbarContainer>
@@ -89,10 +156,40 @@ export function StarterslistToolbar(props: {
       <GridToolbarQuickFilter sx={{ m: 1, flex: 1 }} />
       <ButtonGroup variant="text">
         <GridToolbarDensitySelector />
-        <Button onClick={onExportClick} size="small">
+        <Button
+          onClick={handleExportClick}
+          size="small"
+          aria-controls={exportMenuOpen ? "export-menu" : undefined}
+          aria-haspopup="true"
+          aria-expanded={exportMenuOpen ? "true" : undefined}
+        >
           <FileDownloadIcon />
           {t("export")}
         </Button>
+        <Menu
+          id="export-menu"
+          anchorEl={exportAnchorEl}
+          open={exportMenuOpen}
+          onClose={handleExportMenuClose}
+          MenuListProps={{
+            "aria-labelledby": "basic-button",
+          }}
+        >
+          <MenuItem onClick={exportExcel}>
+            <ListItemIcon>
+              <ListIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText>Excel</ListItemText>
+          </MenuItem>
+          <MenuItem onClick={exportPdf}>
+            <ListItemIcon>
+              <PictureAsPdfIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText>
+              {downloadingPdf ? <LinearProgress /> : "PDF"}
+            </ListItemText>
+          </MenuItem>
+        </Menu>
         <Button onClick={() => props.openDialog("addStarter")} size="small">
           <PersonAddIcon />
           {t("add", { name: t("starter", { count: 1 }) })}
