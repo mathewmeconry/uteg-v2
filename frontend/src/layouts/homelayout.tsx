@@ -115,7 +115,7 @@ export function HomeLayout() {
             />
           )}
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            {t(props.title || "")}
+            {props.title && t(props.title)}
           </Typography>
           <div>
             <IconButton

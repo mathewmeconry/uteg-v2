@@ -29,6 +29,12 @@ const routes: RouteObject[] = [
               {
                 path: "lineups",
                 element: <Lineups />,
+                handle: {
+                  layout: {
+                    returnable: true,
+                    hasDrawer: false
+                  },
+                },
               },
             ],
           },
