@@ -95,7 +95,8 @@ export function StarterslistDocument(props: StarterslistDocumentProps) {
         (a, b) =>
           (a.egt?.division?.number || 0) - (b.egt?.division?.number || 0)
       )
-      .sort((a, b) => (a.egt?.category || 0) - (b.egt?.category || 0));
+      .sort((a, b) => (a.egt?.category || 0) - (b.egt?.category || 0))
+      .sort((a, b) => a.starter.sex.localeCompare(b.starter.sex));
   }
 
   return (
