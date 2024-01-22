@@ -52,6 +52,7 @@ export function DivisionlistToolbar(props: {
   );
   const exportMenuOpen = Boolean(exportAnchorEl);
   const [downloadingPdf, setDownloadingPdf] = useState(0);
+  const [pdfUpdatePending, setPdfUpdatePending] = useState(false);
   const {
     data: competition,
     loading: competitionLoading,
@@ -80,6 +81,7 @@ export function DivisionlistToolbar(props: {
   }
 
   async function exportPdf(ground: number) {
+    setPdfUpdatePending(true);
     setDownloadingPdf(ground);
     const devices = await devicesQuery({
       variables: {
@@ -147,16 +149,22 @@ export function DivisionlistToolbar(props: {
     }
 
     updatePdfInstance(
-      JudgingDocument({
-        rounds,
-        devices: devices.data?.egtDevices as EgtDevice[],
-        t: t,
-      })
+      <JudgingDocument
+        rounds={rounds}
+        devices={devices.data?.egtDevices}
+        t={t}
+      />
     );
+    setPdfUpdatePending(false);
   }
 
   useEffect(() => {
-    if (pdfInstance.loading || !pdfInstance.url) {
+    if (
+      pdfInstance.loading ||
+      !pdfInstance.url ||
+      downloadingPdf === 0 ||
+      pdfUpdatePending
+    ) {
       return;
     }
 
@@ -180,7 +188,7 @@ export function DivisionlistToolbar(props: {
     link.parentNode?.removeChild(link);
 
     setDownloadingPdf(0);
-  }, [pdfInstance]);
+  }, [pdfInstance, pdfUpdatePending]);
 
   useEffect(() => {
     if (downloadingPdf === 0) {
