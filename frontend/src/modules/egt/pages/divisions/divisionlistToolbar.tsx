@@ -26,7 +26,6 @@ import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import { useParams } from "react-router-dom";
 import {
-  EgtDevice,
   EgtDivisionJudgingQueryHookResult,
   useCompetitionGroundsQuery,
   useEgtDevicesJudgingLazyQuery,
@@ -205,13 +204,13 @@ export function DivisionlistToolbar(props: {
     const menuItems: JSX.Element[] = [];
     for (let i = 1; i <= grounds; i++) {
       menuItems.push(
-        <MenuItem key={i} onClick={() => exportPdf(i)}>
+        <MenuItem onClick={() => exportPdf(i)}>
           <ListItemIcon>
             <PictureAsPdfIcon fontSize="small" />
           </ListItemIcon>
           <ListItemText>
             {downloadingPdf === i ? (
-              <LinearProgress />
+              <LinearProgress sx={{ width: "10vw" }} />
             ) : (
               t("ground_typed", { ns: "common", name: i })
             )}
@@ -277,8 +276,10 @@ export function DivisionlistToolbar(props: {
           anchorEl={exportAnchorEl}
           open={exportMenuOpen}
           onClose={handleExportMenuClose}
+          transformOrigin={{ horizontal: 'left', vertical: 'top' }}
+          anchorOrigin={{ horizontal: "left", vertical: "bottom" }}
           MenuListProps={{
-            "aria-labelledby": "basic-button",
+            "aria-labelledby": "export-menu",
           }}
         >
           {renderExportMenuItems()}

@@ -25,7 +25,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import { useTranslation } from "react-i18next";
 import * as xlsx from "xlsx";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useModules } from "../../../../hooks/useModules/useModules";
 import ListIcon from "@mui/icons-material/List";
 import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
