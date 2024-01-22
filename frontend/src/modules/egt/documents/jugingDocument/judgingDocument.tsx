@@ -286,7 +286,6 @@ export function JudgingDocument(props: JudgingDocumentProps) {
               <View
                 style={styles.tableCol}
                 key={`${device.number}_${round}_${key}`}
-                debug={true}
               >
                 <Text style={styles.tableCell}>
                   {translations[key as keyof typeof translations]("")}
