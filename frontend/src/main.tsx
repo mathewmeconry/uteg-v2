@@ -99,7 +99,16 @@ const routes: RouteObject[] = [
           },
           {
             path: "starters",
-            element: <StartersList />
+            children: [
+              {
+                path: "",
+                element: <StartersList />,
+              },
+              {
+                path: "import",
+                element: <StartersImport />,
+              },
+            ],
           },
           ...EGTModule.routes,
         ],

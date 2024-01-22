@@ -1,5 +1,5 @@
-import { TextField, TextFieldProps } from "@mui/material";
-import { PropsWithChildren } from "react";
+import { TextField, TextFieldProps, Typography } from "@mui/material";
+import { PropsWithChildren, ReactElement } from "react";
 import {
   FieldValues,
   RegisterOptions,
@@ -14,6 +14,8 @@ export type FormTextInputProps = PropsWithChildren & {
   ns?: string;
   fieldProps?: TextFieldProps;
   defaultValue?: string;
+  annotation?: string;
+  annotationNs?: string;
   rules:
     | Omit<
         RegisterOptions<FieldValues, any>,
@@ -35,11 +37,25 @@ export function FormTextInput(props: FormTextInputProps) {
     defaultValue: props.defaultValue,
   });
 
+  let label: string | ReactElement = t(props.label || props.name, {
+    ns: props.ns,
+  });
+  if (props.annotation) {
+    label = (
+      <>
+        {label}
+        <Typography variant="caption" ml={1}>
+          {t(props.annotation, { ns: props.annotationNs })}
+        </Typography>
+      </>
+    );
+  }
+
   return (
     <TextField
       key={props.name}
       id={props.name}
-      label={t(props.label || props.name, { ns : props.ns })}
+      label={label}
       variant="standard"
       margin="normal"
       fullWidth

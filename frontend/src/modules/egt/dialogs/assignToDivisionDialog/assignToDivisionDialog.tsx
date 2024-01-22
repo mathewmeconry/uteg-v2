@@ -14,8 +14,8 @@ import { FieldValues, FormProvider, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import {
   EgtDivision,
-  EgtStarterLink,
   Sex,
+  StarterLink,
   useEgtAssignToDivisionDialogLazyQuery,
   useEgtAssignToDivisionDialogMutationMutation,
 } from "../../../../__generated__/graphql";
@@ -27,7 +27,11 @@ import { enqueueSnackbar } from "notistack";
 export type AssignToDivisionDialogProps = {
   isOpen: boolean;
   onClose: () => void;
-  starters: EgtStarterLink[];
+  starters: StarterLink[];
+};
+
+type CategoryWithSex = {
+  category: number;
   sex: Sex;
 };
 
@@ -37,26 +41,38 @@ export function AssignToDivisionDialog(props: AssignToDivisionDialogProps) {
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
   const { t } = useTranslation(["egt", "common"]);
   const [divisions, setDivisions] = useState<{
-    [index: number]: Partial<EgtDivision>[];
+    [index: string]: Partial<EgtDivision>[];
   }>({});
-  const categories = useMemo(() => {
-    const categories = props.starters.map((starter) => starter.category);
+  const categoriesWithSex: CategoryWithSex[] = useMemo(() => {
+    const categoriesWithSex: CategoryWithSex[] = props.starters
+      .filter((starter) => starter && starter.egt?.category)
+      .map((starter) => ({
+        category: starter.egt.category,
+        sex: starter.starter.sex,
+      }));
+
     // deduplicates categories array
-    return categories.filter(
-      (category, index) => categories.indexOf(category) === index
-    );
+    return categoriesWithSex
+      .filter(
+        (category, index) =>
+          categoriesWithSex.findIndex(
+            (c) => c.category === category.category && c.sex === category.sex
+          ) === index
+      )
+      .sort((a, b) => a.category - b.category)
+      .sort((a, b) => a.sex.localeCompare(b.sex));
   }, [props.starters]);
   const [storing, setStoring] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const form = useForm({
     defaultValues: {
-      ...categories.reduce((prev, curr) => {
+      ...categoriesWithSex.reduce((prev, curr) => {
         if (curr) {
-          prev[curr] = "";
+          prev[`${curr.category}_${curr.sex}`] = "";
         }
         return prev;
-      }, {} as { [key: number]: string }),
+      }, {} as { [key: string]: string }),
     },
     mode: "onChange",
   });
@@ -66,20 +82,21 @@ export function AssignToDivisionDialog(props: AssignToDivisionDialogProps) {
   useEffect(() => {
     async function getDivisions() {
       setLoading(true);
-      const divisions: { [index: number]: Partial<EgtDivision>[] } = {};
-      for (const category of categories) {
+      const divisions: { [index: string]: Partial<EgtDivision>[] } = {};
+      for (const category of categoriesWithSex) {
         if (category) {
           const resp = await divisionQuery({
             variables: {
               filter: {
                 competitionID: id!,
-                category: category,
-                sex: props.sex,
+                category: category.category,
+                sex: category.sex,
               },
             },
           });
           if (resp.data?.egtDivisions) {
-            divisions[category] = resp.data?.egtDivisions;
+            divisions[`${category.category}_${category.sex}`] =
+              resp.data?.egtDivisions;
           }
         }
       }
@@ -90,14 +107,14 @@ export function AssignToDivisionDialog(props: AssignToDivisionDialogProps) {
     if (props.isOpen) {
       getDivisions();
     }
-  }, [categories, props.isOpen]);
+  }, [categoriesWithSex, props.isOpen]);
 
   async function onSubmit(data: FieldValues) {
     setStoring(true);
     for (const starter of props.starters) {
-      if (starter.category && starter.id) {
-        const divisionId = data[starter.category];
-        if (divisionId !== starter.division?.id) {
+      if (starter && starter.egt?.category && starter.egt?.id) {
+        const divisionId = data[starter.egt?.category];
+        if (divisionId !== starter.egt?.division?.id) {
           try {
             await assignMutataion({
               variables: {
@@ -127,7 +144,7 @@ export function AssignToDivisionDialog(props: AssignToDivisionDialogProps) {
     setStoring(false);
   }
 
-  function renderDivisionSelection(category: number) {
+  function renderDivisionSelection(category: CategoryWithSex) {
     if (loading) {
       return <Skeleton variant="rectangular" />;
     }
@@ -135,18 +152,24 @@ export function AssignToDivisionDialog(props: AssignToDivisionDialogProps) {
     return (
       <FormTextInput
         name={category.toString()}
-        label={t(`category_${category}`, {
-          context: props.sex.toLowerCase(),
-        })}
+        label={t(
+          `category_${category.category}_${category.sex.toLowerCase()}`,
+          {
+            context: category.sex.toLowerCase(),
+          }
+        )}
+        annotation={category.sex.toLowerCase()}
         ns="egt"
         fieldProps={{ select: true }}
         rules={{ required: true }}
       >
-        {...divisions[category].map((division) => (
-          <MenuItem key={division.id} value={division.id}>
-            {t("division")} {division.number}
-          </MenuItem>
-        ))}
+        {...(divisions[`${category.category}_${category.sex}`] || []).map(
+          (division) => (
+            <MenuItem key={division.id} value={division.id}>
+              {t("division")} {division.number}
+            </MenuItem>
+          )
+        )}
       </FormTextInput>
     );
   }
@@ -168,8 +191,8 @@ export function AssignToDivisionDialog(props: AssignToDivisionDialogProps) {
       <FormProvider {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <DialogContent>
-            {...Object.keys(divisions).map((category) =>
-              renderDivisionSelection(parseInt(category))
+            {...categoriesWithSex.map((category) =>
+              renderDivisionSelection(category)
             )}
           </DialogContent>
           <DialogActions>

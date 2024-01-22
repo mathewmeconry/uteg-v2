@@ -22,6 +22,13 @@ const EGT_STARTER_LINK_MUTATION = gql`
       lineup {
         id
       }
+      starterlink {
+        id
+        starter {
+          id
+          sex
+        }
+      }
     }
   }
 `;
