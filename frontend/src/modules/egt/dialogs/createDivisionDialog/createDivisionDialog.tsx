@@ -66,7 +66,11 @@ export function CreateDivisionDialog(props: {
           },
         });
         enqueueSnackbar(
-          t("created", { name: t("division", { ns: "egt" }), ns: "common" }),
+          t("created", {
+            type: t("division", { ns: "egt" }),
+            name: t(`category_${data.category}`, { ns: "egt" }),
+            ns: "common",
+          }),
           { variant: "success" }
         );
         form.reset();

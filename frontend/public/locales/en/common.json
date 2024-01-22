@@ -36,6 +36,7 @@
   "ground_one": "Ground",
   "ground_other": "Grounds",
   "grounds": "Grounds",
+  "ground_typed": "Ground {{name}}",
   "state": "State",
   "delete_confirmation": "Do you really want to delete?",
   "location": "Location",
@@ -84,5 +85,9 @@
   "export": "Export",
   "start": "Start {{name}}",
   "start_typed": "Start {{count}} {{type}}",
-  "start_confirmation": "Do you really want to start?"
+  "start_confirmation": "Do you really want to start?",
+  "undefined": "Undefined",
+  "grade": "Grade",
+  "grade_labled": "{{label}} Grade",
+  "final": "Final"
 }

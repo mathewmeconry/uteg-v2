@@ -102,9 +102,12 @@ export function Divisionslist() {
           },
         });
       }
-      enqueueSnackbar(t("deleted", { name: t("division", { ns: "common" }) }), {
-        variant: "success",
-      });
+      enqueueSnackbar(
+        t("deleted", { ns: "common", name: t("division", { ns: "egt" }) }),
+        {
+          variant: "success",
+        }
+      );
     } catch (e) {
       if (e instanceof ApolloError) {
         enqueueSnackbar(t(e.message, { ns: "common" }), { variant: "error" });

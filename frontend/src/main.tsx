@@ -107,6 +107,12 @@ const routes: RouteObject[] = [
               {
                 path: "import",
                 element: <StartersImport />,
+                handle: {
+                  layout: {
+                    hasDrawer: false,
+                    returnable: true
+                  }
+                }
               },
             ],
           },

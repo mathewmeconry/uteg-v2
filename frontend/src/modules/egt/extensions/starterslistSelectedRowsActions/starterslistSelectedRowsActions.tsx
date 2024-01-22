@@ -4,11 +4,9 @@ import { Button, Tooltip, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { useMemo, useState } from "react";
 import { AssignToDivisionDialog } from "../../dialogs/assignToDivisionDialog/assignToDivisionDialog";
-import { useParams } from "react-router-dom";
-import { EgtStarterLink, Sex } from "../../../../__generated__/graphql";
+import { StarterLink } from "../../../../__generated__/graphql";
 
 export function StarterslistSelectedRowsActions() {
-  const { sex } = useParams();
   const gridApi = useGridApiContext();
   const selectedRows = useMemo(() => gridApi.current.getSelectedRows(), [
     gridApi.current.getSelectedRows(),
@@ -17,10 +15,10 @@ export function StarterslistSelectedRowsActions() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const starters = useMemo(() => {
-    const arr: EgtStarterLink[] = [];
+    const arr: StarterLink[] = [];
     for (const row of selectedRows) {
-      if (!arr.includes(row[1].egt)) {
-        arr.push(row[1].egt);
+      if (!arr.includes(row[1] as StarterLink)) {
+        arr.push(row[1] as StarterLink);
       }
     }
     return arr;
@@ -50,7 +48,6 @@ export function StarterslistSelectedRowsActions() {
           gridApi.current.setRowSelectionModel([]);
         }}
         starters={starters}
-        sex={sex?.toUpperCase() as Sex}
       />
     </>
   );

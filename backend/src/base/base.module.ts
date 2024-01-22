@@ -16,6 +16,7 @@ import { CompetitionService } from './competition/competition.service';
 import { GradeService } from './grade/grade.service';
 import { StarterLinkService } from './starterLink/starterLink.service';
 import { AuthModule } from 'src/auth/auth.module';
+import { ModuleService } from './modules/module.service';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { AuthModule } from 'src/auth/auth.module';
     GradeService,
     StarterService,
     StarterLinkService,
+    ModuleService
   ],
   providers: [
     ClubResolver,
@@ -47,6 +49,7 @@ import { AuthModule } from 'src/auth/auth.module';
     GradeService,
     StarterService,
     StarterLinkService,
+    ModuleService
   ],
 })
 export class BaseModule {}

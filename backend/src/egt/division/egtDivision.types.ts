@@ -1,5 +1,14 @@
-import { Field, ID, InputType, Int, registerEnumType } from '@nestjs/graphql';
+import {
+  Field,
+  ID,
+  InputType,
+  Int,
+  ObjectType,
+  registerEnumType,
+} from '@nestjs/graphql';
 import { SEX } from 'src/base/starter/starter.types';
+import { EGTDivision } from './egtDivision.entity';
+import { EGTStarterLink } from '../starterlink/egtStarterLink.entity';
 
 @InputType()
 export class EGTDivisionFilterInput {
@@ -11,6 +20,12 @@ export class EGTDivisionFilterInput {
 
   @Field(() => SEX, { nullable: true })
   sex?: SEX;
+
+  @Field(() => Int, { nullable: true })
+  ground?: number;
+
+  @Field(() => EGTDivisionStates, { nullable: true })
+  state?: EGTDivisionStates;
 }
 
 @InputType()
@@ -33,11 +48,32 @@ export class UpdateEGTDivisionStateInput {
   @Field(() => ID)
   id: number;
 
-  @Field(() => EGTDivisionStates)  
-  state: EGTDivisionStates
+  @Field(() => EGTDivisionStates)
+  state: EGTDivisionStates;
 
   @Field(() => Int)
-  currentRound: number
+  currentRound: number;
+}
+
+@ObjectType()
+export class EGTDivisionJudging {
+  @Field(() => [EGTDivision])
+  divisions: EGTDivision[];
+
+  @Field(() => [EGTDivisionJudgingDevice])
+  devices: EGTDivisionJudgingDevice[];
+}
+
+@ObjectType()
+export class EGTDivisionJudgingDevice {
+  @Field(() => Int)
+  device: number;
+
+  @Field(() => [EGTStarterLink])
+  starterslist: EGTStarterLink[];
+
+  @Field(() => Int)
+  round: number;
 }
 
 export enum EGTDivisionStates {

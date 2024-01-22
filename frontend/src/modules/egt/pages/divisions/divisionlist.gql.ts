@@ -21,4 +21,64 @@ const REMOVE_DIVISION = gql`
       id
     }
   }
-`
+`;
+
+const GET_COMPETITION_GROUNDS = gql`
+  query competitionGrounds($id: ID!) {
+    competition(id: $id) {
+      id
+      grounds
+    }
+  }
+`;
+
+const GET_DIVISION_IDS = gql`
+  query egtDivisionsIds($filter: EGTDivisionFilterInput!) {
+    egtDivisions(filter: $filter) {
+      id
+    }
+  }
+`;
+
+const GET_JUDGING = gql`
+  query egtDivisionJudging($ids: [ID!]!, $round: Int!) {
+    egtDivisionJudging(ids: $ids, round: $round) {
+      devices {
+        device
+        starterslist {
+          id
+          starterlink {
+            id
+            starter {
+              id
+              firstname
+              lastname
+            }
+            club {
+              id
+              name
+            }
+          }
+          category
+        }
+        round
+      }
+    }
+  }
+`;
+
+const GET_DEVICES = gql`
+  query egtDevicesJudging($competitionID: ID!) {
+    egtDevices(competitionID: $competitionID) {
+      id
+      device
+      inputs
+      aggregationMode
+      overrides {
+        category
+        inputs
+        aggregationMode
+      }
+    }
+  }
+`;

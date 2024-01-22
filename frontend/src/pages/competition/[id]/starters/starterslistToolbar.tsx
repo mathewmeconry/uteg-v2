@@ -25,7 +25,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import { useTranslation } from "react-i18next";
 import * as xlsx from "xlsx";
-import { useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useModules } from "../../../../hooks/useModules/useModules";
 import ListIcon from "@mui/icons-material/List";
 import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
@@ -33,6 +33,7 @@ import { usePDF } from "@react-pdf/renderer";
 import { StarterslistDocument } from "../../../../documents/starterslistDocument/starterslistDocument";
 import { StarterLink } from "../../../../__generated__/graphql";
 import { GridColDefExtension } from "../../../../types/GridColDefExtension";
+import UploadIcon from "@mui/icons-material/Upload";
 
 export function StarterslistToolbar(props: {
   openDialog: Dispatch<SetStateAction<string>>;
@@ -162,8 +163,8 @@ export function StarterslistToolbar(props: {
           aria-controls={exportMenuOpen ? "export-menu" : undefined}
           aria-haspopup="true"
           aria-expanded={exportMenuOpen ? "true" : undefined}
+          startIcon={<FileDownloadIcon />}
         >
-          <FileDownloadIcon />
           {t("export")}
         </Button>
         <Menu
@@ -190,8 +191,19 @@ export function StarterslistToolbar(props: {
             </ListItemText>
           </MenuItem>
         </Menu>
-        <Button onClick={() => props.openDialog("addStarter")} size="small">
-          <PersonAddIcon />
+        <Button
+          size="small"
+          startIcon={<UploadIcon />}
+          component={Link}
+          to="import"
+        >
+          {t("import", { ns: "common" })}
+        </Button>
+        <Button
+          onClick={() => props.openDialog("addStarter")}
+          size="small"
+          startIcon={<PersonAddIcon />}
+        >
           {t("add", { name: t("starter", { count: 1 }) })}
         </Button>
       </ButtonGroup>

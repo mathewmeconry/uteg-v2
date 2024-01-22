@@ -1,5 +1,5 @@
-import { Field, ID, Int, ObjectType } from '@nestjs/graphql';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Starter } from '../starter/starter.entity';
 import { Club } from '../club/club.entity';
 import { Competition } from '../competition/competition.entity';

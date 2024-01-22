@@ -13,11 +13,12 @@ export class EGTDivisionGuard implements CanActivate {
   private egtDivisionService: EGTDivisionService;
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const ctx = GqlExecutionContext.create(context);
-    const args = ctx.getArgs();
+    const ectx = GqlExecutionContext.create(context);
+    const args = ectx.getArgs();
+    const ctx = ectx.getContext();
 
     if (args.id) {
-      ctx.getContext().competition = (
+      ctx.competition = (
         await (
           await this.egtDivisionService.findOne(args.id)
         ).competition
@@ -25,8 +26,24 @@ export class EGTDivisionGuard implements CanActivate {
       return true;
     }
 
+    if (args.ids) {
+      for (const id of args.ids) {
+        const competitionID = (
+          await (
+            await this.egtDivisionService.findOne(id)
+          ).competition
+        ).id;
+        // this only allows divisions to be part of the same competition to be passed in
+        if (ctx.competition !== competitionID && ctx.competition) {
+          return false;
+        }
+        ctx.competition = competitionID;
+        return true;
+      }
+    }
+
     if (args.data && args.data.id) {
-      ctx.getContext().competition = (
+      ctx.competition = (
         await (
           await this.egtDivisionService.findOne(args.data.id)
         ).competition
@@ -35,12 +52,12 @@ export class EGTDivisionGuard implements CanActivate {
     }
 
     if (args.data && args.data.competitionID) {
-      ctx.getContext().competition = args.data.competitionID;
+      ctx.competition = args.data.competitionID;
       return true;
     }
 
     if (args.filter && args.filter.competitionID) {
-      ctx.getContext().competition = args.filter.competitionID;
+      ctx.competition = args.filter.competitionID;
       return true;
     }
 

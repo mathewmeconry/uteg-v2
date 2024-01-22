@@ -58,6 +58,27 @@ input CreateUserInput {
   password: String!
 }
 
+type EGTDevice {
+  aggregationMode: EGTDeviceAggregationMode!
+  device: Int!
+  id: ID!
+  inputs: Int!
+  overrides: [EGTDeviceOverride!]!
+}
+
+enum EGTDeviceAggregationMode {
+  AVG
+  MAX
+  MIN
+  NONE
+}
+
+type EGTDeviceOverride {
+  aggregationMode: EGTDeviceAggregationMode!
+  category: Int!
+  inputs: Int!
+}
+
 type EGTDivision {
   category: Int!
   currentRound: Int!
@@ -74,7 +95,20 @@ type EGTDivision {
 input EGTDivisionFilterInput {
   category: Int
   competitionID: ID!
+  ground: Int
   sex: Sex
+  state: EGTDivisionStates
+}
+
+type EGTDivisionJudging {
+  devices: [EGTDivisionJudgingDevice!]!
+  divisions: [EGTDivision!]!
+}
+
+type EGTDivisionJudgingDevice {
+  device: Int!
+  round: Int!
+  starterslist: [EGTStarterLink!]!
 }
 
 enum EGTDivisionStates {
@@ -131,7 +165,9 @@ type Query {
   clubs: [Club!]!
   competition(id: ID!): Competition!
   competitions: [Competition!]!
+  egtDevices(competitionID: ID!): [EGTDevice!]!
   egtDivision(id: ID!): EGTDivision
+  egtDivisionJudging(ids: [ID!]!, round: Int!): EGTDivisionJudging!
   egtDivisions(filter: EGTDivisionFilterInput!): [EGTDivision!]!
   egtLineup(id: ID!): EGTLineup
   egtStarterLink(id: ID, starterLinkID: ID): EGTStarterLink

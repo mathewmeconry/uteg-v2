@@ -5,6 +5,7 @@ import { In, Repository } from 'typeorm';
 import { UserService } from 'src/auth/user/user.service';
 import { User } from 'src/auth/user/user.entity';
 import { ROLES } from 'src/auth/types';
+import { ModuleService } from '../modules/module.service';
 
 @Injectable()
 export class CompetitionService {
@@ -14,9 +15,13 @@ export class CompetitionService {
   @Inject()
   private userService: UserService;
 
+  @Inject()
+  private moduleService: ModuleService;
+
   async create(competition: Competition, user: User): Promise<Competition> {
     competition = await this.competitionRepository.save(competition);
     await this.userService.link(user, competition, ROLES.ADMIN);
+    await this.moduleService.initCompetition(competition);
     return competition;
   }
 

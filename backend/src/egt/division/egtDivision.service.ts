@@ -6,14 +6,17 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EGTDivision } from './egtDivision.entity';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { SEX } from 'src/base/starter/starter.types';
 import {
   EGTDivisionFilterInput,
+  EGTDivisionJudging,
+  EGTDivisionJudgingDevice,
   UpdateEGTDivisionStateInput,
 } from './egtDivision.types';
 import { EGTLineup } from '../lineup/egtLineup.entity';
 import { EGTLineupService } from '../lineup/egtLineup.service';
+import { EGTStarterLink } from '../starterlink/egtStarterLink.entity';
 
 @Injectable()
 export class EGTDivisionService {
@@ -25,6 +28,14 @@ export class EGTDivisionService {
 
   findOne(id: number): Promise<EGTDivision | null> {
     return this.egtDivisionRepository.findOneBy({ id });
+  }
+
+  findMany(ids: number[]): Promise<EGTDivision[]> {
+    return this.egtDivisionRepository.find({
+      where: {
+        id: In(ids),
+      },
+    });
   }
 
   findAll(filter: EGTDivisionFilterInput): Promise<EGTDivision[]> {
@@ -43,6 +54,14 @@ export class EGTDivisionService {
 
     if (filter.sex) {
       qb.andWhere('division.sex = :sex', { sex: filter.sex });
+    }
+
+    if (filter.ground) {
+      qb.andWhere('division.ground = :ground', { ground: filter.ground });
+    }
+
+    if (filter.state) {
+      qb.andWhere('division.state = :state', { state: filter.state });
     }
 
     return qb.orderBy('category', 'ASC').addOrderBy('number', 'ASC').getMany();
@@ -85,7 +104,7 @@ export class EGTDivisionService {
 
     // create lineups for division
     const promises = [];
-    for (let i = 1; i <= division.totalRounds; i++) {
+    for (let i = 0; i < division.totalRounds; i++) {
       const lineup = new EGTLineup();
       lineup.division = Promise.resolve(division);
       lineup.device = i;
@@ -117,6 +136,66 @@ export class EGTDivisionService {
     division.state = data.state;
     division.currentRound = data.currentRound;
     return this.egtDivisionRepository.save(division);
+  }
+
+  async getJudging(ids: number[], round: number): Promise<EGTDivisionJudging> {
+    const divisions = await this.findMany(ids);
+
+    // only include divisions that have that many rounds
+    const divisionsFiltered = divisions.filter(
+      (division) => round < division.totalRounds,
+    );
+    const lineups = (
+      await Promise.all(divisionsFiltered.map((division) => division.lineups))
+    ).flat();
+
+    const deviceBundles: EGTDivisionJudgingDevice[] = [];
+    for (const lineup of lineups) {
+      const divisionLineup = await lineup.division;
+      // rollover with mod
+      const roundDeviceForLineup =
+        (lineup.device + round) % divisionLineup.totalRounds;
+      let deviceBundleIndex = deviceBundles.findIndex(
+        (bundle) => bundle.device === roundDeviceForLineup,
+      );
+      let deviceBundle = deviceBundles[deviceBundleIndex];
+      if (deviceBundleIndex === -1) {
+        deviceBundle = {
+          device: roundDeviceForLineup,
+          round,
+          starterslist: [],
+        };
+        deviceBundleIndex = deviceBundles.length;
+      }
+      const lineupStartersLinks = await lineup.starterlinks;
+      deviceBundle.starterslist.push(...lineupStartersLinks);
+      deviceBundles[deviceBundleIndex] = deviceBundle;
+    }
+
+    for (const deviceBundle of deviceBundles) {
+      deviceBundle.starterslist = this.rollList(
+        deviceBundle.starterslist,
+        round,
+      );
+    }
+
+    return {
+      devices: deviceBundles,
+      divisions,
+    };
+  }
+
+  rollList(list: EGTStarterLink[], round: number): EGTStarterLink[] {
+    if (list.length === 0) {
+      return [];
+    }
+
+    if (round > list.length) {
+      round = list.length - round;
+    }
+
+    const removed = list.splice(0, round);
+    return [...list, ...removed];
   }
 
   async getNextDivisionNumber(
