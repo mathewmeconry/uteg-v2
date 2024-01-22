@@ -280,18 +280,19 @@ export function JudgingDocument(props: JudgingDocumentProps) {
           {props.t("round", { ns: "egt", number: round })}
         </Text>
         <View style={styles.tableHeaderRow}>
-          {...Object.keys(starters[0]).map((key) => (
-            <View
-              style={styles.tableCol}
-              key={`${device.number}_${round}_${key}`}
-            >
-              {translations[key as keyof typeof translations] && (
+          {...Object.keys(starters[0])
+            .filter((key) => translations[key as keyof typeof translations])
+            .map((key) => (
+              <View
+                style={styles.tableCol}
+                key={`${device.number}_${round}_${key}`}
+                debug={true}
+              >
                 <Text style={styles.tableCell}>
                   {translations[key as keyof typeof translations]("")}
                 </Text>
-              )}
-            </View>
-          ))}
+              </View>
+            ))}
           {renderGradesHeaders(device, starterCategoriesdedup)}
         </View>
         {...starters.map((starter) => (
