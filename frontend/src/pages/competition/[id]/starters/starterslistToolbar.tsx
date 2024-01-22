@@ -26,13 +26,13 @@ import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import { useTranslation } from "react-i18next";
 import * as xlsx from "xlsx";
 import { useParams } from "react-router-dom";
-import { useModules } from "../../../../../hooks/useModules/useModules";
+import { useModules } from "../../../../hooks/useModules/useModules";
 import ListIcon from "@mui/icons-material/List";
 import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 import { usePDF } from "@react-pdf/renderer";
-import { StarterslistDocument } from "../../../../../documents/starterslistDocument/starterslistDocument";
-import { StarterLink } from "../../../../../__generated__/graphql";
-import { GridColDefExtension } from "../../../../../types/GridColDefExtension";
+import { StarterslistDocument } from "../../../../documents/starterslistDocument/starterslistDocument";
+import { StarterLink } from "../../../../__generated__/graphql";
+import { GridColDefExtension } from "../../../../types/GridColDefExtension";
 
 export function StarterslistToolbar(props: {
   openDialog: Dispatch<SetStateAction<string>>;

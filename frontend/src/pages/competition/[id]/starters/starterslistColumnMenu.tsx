@@ -1,6 +1,6 @@
 import { ListItemIcon, Menu, MenuItem } from "@mui/material";
 import { GridColumnMenuProps, useGridApiContext } from "@mui/x-data-grid";
-import { StarterLink } from "../../../../../__generated__/graphql";
+import { StarterLink } from "../../../../__generated__/graphql";
 import { useEffect, useMemo } from "react";
 import Check from "@mui/icons-material/Check";
 

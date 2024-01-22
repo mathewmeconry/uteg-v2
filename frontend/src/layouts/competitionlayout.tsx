@@ -64,27 +64,7 @@ export function CompetitionLayout() {
       icon: <PeopleIcon />,
       text: "starters",
       key: "starters",
-      children: [
-        {
-          icon: <WomanIcon />,
-          text: "female",
-          key: "starters.female",
-          to: `/competition/:id/starters/female`,
-        },
-
-        {
-          icon: <ManIcon />,
-          text: "male",
-          key: "starters.male",
-          to: `/competition/:id/starters/male`,
-        },
-        {
-          icon: <UploadFileIcon />,
-          text: "import",
-          key: "starters.import",
-          to: `/competition/:id/starters/import`,
-        },
-      ],
+      to: `/competition/:id/starters`,
     },
     {
       icon: <SettingsIcon />,

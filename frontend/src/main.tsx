@@ -25,7 +25,7 @@ import { CreateCompetition } from "./pages/competition/create/createCompetition"
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { Dashboard } from "./pages/competition/[id]/dashboard";
-import { StartersList } from "./pages/competition/[id]/starters/[sex]/starterslist";
+import { StartersList } from "./pages/competition/[id]/starters/starterslist";
 import { StartersImport } from "./pages/competition/[id]/starters/import/startersImport";
 import { HomeLayout } from "./layouts/homelayout";
 import { CompetitionLayout } from "./layouts/competitionlayout";
@@ -99,16 +99,7 @@ const routes: RouteObject[] = [
           },
           {
             path: "starters",
-            children: [
-              {
-                path: ":sex",
-                element: <StartersList />,
-              },
-              {
-                path: "import",
-                element: <StartersImport />,
-              },
-            ],
+            element: <StartersList />
           },
           ...EGTModule.routes,
         ],

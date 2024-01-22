@@ -4,9 +4,9 @@ import {
   StarterLink,
   StarterLinksDocument,
   useRemoveStarterLinkMutation,
-} from "../../../../../__generated__/graphql";
+} from "../../../../__generated__/graphql";
 import { enqueueSnackbar } from "notistack";
-import { Error } from "../../../../../components/error";
+import { Error } from "../../../../components/error";
 import {
   DataGrid,
   GridActionsCellItem,
@@ -16,34 +16,31 @@ import {
   GridRowId,
   GridValidRowModel,
 } from "@mui/x-data-grid";
-import { PaperExtended } from "../../../../../components/paperExtended";
+import { PaperExtended } from "../../../../components/paperExtended";
 import { useTranslation } from "react-i18next";
 import { Box } from "@mui/system";
 import { useMemo, useState } from "react";
-import { CreateStarterDialog } from "../../../../../dialogs/createStarterDialog/createStarterDialog";
+import { CreateStarterDialog } from "../../../../dialogs/createStarterDialog/createStarterDialog";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { UpdateStarterDialog } from "../../../../../dialogs/updateStarterDialog/updateStarterDialog";
+import { UpdateStarterDialog } from "../../../../dialogs/updateStarterDialog/updateStarterDialog";
 import { ApolloError, useQuery } from "@apollo/client";
 import { StarterslistToolbar } from "./starterslistToolbar";
 import { StarterlistColumnMenu } from "./starterslistColumnMenu";
-import { DeleteConfirmationDialog } from "../../../../../dialogs/deleteConfirmationDialog/deleteConfirmationDialog";
+import { DeleteConfirmationDialog } from "../../../../dialogs/deleteConfirmationDialog/deleteConfirmationDialog";
 import { List, ListItem, Typography } from "@mui/material";
-import { useModules } from "../../../../../hooks/useModules/useModules";
-import { GridColDefExtension } from "../../../../../types/GridColDefExtension";
+import { useModules } from "../../../../hooks/useModules/useModules";
+import { GridColDefExtension } from "../../../../types/GridColDefExtension";
 
 export function StartersList() {
-  const { sex, id } = useParams();
+  const { id } = useParams();
   const { t } = useTranslation("common");
   const [openDialog, setOpenDialog] = useState("");
   const [toEditLink, setToEditLink] = useState<string>("");
   const [removeStarterLink] = useRemoveStarterLinkMutation();
   const [toDeleteStarters, setToDeleteStarters] = useState<StarterLink[]>([]);
   const modules = useModules(id || "");
-  if (!sex) {
-    enqueueSnackbar("Ooops", { variant: "error" });
-    return <Error />;
-  }
+
   if (!id) {
     enqueueSnackbar("Ooops", { variant: "error" });
     return <Error />;
@@ -65,7 +62,6 @@ export function StartersList() {
   } = useQuery(starterLinksQueryDocument, {
     variables: {
       competitionID: id,
-      sex: sex.toUpperCase() as Sex,
     },
     fetchPolicy: "cache-and-network",
   });
@@ -117,6 +113,15 @@ export function StartersList() {
       field: "starter.lastname",
       headerName: t("lastname"),
       valueGetter: (params) => params.row.starter.lastname,
+      flex: 1,
+      disableColumnMenu: true,
+      renderInPdf: true,
+      renderInXlsx: true
+    },
+    {
+      field: "starter.sex",
+      headerName: t("sex"),
+      valueGetter: (params) => t(params.row.starter.sex),
       flex: 1,
       disableColumnMenu: true,
       renderInPdf: true,
@@ -226,7 +231,7 @@ export function StartersList() {
   return (
     <>
       <PaperExtended
-        title={t(`starters`, { name: t(sex.toLowerCase()), count: 2 })}
+        title={t(`starters`, { count: 2 })}
       >
         <Box sx={{ height: "80vh", width: "100%" }}>
           <DataGrid
