@@ -89,5 +89,6 @@
   "undefined": "Undefined",
   "grade": "Grade",
   "grade_labled": "{{label}} Grade",
-  "final": "Final"
+  "final": "Final",
+  "break": "Break"
 }

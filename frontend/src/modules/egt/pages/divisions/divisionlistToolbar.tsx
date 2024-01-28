@@ -79,26 +79,8 @@ export function DivisionlistToolbar(props: {
     setExportAnchorEl(null);
   }
 
-  async function exportPdf(ground: number) {
-    setPdfUpdatePending(true);
+  async function exportGroundPdf(ground: number) {
     setDownloadingPdf(ground);
-    const devices = await devicesQuery({
-      variables: {
-        competitionID: id!,
-      },
-    });
-
-    if (devices.error) {
-      enqueueSnackbar(t("error", { ns: "common" }), { variant: "error" });
-      setDownloadingPdf(0);
-      return;
-    }
-
-    if (devices.data?.egtDevices.length === 0) {
-      enqueueSnackbar(t("error", { ns: "common" }), { variant: "error" });
-      setDownloadingPdf(0);
-      return;
-    }
 
     const divisions = await divisionsQuery({
       variables: {
@@ -119,11 +101,46 @@ export function DivisionlistToolbar(props: {
     const divisionIds = divisions.data?.egtDivisions
       .map((d) => d.id)
       .filter((d) => !!d);
+
+    await exportDivisionsLineupPdf(divisionIds);
+
+    setDownloadingPdf(0);
+  }
+
+  async function exportDivisionSelectionPdf(
+    rows: Map<GridRowId, GridValidRowModel>
+  ) {
+    let divisionIds: string[] = [];
+    for (const row of rows) {
+      divisionIds.push(row[1].id);
+    }
+
+    await exportDivisionsLineupPdf(divisionIds);
+  }
+
+  async function exportDivisionsLineupPdf(divisionIds: string[] | undefined) {
+    setPdfUpdatePending(true);
+
+    const devices = await devicesQuery({
+      variables: {
+        competitionID: id!,
+      },
+    });
+
+    if (devices.error) {
+      enqueueSnackbar(t("error", { ns: "common" }), { variant: "error" });
+      return;
+    }
+
+    if (devices.data?.egtDevices.length === 0) {
+      enqueueSnackbar(t("error", { ns: "common" }), { variant: "error" });
+      return;
+    }
+
     if (!divisionIds || divisionIds.length === 0) {
       enqueueSnackbar(t("no_started", { name: t("division", { count: 1 }) }), {
         variant: "error",
       });
-      setDownloadingPdf(0);
       return;
     }
 
@@ -138,7 +155,6 @@ export function DivisionlistToolbar(props: {
 
       if (judging.error) {
         enqueueSnackbar(t("error", { ns: "common" }));
-        setDownloadingPdf(0);
         return;
       }
 
@@ -158,12 +174,7 @@ export function DivisionlistToolbar(props: {
   }
 
   useEffect(() => {
-    if (
-      pdfInstance.loading ||
-      !pdfInstance.url ||
-      downloadingPdf === 0 ||
-      pdfUpdatePending
-    ) {
+    if (pdfInstance.loading || !pdfInstance.url || pdfUpdatePending) {
       return;
     }
 
@@ -204,7 +215,7 @@ export function DivisionlistToolbar(props: {
     const menuItems: JSX.Element[] = [];
     for (let i = 1; i <= grounds; i++) {
       menuItems.push(
-        <MenuItem onClick={() => exportPdf(i)}>
+        <MenuItem onClick={() => exportGroundPdf(i)}>
           <ListItemIcon>
             <PictureAsPdfIcon fontSize="small" />
           </ListItemIcon>
@@ -255,6 +266,24 @@ export function DivisionlistToolbar(props: {
               <Typography variant="body1"> ({selectedRows.size})</Typography>
             </Button>
           </Tooltip>
+          <Tooltip
+            title={t("juging_report", {
+              ns: "common",
+              count: selectedRows.size,
+              type: t("division", { count: selectedRows.size }),
+            })}
+          >
+            {pdfUpdatePending && <LinearProgress sx={{ width: "5vw" }} />}
+            {!pdfUpdatePending && (
+              <Button
+                color="primary"
+                onClick={() => exportDivisionSelectionPdf(selectedRows)}
+              >
+                <FileDownloadIcon />
+                <Typography variant="body1"> ({selectedRows.size})</Typography>
+              </Button>
+            )}
+          </Tooltip>
         </>
       )}
       <GridToolbarDensitySelector />
@@ -276,7 +305,7 @@ export function DivisionlistToolbar(props: {
           anchorEl={exportAnchorEl}
           open={exportMenuOpen}
           onClose={handleExportMenuClose}
-          transformOrigin={{ horizontal: 'left', vertical: 'top' }}
+          transformOrigin={{ horizontal: "left", vertical: "top" }}
           anchorOrigin={{ horizontal: "left", vertical: "bottom" }}
           MenuListProps={{
             "aria-labelledby": "export-menu",
