@@ -9,6 +9,7 @@ import {
 import { SEX } from 'src/base/starter/starter.types';
 import { EGTDivision } from './egtDivision.entity';
 import { EGTStarterLink } from '../starterlink/egtStarterLink.entity';
+import { EGTDevice } from '../device/egtDevice.entity';
 
 @InputType()
 export class EGTDivisionFilterInput {
@@ -53,27 +54,6 @@ export class UpdateEGTDivisionStateInput {
 
   @Field(() => Int)
   currentRound: number;
-}
-
-@ObjectType()
-export class EGTDivisionJudging {
-  @Field(() => [EGTDivision])
-  divisions: EGTDivision[];
-
-  @Field(() => [EGTDivisionJudgingDevice])
-  devices: EGTDivisionJudgingDevice[];
-}
-
-@ObjectType()
-export class EGTDivisionJudgingDevice {
-  @Field(() => Int)
-  device: number;
-
-  @Field(() => [EGTStarterLink])
-  starterslist: EGTStarterLink[];
-
-  @Field(() => Int)
-  round: number;
 }
 
 export enum EGTDivisionStates {

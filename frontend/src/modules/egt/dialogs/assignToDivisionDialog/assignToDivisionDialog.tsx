@@ -113,7 +113,8 @@ export function AssignToDivisionDialog(props: AssignToDivisionDialogProps) {
     setStoring(true);
     for (const starter of props.starters) {
       if (starter && starter.egt?.category && starter.egt?.id) {
-        const divisionId = data[starter.egt?.category];
+        const divisionId =
+          data[`${starter.egt.category}_${starter.starter.sex}`];
         if (divisionId !== starter.egt?.division?.id) {
           try {
             await assignMutataion({
@@ -151,7 +152,7 @@ export function AssignToDivisionDialog(props: AssignToDivisionDialogProps) {
 
     return (
       <FormTextInput
-        name={category.toString()}
+        name={`${category.category}_${category.sex}`}
         label={t(
           `category_${category.category}_${category.sex.toLowerCase()}`,
           {

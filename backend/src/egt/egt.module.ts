@@ -17,6 +17,8 @@ import { EGTDevice } from './device/egtDevice.entity';
 import { ModuleService } from 'src/base/modules/module.service';
 import { Competition } from 'src/base/competition/competition.entity';
 import { EGTDeviceResolver } from './device/egtDevice.resolver';
+import { EGTJudgingService } from './judging/egtJudging.service';
+import { EGTJudgingResolver } from './judging/egtJudging.resolver';
 
 @Module({
   imports: [
@@ -39,6 +41,8 @@ import { EGTDeviceResolver } from './device/egtDevice.resolver';
     EGTLineupResolver,
     EGTDeviceService,
     EGTDeviceResolver,
+    EGTJudgingService,
+    EGTJudgingResolver,
   ],
 })
 export class EGTModule implements OnModuleInit {

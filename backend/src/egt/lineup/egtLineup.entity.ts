@@ -1,6 +1,5 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql';
 import {
-  Column,
   Entity,
   ManyToOne,
   OneToMany,
@@ -8,6 +7,7 @@ import {
 } from 'typeorm';
 import { EGTDivision } from '../division/egtDivision.entity';
 import { EGTStarterLink } from '../starterlink/egtStarterLink.entity';
+import { EGTDevice } from '../device/egtDevice.entity';
 
 @ObjectType()
 @Entity()
@@ -22,7 +22,6 @@ export class EGTLineup {
   @OneToMany(() => EGTStarterLink, (starterLink) => starterLink.lineup)
   starterlinks: Promise<EGTStarterLink[]>;
 
-  @Field(() => ID)
-  @Column()
-  device: number;
+  @ManyToOne(() => EGTDevice)
+  device: Promise<EGTDevice>;
 }

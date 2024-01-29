@@ -15,7 +15,7 @@ export class EGTDevice {
 
   @Column()
   @Field()
-  device: number;
+  deviceNumber: number;
 
   @Column({ default: 1 })
   @Field()

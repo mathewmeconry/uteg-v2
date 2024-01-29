@@ -12,7 +12,10 @@ export const GET_DIVISION = gql`
       number
       lineups {
         id
-        device
+        device {
+          id
+          deviceNumber
+        }
       }
     }
   }

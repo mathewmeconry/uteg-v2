@@ -42,43 +42,35 @@ const GET_DIVISION_IDS = gql`
 
 const GET_JUDGING = gql`
   query egtDivisionJudging($ids: [ID!]!, $round: Int!) {
-    egtDivisionJudging(ids: $ids, round: $round) {
-      devices {
-        device
-        starterslist {
-          id
-          starterlink {
-            id
-            starter {
-              id
-              firstname
-              lastname
-            }
-            club {
-              id
-              name
-            }
-          }
-          category
-        }
-        round
-      }
-    }
-  }
-`;
-
-const GET_DEVICES = gql`
-  query egtDevicesJudging($competitionID: ID!) {
-    egtDevices(competitionID: $competitionID) {
-      id
-      device
-      inputs
-      aggregationMode
-      overrides {
-        category
+    egtJudgingDevices(ids: $ids, round: $round) {
+      device {
+        id
+        deviceNumber
         inputs
         aggregationMode
+        overrides {
+          category
+          inputs
+          aggregationMode
+        }
       }
+      starterslist {
+        id
+        starterlink {
+          id
+          starter {
+            id
+            firstname
+            lastname
+          }
+          club {
+            id
+            name
+          }
+        }
+        category
+      }
+      round
     }
   }
 `;

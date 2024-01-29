@@ -1,4 +1,4 @@
-import { Field, Float, ID, ObjectType } from '@nestjs/graphql';
+import { Field, Float, ID, Int, ObjectType } from '@nestjs/graphql';
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { StarterLink } from '../starterLink/starterLink.entity';
 
@@ -17,8 +17,9 @@ export class Grade {
   @Column('decimal', { precision: 5, scale: 3 })
   value: number;
 
+  @Field(() => Int)
   @Column()
-  device: number;
+  deviceNumber: number;
 
   @Column()
   module: string;

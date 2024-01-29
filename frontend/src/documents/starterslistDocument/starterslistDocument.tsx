@@ -88,8 +88,8 @@ export function StarterslistDocument(props: StarterslistDocumentProps) {
       .filter((starter) => starter.club.id === club.id)
       .sort(
         (a, b) =>
-          (parseInt(a.egt?.lineup?.device || "") || 0) -
-          (parseInt(b.egt?.lineup?.device || "") || 0)
+          (parseInt(a.egt?.lineup?.device?.deviceNumber || "") || 0) -
+          (parseInt(b.egt?.lineup?.device?.deviceNumber || "") || 0)
       )
       .sort(
         (a, b) =>

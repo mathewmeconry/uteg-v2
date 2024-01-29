@@ -23,6 +23,19 @@ export class EGTLineupService {
       .getMany();
   }
 
+  findForDivisionAndDeviceNumber(
+    divisionID: number,
+    device: number,
+  ): Promise<EGTLineup> {
+    return this.egtLineupRepository
+      .createQueryBuilder('lineup')
+      .leftJoin('lineup.division', 'division')
+      .leftJoin('lineup.device', 'device')
+      .where('division.id = :divisionID', { divisionID })
+      .andWhere('device.deviceNumber = :device', { device })
+      .getOne();
+  }
+
   create(lineup: EGTLineup): Promise<EGTLineup> {
     return this.egtLineupRepository.save(lineup);
   }

@@ -26,27 +26,36 @@ export class EGTDeviceService {
       .getMany();
   }
 
+  findForNumber(competitionID: number, device: number): Promise<EGTDevice> {
+    return this.egtDeviceRepository
+      .createQueryBuilder('device')
+      .leftJoin('device.competition', 'competition')
+      .where('competition.id = :competitionID', { competitionID })
+      .andWhere('device.deviceNumber = :device', { device })
+      .getOne();
+  }
+
   async initCompetition(competition: Competition): Promise<void> {
     const promises: Promise<EGTDevice>[] = [];
     // create for each device a new entity
     const horizontalBar = new EGTDevice();
     horizontalBar.competition = Promise.resolve(competition);
-    horizontalBar.device = 0;
+    horizontalBar.deviceNumber = 0;
     promises.push(this.create(horizontalBar));
 
     const floor = new EGTDevice();
     floor.competition = Promise.resolve(competition);
-    floor.device = 1;
+    floor.deviceNumber = 1;
     promises.push(this.create(floor));
 
     const rings = new EGTDevice();
     rings.competition = Promise.resolve(competition);
-    rings.device = 2;
+    rings.deviceNumber = 2;
     promises.push(this.create(rings));
 
     const vault = new EGTDevice();
     vault.competition = Promise.resolve(competition);
-    vault.device = 3;
+    vault.deviceNumber = 3;
     vault.inputs = 2;
     vault.aggregationMode = EGTDeviceAggregationMode.MAX;
     vault.overrides = [
@@ -70,7 +79,7 @@ export class EGTDeviceService {
 
     const parallelBars = new EGTDevice();
     parallelBars.competition = Promise.resolve(competition);
-    parallelBars.device = 4;
+    parallelBars.deviceNumber = 4;
     promises.push(this.create(parallelBars));
 
     await Promise.all(promises);

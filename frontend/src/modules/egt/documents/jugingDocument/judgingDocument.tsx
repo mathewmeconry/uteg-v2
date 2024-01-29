@@ -7,7 +7,6 @@ import {
   Font,
 } from "@react-pdf/renderer";
 import {
-  EgtDevice,
   EgtDeviceAggregationMode,
   EgtDeviceOverride,
   EgtDivisionJudgingQueryHookResult,
@@ -17,7 +16,6 @@ import { ReactElement } from "react";
 
 export type JudgingDocumentProps = {
   rounds: EgtDivisionJudgingQueryHookResult[];
-  devices: EgtDevice[];
   t: TFunction;
 };
 
@@ -123,25 +121,20 @@ export function JudgingDocument(props: JudgingDocumentProps) {
   for (const round in props.rounds) {
     const roundBundle = props.rounds[round];
 
-    if (!roundBundle.data?.egtDivisionJudging.devices) {
+    if (!roundBundle.data?.egtJudgingDevices) {
       continue;
     }
 
-    for (const deviceBundle of roundBundle.data?.egtDivisionJudging.devices) {
+    for (const deviceBundle of roundBundle.data?.egtJudgingDevices) {
       const deviceIndex = groupedByDevices.findIndex(
-        (device) => device.number === deviceBundle.device
+        (device) => device.number === deviceBundle.device.deviceNumber
       );
       let device = groupedByDevices[deviceIndex];
       if (!device) {
-        const deviceSettings = props.devices.find(
-          (device) => device.device === deviceBundle.device
-        );
-        if (!deviceSettings) {
-          continue;
-        }
+        const deviceSettings = deviceBundle.device;
 
         device = {
-          number: deviceBundle.device,
+          number: deviceBundle.device.deviceNumber,
           rounds: [],
           overrides: deviceSettings?.overrides,
           inputs: deviceSettings?.inputs,
@@ -241,7 +234,7 @@ export function JudgingDocument(props: JudgingDocumentProps) {
           <Text style={styles.tableCell}>
             {inputsCount == 1
               ? props.t("grade", { ns: "common" })
-              : props.t("grade_labled", { ns: "common", label: i + 1 })}
+              : props.t("grade_labled", { ns: "common", label: `${i + 1}.` })}
           </Text>
         </View>
       );

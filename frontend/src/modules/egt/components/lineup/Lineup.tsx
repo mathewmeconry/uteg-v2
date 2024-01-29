@@ -80,7 +80,7 @@ export function Lineup(props: { id: string; lineups: EgtLineup[] }) {
     <>
       <Box sx={{ flexGrow: 1, mt: 2 }}>
         <Typography variant="h5">
-          {t(`device_${lineup?.egtLineup?.device}`, { ns: "egt" })}
+          {t(`device_${lineup?.egtLineup?.device?.deviceNumber}`, { ns: "egt" })}
           <Typography variant="caption" sx={{ ml: 1 }}>
             {(lineup?.egtLineup?.starterlinks || []).length}
           </Typography>

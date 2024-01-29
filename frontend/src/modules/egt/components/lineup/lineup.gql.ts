@@ -4,7 +4,10 @@ export const GET_LINEUP = gql`
   query egtLineup($id: ID!) {
     egtLineup(id: $id) {
       id
-      device
+      device {
+        id
+        deviceNumber
+      }
       starterlinks {
         id
         starterlink {

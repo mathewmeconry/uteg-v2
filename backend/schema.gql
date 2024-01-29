@@ -60,7 +60,7 @@ input CreateUserInput {
 
 type EGTDevice {
   aggregationMode: EGTDeviceAggregationMode!
-  device: Int!
+  deviceNumber: Int!
   id: ID!
   inputs: Int!
   overrides: [EGTDeviceOverride!]!
@@ -100,25 +100,20 @@ input EGTDivisionFilterInput {
   state: EGTDivisionStates
 }
 
-type EGTDivisionJudging {
-  devices: [EGTDivisionJudgingDevice!]!
-  divisions: [EGTDivision!]!
-}
-
-type EGTDivisionJudgingDevice {
-  device: Int!
-  round: Int!
-  starterslist: [EGTStarterLink!]!
-}
-
 enum EGTDivisionStates {
   ENDED
   PENDING
   RUNNING
 }
 
+type EGTJudgingDevice {
+  device: EGTDevice!
+  round: Int!
+  starterslist: [EGTStarterLink!]!
+}
+
 type EGTLineup {
-  device: ID!
+  device: EGTDevice!
   id: ID!
   starterlinks: [EGTStarterLink!]!
 }
@@ -141,6 +136,7 @@ input EGTStarterLinkInput {
 }
 
 type Grade {
+  deviceNumber: Int!
   id: ID!
   starter: StarterLink!
   value: Float!
@@ -167,8 +163,9 @@ type Query {
   competitions: [Competition!]!
   egtDevices(competitionID: ID!): [EGTDevice!]!
   egtDivision(id: ID!): EGTDivision
-  egtDivisionJudging(ids: [ID!]!, round: Int!): EGTDivisionJudging!
   egtDivisions(filter: EGTDivisionFilterInput!): [EGTDivision!]!
+  egtJudgingDevice(device: Int!, ids: [ID!]!, round: Int!): EGTJudgingDevice!
+  egtJudgingDevices(ids: [ID!]!, round: Int!): [EGTJudgingDevice!]!
   egtLineup(id: ID!): EGTLineup
   egtStarterLink(id: ID, starterLinkID: ID): EGTStarterLink
   egtStarterLinkUnassigned(divisionID: ID!): [EGTStarterLink!]!

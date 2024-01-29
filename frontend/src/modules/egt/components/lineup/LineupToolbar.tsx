@@ -53,7 +53,7 @@ export function LineupToolbar(props: { lineups: EgtLineup[] }) {
         >
           {!assigning &&
             t("assign_to", {
-              name: t(`device_${lineup.device}`, { ns: "egt" }),
+              name: t(`device_${lineup.device.deviceNumber}`, { ns: "egt" }),
               ns: "common",
             })}
           {assigning && <CircularProgress />}

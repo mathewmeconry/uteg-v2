@@ -13,6 +13,8 @@ import { DocumentTransform } from "@apollo/client";
 import { Kind, visit } from "graphql";
 import { StarterslistSelectedRowsActions } from "./extensions/starterslistSelectedRowsActions/starterslistSelectedRowsActions";
 import { GridColDefExtension } from "../../types/GridColDefExtension";
+import GradingIcon from "@mui/icons-material/Grading";
+import { Grading } from "./pages/grading/grading";
 
 const routes: RouteObject[] = [
   {
@@ -41,6 +43,10 @@ const routes: RouteObject[] = [
             ],
           },
         ],
+      },
+      {
+        path: "grades",
+        element: <Grading />,
       },
     ],
   },
@@ -75,8 +81,8 @@ const starterListColumns: Array<GridColDefExtension | GridActionsColDef> = [
     field: "egt.device",
     headerName: "device",
     valueGetter: (params) =>
-      params.row.egt?.lineup?.device
-        ? `device_${params.row.egt?.lineup?.device}`
+      params.row.egt?.lineup?.device?.deviceNumber
+        ? `device_${params.row.egt?.lineup?.device?.deviceNumber}`
         : "",
     disableColumnMenu: true,
     renderInPdf: true,
@@ -165,6 +171,25 @@ const starterLinksQueryTransformer = new DocumentTransform((document) => {
                               kind: Kind.NAME,
                               value: "device",
                             },
+                            selectionSet: {
+                              kind: Kind.SELECTION_SET,
+                              selections: [
+                                {
+                                  kind: Kind.FIELD,
+                                  name: {
+                                    kind: Kind.NAME,
+                                    value: "id",
+                                  },
+                                },
+                                {
+                                  kind: Kind.FIELD,
+                                  name: {
+                                    kind: Kind.NAME,
+                                    value: "deviceNumber",
+                                  },
+                                },
+                              ],
+                            },
                           },
                         ],
                       },
@@ -203,6 +228,12 @@ export const EGTModule: Module = {
       text: "divisions",
       key: "divisions",
       to: `/competition/:id/egt/divisions`,
+    },
+    {
+      icon: <GradingIcon />,
+      text: "grading",
+      key: "grading",
+      to: `/competition/:id/egt/grades`,
     },
   ],
 };

@@ -66,9 +66,6 @@ export function DivisionlistToolbar(props: {
   const [judingQuery] = useEgtDivisionJudgingLazyQuery({
     fetchPolicy: "network-only",
   });
-  const [devicesQuery] = useEgtDevicesJudgingLazyQuery({
-    fetchPolicy: "network-only",
-  });
   let [pdfInstance, updatePdfInstance] = usePDF();
 
   function handleExportClick(event: React.MouseEvent<HTMLButtonElement>) {
@@ -121,22 +118,6 @@ export function DivisionlistToolbar(props: {
   async function exportDivisionsLineupPdf(divisionIds: string[] | undefined) {
     setPdfUpdatePending(true);
 
-    const devices = await devicesQuery({
-      variables: {
-        competitionID: id!,
-      },
-    });
-
-    if (devices.error) {
-      enqueueSnackbar(t("error", { ns: "common" }), { variant: "error" });
-      return;
-    }
-
-    if (devices.data?.egtDevices.length === 0) {
-      enqueueSnackbar(t("error", { ns: "common" }), { variant: "error" });
-      return;
-    }
-
     if (!divisionIds || divisionIds.length === 0) {
       enqueueSnackbar(t("no_started", { name: t("division", { count: 1 }) }), {
         variant: "error",
@@ -158,18 +139,12 @@ export function DivisionlistToolbar(props: {
         return;
       }
 
-      if (judging.data?.egtDivisionJudging) {
+      if (judging.data?.egtJudgingDevices) {
         rounds.push(judging);
       }
     }
 
-    updatePdfInstance(
-      <JudgingDocument
-        rounds={rounds}
-        devices={devices.data?.egtDevices}
-        t={t}
-      />
-    );
+    updatePdfInstance(<JudgingDocument rounds={rounds} t={t} />);
     setPdfUpdatePending(false);
   }
 

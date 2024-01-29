@@ -18,8 +18,8 @@ export class EGTStarterLink {
   @Field(() => ID)
   id: number;
 
-  @ManyToOne(() => EGTDivision)
-  division: Promise<EGTDivision>;
+  @ManyToOne(() => EGTDivision, { nullable: true, onDelete: 'SET NULL' })
+  division?: Promise<EGTDivision>;
 
   @OneToOne(() => StarterLink, { onDelete: 'CASCADE' })
   @JoinColumn()

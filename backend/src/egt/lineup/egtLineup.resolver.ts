@@ -14,6 +14,7 @@ import { Role } from 'src/auth/decorators/role.decorator';
 import { ROLES } from 'src/auth/types';
 import { EGTLineupService } from './egtLineup.service';
 import { EGTStarterLink } from '../starterlink/egtStarterLink.entity';
+import { EGTDevice } from '../device/egtDevice.entity';
 
 @Resolver(EGTLineup)
 @UseGuards(EGTLineupGuard, RoleGuard)
@@ -32,5 +33,10 @@ export class EGTLineupResolver {
   @ResolveField(() => [EGTStarterLink])
   async starterlinks(@Parent() lineup: EGTLineup): Promise<EGTStarterLink[]> {
     return lineup.starterlinks;
+  }
+
+  @ResolveField(() => EGTDevice)
+  async device(@Parent() lineup: EGTLineup): Promise<EGTDevice> {
+    return lineup.device;
   }
 }

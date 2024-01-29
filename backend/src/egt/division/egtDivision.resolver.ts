@@ -17,7 +17,6 @@ import { ROLES } from 'src/auth/types';
 import {
   CreateEGTDivisionInput,
   EGTDivisionFilterInput,
-  EGTDivisionJudging,
   UpdateEGTDivisionStateInput,
 } from './egtDivision.types';
 import { EGTDivisionService } from './egtDivision.service';
@@ -49,15 +48,6 @@ export class EGTDivisionResolver {
     @Args('id', { type: () => ID }) id: number,
   ): Promise<EGTDivision | null> {
     return this.egtDivisionService.findOne(id);
-  }
-
-  @Role(ROLES.VIEWER)
-  @Query(() => EGTDivisionJudging, {name: 'egtDivisionJudging'})
-  async getDivisionJudging(
-    @Args('ids', { type: () => [ID] }) ids: number[],
-    @Args('round', { type: () => Int }) round: number,
-  ): Promise<EGTDivisionJudging> {
-    return this.egtDivisionService.getJudging(ids, round);
   }
 
   @Role(ROLES.ADMIN)
