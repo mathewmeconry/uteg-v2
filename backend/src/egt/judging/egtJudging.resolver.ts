@@ -1,20 +1,14 @@
-import {
-  Args,
-  ID,
-  Int,
-  Parent,
-  Query,
-  ResolveField,
-  Resolver,
-} from '@nestjs/graphql';
+import { Args, ID, Int, Query, Resolver } from '@nestjs/graphql';
 import { EGTJudgingDevice } from './egtJudging.types';
 import { Role } from 'src/auth/decorators/role.decorator';
 import { ROLES } from 'src/auth/types';
-import { Inject } from '@nestjs/common';
+import { Inject, UseGuards } from '@nestjs/common';
 import { EGTJudgingService } from './egtJudging.service';
-import { EGTDevice } from '../device/egtDevice.entity';
+import { RoleGuard } from 'src/auth/guards/role.guard';
+import { EGTJudgingGuard } from './egtJudging.guard';
 
 Resolver(() => EGTJudgingDevice);
+@UseGuards(EGTJudgingGuard, RoleGuard)
 export class EGTJudgingResolver {
   @Inject()
   private readonly egtJudgingService: EGTJudgingService;
