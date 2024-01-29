@@ -4,6 +4,7 @@ import { EGTDivisionService } from '../division/egtDivision.service';
 import { EGTLineupService } from '../lineup/egtLineup.service';
 import { EGTStarterLink } from '../starterlink/egtStarterLink.entity';
 import { EGTJudgingDevice } from './egtJudging.types';
+import { EGTLineup } from '../lineup/egtLineup.entity';
 
 @Injectable()
 export class EGTJudgingService {
@@ -50,6 +51,7 @@ export class EGTJudgingService {
       (division) => round < division.totalRounds,
     );
     let starters: EGTStarterLink[] = [];
+    const lineups: EGTLineup[] = [];
     for (const division of divisionsFiltered) {
       let deviceNumber = device - round;
       if (deviceNumber < 0) {
@@ -63,6 +65,7 @@ export class EGTJudgingService {
       );
       if (lineup) {
         starters.push(...(await lineup.starterlinks));
+        lineups.push(lineup);
       }
     }
 
@@ -73,6 +76,7 @@ export class EGTJudgingService {
       device: await this.egtDeviceService.findForNumber(competition.id, device),
       round,
       starterslist: starters,
+      lineups,
     };
   }
 

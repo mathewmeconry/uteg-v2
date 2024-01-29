@@ -49,5 +49,6 @@
   "round": "Round {{number}}",
   "aggregationMode_MIN": "Lowest",
   "aggregationMode_MAX": "Highest",
-  "aggregationMode_AVG": "Average"
+  "aggregationMode_AVG": "Average",
+  "grading": "Grading"
 }

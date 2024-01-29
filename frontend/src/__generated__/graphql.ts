@@ -80,7 +80,7 @@ export type CreateUserInput = {
 export type EgtDevice = {
   __typename?: 'EGTDevice';
   aggregationMode: EgtDeviceAggregationMode;
-  device: Scalars['Int']['output'];
+  deviceNumber: Scalars['Int']['output'];
   id: Scalars['ID']['output'];
   inputs: Scalars['Int']['output'];
   overrides: Array<EgtDeviceOverride>;
@@ -121,27 +121,23 @@ export type EgtDivisionFilterInput = {
   state?: InputMaybe<EgtDivisionStates>;
 };
 
-export type EgtDivisionJudging = {
-  __typename?: 'EGTDivisionJudging';
-  devices: Array<EgtDivisionJudgingDevice>;
-  divisions: Array<EgtDivision>;
-};
-
-export type EgtDivisionJudgingDevice = {
-  __typename?: 'EGTDivisionJudgingDevice';
-  device: Scalars['Int']['output'];
-  round: Scalars['Int']['output'];
-  starterslist: Array<EgtStarterLink>;
-};
-
 export type EgtDivisionStates =
   | 'ENDED'
   | 'PENDING'
   | 'RUNNING';
 
+export type EgtJudgingDevice = {
+  __typename?: 'EGTJudgingDevice';
+  device: EgtDevice;
+  lineups: Array<EgtLineup>;
+  round: Scalars['Int']['output'];
+  starterslist: Array<EgtStarterLink>;
+};
+
 export type EgtLineup = {
   __typename?: 'EGTLineup';
-  device: Scalars['ID']['output'];
+  currentRound: Scalars['Int']['output'];
+  device: EgtDevice;
   id: Scalars['ID']['output'];
   starterlinks: Array<EgtStarterLink>;
 };
@@ -166,25 +162,41 @@ export type EgtStarterLinkInput = {
 
 export type Grade = {
   __typename?: 'Grade';
+  deviceNumber: Scalars['Int']['output'];
   id: Scalars['ID']['output'];
-  starter: StarterLink;
+  starterlink: StarterLink;
   value: Scalars['Float']['output'];
+};
+
+export type GradeInput = {
+  deviceNumber: Scalars['Int']['input'];
+  module: Scalars['String']['input'];
+  starterlinkId: Scalars['ID']['input'];
+  value: Scalars['Float']['input'];
 };
 
 export type Mutation = {
   __typename?: 'Mutation';
+  addGrades: Array<Grade>;
   createClub: Club;
   createCompetition: Competition;
   createEgtDivision: EgtDivision;
   createStarter: Starter;
   createStarterLink: StarterLink;
   createUser: User;
+  egtLineupAdvanceRound: EgtLineup;
+  egtLineupAdvanceRounds: Array<EgtLineup>;
   egtStarterLink: EgtStarterLink;
   removeEgtDivision: EgtDivision;
   removeStarterLink: StarterLink;
   updateEgtDivisionState: EgtDivision;
   updateStarter: Starter;
   updateStarterLink: StarterLink;
+};
+
+
+export type MutationAddGradesArgs = {
+  grades: Array<GradeInput>;
 };
 
 
@@ -215,6 +227,20 @@ export type MutationCreateStarterLinkArgs = {
 
 export type MutationCreateUserArgs = {
   user: CreateUserInput;
+};
+
+
+export type MutationEgtLineupAdvanceRoundArgs = {
+  id: Scalars['ID']['input'];
+  override?: InputMaybe<Scalars['Boolean']['input']>;
+  round: Scalars['Int']['input'];
+};
+
+
+export type MutationEgtLineupAdvanceRoundsArgs = {
+  ids: Array<Scalars['ID']['input']>;
+  override?: InputMaybe<Scalars['Boolean']['input']>;
+  round: Scalars['Int']['input'];
 };
 
 
@@ -256,12 +282,14 @@ export type Query = {
   competitions: Array<Competition>;
   egtDevices: Array<EgtDevice>;
   egtDivision?: Maybe<EgtDivision>;
-  egtDivisionJudging: EgtDivisionJudging;
   egtDivisions: Array<EgtDivision>;
+  egtJudgingDevice: EgtJudgingDevice;
+  egtJudgingDevices: Array<EgtJudgingDevice>;
   egtLineup?: Maybe<EgtLineup>;
   egtStarterLink?: Maybe<EgtStarterLink>;
   egtStarterLinkUnassigned: Array<EgtStarterLink>;
   grades: Array<Grade>;
+  starterGrades: Array<Grade>;
   starterLink?: Maybe<StarterLink>;
   starterLinks: Array<StarterLink>;
   starters: Array<Starter>;
@@ -284,14 +312,21 @@ export type QueryEgtDivisionArgs = {
 };
 
 
-export type QueryEgtDivisionJudgingArgs = {
+export type QueryEgtDivisionsArgs = {
+  filter: EgtDivisionFilterInput;
+};
+
+
+export type QueryEgtJudgingDeviceArgs = {
+  device: Scalars['Int']['input'];
   ids: Array<Scalars['ID']['input']>;
   round: Scalars['Int']['input'];
 };
 
 
-export type QueryEgtDivisionsArgs = {
-  filter: EgtDivisionFilterInput;
+export type QueryEgtJudgingDevicesArgs = {
+  ids: Array<Scalars['ID']['input']>;
+  round: Scalars['Int']['input'];
 };
 
 
@@ -308,6 +343,12 @@ export type QueryEgtStarterLinkArgs = {
 
 export type QueryEgtStarterLinkUnassignedArgs = {
   divisionID: Scalars['ID']['input'];
+};
+
+
+export type QueryStarterGradesArgs = {
+  device?: InputMaybe<Scalars['Int']['input']>;
+  starterlinkIds: Array<Scalars['ID']['input']>;
 };
 
 
@@ -460,12 +501,52 @@ export type CompetitionNameQueryVariables = Exact<{
 
 export type CompetitionNameQuery = { __typename?: 'Query', competition: { __typename?: 'Competition', name: string } };
 
+export type EgtGradingDivisionsIdsQueryVariables = Exact<{
+  filter: EgtDivisionFilterInput;
+}>;
+
+
+export type EgtGradingDivisionsIdsQuery = { __typename?: 'Query', egtDivisions: Array<{ __typename?: 'EGTDivision', id: string, totalRounds: number }> };
+
+export type EgtDeviceGradingQueryVariables = Exact<{
+  ids: Array<Scalars['ID']['input']> | Scalars['ID']['input'];
+  round: Scalars['Int']['input'];
+  device: Scalars['Int']['input'];
+}>;
+
+
+export type EgtDeviceGradingQuery = { __typename?: 'Query', egtJudgingDevice: { __typename?: 'EGTJudgingDevice', device: { __typename?: 'EGTDevice', id: string, deviceNumber: number, inputs: number, aggregationMode: EgtDeviceAggregationMode, overrides: Array<{ __typename?: 'EGTDeviceOverride', category: number, inputs: number, aggregationMode: EgtDeviceAggregationMode }> }, starterslist: Array<{ __typename?: 'EGTStarterLink', id: string, category?: number | null, starterlink: { __typename?: 'StarterLink', id: string, starter: { __typename?: 'Starter', id: string, firstname: string, lastname: string, sex: Sex } } }>, lineups: Array<{ __typename?: 'EGTLineup', id: string }> } };
+
+export type EgtAddGradesMutationVariables = Exact<{
+  grades: Array<GradeInput> | GradeInput;
+}>;
+
+
+export type EgtAddGradesMutation = { __typename?: 'Mutation', addGrades: Array<{ __typename?: 'Grade', id: string, value: number, starterlink: { __typename?: 'StarterLink', id: string } }> };
+
+export type EgtStarterGradesQueryVariables = Exact<{
+  starterlinkIds: Array<Scalars['ID']['input']> | Scalars['ID']['input'];
+  device: Scalars['Int']['input'];
+}>;
+
+
+export type EgtStarterGradesQuery = { __typename?: 'Query', starterGrades: Array<{ __typename?: 'Grade', id: string, value: number, starterlink: { __typename?: 'StarterLink', id: string } }> };
+
+export type EgtAdvanceLineupsMutationVariables = Exact<{
+  ids: Array<Scalars['ID']['input']> | Scalars['ID']['input'];
+  round: Scalars['Int']['input'];
+  override?: InputMaybe<Scalars['Boolean']['input']>;
+}>;
+
+
+export type EgtAdvanceLineupsMutation = { __typename?: 'Mutation', egtLineupAdvanceRounds: Array<{ __typename?: 'EGTLineup', id: string, currentRound: number }> };
+
 export type EgtLineupQueryVariables = Exact<{
   id: Scalars['ID']['input'];
 }>;
 
 
-export type EgtLineupQuery = { __typename?: 'Query', egtLineup?: { __typename?: 'EGTLineup', id: string, device: string, starterlinks: Array<{ __typename?: 'EGTStarterLink', id: string, starterlink: { __typename?: 'StarterLink', id: string, starter: { __typename?: 'Starter', id: string, firstname: string, lastname: string, birthyear: number }, club: { __typename?: 'Club', id: string, name: string } } }> } | null };
+export type EgtLineupQuery = { __typename?: 'Query', egtLineup?: { __typename?: 'EGTLineup', id: string, device: { __typename?: 'EGTDevice', id: string, deviceNumber: number }, starterlinks: Array<{ __typename?: 'EGTStarterLink', id: string, starterlink: { __typename?: 'StarterLink', id: string, starter: { __typename?: 'Starter', id: string, firstname: string, lastname: string, birthyear: number }, club: { __typename?: 'Club', id: string, name: string } } }> } | null };
 
 export type AssignEgtLineupMutationVariables = Exact<{
   data: EgtStarterLinkInput;
@@ -536,7 +617,7 @@ export type EgtDivisionQueryVariables = Exact<{
 }>;
 
 
-export type EgtDivisionQuery = { __typename?: 'Query', egtDivision?: { __typename?: 'EGTDivision', id: string, category: number, ground: number, currentRound: number, totalRounds: number, sex: Sex, number: number, lineups: Array<{ __typename?: 'EGTLineup', id: string, device: string }> } | null };
+export type EgtDivisionQuery = { __typename?: 'Query', egtDivision?: { __typename?: 'EGTDivision', id: string, category: number, ground: number, currentRound: number, totalRounds: number, sex: Sex, number: number, lineups: Array<{ __typename?: 'EGTLineup', id: string, device: { __typename?: 'EGTDevice', id: string, deviceNumber: number } }> } | null };
 
 export type EgtStarterLinkUnassignedQueryVariables = Exact<{
   divisionID: Scalars['ID']['input'];
@@ -572,14 +653,14 @@ export type EgtDivisionJudgingQueryVariables = Exact<{
 }>;
 
 
-export type EgtDivisionJudgingQuery = { __typename?: 'Query', egtDivisionJudging: { __typename?: 'EGTDivisionJudging', devices: Array<{ __typename?: 'EGTDivisionJudgingDevice', device: number, round: number, starterslist: Array<{ __typename?: 'EGTStarterLink', id: string, category?: number | null, starterlink: { __typename?: 'StarterLink', id: string, starter: { __typename?: 'Starter', id: string, firstname: string, lastname: string }, club: { __typename?: 'Club', id: string, name: string } } }> }> } };
+export type EgtDivisionJudgingQuery = { __typename?: 'Query', egtJudgingDevices: Array<{ __typename?: 'EGTJudgingDevice', round: number, device: { __typename?: 'EGTDevice', id: string, deviceNumber: number, inputs: number, aggregationMode: EgtDeviceAggregationMode, overrides: Array<{ __typename?: 'EGTDeviceOverride', category: number, inputs: number, aggregationMode: EgtDeviceAggregationMode }> }, starterslist: Array<{ __typename?: 'EGTStarterLink', id: string, category?: number | null, starterlink: { __typename?: 'StarterLink', id: string, starter: { __typename?: 'Starter', id: string, firstname: string, lastname: string }, club: { __typename?: 'Club', id: string, name: string } } }> }> };
 
-export type EgtDevicesJudgingQueryVariables = Exact<{
-  competitionID: Scalars['ID']['input'];
+export type EgtGradingGroundsQueryVariables = Exact<{
+  id: Scalars['ID']['input'];
 }>;
 
 
-export type EgtDevicesJudgingQuery = { __typename?: 'Query', egtDevices: Array<{ __typename?: 'EGTDevice', id: string, device: number, inputs: number, aggregationMode: EgtDeviceAggregationMode, overrides: Array<{ __typename?: 'EGTDeviceOverride', category: number, inputs: number, aggregationMode: EgtDeviceAggregationMode }> }> };
+export type EgtGradingGroundsQuery = { __typename?: 'Query', competition: { __typename?: 'Competition', id: string, grounds: number } };
 
 export type StarterLinksQueryVariables = Exact<{
   competitionID: Scalars['ID']['input'];
@@ -1014,11 +1095,241 @@ export type CompetitionNameQueryHookResult = ReturnType<typeof useCompetitionNam
 export type CompetitionNameLazyQueryHookResult = ReturnType<typeof useCompetitionNameLazyQuery>;
 export type CompetitionNameSuspenseQueryHookResult = ReturnType<typeof useCompetitionNameSuspenseQuery>;
 export type CompetitionNameQueryResult = Apollo.QueryResult<CompetitionNameQuery, CompetitionNameQueryVariables>;
+export const EgtGradingDivisionsIdsDocument = gql`
+    query egtGradingDivisionsIds($filter: EGTDivisionFilterInput!) {
+  egtDivisions(filter: $filter) {
+    id
+    totalRounds
+  }
+}
+    `;
+
+/**
+ * __useEgtGradingDivisionsIdsQuery__
+ *
+ * To run a query within a React component, call `useEgtGradingDivisionsIdsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useEgtGradingDivisionsIdsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useEgtGradingDivisionsIdsQuery({
+ *   variables: {
+ *      filter: // value for 'filter'
+ *   },
+ * });
+ */
+export function useEgtGradingDivisionsIdsQuery(baseOptions: Apollo.QueryHookOptions<EgtGradingDivisionsIdsQuery, EgtGradingDivisionsIdsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<EgtGradingDivisionsIdsQuery, EgtGradingDivisionsIdsQueryVariables>(EgtGradingDivisionsIdsDocument, options);
+      }
+export function useEgtGradingDivisionsIdsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<EgtGradingDivisionsIdsQuery, EgtGradingDivisionsIdsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<EgtGradingDivisionsIdsQuery, EgtGradingDivisionsIdsQueryVariables>(EgtGradingDivisionsIdsDocument, options);
+        }
+export function useEgtGradingDivisionsIdsSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<EgtGradingDivisionsIdsQuery, EgtGradingDivisionsIdsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<EgtGradingDivisionsIdsQuery, EgtGradingDivisionsIdsQueryVariables>(EgtGradingDivisionsIdsDocument, options);
+        }
+export type EgtGradingDivisionsIdsQueryHookResult = ReturnType<typeof useEgtGradingDivisionsIdsQuery>;
+export type EgtGradingDivisionsIdsLazyQueryHookResult = ReturnType<typeof useEgtGradingDivisionsIdsLazyQuery>;
+export type EgtGradingDivisionsIdsSuspenseQueryHookResult = ReturnType<typeof useEgtGradingDivisionsIdsSuspenseQuery>;
+export type EgtGradingDivisionsIdsQueryResult = Apollo.QueryResult<EgtGradingDivisionsIdsQuery, EgtGradingDivisionsIdsQueryVariables>;
+export const EgtDeviceGradingDocument = gql`
+    query EgtDeviceGrading($ids: [ID!]!, $round: Int!, $device: Int!) {
+  egtJudgingDevice(ids: $ids, round: $round, device: $device) {
+    device {
+      id
+      deviceNumber
+      inputs
+      aggregationMode
+      overrides {
+        category
+        inputs
+        aggregationMode
+      }
+    }
+    starterslist {
+      id
+      starterlink {
+        id
+        starter {
+          id
+          firstname
+          lastname
+          sex
+        }
+      }
+      category
+    }
+    lineups {
+      id
+    }
+  }
+}
+    `;
+
+/**
+ * __useEgtDeviceGradingQuery__
+ *
+ * To run a query within a React component, call `useEgtDeviceGradingQuery` and pass it any options that fit your needs.
+ * When your component renders, `useEgtDeviceGradingQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useEgtDeviceGradingQuery({
+ *   variables: {
+ *      ids: // value for 'ids'
+ *      round: // value for 'round'
+ *      device: // value for 'device'
+ *   },
+ * });
+ */
+export function useEgtDeviceGradingQuery(baseOptions: Apollo.QueryHookOptions<EgtDeviceGradingQuery, EgtDeviceGradingQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<EgtDeviceGradingQuery, EgtDeviceGradingQueryVariables>(EgtDeviceGradingDocument, options);
+      }
+export function useEgtDeviceGradingLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<EgtDeviceGradingQuery, EgtDeviceGradingQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<EgtDeviceGradingQuery, EgtDeviceGradingQueryVariables>(EgtDeviceGradingDocument, options);
+        }
+export function useEgtDeviceGradingSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<EgtDeviceGradingQuery, EgtDeviceGradingQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<EgtDeviceGradingQuery, EgtDeviceGradingQueryVariables>(EgtDeviceGradingDocument, options);
+        }
+export type EgtDeviceGradingQueryHookResult = ReturnType<typeof useEgtDeviceGradingQuery>;
+export type EgtDeviceGradingLazyQueryHookResult = ReturnType<typeof useEgtDeviceGradingLazyQuery>;
+export type EgtDeviceGradingSuspenseQueryHookResult = ReturnType<typeof useEgtDeviceGradingSuspenseQuery>;
+export type EgtDeviceGradingQueryResult = Apollo.QueryResult<EgtDeviceGradingQuery, EgtDeviceGradingQueryVariables>;
+export const EgtAddGradesDocument = gql`
+    mutation EgtAddGrades($grades: [GradeInput!]!) {
+  addGrades(grades: $grades) {
+    id
+    value
+    starterlink {
+      id
+    }
+  }
+}
+    `;
+export type EgtAddGradesMutationFn = Apollo.MutationFunction<EgtAddGradesMutation, EgtAddGradesMutationVariables>;
+
+/**
+ * __useEgtAddGradesMutation__
+ *
+ * To run a mutation, you first call `useEgtAddGradesMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useEgtAddGradesMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [egtAddGradesMutation, { data, loading, error }] = useEgtAddGradesMutation({
+ *   variables: {
+ *      grades: // value for 'grades'
+ *   },
+ * });
+ */
+export function useEgtAddGradesMutation(baseOptions?: Apollo.MutationHookOptions<EgtAddGradesMutation, EgtAddGradesMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<EgtAddGradesMutation, EgtAddGradesMutationVariables>(EgtAddGradesDocument, options);
+      }
+export type EgtAddGradesMutationHookResult = ReturnType<typeof useEgtAddGradesMutation>;
+export type EgtAddGradesMutationResult = Apollo.MutationResult<EgtAddGradesMutation>;
+export type EgtAddGradesMutationOptions = Apollo.BaseMutationOptions<EgtAddGradesMutation, EgtAddGradesMutationVariables>;
+export const EgtStarterGradesDocument = gql`
+    query EgtStarterGrades($starterlinkIds: [ID!]!, $device: Int!) {
+  starterGrades(starterlinkIds: $starterlinkIds, device: $device) {
+    id
+    value
+    starterlink {
+      id
+    }
+  }
+}
+    `;
+
+/**
+ * __useEgtStarterGradesQuery__
+ *
+ * To run a query within a React component, call `useEgtStarterGradesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useEgtStarterGradesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useEgtStarterGradesQuery({
+ *   variables: {
+ *      starterlinkIds: // value for 'starterlinkIds'
+ *      device: // value for 'device'
+ *   },
+ * });
+ */
+export function useEgtStarterGradesQuery(baseOptions: Apollo.QueryHookOptions<EgtStarterGradesQuery, EgtStarterGradesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<EgtStarterGradesQuery, EgtStarterGradesQueryVariables>(EgtStarterGradesDocument, options);
+      }
+export function useEgtStarterGradesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<EgtStarterGradesQuery, EgtStarterGradesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<EgtStarterGradesQuery, EgtStarterGradesQueryVariables>(EgtStarterGradesDocument, options);
+        }
+export function useEgtStarterGradesSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<EgtStarterGradesQuery, EgtStarterGradesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<EgtStarterGradesQuery, EgtStarterGradesQueryVariables>(EgtStarterGradesDocument, options);
+        }
+export type EgtStarterGradesQueryHookResult = ReturnType<typeof useEgtStarterGradesQuery>;
+export type EgtStarterGradesLazyQueryHookResult = ReturnType<typeof useEgtStarterGradesLazyQuery>;
+export type EgtStarterGradesSuspenseQueryHookResult = ReturnType<typeof useEgtStarterGradesSuspenseQuery>;
+export type EgtStarterGradesQueryResult = Apollo.QueryResult<EgtStarterGradesQuery, EgtStarterGradesQueryVariables>;
+export const EgtAdvanceLineupsDocument = gql`
+    mutation egtAdvanceLineups($ids: [ID!]!, $round: Int!, $override: Boolean) {
+  egtLineupAdvanceRounds(ids: $ids, round: $round, override: $override) {
+    id
+    currentRound
+  }
+}
+    `;
+export type EgtAdvanceLineupsMutationFn = Apollo.MutationFunction<EgtAdvanceLineupsMutation, EgtAdvanceLineupsMutationVariables>;
+
+/**
+ * __useEgtAdvanceLineupsMutation__
+ *
+ * To run a mutation, you first call `useEgtAdvanceLineupsMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useEgtAdvanceLineupsMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [egtAdvanceLineupsMutation, { data, loading, error }] = useEgtAdvanceLineupsMutation({
+ *   variables: {
+ *      ids: // value for 'ids'
+ *      round: // value for 'round'
+ *      override: // value for 'override'
+ *   },
+ * });
+ */
+export function useEgtAdvanceLineupsMutation(baseOptions?: Apollo.MutationHookOptions<EgtAdvanceLineupsMutation, EgtAdvanceLineupsMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<EgtAdvanceLineupsMutation, EgtAdvanceLineupsMutationVariables>(EgtAdvanceLineupsDocument, options);
+      }
+export type EgtAdvanceLineupsMutationHookResult = ReturnType<typeof useEgtAdvanceLineupsMutation>;
+export type EgtAdvanceLineupsMutationResult = Apollo.MutationResult<EgtAdvanceLineupsMutation>;
+export type EgtAdvanceLineupsMutationOptions = Apollo.BaseMutationOptions<EgtAdvanceLineupsMutation, EgtAdvanceLineupsMutationVariables>;
 export const EgtLineupDocument = gql`
     query egtLineup($id: ID!) {
   egtLineup(id: $id) {
     id
-    device
+    device {
+      id
+      deviceNumber
+    }
     starterlinks {
       id
       starterlink {
@@ -1440,7 +1751,10 @@ export const EgtDivisionDocument = gql`
     number
     lineups {
       id
-      device
+      device {
+        id
+        deviceNumber
+      }
     }
   }
 }
@@ -1653,27 +1967,35 @@ export type EgtDivisionsIdsSuspenseQueryHookResult = ReturnType<typeof useEgtDiv
 export type EgtDivisionsIdsQueryResult = Apollo.QueryResult<EgtDivisionsIdsQuery, EgtDivisionsIdsQueryVariables>;
 export const EgtDivisionJudgingDocument = gql`
     query egtDivisionJudging($ids: [ID!]!, $round: Int!) {
-  egtDivisionJudging(ids: $ids, round: $round) {
-    devices {
-      device
-      starterslist {
-        id
-        starterlink {
-          id
-          starter {
-            id
-            firstname
-            lastname
-          }
-          club {
-            id
-            name
-          }
-        }
+  egtJudgingDevices(ids: $ids, round: $round) {
+    device {
+      id
+      deviceNumber
+      inputs
+      aggregationMode
+      overrides {
         category
+        inputs
+        aggregationMode
       }
-      round
     }
+    starterslist {
+      id
+      starterlink {
+        id
+        starter {
+          id
+          firstname
+          lastname
+        }
+        club {
+          id
+          name
+        }
+      }
+      category
+    }
+    round
   }
 }
     `;
@@ -1711,54 +2033,47 @@ export type EgtDivisionJudgingQueryHookResult = ReturnType<typeof useEgtDivision
 export type EgtDivisionJudgingLazyQueryHookResult = ReturnType<typeof useEgtDivisionJudgingLazyQuery>;
 export type EgtDivisionJudgingSuspenseQueryHookResult = ReturnType<typeof useEgtDivisionJudgingSuspenseQuery>;
 export type EgtDivisionJudgingQueryResult = Apollo.QueryResult<EgtDivisionJudgingQuery, EgtDivisionJudgingQueryVariables>;
-export const EgtDevicesJudgingDocument = gql`
-    query egtDevicesJudging($competitionID: ID!) {
-  egtDevices(competitionID: $competitionID) {
+export const EgtGradingGroundsDocument = gql`
+    query EgtGradingGrounds($id: ID!) {
+  competition(id: $id) {
     id
-    device
-    inputs
-    aggregationMode
-    overrides {
-      category
-      inputs
-      aggregationMode
-    }
+    grounds
   }
 }
     `;
 
 /**
- * __useEgtDevicesJudgingQuery__
+ * __useEgtGradingGroundsQuery__
  *
- * To run a query within a React component, call `useEgtDevicesJudgingQuery` and pass it any options that fit your needs.
- * When your component renders, `useEgtDevicesJudgingQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useEgtGradingGroundsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useEgtGradingGroundsQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useEgtDevicesJudgingQuery({
+ * const { data, loading, error } = useEgtGradingGroundsQuery({
  *   variables: {
- *      competitionID: // value for 'competitionID'
+ *      id: // value for 'id'
  *   },
  * });
  */
-export function useEgtDevicesJudgingQuery(baseOptions: Apollo.QueryHookOptions<EgtDevicesJudgingQuery, EgtDevicesJudgingQueryVariables>) {
+export function useEgtGradingGroundsQuery(baseOptions: Apollo.QueryHookOptions<EgtGradingGroundsQuery, EgtGradingGroundsQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<EgtDevicesJudgingQuery, EgtDevicesJudgingQueryVariables>(EgtDevicesJudgingDocument, options);
+        return Apollo.useQuery<EgtGradingGroundsQuery, EgtGradingGroundsQueryVariables>(EgtGradingGroundsDocument, options);
       }
-export function useEgtDevicesJudgingLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<EgtDevicesJudgingQuery, EgtDevicesJudgingQueryVariables>) {
+export function useEgtGradingGroundsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<EgtGradingGroundsQuery, EgtGradingGroundsQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<EgtDevicesJudgingQuery, EgtDevicesJudgingQueryVariables>(EgtDevicesJudgingDocument, options);
+          return Apollo.useLazyQuery<EgtGradingGroundsQuery, EgtGradingGroundsQueryVariables>(EgtGradingGroundsDocument, options);
         }
-export function useEgtDevicesJudgingSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<EgtDevicesJudgingQuery, EgtDevicesJudgingQueryVariables>) {
+export function useEgtGradingGroundsSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<EgtGradingGroundsQuery, EgtGradingGroundsQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<EgtDevicesJudgingQuery, EgtDevicesJudgingQueryVariables>(EgtDevicesJudgingDocument, options);
+          return Apollo.useSuspenseQuery<EgtGradingGroundsQuery, EgtGradingGroundsQueryVariables>(EgtGradingGroundsDocument, options);
         }
-export type EgtDevicesJudgingQueryHookResult = ReturnType<typeof useEgtDevicesJudgingQuery>;
-export type EgtDevicesJudgingLazyQueryHookResult = ReturnType<typeof useEgtDevicesJudgingLazyQuery>;
-export type EgtDevicesJudgingSuspenseQueryHookResult = ReturnType<typeof useEgtDevicesJudgingSuspenseQuery>;
-export type EgtDevicesJudgingQueryResult = Apollo.QueryResult<EgtDevicesJudgingQuery, EgtDevicesJudgingQueryVariables>;
+export type EgtGradingGroundsQueryHookResult = ReturnType<typeof useEgtGradingGroundsQuery>;
+export type EgtGradingGroundsLazyQueryHookResult = ReturnType<typeof useEgtGradingGroundsLazyQuery>;
+export type EgtGradingGroundsSuspenseQueryHookResult = ReturnType<typeof useEgtGradingGroundsSuspenseQuery>;
+export type EgtGradingGroundsQueryResult = Apollo.QueryResult<EgtGradingGroundsQuery, EgtGradingGroundsQueryVariables>;
 export const StarterLinksDocument = gql`
     query starterLinks($competitionID: ID!, $sex: String) {
   starterLinks(competitionID: $competitionID, sex: $sex) {

@@ -11,7 +11,7 @@ export class Grade {
 
   @Field(() => StarterLink)
   @ManyToOne(() => StarterLink)
-  starter: Promise<StarterLink>;
+  starterlink: Promise<StarterLink>;
 
   @Field(() => Float)
   @Column('decimal', { precision: 5, scale: 3 })

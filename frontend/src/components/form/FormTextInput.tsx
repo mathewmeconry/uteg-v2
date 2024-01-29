@@ -1,4 +1,9 @@
-import { TextField, TextFieldProps, Typography } from "@mui/material";
+import {
+  CircularProgress,
+  TextField,
+  TextFieldProps,
+  Typography,
+} from "@mui/material";
 import { PropsWithChildren, ReactElement } from "react";
 import {
   FieldValues,
@@ -12,10 +17,14 @@ export type FormTextInputProps = PropsWithChildren & {
   name: string;
   label?: string;
   ns?: string;
+  labelVariables?: { [index: string]: any };
   fieldProps?: TextFieldProps;
   defaultValue?: string;
   annotation?: string;
   annotationNs?: string;
+  fullWidth?: boolean;
+  disabled?: boolean;
+  loading?: boolean;
   rules:
     | Omit<
         RegisterOptions<FieldValues, any>,
@@ -25,7 +34,7 @@ export type FormTextInputProps = PropsWithChildren & {
 };
 
 export function FormTextInput(props: FormTextInputProps) {
-  const { control: formControl, trigger: formTrigger } = useFormContext();
+  const { control: formControl } = useFormContext();
   const { t } = useTranslation();
   const {
     field,
@@ -34,11 +43,12 @@ export function FormTextInput(props: FormTextInputProps) {
     name: props.name,
     control: formControl,
     rules: props.rules,
-    defaultValue: props.defaultValue,
+    defaultValue: props.defaultValue ?? "",
   });
 
   let label: string | ReactElement = t(props.label || props.name, {
     ns: props.ns,
+    ...props.labelVariables,
   });
   if (props.annotation) {
     label = (
@@ -54,20 +64,23 @@ export function FormTextInput(props: FormTextInputProps) {
   return (
     <TextField
       key={props.name}
-      id={props.name}
       label={label}
       variant="standard"
       margin="normal"
-      fullWidth
+      fullWidth={props.fullWidth ?? true}
       {...props.fieldProps}
       error={invalid}
       helperText={error?.message?.toString()}
       onChange={field.onChange}
+      disabled={props.disabled}
       inputProps={{
         onBlur: field.onBlur,
       }}
       value={field.value}
       ref={field.ref}
+      InputProps={{
+        endAdornment: props.loading ? <CircularProgress size={20} /> : null,
+      }}
     >
       {props.children}
     </TextField>

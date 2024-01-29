@@ -21,8 +21,27 @@ export class EGTLineupGuard implements CanActivate {
     const ctx = GqlExecutionContext.create(context);
     const args = ctx.getArgs();
 
-    let division: EGTDivision;
+    if (args.ids) {
+      const lineups = await this.egtLineupService.findMany(args.ids);
+      const divisions = await Promise.all(
+        lineups.map((lineup) => lineup.division),
+      );
+      const competitions = await Promise.all(
+        divisions.map((d) => d.competition),
+      );
 
+      const competitionIds = competitions.map((c) => c.id);
+      const allSameIds = competitionIds.every((id) => id === competitionIds[0]);
+
+      if (!allSameIds) {
+        return false;
+      }
+
+      ctx.getContext().competition = competitionIds[0];
+      return true;
+    }
+
+    let division: EGTDivision;
     if (args.id) {
       const lineup = await this.egtLineupService.findOne(args.id);
       division = await lineup.division;

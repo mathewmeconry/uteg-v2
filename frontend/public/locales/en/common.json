@@ -90,5 +90,6 @@
   "grade": "Grade",
   "grade_labled": "{{label}} Grade",
   "final": "Final",
-  "break": "Break"
+  "break": "Break",
+  "saved": "Saved"
 }

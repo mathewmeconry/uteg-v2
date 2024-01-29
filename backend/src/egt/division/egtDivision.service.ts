@@ -10,6 +10,7 @@ import { In, Repository } from 'typeorm';
 import { SEX } from 'src/base/starter/starter.types';
 import {
   EGTDivisionFilterInput,
+  EGTDivisionStates,
   UpdateEGTDivisionStateInput,
 } from './egtDivision.types';
 import { EGTLineup } from '../lineup/egtLineup.entity';
@@ -108,7 +109,9 @@ export class EGTDivisionService {
     for (let i = 0; i < division.totalRounds; i++) {
       const lineup = new EGTLineup();
       lineup.division = Promise.resolve(division);
-      lineup.device = Promise.resolve(await this.egtDeviceService.findForNumber(competition.id, i));
+      lineup.device = Promise.resolve(
+        await this.egtDeviceService.findForNumber(competition.id, i),
+      );
       promises.push(await this.egtLineupService.create(lineup));
     }
     await Promise.all(promises);
@@ -136,6 +139,20 @@ export class EGTDivisionService {
     }
     division.state = data.state;
     division.currentRound = data.currentRound;
+    return this.egtDivisionRepository.save(division);
+  }
+
+  async advanceDivision(id: number): Promise<EGTDivision> {
+    const division = await this.findOne(id);
+    if (!division) {
+      throw new NotFoundException();
+    }
+    const lineups = await division.lineups;
+    const lowestRound = Math.min(...lineups.map((l) => l.currentRound));
+    division.currentRound = lowestRound;
+    if (division.currentRound >= division.totalRounds) {
+      division.state = EGTDivisionStates.ENDED;
+    }
     return this.egtDivisionRepository.save(division);
   }
 

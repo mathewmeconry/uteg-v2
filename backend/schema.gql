@@ -108,11 +108,13 @@ enum EGTDivisionStates {
 
 type EGTJudgingDevice {
   device: EGTDevice!
+  lineups: [EGTLineup!]!
   round: Int!
   starterslist: [EGTStarterLink!]!
 }
 
 type EGTLineup {
+  currentRound: Int!
   device: EGTDevice!
   id: ID!
   starterlinks: [EGTStarterLink!]!
@@ -138,17 +140,27 @@ input EGTStarterLinkInput {
 type Grade {
   deviceNumber: Int!
   id: ID!
-  starter: StarterLink!
+  starterlink: StarterLink!
+  value: Float!
+}
+
+input GradeInput {
+  deviceNumber: Int!
+  module: String!
+  starterlinkId: ID!
   value: Float!
 }
 
 type Mutation {
+  addGrades(grades: [GradeInput!]!): [Grade!]!
   createClub(data: CreateClubInput!): Club!
   createCompetition(competition: CreateCompetition!): Competition!
   createEgtDivision(data: CreateEGTDivisionInput!): EGTDivision!
   createStarter(data: CreateStarterInput!): Starter!
   createStarterLink(data: CreateStarterLinkInput!): StarterLink!
   createUser(user: CreateUserInput!): User!
+  egtLineupAdvanceRound(id: ID!, override: Boolean = false, round: Int!): EGTLineup!
+  egtLineupAdvanceRounds(ids: [ID!]!, override: Boolean = false, round: Int!): [EGTLineup!]!
   egtStarterLink(data: EGTStarterLinkInput!): EGTStarterLink!
   removeEgtDivision(id: ID!): EGTDivision!
   removeStarterLink(id: ID!): StarterLink!
@@ -170,6 +182,7 @@ type Query {
   egtStarterLink(id: ID, starterLinkID: ID): EGTStarterLink
   egtStarterLinkUnassigned(divisionID: ID!): [EGTStarterLink!]!
   grades: [Grade!]!
+  starterGrades(device: Int, starterlinkIds: [ID!]!): [Grade!]!
   starterLink(id: ID!): StarterLink
   starterLinks(competitionID: ID!, sex: String): [StarterLink!]!
   starters(filter: StarterFilter!): [Starter!]!

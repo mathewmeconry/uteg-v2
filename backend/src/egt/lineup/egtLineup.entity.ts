@@ -1,5 +1,6 @@
-import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { Field, ID, Int, ObjectType } from '@nestjs/graphql';
 import {
+  Column,
   Entity,
   ManyToOne,
   OneToMany,
@@ -24,4 +25,8 @@ export class EGTLineup {
 
   @ManyToOne(() => EGTDevice)
   device: Promise<EGTDevice>;
+
+  @Field(() => Int, { defaultValue: 0 })
+  @Column({ default: 0 })
+  currentRound: number;
 }
