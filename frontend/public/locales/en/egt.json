@@ -30,6 +30,11 @@
   "device_2": "Rings",
   "device_3": "Vault",
   "device_4": "Parallel Bars",
+  "device_0_short": "Hb",
+  "device_1_short": "Fl",
+  "device_2_short": "Ri",
+  "device_3_short": "Va",
+  "device_4_short": "Pb",
   "division": "Division",
   "division_one": "Division",
   "division_other": "Divisions",
@@ -51,5 +56,8 @@
   "aggregationMode_MAX": "Highest",
   "aggregationMode_AVG": "Average",
   "grading": "Grading",
-  "ranking": "Ranking"
+  "ranking": "Ranking",
+  "rankings": "Rankings {{category}}",
+  "honourPrecentage": "Honour Precentage",
+  "intermediate": "Intermediate"
 }

@@ -118,7 +118,7 @@ export function RankingTable(props: RankingTableProps) {
           <TableCell>{t("club", { ns: "common" })}</TableCell>
           {[...Array(highestDeviceCount()).keys()].map((i) => (
             <TableCell key={i} sx={{ textAlign: "center" }}>
-              {t(`device_${i}`, { ns: "egt" })}
+              {t(`device_${i}_short`, { ns: "egt" })}
             </TableCell>
           ))}
           <TableCell>{t("total", { ns: "common" })}</TableCell>
