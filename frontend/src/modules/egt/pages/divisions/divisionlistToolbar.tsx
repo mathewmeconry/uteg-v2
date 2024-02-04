@@ -28,14 +28,13 @@ import { useParams } from "react-router-dom";
 import {
   EgtDivisionJudgingQueryHookResult,
   useCompetitionGroundsQuery,
-  useEgtDevicesJudgingLazyQuery,
   useEgtDivisionJudgingLazyQuery,
   useEgtDivisionsIdsLazyQuery,
 } from "../../../../__generated__/graphql";
 import { enqueueSnackbar } from "notistack";
-import { usePDF } from "@react-pdf/renderer";
 import { JudgingDocument } from "../../documents/jugingDocument/judgingDocument";
 import dayjs from "dayjs";
+import { usePdfDownload } from "../../../../hooks/usePdfDownload/usePdfDownload";
 
 export function DivisionlistToolbar(props: {
   openDialog: Dispatch<SetStateAction<string>>;
@@ -51,7 +50,6 @@ export function DivisionlistToolbar(props: {
   );
   const exportMenuOpen = Boolean(exportAnchorEl);
   const [downloadingPdf, setDownloadingPdf] = useState(0);
-  const [pdfUpdatePending, setPdfUpdatePending] = useState(false);
   const {
     data: competition,
     loading: competitionLoading,
@@ -66,7 +64,11 @@ export function DivisionlistToolbar(props: {
   const [judingQuery] = useEgtDivisionJudgingLazyQuery({
     fetchPolicy: "network-only",
   });
-  let [pdfInstance, updatePdfInstance] = usePDF();
+  const {
+    update: pdfUpdate,
+    download: pdfDownload,
+    loading: pdfLoading,
+  } = usePdfDownload({});
 
   function handleExportClick(event: React.MouseEvent<HTMLButtonElement>) {
     setExportAnchorEl(event.currentTarget);
@@ -100,8 +102,6 @@ export function DivisionlistToolbar(props: {
       .filter((d) => !!d);
 
     await exportDivisionsLineupPdf(divisionIds);
-
-    setDownloadingPdf(0);
   }
 
   async function exportDivisionSelectionPdf(
@@ -116,12 +116,11 @@ export function DivisionlistToolbar(props: {
   }
 
   async function exportDivisionsLineupPdf(divisionIds: string[] | undefined) {
-    setPdfUpdatePending(true);
-
     if (!divisionIds || divisionIds.length === 0) {
       enqueueSnackbar(t("no_started", { name: t("division", { count: 1 }) }), {
         variant: "error",
       });
+      setDownloadingPdf(0);
       return;
     }
 
@@ -136,6 +135,7 @@ export function DivisionlistToolbar(props: {
 
       if (judging.error) {
         enqueueSnackbar(t("error", { ns: "common" }));
+        setDownloadingPdf(0);
         return;
       }
 
@@ -144,36 +144,16 @@ export function DivisionlistToolbar(props: {
       }
     }
 
-    updatePdfInstance(<JudgingDocument rounds={rounds} t={t} />);
-    setPdfUpdatePending(false);
-  }
-
-  useEffect(() => {
-    if (pdfInstance.loading || !pdfInstance.url || pdfUpdatePending) {
-      return;
-    }
-
-    const link = document.createElement("a");
-    link.href = pdfInstance.url;
-    link.setAttribute(
-      "download",
-      `${t("ground_typed", {
+    await pdfUpdate({
+      document: <JudgingDocument rounds={rounds} t={t} />,
+      filename: `${t("ground_typed", {
         ns: "common",
         name: downloadingPdf,
-      })} - ${dayjs().format("L LT")}.pdf`
-    );
-
-    // Append to html link element page
-    document.body.appendChild(link);
-
-    // Start download
-    link.click();
-
-    // Clean up and remove the link
-    link.parentNode?.removeChild(link);
-
+      })} - ${dayjs().format("L LT")}.pdf`,
+    });
+    pdfDownload();
     setDownloadingPdf(0);
-  }, [pdfInstance, pdfUpdatePending]);
+  }
 
   useEffect(() => {
     if (downloadingPdf === 0) {
@@ -248,8 +228,8 @@ export function DivisionlistToolbar(props: {
               type: t("division", { count: selectedRows.size }),
             })}
           >
-            {pdfUpdatePending && <LinearProgress sx={{ width: "5vw" }} />}
-            {!pdfUpdatePending && (
+            {pdfLoading && <LinearProgress sx={{ width: "5vw" }} />}
+            {!pdfLoading && (
               <Button
                 color="primary"
                 onClick={() => exportDivisionSelectionPdf(selectedRows)}

@@ -29,11 +29,11 @@ import { Link, useParams } from "react-router-dom";
 import { useModules } from "../../../../hooks/useModules/useModules";
 import ListIcon from "@mui/icons-material/List";
 import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
-import { usePDF } from "@react-pdf/renderer";
 import { StarterslistDocument } from "../../../../documents/starterslistDocument/starterslistDocument";
 import { StarterLink } from "../../../../__generated__/graphql";
 import { GridColDefExtension } from "../../../../types/GridColDefExtension";
 import UploadIcon from "@mui/icons-material/Upload";
+import { usePdfDownload } from "../../../../hooks/usePdfDownload/usePdfDownload";
 
 export function StarterslistToolbar(props: {
   openDialog: Dispatch<SetStateAction<string>>;
@@ -49,7 +49,11 @@ export function StarterslistToolbar(props: {
     null
   );
   const exportMenuOpen = Boolean(exportAnchorEl);
-  const [downloadingPdf, setDownloadingPdf] = useState(false);
+  const {
+    update: pdfUpdate,
+    download: pdfDownload,
+    loading: pdfLoading,
+  } = usePdfDownload({});
 
   function handleExportClick(event: React.MouseEvent<HTMLButtonElement>) {
     setExportAnchorEl(event.currentTarget);
@@ -59,7 +63,6 @@ export function StarterslistToolbar(props: {
   }
 
   const columns: GridColDefExtension[] = gridApi.current.getAllColumns();
-  const [pdfInstance, updatePdfInstance] = usePDF();
 
   function exportExcel() {
     const starters = [];
@@ -88,44 +91,16 @@ export function StarterslistToolbar(props: {
     handleExportMenuClose();
   }
 
-  function exportPdf() {
-    setDownloadingPdf(true);
-    updatePdfInstance(
-      StarterslistDocument({
+  async function exportPdf() {
+    await pdfUpdate({
+      document: StarterslistDocument({
         starters: rows.map((row) => row.model) as StarterLink[],
         columns,
-      })
-    );
+      }),
+      filename: `${t("starter", { count: rows.length })}.pdf`,
+    });
+    pdfDownload();
   }
-
-  useEffect(() => {
-    if (
-      (pdfInstance && pdfInstance.loading) ||
-      !pdfInstance.url ||
-      !downloadingPdf
-    ) {
-      return;
-    }
-
-    const link = document.createElement("a");
-    link.href = pdfInstance.url;
-    link.setAttribute(
-      "download",
-      `${t("starter", { count: rows.length })}.pdf`
-    );
-
-    // Append to html link element page
-    document.body.appendChild(link);
-
-    // Start download
-    link.click();
-
-    // Clean up and remove the link
-    link.parentNode?.removeChild(link);
-
-    setDownloadingPdf(false);
-    handleExportMenuClose();
-  }, [pdfInstance, downloadingPdf]);
 
   return (
     <GridToolbarContainer>
@@ -187,7 +162,7 @@ export function StarterslistToolbar(props: {
               <PictureAsPdfIcon fontSize="small" />
             </ListItemIcon>
             <ListItemText>
-              {downloadingPdf ? <LinearProgress /> : "PDF"}
+              {pdfLoading ? <LinearProgress /> : "PDF"}
             </ListItemText>
           </MenuItem>
         </Menu>
