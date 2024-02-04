@@ -17,6 +17,7 @@ export type InputClickEditableProps = {
   onChange?: (value: string) => void | Promise<void>;
   onSave?: (value: string) => void | Promise<void>;
   onCancel?: () => void;
+  endAdornment?: string;
 };
 
 export function InputClickEditable(props: InputClickEditableProps) {
@@ -53,6 +54,7 @@ export function InputClickEditable(props: InputClickEditableProps) {
           mb={1}
         >
           {props.value}
+          {props.endAdornment ? props.endAdornment : ""}
           <IconButton
             size="small"
             onClick={() => setEditable(true)}
@@ -79,6 +81,7 @@ export function InputClickEditable(props: InputClickEditableProps) {
       InputProps={{
         endAdornment: (
           <InputAdornment position="end">
+            {props.endAdornment ? props.endAdornment : ""}
             <IconButton size="small" color="success" onClick={onSave}>
               <CheckIcon fontSize="small" />
             </IconButton>

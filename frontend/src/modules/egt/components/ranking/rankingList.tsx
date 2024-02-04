@@ -88,6 +88,7 @@ export function RankingList(props: RankingListProps) {
         <InputClickEditable
           value="33"
           label={t("honourPrecentage", { ns: "egt" })}
+          endAdornment="%"
         />
         <Divider sx={{ mt: 2, mb: 2 }} />
         <ToggleButton
