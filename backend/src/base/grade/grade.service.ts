@@ -21,6 +21,10 @@ export class GradeService {
     return this.gradeRepository.findOneBy({ id });
   }
 
+  findForStarter(starterlinkId: number): Promise<Grade[]> {
+    return this.findForStarters([starterlinkId]);
+  }
+
   findForStarters(starterlinkIds: number[], device?: number): Promise<Grade[]> {
     if (starterlinkIds.length === 0) {
       return Promise.resolve([]);

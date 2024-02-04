@@ -19,6 +19,8 @@ import { Competition } from 'src/base/competition/competition.entity';
 import { EGTDeviceResolver } from './device/egtDevice.resolver';
 import { EGTJudgingService } from './judging/egtJudging.service';
 import { EGTJudgingResolver } from './judging/egtJudging.resolver';
+import { EGTRankingService } from './ranking/egtRanking.service';
+import { EGTRankingResolver } from './ranking/egtRanking.resolver';
 
 @Module({
   imports: [
@@ -43,6 +45,8 @@ import { EGTJudgingResolver } from './judging/egtJudging.resolver';
     EGTDeviceResolver,
     EGTJudgingService,
     EGTJudgingResolver,
+    EGTRankingService,
+    EGTRankingResolver,
   ],
 })
 export class EGTModule implements OnModuleInit {

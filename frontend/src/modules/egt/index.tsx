@@ -15,6 +15,8 @@ import { StarterslistSelectedRowsActions } from "./extensions/starterslistSelect
 import { GridColDefExtension } from "../../types/GridColDefExtension";
 import GradingIcon from "@mui/icons-material/Grading";
 import { Grading } from "./pages/grading/grading";
+import { Ranking } from "./pages/ranking/ranking";
+import MilitaryTechIcon from "@mui/icons-material/MilitaryTech";
 
 const routes: RouteObject[] = [
   {
@@ -47,6 +49,10 @@ const routes: RouteObject[] = [
       {
         path: "grades",
         element: <Grading />,
+      },
+      {
+        path: "ranking",
+        element: <Ranking />,
       },
     ],
   },
@@ -227,13 +233,19 @@ export const EGTModule: Module = {
       icon: <AccountTreeIcon />,
       text: "divisions",
       key: "divisions",
-      to: `/competition/:id/egt/divisions`,
+      to: "/competition/:id/egt/divisions",
     },
     {
       icon: <GradingIcon />,
       text: "grading",
       key: "grading",
-      to: `/competition/:id/egt/grades`,
+      to: "/competition/:id/egt/grades",
+    },
+    {
+      icon: <MilitaryTechIcon />,
+      text: "ranking",
+      key: "ranking",
+      to: "/competition/:id/egt/ranking",
     },
   ],
 };

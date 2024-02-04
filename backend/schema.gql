@@ -137,6 +137,14 @@ input EGTStarterLinkInput {
   starterLinkID: ID
 }
 
+type EGTStarterRanking {
+  award: String!
+  egtStarterlink: EGTStarterLink!
+  grades: [Grade!]!
+  rank: Int!
+  total: Float!
+}
+
 type Grade {
   deviceNumber: Int!
   id: ID!
@@ -181,6 +189,7 @@ type Query {
   egtLineup(id: ID!): EGTLineup
   egtStarterLink(id: ID, starterLinkID: ID): EGTStarterLink
   egtStarterLinkUnassigned(divisionID: ID!): [EGTStarterLink!]!
+  egtStarterRankings(category: Int!, competitionID: ID!, sex: Sex!): [EGTStarterRanking!]!
   grades: [Grade!]!
   starterGrades(device: Int, starterlinkIds: [ID!]!): [Grade!]!
   starterLink(id: ID!): StarterLink

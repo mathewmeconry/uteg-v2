@@ -160,6 +160,15 @@ export type EgtStarterLinkInput = {
   starterLinkID?: InputMaybe<Scalars['ID']['input']>;
 };
 
+export type EgtStarterRanking = {
+  __typename?: 'EGTStarterRanking';
+  award: Scalars['String']['output'];
+  egtStarterlink: EgtStarterLink;
+  grades: Array<Grade>;
+  rank: Scalars['Int']['output'];
+  total: Scalars['Float']['output'];
+};
+
 export type Grade = {
   __typename?: 'Grade';
   deviceNumber: Scalars['Int']['output'];
@@ -288,6 +297,7 @@ export type Query = {
   egtLineup?: Maybe<EgtLineup>;
   egtStarterLink?: Maybe<EgtStarterLink>;
   egtStarterLinkUnassigned: Array<EgtStarterLink>;
+  egtStarterRankings: Array<EgtStarterRanking>;
   grades: Array<Grade>;
   starterGrades: Array<Grade>;
   starterLink?: Maybe<StarterLink>;
@@ -343,6 +353,13 @@ export type QueryEgtStarterLinkArgs = {
 
 export type QueryEgtStarterLinkUnassignedArgs = {
   divisionID: Scalars['ID']['input'];
+};
+
+
+export type QueryEgtStarterRankingsArgs = {
+  category: Scalars['Int']['input'];
+  competitionID: Scalars['ID']['input'];
+  sex: Sex;
 };
 
 
@@ -554,6 +571,15 @@ export type AssignEgtLineupMutationVariables = Exact<{
 
 
 export type AssignEgtLineupMutation = { __typename?: 'Mutation', egtStarterLink: { __typename?: 'EGTStarterLink', id: string } };
+
+export type EgtStarterRankingQueryVariables = Exact<{
+  competitionID: Scalars['ID']['input'];
+  sex: Sex;
+  category: Scalars['Int']['input'];
+}>;
+
+
+export type EgtStarterRankingQuery = { __typename?: 'Query', egtStarterRankings: Array<{ __typename?: 'EGTStarterRanking', rank: number, total: number, award: string, egtStarterlink: { __typename?: 'EGTStarterLink', id: string, starterlink: { __typename?: 'StarterLink', id: string, starter: { __typename?: 'Starter', id: string, firstname: string, lastname: string }, club: { __typename?: 'Club', id: string, name: string } } }, grades: Array<{ __typename?: 'Grade', id: string, deviceNumber: number, value: number }> }> };
 
 export type EgtAssignToDivisionDialogQueryVariables = Exact<{
   filter: EgtDivisionFilterInput;
@@ -1415,6 +1441,74 @@ export function useAssignEgtLineupMutation(baseOptions?: Apollo.MutationHookOpti
 export type AssignEgtLineupMutationHookResult = ReturnType<typeof useAssignEgtLineupMutation>;
 export type AssignEgtLineupMutationResult = Apollo.MutationResult<AssignEgtLineupMutation>;
 export type AssignEgtLineupMutationOptions = Apollo.BaseMutationOptions<AssignEgtLineupMutation, AssignEgtLineupMutationVariables>;
+export const EgtStarterRankingDocument = gql`
+    query EGTStarterRanking($competitionID: ID!, $sex: Sex!, $category: Int!) {
+  egtStarterRankings(
+    competitionID: $competitionID
+    sex: $sex
+    category: $category
+  ) {
+    rank
+    total
+    award
+    egtStarterlink {
+      id
+      starterlink {
+        id
+        starter {
+          id
+          firstname
+          lastname
+        }
+        club {
+          id
+          name
+        }
+      }
+    }
+    grades {
+      id
+      deviceNumber
+      value
+    }
+  }
+}
+    `;
+
+/**
+ * __useEgtStarterRankingQuery__
+ *
+ * To run a query within a React component, call `useEgtStarterRankingQuery` and pass it any options that fit your needs.
+ * When your component renders, `useEgtStarterRankingQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useEgtStarterRankingQuery({
+ *   variables: {
+ *      competitionID: // value for 'competitionID'
+ *      sex: // value for 'sex'
+ *      category: // value for 'category'
+ *   },
+ * });
+ */
+export function useEgtStarterRankingQuery(baseOptions: Apollo.QueryHookOptions<EgtStarterRankingQuery, EgtStarterRankingQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<EgtStarterRankingQuery, EgtStarterRankingQueryVariables>(EgtStarterRankingDocument, options);
+      }
+export function useEgtStarterRankingLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<EgtStarterRankingQuery, EgtStarterRankingQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<EgtStarterRankingQuery, EgtStarterRankingQueryVariables>(EgtStarterRankingDocument, options);
+        }
+export function useEgtStarterRankingSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<EgtStarterRankingQuery, EgtStarterRankingQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<EgtStarterRankingQuery, EgtStarterRankingQueryVariables>(EgtStarterRankingDocument, options);
+        }
+export type EgtStarterRankingQueryHookResult = ReturnType<typeof useEgtStarterRankingQuery>;
+export type EgtStarterRankingLazyQueryHookResult = ReturnType<typeof useEgtStarterRankingLazyQuery>;
+export type EgtStarterRankingSuspenseQueryHookResult = ReturnType<typeof useEgtStarterRankingSuspenseQuery>;
+export type EgtStarterRankingQueryResult = Apollo.QueryResult<EgtStarterRankingQuery, EgtStarterRankingQueryVariables>;
 export const EgtAssignToDivisionDialogDocument = gql`
     query egtAssignToDivisionDialog($filter: EGTDivisionFilterInput!) {
   egtDivisions(filter: $filter) {

@@ -50,5 +50,6 @@
   "aggregationMode_MIN": "Lowest",
   "aggregationMode_MAX": "Highest",
   "aggregationMode_AVG": "Average",
-  "grading": "Grading"
+  "grading": "Grading",
+  "ranking": "Ranking"
 }

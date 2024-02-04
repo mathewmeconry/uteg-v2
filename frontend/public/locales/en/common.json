@@ -91,5 +91,6 @@
   "grade_labled": "{{label}} Grade",
   "final": "Final",
   "break": "Break",
-  "saved": "Saved"
+  "saved": "Saved",
+  "total": "Total"
 }

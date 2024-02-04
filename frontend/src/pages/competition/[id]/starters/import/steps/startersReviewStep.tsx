@@ -104,27 +104,4 @@ export function StartersReviewStep() {
       )}
     />
   );
-
-  return (
-    <TableContainer>
-      <Table
-        stickyHeader
-        sx={{ minWidth: 650 }}
-        size="small"
-        aria-label="a dense table"
-      >
-        <TableHead></TableHead>
-        <TableBody>
-          {startersFieldArray.fields.map((starter, index: number) => (
-            <StartersReviewStepRow
-              key={starter.id}
-              starter={(starter as any) as Starter}
-              index={index}
-              onRemove={startersFieldArray.remove}
-            />
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
-  );
 }
