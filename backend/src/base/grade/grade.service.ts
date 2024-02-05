@@ -35,7 +35,7 @@ export class GradeService {
       .leftJoin('grade.starterlink', 'starterlink')
       .where('starterlink.id IN (:...starterlinkIds)', { starterlinkIds });
 
-    if (device) {
+    if (!isNaN(device)) {
       qb.andWhere('grade.deviceNumber = :device', { device });
     }
 

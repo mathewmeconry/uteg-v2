@@ -25,6 +25,7 @@ export type FormTextInputProps = PropsWithChildren & {
   fullWidth?: boolean;
   disabled?: boolean;
   loading?: boolean;
+  endAdornment?: string;
   rules:
     | Omit<
         RegisterOptions<FieldValues, any>,
@@ -79,7 +80,12 @@ export function FormTextInput(props: FormTextInputProps) {
       value={field.value}
       ref={field.ref}
       InputProps={{
-        endAdornment: props.loading ? <CircularProgress size={20} /> : null,
+        endAdornment: (
+          <>
+            {props.loading ? <CircularProgress size={20} /> : null}
+            {props.endAdornment}
+          </>
+        ),
       }}
     >
       {props.children}

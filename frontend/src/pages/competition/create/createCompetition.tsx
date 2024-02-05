@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import { useMemo, useState } from "react";
 import { BasicInformation } from "./steps/basicInformation";
-import { FormProvider, useForm } from "react-hook-form";
+import { FormProvider, useForm, useWatch } from "react-hook-form";
 import { Setup } from "./steps/setup";
 import { ModulesSettings } from "./steps/modulesSettings";
 import { Users } from "./steps/users";
@@ -20,6 +20,8 @@ import { Review } from "./steps/review";
 import { useCreateCompetitionMutation } from "../../../__generated__/graphql";
 import { enqueueSnackbar } from "notistack";
 import { useNavigate } from "react-router-dom";
+import { DevTool } from "@hookform/devtools";
+import { useModules } from "../../../hooks/useModules/useModules";
 
 export function CreateCompetition() {
   const { t } = useTranslation();
@@ -28,6 +30,14 @@ export function CreateCompetition() {
   const [createCompetition, { loading }] = useCreateCompetitionMutation();
   const navigate = useNavigate();
   const [competitionId, setCompetitionId] = useState<string>();
+  const moduleSelection = form.getValues("setup.modules");
+  const modules = useModules(
+    undefined,
+    Object.keys(moduleSelection ?? {}).filter(
+      (module) => moduleSelection[module]
+    )
+  );
+  const [modulesLoading, setModulesLoading] = useState(false);
 
   function handleBack() {
     setActiveStep(activeStep - 1);
@@ -61,6 +71,18 @@ export function CreateCompetition() {
         throw new Error("Something failed");
       }
       setCompetitionId(competition.data.createCompetition.id);
+
+      setModulesLoading(true);
+      for (const module of modules.modules) {
+        if (module.handlers.createCompetition) {
+          await module.handlers.createCompetition(
+            competition.data.createCompetition.id,
+            form.getValues(`module.${module.name}`)
+          );
+        }
+      }
+
+      setModulesLoading(false);
     } catch {
       enqueueSnackbar(t("error"), {
         variant: "error",
@@ -95,7 +117,7 @@ export function CreateCompetition() {
   );
 
   function renderContent() {
-    if (loading) {
+    if (loading || modulesLoading) {
       return (
         <Box
           sx={{
@@ -150,7 +172,7 @@ export function CreateCompetition() {
 
     return (
       <>
-        <Typography sx={{ mt: 2, mb: 1, py: 1 }} variant="h5">
+        <Typography sx={{ mt: 2, mb: 1, py: 1 }} variant="h4">
           {steps[activeStep].label}
         </Typography>
         <FormProvider {...form}>{steps[activeStep].component}</FormProvider>
@@ -188,6 +210,7 @@ export function CreateCompetition() {
 
   return (
     <Paper sx={{ p: 2 }}>
+      <DevTool control={form.control} />
       <Stepper activeStep={activeStep} alternativeLabel>
         {steps.map((step) => (
           <Step key={step.label}>

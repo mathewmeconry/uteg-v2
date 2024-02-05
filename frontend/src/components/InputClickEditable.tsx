@@ -1,10 +1,13 @@
 import {
+  CircularProgress,
   IconButton,
   InputAdornment,
+  LinearProgress,
+  Skeleton,
   TextField,
   Typography,
 } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Variant } from "@mui/material/styles/createTypography";
 import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
@@ -18,17 +21,25 @@ export type InputClickEditableProps = {
   onSave?: (value: string) => void | Promise<void>;
   onCancel?: () => void;
   endAdornment?: string;
+  loading?: boolean;
 };
 
 export function InputClickEditable(props: InputClickEditableProps) {
   const [editable, setEditable] = useState(false);
   const [value, setValue] = useState(props.value);
+  const [updating, setUpdating] = useState(false);
+
+  useEffect(() => {
+    setValue(props.value);
+  }, [props.value]);
 
   async function onSave() {
+    setUpdating(true);
     setEditable(false);
     if (props.onSave) {
       await props.onSave(value);
     }
+    setUpdating(false);
   }
 
   function onCancel() {
@@ -48,21 +59,25 @@ export function InputClickEditable(props: InputClickEditableProps) {
     return (
       <>
         <Typography variant="caption">{props.label}</Typography>
-        <Typography
-          variant={props.typographyVariant}
-          onClick={() => setEditable(true)}
-          mb={1}
-        >
-          {props.value}
-          {props.endAdornment ? props.endAdornment : ""}
-          <IconButton
-            size="small"
+        {props.loading && <Skeleton sx={{ width: 1 }} variant="text" />}
+        {!props.loading && (
+          <Typography
+            variant={props.typographyVariant}
             onClick={() => setEditable(true)}
-            sx={{ float: "right" }}
+            mb={1}
           >
-            <ModeEditIcon fontSize="small" />
-          </IconButton>
-        </Typography>
+            {props.value}
+            {props.endAdornment ? props.endAdornment : ""}
+            <IconButton
+              size="small"
+              onClick={() => setEditable(true)}
+              sx={{ float: "right" }}
+            >
+              {updating && <CircularProgress size={20} />}
+              {!updating && <ModeEditIcon fontSize="small" />}
+            </IconButton>
+          </Typography>
+        )}
       </>
     );
   }

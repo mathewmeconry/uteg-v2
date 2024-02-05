@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { SEX } from 'src/base/starter/starter.types';
 import { Award, EGTStarterRanking } from './egtRanking.types';
 import { EGTDivisionService } from '../division/egtDivision.service';
@@ -6,6 +6,7 @@ import { EGTDivisionStates } from '../division/egtDivision.types';
 import { EGTStarterLink } from '../starterlink/egtStarterLink.entity';
 import { GradeService } from 'src/base/grade/grade.service';
 import { Grade } from 'src/base/grade/grade.entity';
+import { EGTSettingsService } from '../settings/egtSettings.service';
 
 @Injectable()
 export class EGTRankingService {
@@ -14,6 +15,9 @@ export class EGTRankingService {
 
   @Inject()
   private readonly gradeService: GradeService;
+
+  @Inject()
+  private readonly settingsService: EGTSettingsService;
 
   public async getRanking(
     competitionID: number,
@@ -39,9 +43,24 @@ export class EGTRankingService {
       ),
     );
 
-    const starterRankingsSorted = starterRankings.sort(this.startersSort.bind(this));
+    const starterRankingsSorted = starterRankings.sort(
+      this.startersSort.bind(this),
+    );
     const starterRankingRanked = this.applyRank(starterRankingsSorted);
-    return this.applyAward(starterRankingRanked);
+    const categorySettings =
+      await this.settingsService.getCategorySettingsByCompetitionID(
+        competitionID,
+        category,
+        sex,
+      );
+    if (!categorySettings) {
+      throw new NotFoundException();
+    }
+
+    return this.applyAward(
+      starterRankingRanked,
+      categorySettings.honourPrecentage,
+    );
   }
 
   public async createStarterRanking(
@@ -128,11 +147,17 @@ export class EGTRankingService {
    *
    * @private
    * @param {EGTStarterRanking[]} rankings
+   * @param {number} categoryHonourPrecentage
    * @return {*}  {EGTStarterRanking[]}
    * @memberof EGTRankingService
    */
-  private applyAward(rankings: EGTStarterRanking[]): EGTStarterRanking[] {
-    const maxHonour = Math.round(rankings.length * 0.33);
+  private applyAward(
+    rankings: EGTStarterRanking[],
+    categoryHonourPrecentage: number,
+  ): EGTStarterRanking[] {
+    const maxHonour = Math.round(
+      (rankings.length / 100) * categoryHonourPrecentage,
+    );
     for (const ranking of rankings) {
       switch (ranking.rank) {
         case 1:

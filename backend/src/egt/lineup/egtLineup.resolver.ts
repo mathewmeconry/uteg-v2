@@ -8,7 +8,7 @@ import {
   Resolver,
 } from '@nestjs/graphql';
 import { EGTLineup } from './egtLineup.entity';
-import { Inject, UseGuards } from '@nestjs/common';
+import { Inject, NotFoundException, UseGuards } from '@nestjs/common';
 import { EGTLineupGuard } from './egtLineup.guard';
 import { RoleGuard } from 'src/auth/guards/role.guard';
 import { Role } from 'src/auth/decorators/role.decorator';
@@ -43,7 +43,14 @@ export class EGTLineupResolver {
     @Args('override', { nullable: true, defaultValue: false })
     override: boolean = false,
   ): Promise<EGTLineup> {
-    return this.egtLineupService.advanceRound(id, round, override);
+    const lineup = await this.egtLineupService.findOne(id);
+    if (!lineup) {
+      throw new NotFoundException();
+    }
+    await this.egtLineupService.advanceRound(id, round, override);
+    const division = await lineup.division;
+    await this.egtDivisionService.advanceDivision(division.id);
+    return lineup;
   }
 
   @Role(ROLES.ADMIN)

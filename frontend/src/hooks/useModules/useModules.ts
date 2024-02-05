@@ -13,30 +13,38 @@ export type UseModuleReturn = {
   modules: Module[];
 };
 
-export function useModules(competitionID: string): UseModuleReturn {
-  if (!competitionID) {
+export function useModules(
+  competitionID?: string,
+  modules: string[] = []
+): UseModuleReturn {
+  if (!competitionID && !modules) {
     return {
       loading: false,
       modules: [],
     };
   }
 
-  const { data, loading } = useModulesQuery({
-    variables: {
-      competitionID,
-    },
-  });
+  let hookLoading = false;
+  if (competitionID) {
+    const { data, loading } = useModulesQuery({
+      variables: {
+        competitionID,
+      },
+    });
+    modules = data?.competition.modules || [];
+    hookLoading = loading;
+  }
 
   return {
-    loading,
+    loading: hookLoading,
     modules: registeredModules
-      .filter((module) => data?.competition.modules.includes(module.name))
-      .map((module) => module.module),
+      .filter((module) => modules.includes(module.name))
+      .map((module) => module.hook),
   };
 }
 
 export function useRegisteredModules(): Module[] {
-  return registeredModules.map((module) => module.module);
+  return registeredModules.map((module) => module.hook);
 }
 
 export function registerModule(registration: ModuleRegistration) {

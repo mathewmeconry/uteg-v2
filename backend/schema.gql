@@ -58,6 +58,20 @@ input CreateUserInput {
   password: String!
 }
 
+type EGTCategorySettings {
+  category: Int!
+  coverPage: String
+  honourPrecentage: Int!
+  sex: Sex!
+}
+
+input EGTCategorySettingsInput {
+  category: Int!
+  coverPage: String
+  honourPrecentage: Int!
+  sex: Sex!
+}
+
 type EGTDevice {
   aggregationMode: EGTDeviceAggregationMode!
   deviceNumber: Int!
@@ -120,6 +134,16 @@ type EGTLineup {
   starterlinks: [EGTStarterLink!]!
 }
 
+type EGTSettings {
+  categorySettings: [EGTCategorySettings!]!
+  id: ID!
+}
+
+input EGTSettingsInput {
+  categorySettings: [EGTCategorySettingsInput!]!
+  id: ID
+}
+
 type EGTStarterLink {
   category: Int
   division: EGTDivision
@@ -167,8 +191,10 @@ type Mutation {
   createStarter(data: CreateStarterInput!): Starter!
   createStarterLink(data: CreateStarterLinkInput!): StarterLink!
   createUser(user: CreateUserInput!): User!
+  egtCategorySettings(competitionID: ID!, data: EGTCategorySettingsInput!): EGTCategorySettings!
   egtLineupAdvanceRound(id: ID!, override: Boolean = false, round: Int!): EGTLineup!
   egtLineupAdvanceRounds(ids: [ID!]!, override: Boolean = false, round: Int!): [EGTLineup!]!
+  egtSettings(competitionID: ID, data: EGTSettingsInput!): EGTSettings!
   egtStarterLink(data: EGTStarterLinkInput!): EGTStarterLink!
   removeEgtDivision(id: ID!): EGTDivision!
   removeStarterLink(id: ID!): StarterLink!
@@ -181,12 +207,14 @@ type Query {
   clubs: [Club!]!
   competition(id: ID!): Competition!
   competitions: [Competition!]!
+  egtCategorySettings(category: Int!, competitionID: ID!, sex: Sex!): EGTCategorySettings!
   egtDevices(competitionID: ID!): [EGTDevice!]!
   egtDivision(id: ID!): EGTDivision
   egtDivisions(filter: EGTDivisionFilterInput!): [EGTDivision!]!
   egtJudgingDevice(device: Int!, ids: [ID!]!, round: Int!): EGTJudgingDevice!
   egtJudgingDevices(ids: [ID!]!, round: Int!): [EGTJudgingDevice!]!
   egtLineup(id: ID!): EGTLineup
+  egtSettings(competitionID: ID!): EGTSettings!
   egtStarterLink(id: ID, starterLinkID: ID): EGTStarterLink
   egtStarterLinkUnassigned(divisionID: ID!): [EGTStarterLink!]!
   egtStarterRankings(category: Int!, competitionID: ID!, sex: Sex!): [EGTStarterRanking!]!

@@ -1,11 +1,19 @@
 import { Box, Divider, Grid, Typography } from "@mui/material";
-import { useFormContext } from "react-hook-form";
+import { useFormContext, useWatch } from "react-hook-form";
 import { useTranslation } from "react-i18next";
+import { useModules } from "../../../../hooks/useModules/useModules";
 
 export function Review() {
   const { getValues } = useFormContext();
   const { t } = useTranslation();
   const formValues = getValues();
+  const moduleSelection = useWatch({ name: "setup.modules" });
+  const modules = useModules(
+    undefined,
+    Object.keys(moduleSelection ?? {}).filter(
+      (module) => moduleSelection[module]
+    )
+  );
 
   return (
     <Box sx={{ display: "flex", width: 1, flexDirection: "column" }}>
@@ -38,25 +46,42 @@ export function Review() {
           <Typography variant="body1">{t("ground")}</Typography>
           <Typography variant="body2">{formValues.setup.grounds}</Typography>
         </Grid>
-        <Grid xs={6} md={3} item sx={{ mt: 1 }}>
+        <Grid xs={12} item sx={{ mt: 1 }}>
           <Typography variant="body1">
-            {t("module", { count: Object.keys(formValues.setup.modules).length, ns: "common" })}
+            {t("module", {
+              count: Object.keys(formValues.setup.modules).length,
+              ns: "common",
+            })}
           </Typography>
           <Typography variant="body2">
-            {Object.keys(formValues.setup.modules)
-              .filter((key) => formValues.setup.modules[key])
-              .map((key: string) => t(key, {ns: key}))
+            {modules.modules
+              .map((module) => t(module.name, { ns: module.name }))
               .join(", ")}
           </Typography>
         </Grid>
       </Grid>
       <Divider sx={{ mt: 3 }}>
-        {t("settings", { name: t("module", { ns: "common", count: Object.keys(formValues.setup.modules).length }) })}
+        {t("settings", {
+          name: t("module", {
+            ns: "common",
+            count: Object.keys(formValues.setup.modules).length,
+          }),
+        })}
       </Divider>
       <Grid container>
-        <Grid xs={6} md={3} item sx={{ mt: 1 }}>
-          <Typography variant="body1">{t("TODO")}</Typography>
-          <Typography variant="body2">TODO</Typography>
+        <Grid xs={12} item sx={{ mt: 1 }}>
+          {modules.modules.map((module) => {
+            if (module.extensions.settingsReview) {
+              return (
+                <>
+                  <Typography variant="body1">
+                    {t(module.name, { ns: module.name })}
+                  </Typography>
+                  <module.extensions.settingsReview />
+                </>
+              );
+            }
+          })}
         </Grid>
       </Grid>
       <Divider sx={{ mt: 3 }}>{t("user", { count: 2 })}</Divider>

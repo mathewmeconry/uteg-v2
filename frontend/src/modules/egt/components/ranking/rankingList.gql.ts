@@ -33,3 +33,23 @@ const STARTER_RANKING = gql`
     }
   }
 `;
+
+const GET_EGT_CATEGORY_SETTINGS = gql`
+  query egtCategorySettings($competitionID: ID!, $category: Int!, $sex: Sex!) {
+    egtCategorySettings(
+      competitionID: $competitionID
+      category: $category
+      sex: $sex
+    ) {
+      honourPrecentage
+    }
+  }
+`;
+
+const UPDATE_EGT_CATEGORY_SETTINGS = gql`
+  mutation updateEgtCategorySettings($competitionID: ID!, $data: EGTCategorySettingsInput!) {
+    egtCategorySettings(competitionID: $competitionID, data: $data) {
+      honourPrecentage      
+    }
+  }
+`;

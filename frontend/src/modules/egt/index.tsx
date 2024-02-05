@@ -17,6 +17,9 @@ import GradingIcon from "@mui/icons-material/Grading";
 import { Grading } from "./pages/grading/grading";
 import { Ranking } from "./pages/ranking/ranking";
 import MilitaryTechIcon from "@mui/icons-material/MilitaryTech";
+import { EGTSettings } from "./extensions/settings/settings";
+import { createCompetition } from "./handlers/createCompetition/createCompetition";
+import { EGTSettingsReview } from "./extensions/settingsReview/settingsReview";
 
 const routes: RouteObject[] = [
   {
@@ -220,10 +223,13 @@ export const EGTModule: Module = {
     startersReviewStepHeader: <EGTStartersReviewHeaders />,
     starterslistColumns: starterListColumns,
     starterslistSelectedRowsActions: StarterslistSelectedRowsActions,
+    settings: EGTSettings,
+    settingsReview: EGTSettingsReview
   },
   handlers: {
     parseStarterFromSheet: parseStarterFromSheet,
     importStarters: importStarters,
+    createCompetition: createCompetition
   },
   transformers: {
     starterLinksQuery: starterLinksQueryTransformer,

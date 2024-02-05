@@ -36,7 +36,7 @@ const theme = createTheme();
 
 registerModule({
   name: "egt",
-  module: EGTModule,
+  hook: EGTModule,
 });
 
 const routes: RouteObject[] = [

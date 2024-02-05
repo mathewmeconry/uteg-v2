@@ -2,13 +2,16 @@ import { useParams } from "react-router-dom";
 import {
   EgtStarterRanking,
   Sex,
+  useEgtCategorySettingsQuery,
   useEgtStarterRankingQuery,
+  useUpdateEgtCategorySettingsMutation,
 } from "../../../../__generated__/graphql";
 import {
   Button,
   Divider,
   Grid,
   LinearProgress,
+  Skeleton,
   ToggleButton,
   Typography,
 } from "@mui/material";
@@ -34,6 +37,7 @@ export function RankingList(props: RankingListProps) {
     data: rankingData,
     loading: rankingLoading,
     error: rankingError,
+    refetch: rankingRefetch,
   } = useEgtStarterRankingQuery({
     variables: {
       competitionID: id!,
@@ -46,6 +50,41 @@ export function RankingList(props: RankingListProps) {
     download: pdfDownload,
     loading: pdfLoading,
   } = usePdfDownload({});
+  const {
+    data: honourPrecentageData,
+    loading: honourPrecentageLoading,
+    refetch: honourPrecentageRefetch,
+  } = useEgtCategorySettingsQuery({
+    variables: {
+      competitionID: id!,
+      category: props.category,
+      sex: props.sex,
+    },
+  });
+  const [
+    categorySettingsMutation,
+  ] = useUpdateEgtCategorySettingsMutation();
+
+  async function onHonourPercentageChange(value: string) {
+    const result = await categorySettingsMutation({
+      variables: {
+        competitionID: id!,
+        data: {
+          category: props.category,
+          sex: props.sex,
+          honourPrecentage: parseInt(value),
+        },
+      },
+      refetchQueries: ["egtCategorySettings", "egtStarterRankings"],
+    });
+    if (result.errors) {
+      enqueueSnackbar(t("error"), { variant: "error" });
+      return;
+    }
+    honourPrecentageRefetch();
+    rankingRefetch();
+    enqueueSnackbar(t("saved"), { variant: "success" });
+  }
 
   async function onPdfClick() {
     await pdfUpdate({
@@ -69,7 +108,9 @@ export function RankingList(props: RankingListProps) {
   }
 
   if (rankingLoading) {
-    return <LinearProgress />;
+    return Array.from(Array(10).keys()).map((key) => (
+      <Skeleton variant="text" />
+    ));
   }
 
   if (rankingError) {
@@ -86,9 +127,14 @@ export function RankingList(props: RankingListProps) {
       </Grid>
       <Grid item xs={12} md={2}>
         <InputClickEditable
-          value="33"
+          value={
+            honourPrecentageData?.egtCategorySettings.honourPrecentage.toString() ||
+            ""
+          }
           label={t("honourPrecentage", { ns: "egt" })}
           endAdornment="%"
+          loading={honourPrecentageLoading}
+          onSave={onHonourPercentageChange}
         />
         <Divider sx={{ mt: 2, mb: 2 }} />
         <ToggleButton
@@ -102,7 +148,7 @@ export function RankingList(props: RankingListProps) {
             setShowIntermediate(!showIntermediate);
           }}
         >
-          {t("intermediate", { ns: "egt" })}
+          {t("TODO", { ns: "egt" })}
         </ToggleButton>
         <Button
           startIcon={<PictureAsPdfIcon />}

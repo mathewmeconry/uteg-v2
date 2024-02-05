@@ -8,6 +8,7 @@ import { Dispatch, SetStateAction } from "react";
 import { ImportFailure } from "../pages/competition/[id]/starters/import/steps/importStep";
 import { DocumentTransform } from "@apollo/client";
 import { GridColDefExtension } from "../types/GridColDefExtension";
+import { FieldValues } from "react-hook-form";
 
 export type Module = {
   name: string;
@@ -30,6 +31,10 @@ export type ImportStartersHandler = (
 export type ModuleHandlers = {
   parseStarterFromSheet?: ParseStarterFromSheetHandler;
   importStarters?: ImportStartersHandler;
+  createCompetition?: (
+    competitionID: string,
+    values: FieldValues
+  ) => Promise<void>;
 };
 
 export type ModuleExtensions = {
@@ -39,8 +44,14 @@ export type ModuleExtensions = {
   startersReviewStepHeader?: JSX.Element;
   starterslistColumns?: Array<GridColDefExtension | GridActionsColDef>;
   starterslistSelectedRowsActions?: React.FunctionComponent;
+  settings?: React.FunctionComponent<ModulesSettingsProps>;
+  settingsReview?: React.FunctionComponent;
 };
 
 export type ModuleTransformers = {
   starterLinksQuery?: DocumentTransform;
+};
+
+export type ModulesSettingsProps = {
+  competitionCreation?: boolean;
 };

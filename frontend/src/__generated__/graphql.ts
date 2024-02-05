@@ -77,6 +77,21 @@ export type CreateUserInput = {
   password: Scalars['String']['input'];
 };
 
+export type EgtCategorySettings = {
+  __typename?: 'EGTCategorySettings';
+  category: Scalars['Int']['output'];
+  coverPage?: Maybe<Scalars['String']['output']>;
+  honourPrecentage: Scalars['Int']['output'];
+  sex: Sex;
+};
+
+export type EgtCategorySettingsInput = {
+  category: Scalars['Int']['input'];
+  coverPage?: InputMaybe<Scalars['String']['input']>;
+  honourPrecentage: Scalars['Int']['input'];
+  sex: Sex;
+};
+
 export type EgtDevice = {
   __typename?: 'EGTDevice';
   aggregationMode: EgtDeviceAggregationMode;
@@ -142,6 +157,17 @@ export type EgtLineup = {
   starterlinks: Array<EgtStarterLink>;
 };
 
+export type EgtSettings = {
+  __typename?: 'EGTSettings';
+  categorySettings: Array<EgtCategorySettings>;
+  id: Scalars['ID']['output'];
+};
+
+export type EgtSettingsInput = {
+  categorySettings: Array<EgtCategorySettingsInput>;
+  id?: InputMaybe<Scalars['ID']['input']>;
+};
+
 export type EgtStarterLink = {
   __typename?: 'EGTStarterLink';
   category?: Maybe<Scalars['Int']['output']>;
@@ -193,8 +219,10 @@ export type Mutation = {
   createStarter: Starter;
   createStarterLink: StarterLink;
   createUser: User;
+  egtCategorySettings: EgtCategorySettings;
   egtLineupAdvanceRound: EgtLineup;
   egtLineupAdvanceRounds: Array<EgtLineup>;
+  egtSettings: EgtSettings;
   egtStarterLink: EgtStarterLink;
   removeEgtDivision: EgtDivision;
   removeStarterLink: StarterLink;
@@ -239,6 +267,12 @@ export type MutationCreateUserArgs = {
 };
 
 
+export type MutationEgtCategorySettingsArgs = {
+  competitionID: Scalars['ID']['input'];
+  data: EgtCategorySettingsInput;
+};
+
+
 export type MutationEgtLineupAdvanceRoundArgs = {
   id: Scalars['ID']['input'];
   override?: InputMaybe<Scalars['Boolean']['input']>;
@@ -250,6 +284,12 @@ export type MutationEgtLineupAdvanceRoundsArgs = {
   ids: Array<Scalars['ID']['input']>;
   override?: InputMaybe<Scalars['Boolean']['input']>;
   round: Scalars['Int']['input'];
+};
+
+
+export type MutationEgtSettingsArgs = {
+  competitionID?: InputMaybe<Scalars['ID']['input']>;
+  data: EgtSettingsInput;
 };
 
 
@@ -289,12 +329,14 @@ export type Query = {
   clubs: Array<Club>;
   competition: Competition;
   competitions: Array<Competition>;
+  egtCategorySettings: EgtCategorySettings;
   egtDevices: Array<EgtDevice>;
   egtDivision?: Maybe<EgtDivision>;
   egtDivisions: Array<EgtDivision>;
   egtJudgingDevice: EgtJudgingDevice;
   egtJudgingDevices: Array<EgtJudgingDevice>;
   egtLineup?: Maybe<EgtLineup>;
+  egtSettings: EgtSettings;
   egtStarterLink?: Maybe<EgtStarterLink>;
   egtStarterLinkUnassigned: Array<EgtStarterLink>;
   egtStarterRankings: Array<EgtStarterRanking>;
@@ -309,6 +351,13 @@ export type Query = {
 
 export type QueryCompetitionArgs = {
   id: Scalars['ID']['input'];
+};
+
+
+export type QueryEgtCategorySettingsArgs = {
+  category: Scalars['Int']['input'];
+  competitionID: Scalars['ID']['input'];
+  sex: Sex;
 };
 
 
@@ -342,6 +391,11 @@ export type QueryEgtJudgingDevicesArgs = {
 
 export type QueryEgtLineupArgs = {
   id: Scalars['ID']['input'];
+};
+
+
+export type QueryEgtSettingsArgs = {
+  competitionID: Scalars['ID']['input'];
 };
 
 
@@ -581,6 +635,23 @@ export type EgtStarterRankingQueryVariables = Exact<{
 
 export type EgtStarterRankingQuery = { __typename?: 'Query', egtStarterRankings: Array<{ __typename?: 'EGTStarterRanking', rank: number, total: number, award: string, egtStarterlink: { __typename?: 'EGTStarterLink', id: string, starterlink: { __typename?: 'StarterLink', id: string, starter: { __typename?: 'Starter', id: string, firstname: string, lastname: string }, club: { __typename?: 'Club', id: string, name: string } } }, grades: Array<{ __typename?: 'Grade', id: string, deviceNumber: number, value: number }> }> };
 
+export type EgtCategorySettingsQueryVariables = Exact<{
+  competitionID: Scalars['ID']['input'];
+  category: Scalars['Int']['input'];
+  sex: Sex;
+}>;
+
+
+export type EgtCategorySettingsQuery = { __typename?: 'Query', egtCategorySettings: { __typename?: 'EGTCategorySettings', honourPrecentage: number } };
+
+export type UpdateEgtCategorySettingsMutationVariables = Exact<{
+  competitionID: Scalars['ID']['input'];
+  data: EgtCategorySettingsInput;
+}>;
+
+
+export type UpdateEgtCategorySettingsMutation = { __typename?: 'Mutation', egtCategorySettings: { __typename?: 'EGTCategorySettings', honourPrecentage: number } };
+
 export type EgtAssignToDivisionDialogQueryVariables = Exact<{
   filter: EgtDivisionFilterInput;
 }>;
@@ -637,6 +708,14 @@ export type EgtDivisionsUpdateStarterFormQueryVariables = Exact<{
 
 
 export type EgtDivisionsUpdateStarterFormQuery = { __typename?: 'Query', egtDivisions: Array<{ __typename?: 'EGTDivision', id: string, number: number, ground: number }> };
+
+export type CreateEgtSettingsMutationVariables = Exact<{
+  competitionID: Scalars['ID']['input'];
+  data: EgtSettingsInput;
+}>;
+
+
+export type CreateEgtSettingsMutation = { __typename?: 'Mutation', egtSettings: { __typename?: 'EGTSettings', id: string } };
 
 export type EgtDivisionQueryVariables = Exact<{
   id: Scalars['ID']['input'];
@@ -1509,6 +1588,86 @@ export type EgtStarterRankingQueryHookResult = ReturnType<typeof useEgtStarterRa
 export type EgtStarterRankingLazyQueryHookResult = ReturnType<typeof useEgtStarterRankingLazyQuery>;
 export type EgtStarterRankingSuspenseQueryHookResult = ReturnType<typeof useEgtStarterRankingSuspenseQuery>;
 export type EgtStarterRankingQueryResult = Apollo.QueryResult<EgtStarterRankingQuery, EgtStarterRankingQueryVariables>;
+export const EgtCategorySettingsDocument = gql`
+    query egtCategorySettings($competitionID: ID!, $category: Int!, $sex: Sex!) {
+  egtCategorySettings(
+    competitionID: $competitionID
+    category: $category
+    sex: $sex
+  ) {
+    honourPrecentage
+  }
+}
+    `;
+
+/**
+ * __useEgtCategorySettingsQuery__
+ *
+ * To run a query within a React component, call `useEgtCategorySettingsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useEgtCategorySettingsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useEgtCategorySettingsQuery({
+ *   variables: {
+ *      competitionID: // value for 'competitionID'
+ *      category: // value for 'category'
+ *      sex: // value for 'sex'
+ *   },
+ * });
+ */
+export function useEgtCategorySettingsQuery(baseOptions: Apollo.QueryHookOptions<EgtCategorySettingsQuery, EgtCategorySettingsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<EgtCategorySettingsQuery, EgtCategorySettingsQueryVariables>(EgtCategorySettingsDocument, options);
+      }
+export function useEgtCategorySettingsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<EgtCategorySettingsQuery, EgtCategorySettingsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<EgtCategorySettingsQuery, EgtCategorySettingsQueryVariables>(EgtCategorySettingsDocument, options);
+        }
+export function useEgtCategorySettingsSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<EgtCategorySettingsQuery, EgtCategorySettingsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<EgtCategorySettingsQuery, EgtCategorySettingsQueryVariables>(EgtCategorySettingsDocument, options);
+        }
+export type EgtCategorySettingsQueryHookResult = ReturnType<typeof useEgtCategorySettingsQuery>;
+export type EgtCategorySettingsLazyQueryHookResult = ReturnType<typeof useEgtCategorySettingsLazyQuery>;
+export type EgtCategorySettingsSuspenseQueryHookResult = ReturnType<typeof useEgtCategorySettingsSuspenseQuery>;
+export type EgtCategorySettingsQueryResult = Apollo.QueryResult<EgtCategorySettingsQuery, EgtCategorySettingsQueryVariables>;
+export const UpdateEgtCategorySettingsDocument = gql`
+    mutation updateEgtCategorySettings($competitionID: ID!, $data: EGTCategorySettingsInput!) {
+  egtCategorySettings(competitionID: $competitionID, data: $data) {
+    honourPrecentage
+  }
+}
+    `;
+export type UpdateEgtCategorySettingsMutationFn = Apollo.MutationFunction<UpdateEgtCategorySettingsMutation, UpdateEgtCategorySettingsMutationVariables>;
+
+/**
+ * __useUpdateEgtCategorySettingsMutation__
+ *
+ * To run a mutation, you first call `useUpdateEgtCategorySettingsMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateEgtCategorySettingsMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateEgtCategorySettingsMutation, { data, loading, error }] = useUpdateEgtCategorySettingsMutation({
+ *   variables: {
+ *      competitionID: // value for 'competitionID'
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useUpdateEgtCategorySettingsMutation(baseOptions?: Apollo.MutationHookOptions<UpdateEgtCategorySettingsMutation, UpdateEgtCategorySettingsMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateEgtCategorySettingsMutation, UpdateEgtCategorySettingsMutationVariables>(UpdateEgtCategorySettingsDocument, options);
+      }
+export type UpdateEgtCategorySettingsMutationHookResult = ReturnType<typeof useUpdateEgtCategorySettingsMutation>;
+export type UpdateEgtCategorySettingsMutationResult = Apollo.MutationResult<UpdateEgtCategorySettingsMutation>;
+export type UpdateEgtCategorySettingsMutationOptions = Apollo.BaseMutationOptions<UpdateEgtCategorySettingsMutation, UpdateEgtCategorySettingsMutationVariables>;
 export const EgtAssignToDivisionDialogDocument = gql`
     query egtAssignToDivisionDialog($filter: EGTDivisionFilterInput!) {
   egtDivisions(filter: $filter) {
@@ -1833,6 +1992,40 @@ export type EgtDivisionsUpdateStarterFormQueryHookResult = ReturnType<typeof use
 export type EgtDivisionsUpdateStarterFormLazyQueryHookResult = ReturnType<typeof useEgtDivisionsUpdateStarterFormLazyQuery>;
 export type EgtDivisionsUpdateStarterFormSuspenseQueryHookResult = ReturnType<typeof useEgtDivisionsUpdateStarterFormSuspenseQuery>;
 export type EgtDivisionsUpdateStarterFormQueryResult = Apollo.QueryResult<EgtDivisionsUpdateStarterFormQuery, EgtDivisionsUpdateStarterFormQueryVariables>;
+export const CreateEgtSettingsDocument = gql`
+    mutation createEgtSettings($competitionID: ID!, $data: EGTSettingsInput!) {
+  egtSettings(competitionID: $competitionID, data: $data) {
+    id
+  }
+}
+    `;
+export type CreateEgtSettingsMutationFn = Apollo.MutationFunction<CreateEgtSettingsMutation, CreateEgtSettingsMutationVariables>;
+
+/**
+ * __useCreateEgtSettingsMutation__
+ *
+ * To run a mutation, you first call `useCreateEgtSettingsMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateEgtSettingsMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createEgtSettingsMutation, { data, loading, error }] = useCreateEgtSettingsMutation({
+ *   variables: {
+ *      competitionID: // value for 'competitionID'
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useCreateEgtSettingsMutation(baseOptions?: Apollo.MutationHookOptions<CreateEgtSettingsMutation, CreateEgtSettingsMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateEgtSettingsMutation, CreateEgtSettingsMutationVariables>(CreateEgtSettingsDocument, options);
+      }
+export type CreateEgtSettingsMutationHookResult = ReturnType<typeof useCreateEgtSettingsMutation>;
+export type CreateEgtSettingsMutationResult = Apollo.MutationResult<CreateEgtSettingsMutation>;
+export type CreateEgtSettingsMutationOptions = Apollo.BaseMutationOptions<CreateEgtSettingsMutation, CreateEgtSettingsMutationVariables>;
 export const EgtDivisionDocument = gql`
     query egtDivision($id: ID!) {
   egtDivision(id: $id) {

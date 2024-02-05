@@ -21,6 +21,9 @@ import { EGTJudgingService } from './judging/egtJudging.service';
 import { EGTJudgingResolver } from './judging/egtJudging.resolver';
 import { EGTRankingService } from './ranking/egtRanking.service';
 import { EGTRankingResolver } from './ranking/egtRanking.resolver';
+import { EGTSettingsService } from './settings/egtSettings.service';
+import { EGTSettingsResolver } from './settings/egtSettings.resolver';
+import { EGTSettings } from './settings/egtSettings.entity';
 
 @Module({
   imports: [
@@ -30,6 +33,7 @@ import { EGTRankingResolver } from './ranking/egtRanking.resolver';
       EGTDivision,
       EGTLineup,
       EGTDevice,
+      EGTSettings
     ]),
     BaseModule,
   ],
@@ -47,6 +51,8 @@ import { EGTRankingResolver } from './ranking/egtRanking.resolver';
     EGTJudgingResolver,
     EGTRankingService,
     EGTRankingResolver,
+    EGTSettingsService,
+    EGTSettingsResolver
   ],
 })
 export class EGTModule implements OnModuleInit {
