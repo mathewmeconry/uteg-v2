@@ -20,7 +20,6 @@ import { Review } from "./steps/review";
 import { useCreateCompetitionMutation } from "../../../__generated__/graphql";
 import { enqueueSnackbar } from "notistack";
 import { useNavigate } from "react-router-dom";
-import { DevTool } from "@hookform/devtools";
 import { useModules } from "../../../hooks/useModules/useModules";
 
 export function CreateCompetition() {
@@ -210,7 +209,6 @@ export function CreateCompetition() {
 
   return (
     <Paper sx={{ p: 2 }}>
-      <DevTool control={form.control} />
       <Stepper activeStep={activeStep} alternativeLabel>
         {steps.map((step) => (
           <Step key={step.label}>
