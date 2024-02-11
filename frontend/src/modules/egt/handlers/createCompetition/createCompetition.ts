@@ -18,7 +18,7 @@ export async function createCompetition(
           for (const category in settings as Array<any>) {
             categorySettings.push({
               category: parseInt(category),
-              honourPrecentage: parseInt(settings[category].honourPrecentage),
+              honourPrecentage: parseInt((settings as Array<any>)[category].honourPrecentage),
               sex: sex as EgtCategorySettings["sex"],
             });
           }

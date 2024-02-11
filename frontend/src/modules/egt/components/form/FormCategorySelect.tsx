@@ -34,6 +34,7 @@ export function FormCategorySelect(props: EGTFormCategorySelectProps) {
     <FormTextInput
       name={props.name || "category"}
       ns="egt"
+      defaultValue=""
       rules={props.rules}
       fieldProps={{
         select: true,

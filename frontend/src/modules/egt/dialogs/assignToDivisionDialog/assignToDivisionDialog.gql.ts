@@ -1,6 +1,6 @@
 import gql from "graphql-tag";
 
-const GET_EGT_DIVISIONS = gql`
+export const GET_EGT_DIVISIONS = gql`
   query egtAssignToDivisionDialog($filter: EGTDivisionFilterInput!) {
     egtDivisions(filter: $filter) {
       id
@@ -10,7 +10,7 @@ const GET_EGT_DIVISIONS = gql`
   }
 `;
 
-const EGT_STARTER_LINK_MUTATION = gql`
+export const EGT_STARTER_LINK_MUTATION = gql`
   mutation egtAssignToDivisionDialogMutation($data: EGTStarterLinkInput!) {
     egtStarterLink(data: $data) {
       id

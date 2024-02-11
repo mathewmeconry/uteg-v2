@@ -1,6 +1,6 @@
 import gql from "graphql-tag";
 
-const CLUBS = gql`
+export const CLUBS = gql`
   query clubs {
     clubs {
       id
@@ -9,7 +9,7 @@ const CLUBS = gql`
   }
 `;
 
-const CREATE_STARTER = gql`
+export const CREATE_STARTER = gql`
   mutation createStarter($input: CreateStarterInput!) {
     createStarter(data: $input) {
       id
@@ -17,7 +17,7 @@ const CREATE_STARTER = gql`
   }
 `;
 
-const LINK_STARTER = gql`
+export const LINK_STARTER = gql`
   mutation createStarterLink($input: CreateStarterLinkInput!) {
     createStarterLink(data: $input) {
       id
@@ -28,7 +28,7 @@ const LINK_STARTER = gql`
   }
 `;
 
-const STARTERS_AUTOCOMPLETE = gql`
+export const STARTERS_AUTOCOMPLETE = gql`
   query startersAutocomplete($filter: StarterFilter!) {
     starters(filter: $filter) {
       id

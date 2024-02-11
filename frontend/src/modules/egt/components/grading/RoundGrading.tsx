@@ -354,7 +354,7 @@ export function RoundGrading(props: RoundGradingProps) {
                     context: starter.starterlink.starter.sex,
                   })}
                 </TableCell>
-                {renderGradeInputs(starter)}
+                {renderGradeInputs(starter as EgtStarterLink)}
               </TableRow>
             ))}
           </TableBody>

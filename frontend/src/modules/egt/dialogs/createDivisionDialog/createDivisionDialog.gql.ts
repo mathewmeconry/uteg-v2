@@ -1,6 +1,6 @@
 import gql from "graphql-tag";
 
-const GET_COMPETITION_GROUNDS = gql`
+export const GET_COMPETITION_GROUNDS = gql`
   query competitionGrounds($id: ID!) {
     competition(id: $id) {
       id
@@ -9,7 +9,7 @@ const GET_COMPETITION_GROUNDS = gql`
   }
 `;
 
-const CREATE_DIVISION = gql`
+export const CREATE_DIVISION = gql`
   mutation createEgtDivision($data: CreateEGTDivisionInput!) {
     createEgtDivision(data: $data) {
       id

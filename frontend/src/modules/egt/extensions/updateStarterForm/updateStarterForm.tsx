@@ -87,7 +87,7 @@ export function EGTUpdateStarterForm() {
       divisionQuery({
         variables: {
           filter: {
-            competitionID: parseInt(id || ""),
+            competitionID: id!,
             category: parseInt(category),
             sex,
           },

@@ -49,21 +49,21 @@ export function Lineup(props: { id: string; lineups: EgtLineup[] }) {
     {
       field: "starter.firstname",
       headerName: t("firstname"),
-      valueGetter: (params) => params.row.starterlink.starter.firstname,
+      valueGetter: (params: any) => params.row.starterlink.starter.firstname,
       flex: 1,
       disableColumnMenu: true,
     },
     {
       field: "starter.lastname",
       headerName: t("lastname"),
-      valueGetter: (params) => params.row.starterlink.starter.lastname,
+      valueGetter: (params: any) => params.row.starterlink.starter.lastname,
       flex: 1,
       disableColumnMenu: true,
     },
     {
       field: "club.name",
       headerName: t("club"),
-      valueGetter: (params) => params.row.starterlink.club.name,
+      valueGetter: (params: any) => params.row.starterlink.club.name,
       flex: 1,
       disableColumnMenu: true,
     },
@@ -86,7 +86,7 @@ export function Lineup(props: { id: string; lineups: EgtLineup[] }) {
           </Typography>
         </Typography>
         <DataGrid
-          rows={lineup?.egtLineup?.starterlinks || []}
+          rows={lineup?.egtLineup?.starterlinks as EgtStarterLink[] || []}
           sx={{
             minHeight: "20vh",
           }}

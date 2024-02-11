@@ -1,10 +1,9 @@
 import { Grid, Typography } from "@mui/material";
-import { ModulesSettingsProps } from "../../../types";
 import { useTranslation } from "react-i18next";
 import { FormTextInput } from "../../../../components/form/FormTextInput";
 import { Sex } from "../../../../__generated__/graphql";
 
-export function EGTSettings(props: ModulesSettingsProps) {
+export function EGTSettings() {
   const { t } = useTranslation(["egt", "common"]);
 
   function renderCategory(category: number, sex: Sex) {

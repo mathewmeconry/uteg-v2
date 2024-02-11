@@ -21,6 +21,7 @@ import { ImportStep } from "./steps/importStep";
 import { useParams } from "react-router-dom";
 import { useModules } from "../../../../../hooks/useModules/useModules";
 import { getModulesHandlers } from "../../../../../modules";
+import { ParseStarterFromSheetHandler } from "../../../../../modules/types";
 
 export function StartersImport() {
   const { t } = useTranslation();
@@ -46,7 +47,7 @@ export function StartersImport() {
       return [];
     }
 
-    return getModulesHandlers(modules.modules, "parseStarterFromSheet");
+    return getModulesHandlers<ParseStarterFromSheetHandler>(modules.modules, "parseStarterFromSheet");
   }, [modules]);
 
   useEffect(() => {

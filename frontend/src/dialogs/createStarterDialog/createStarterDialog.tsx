@@ -5,7 +5,6 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  MenuItem,
   TextField,
   TextFieldProps,
   Typography,
@@ -57,14 +56,7 @@ export function CreateStarterDialog(props: {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
   const { t } = useTranslation("common");
-  const {
-    control: formControl,
-    register,
-    handleSubmit,
-    getValues,
-    setValue,
-    reset,
-  } = useForm<CreateStarterForm>({
+  const form = useForm<CreateStarterForm>({
     defaultValues: {
       stvID: "",
       firstname: "",
@@ -81,7 +73,7 @@ export function CreateStarterDialog(props: {
     queryStarters,
     { data: starters, loading: startersLoading },
   ] = useStartersAutocompleteLazyQuery();
-  const starter = useWatch({ name: "starter", control: formControl });
+  const starter = useWatch({ name: "starter", control: form.control });
 
   const starterOptions: CreateStarterInput[] = useMemo(() => {
     const options: CreateStarterInput[] = [];
@@ -101,7 +93,7 @@ export function CreateStarterDialog(props: {
   }, [starters]);
 
   function handleCancel() {
-    reset();
+    form.reset();
     props.onClose();
   }
 
@@ -135,7 +127,7 @@ export function CreateStarterDialog(props: {
         required={required}
         fullWidth
         onChange={(event) => {
-          setValue(name, event.currentTarget.value);
+          form.setValue(name, event.currentTarget.value);
           const filter: { [index: string]: string } = {};
           filter[name] = event.currentTarget.value;
           queryStarters({
@@ -154,17 +146,19 @@ export function CreateStarterDialog(props: {
       value: string | CreateStarterInput | null
     ) => {
       if (value && typeof value !== "string") {
-        setValue("starter", value);
-        setValue("stvID", value.stvID);
-        setValue("firstname", value.firstname);
-        setValue("lastname", value.lastname);
-        setValue("birthyear", value.birthyear.toString());
-        setValue("sex", value.sex);
+        form.setValue("starter", value);
+        form.setValue("stvID", value.stvID);
+        form.setValue("firstname", value.firstname);
+        form.setValue("lastname", value.lastname);
+        form.setValue("birthyear", value.birthyear.toString());
+        form.setValue("sex", value.sex);
       } else {
-        if (getValues("starter")[name] !== value) {
-          setValue("starter", "");
+        // @ts-expect-error
+        if (form.getValues("starter")[name] !== value) {
+          form.setValue("starter", "");
         }
-        setValue(name, value);
+        // @ts-expect-error
+        form.setValue(name, value);
       }
     };
   }
@@ -227,7 +221,7 @@ export function CreateStarterDialog(props: {
       enqueueSnackbar(t("linked", { name: data.firstname }), {
         variant: "success",
       });
-      reset();
+      form.reset();
       props.onClose();
     } catch (err) {
       if (err instanceof ApolloError && err.message) {
@@ -246,21 +240,21 @@ export function CreateStarterDialog(props: {
         fullWidth
       >
         <DialogTitle>{t("add", { name: t("starter") })}</DialogTitle>
-        <FormProvider control={formControl}>
-          <form onSubmit={handleSubmit(onSubmit)}>
+        <FormProvider {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)}>
             <DialogContent sx={{ mt: 2 }}>
               <Autocomplete
                 disablePortal
                 id="stvID"
                 value={starter}
-                {...register("stvID", { required: false })}
+                {...form.register("stvID", { required: false })}
                 onChange={onStarterAutocompleteChange("stvID")}
                 filterOptions={(options: CreateStarterInput[]) => {
                   return options;
                 }}
                 loading={startersLoading}
                 options={starterOptions}
-                inputValue={getValues("stvID") || ""}
+                inputValue={form.getValues("stvID") || ""}
                 freeSolo={true}
                 renderInput={renderStarterAutocompleteInput("stvID", false)}
                 getOptionLabel={(option) =>
@@ -275,7 +269,7 @@ export function CreateStarterDialog(props: {
                 disablePortal
                 id="firstname"
                 value={starter}
-                {...register("firstname", { required: false })}
+                {...form.register("firstname", { required: false })}
                 onChange={onStarterAutocompleteChange("firstname")}
                 filterOptions={(options: CreateStarterInput[]) => {
                   return options;
@@ -283,7 +277,7 @@ export function CreateStarterDialog(props: {
                 autoSelect={true}
                 loading={startersLoading}
                 options={starterOptions}
-                inputValue={getValues("firstname") as string}
+                inputValue={form.getValues("firstname") as string}
                 freeSolo={true}
                 renderInput={renderStarterAutocompleteInput("firstname")}
                 getOptionLabel={(option) =>
@@ -298,14 +292,14 @@ export function CreateStarterDialog(props: {
                 disablePortal
                 id="lastname"
                 value={starter}
-                {...register("lastname", { required: false })}
+                {...form.register("lastname", { required: false })}
                 onChange={onStarterAutocompleteChange("lastname")}
                 filterOptions={(options: CreateStarterInput[]) => {
                   return options;
                 }}
                 loading={startersLoading}
                 options={starterOptions}
-                inputValue={getValues("lastname") as string}
+                inputValue={form.getValues("lastname") as string}
                 freeSolo={true}
                 renderInput={renderStarterAutocompleteInput("lastname")}
                 getOptionLabel={(option) =>

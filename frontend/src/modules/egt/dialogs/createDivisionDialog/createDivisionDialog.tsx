@@ -44,11 +44,6 @@ export function CreateDivisionDialog(props: {
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
   const { t } = useTranslation(["common", "egt"]);
   const form = useForm<CreateDivisionForm>({
-    defaultValues: {
-      category: "",
-      sex: "",
-      ground: "",
-    },
     mode: "onChange",
   });
 
@@ -101,6 +96,7 @@ export function CreateDivisionDialog(props: {
             <FormTextInput
               name="ground"
               ns="common"
+              defaultValue=""
               rules={{
                 required: true,
                 min: 1,

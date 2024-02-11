@@ -47,7 +47,7 @@ export function AssignToDivisionDialog(props: AssignToDivisionDialogProps) {
     const categoriesWithSex: CategoryWithSex[] = props.starters
       .filter((starter) => starter && starter.egt?.category)
       .map((starter) => ({
-        category: starter.egt.category,
+        category: starter.egt?.category || -1,
         sex: starter.starter.sex,
       }));
 

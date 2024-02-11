@@ -1,6 +1,6 @@
 import gql from "graphql-tag";
 
-const GET_DEVICE_GRADING = gql`
+export const GET_DEVICE_GRADING = gql`
   query EgtDeviceGrading($ids: [ID!]!, $round: Int!, $device: Int!) {
     egtJudgingDevice(ids: $ids, round: $round, device: $device) {
       device {
@@ -34,7 +34,7 @@ const GET_DEVICE_GRADING = gql`
   }
 `;
 
-const ADD_GRADES = gql`
+export const ADD_GRADES = gql`
   mutation EgtAddGrades($grades: [GradeInput!]!) {
     addGrades(grades: $grades) {
       id
@@ -46,7 +46,7 @@ const ADD_GRADES = gql`
   }
 `;
 
-const STARTER_GRADES = gql`
+export const STARTER_GRADES = gql`
   query EgtStarterGrades($starterlinkIds: [ID!]!, $device: Int!) {
     starterGrades(starterlinkIds: $starterlinkIds, device: $device) {
       id
@@ -58,7 +58,7 @@ const STARTER_GRADES = gql`
   }
 `;
 
-const ADVANCE_LINEUPS = gql`
+export const ADVANCE_LINEUPS = gql`
   mutation egtAdvanceLineups($ids: [ID!]!, $round: Int!, $override: Boolean) {
     egtLineupAdvanceRounds(ids: $ids, round: $round, override: $override) {
       id

@@ -11,7 +11,6 @@ import {
   GridActionsColDef,
   GridColDef,
   GridRowId,
-  GridValidRowModel,
 } from "@mui/x-data-grid";
 import { useTranslation } from "react-i18next";
 import { PaperExtended } from "../../../../components/paperExtended";
@@ -29,7 +28,6 @@ import {
   Tooltip,
 } from "@mui/material";
 import DoneIcon from "@mui/icons-material/Done";
-import EditIcon from "@mui/icons-material/Edit";
 import StartIcon from "@mui/icons-material/Start";
 import DeleteIcon from "@mui/icons-material/Delete";
 import GroupsIcon from "@mui/icons-material/Groups";
@@ -61,22 +59,18 @@ export function Divisionslist() {
     return <Error />;
   }
 
-  async function onRemoveRows(rows: Map<GridRowId, GridValidRowModel>) {
+  async function onRemoveRows(rows: Map<GridRowId, EgtDivision>) {
     const deletionArray: EgtDivision[] = [];
     rows.forEach((row) => deletionArray.push(row));
     setToDeleteDivisions(deletionArray);
     setOpenDialog("deleteDivisions");
   }
 
-  async function onStartRows(rows: Map<GridRowId, GridValidRowModel>) {
+  async function onStartRows(rows: Map<GridRowId, EgtDivision>) {
     const startArray: EgtDivision[] = [];
     rows.forEach((row) => startArray.push(row));
     setToStartDivisions(startArray);
     setOpenDialog("startDivision");
-  }
-
-  function onEdit() {
-    return () => {};
   }
 
   function onRemove(division: EgtDivision) {

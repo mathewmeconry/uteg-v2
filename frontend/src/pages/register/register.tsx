@@ -1,6 +1,5 @@
 import { useTranslation } from "react-i18next";
 import { LandingPageLayout } from "../../layouts/landingpagelayout.tsx";
-import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
 import { Button, CircularProgress, Divider } from "@mui/material";
 import { FieldValues, FormProvider, useForm } from "react-hook-form";

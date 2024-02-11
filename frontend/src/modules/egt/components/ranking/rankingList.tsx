@@ -108,7 +108,7 @@ export function RankingList(props: RankingListProps) {
   }
 
   if (rankingLoading) {
-    return Array.from(Array(10).keys()).map((key) => (
+    return Array.from(Array(10).keys()).map((_) => (
       <Skeleton variant="text" />
     ));
   }

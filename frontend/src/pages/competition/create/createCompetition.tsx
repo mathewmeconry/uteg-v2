@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import { useMemo, useState } from "react";
 import { BasicInformation } from "./steps/basicInformation";
-import { FormProvider, useForm, useWatch } from "react-hook-form";
+import { FormProvider, useForm } from "react-hook-form";
 import { Setup } from "./steps/setup";
 import { ModulesSettings } from "./steps/modulesSettings";
 import { Users } from "./steps/users";

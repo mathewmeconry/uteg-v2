@@ -1,4 +1,4 @@
-import { TableVirtuoso } from "react-virtuoso";
+import { TableVirtuoso, TableComponents } from "react-virtuoso";
 import { EgtStarterRanking } from "../../../../__generated__/graphql";
 import {
   Paper,
@@ -41,7 +41,7 @@ export function RankingTable(props: RankingTableProps) {
     return highestGrades;
   }, [props.rankings]);
 
-  const TableComponents = {
+  const TableComponents: TableComponents<EgtStarterRanking, any> = {
     Scroller: React.forwardRef((props, ref) => (
       <TableContainer component={Paper} {...props} ref={ref} />
     )),

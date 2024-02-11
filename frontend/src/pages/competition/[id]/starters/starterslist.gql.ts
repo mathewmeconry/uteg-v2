@@ -1,6 +1,6 @@
 import gql from "graphql-tag";
 
-const STARTER_LINKS = gql`
+export const STARTER_LINKS = gql`
   query starterLinks($competitionID: ID!, $sex: String) {
     starterLinks(competitionID: $competitionID, sex: $sex) {
       id
@@ -21,7 +21,7 @@ const STARTER_LINKS = gql`
   }
 `;
 
-const REMOVE_STARTER_LINK = gql`
+export const REMOVE_STARTER_LINK = gql`
   mutation removeStarterLink($id: ID!) {
     removeStarterLink(id: $id) {
       id

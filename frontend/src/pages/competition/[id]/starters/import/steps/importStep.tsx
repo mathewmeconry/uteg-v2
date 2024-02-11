@@ -12,6 +12,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { ApolloError } from "@apollo/client";
 import { useModules } from "../../../../../../hooks/useModules/useModules";
 import { getModulesHandlers } from "../../../../../../modules";
+import { ImportStartersHandler } from "../../../../../../modules/types";
 
 export type ImportFailure = {
   step: string;
@@ -30,7 +31,7 @@ export function ImportStep() {
   const [linkStarterMutation] = useCreateStarterLinkMutation();
   const modules = useModules(competitionID || "");
   const moduleImportHandlers = useMemo(() => {
-    return getModulesHandlers(modules.modules, "importStarters");
+    return getModulesHandlers<ImportStartersHandler>(modules.modules, "importStarters");
   }, [modules.modules]);
 
   const progressPerStep =
@@ -100,7 +101,7 @@ export function ImportStep() {
         return { state: false };
       }
 
-      return { state: true, link: result.data?.createStarterLink };
+      return { state: true, link: result.data?.createStarterLink as StarterLink };
     } catch (e) {
       if (e instanceof ApolloError) {
         return { state: false };

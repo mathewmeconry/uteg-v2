@@ -1,6 +1,6 @@
 import gql from "graphql-tag";
 
-const EGT_STARTER_LINK_MUTATION = gql`
+export const EGT_STARTER_LINK_MUTATION = gql`
   mutation egtStarterLinkMutation($data: EGTStarterLinkInput!) {
     egtStarterLink(data: $data) {
       id
@@ -13,7 +13,7 @@ const EGT_STARTER_LINK_MUTATION = gql`
   }
 `;
 
-const GET_EGT_STARTER_LINK = gql`
+export const GET_EGT_STARTER_LINK = gql`
   query egtStarterLink($id: ID, $starterLinkID: ID) {
     egtStarterLink(id: $id, starterLinkID: $starterLinkID) {
       id
@@ -25,7 +25,7 @@ const GET_EGT_STARTER_LINK = gql`
   }
 `;
 
-const GET_EGT_DIVISIONS = gql`
+export const GET_EGT_DIVISIONS = gql`
   query egtDivisionsUpdateStarterForm($filter: EGTDivisionFilterInput!) {
     egtDivisions(filter: $filter) {
         id

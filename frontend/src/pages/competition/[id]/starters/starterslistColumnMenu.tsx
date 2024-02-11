@@ -18,7 +18,8 @@ export function StarterlistColumnMenu(
     const filterValues: string[] = [];
     for (const row of props.rows) {
       if (props.colDef.valueGetter) {
-        const rowValue = props.colDef.valueGetter({ row });
+        // @ts-expect-error
+        const rowValue = props.colDef.valueGetter({ row: row });
         if (!filterValues.includes(rowValue)) {
           filterValues.push(rowValue);
         }

@@ -21,10 +21,7 @@ import DashboardIcon from "@mui/icons-material/Dashboard";
 import PeopleIcon from "@mui/icons-material/People";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
-import WomanIcon from "@mui/icons-material/Woman";
-import ManIcon from "@mui/icons-material/Man";
 import SettingsIcon from "@mui/icons-material/Settings";
-import UploadFileIcon from "@mui/icons-material/UploadFile";
 import { useModules } from "../hooks/useModules/useModules";
 import { useHomeLayoutContext } from "./homelayout";
 
@@ -40,7 +37,7 @@ export function CompetitionLayout() {
   const { id } = useParams();
   const { drawerWidth, drawerOpen, setDrawerOpen } = useHomeLayoutContext();
   const { modules: competitionModules } = useModules(id || "");
-  const { data, loading } = useCompetitionNameQuery({ variables: { id } });
+  const { data, loading } = useCompetitionNameQuery({ variables: { id: id! } });
   const { t } = useTranslation();
   const [submenuStates, setSubmenuStates] = useState<{
     [index: string]: boolean;

@@ -8,6 +8,7 @@ export function FormSexSelect() {
   return (
     <FormTextInput
       name="sex"
+      defaultValue=""
       rules={{ required: true }}
       fieldProps={{ select: true }}
     >

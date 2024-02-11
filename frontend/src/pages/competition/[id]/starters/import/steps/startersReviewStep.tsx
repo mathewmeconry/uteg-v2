@@ -17,7 +17,7 @@ import { StartersReviewStepRow } from "./startersReviewStepRow";
 import { useParams } from "react-router-dom";
 import { useModules } from "../../../../../../hooks/useModules/useModules";
 import React from "react";
-import { TableVirtuoso } from "react-virtuoso";
+import { TableVirtuoso, TableComponents } from "react-virtuoso";
 
 export function StartersReviewStep() {
   const theme = useTheme();
@@ -54,7 +54,7 @@ export function StartersReviewStep() {
     startersFieldArray.replace(starters as any[]);
   }
 
-  const TableComponents = {
+  const TableComponents: TableComponents<Record<"id", string>, any> = {
     Scroller: React.forwardRef((props, ref) => (
       <TableContainer component={Paper} {...props} ref={ref} />
     )),

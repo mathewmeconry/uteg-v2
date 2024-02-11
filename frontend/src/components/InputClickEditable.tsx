@@ -2,7 +2,6 @@ import {
   CircularProgress,
   IconButton,
   InputAdornment,
-  LinearProgress,
   Skeleton,
   TextField,
   Typography,

@@ -1,6 +1,6 @@
 import gql from "graphql-tag";
 
-const GET_DIVISIONS = gql`
+export const GET_DIVISIONS = gql`
   query egtDivisions($competitionID: ID!) {
     egtDivisions(filter: { competitionID: $competitionID }) {
       id
@@ -15,7 +15,7 @@ const GET_DIVISIONS = gql`
   }
 `;
 
-const REMOVE_DIVISION = gql`
+export const REMOVE_DIVISION = gql`
   mutation removeEgtDivision($id: ID!) {
     removeEgtDivision(id: $id) {
       id
@@ -23,7 +23,7 @@ const REMOVE_DIVISION = gql`
   }
 `;
 
-const GET_COMPETITION_GROUNDS = gql`
+export const GET_COMPETITION_GROUNDS = gql`
   query competitionGrounds($id: ID!) {
     competition(id: $id) {
       id
@@ -32,7 +32,7 @@ const GET_COMPETITION_GROUNDS = gql`
   }
 `;
 
-const GET_DIVISION_IDS = gql`
+export const GET_DIVISION_IDS = gql`
   query egtDivisionsIds($filter: EGTDivisionFilterInput!) {
     egtDivisions(filter: $filter) {
       id
@@ -40,7 +40,7 @@ const GET_DIVISION_IDS = gql`
   }
 `;
 
-const GET_JUDGING = gql`
+export const GET_JUDGING = gql`
   query egtDivisionJudging($ids: [ID!]!, $round: Int!) {
     egtJudgingDevices(ids: $ids, round: $round) {
       device {

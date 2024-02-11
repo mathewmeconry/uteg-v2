@@ -1,6 +1,5 @@
 import { useParams } from "react-router-dom";
 import {
-  Sex,
   StarterLink,
   StarterLinksDocument,
   useRemoveStarterLinkMutation,
@@ -90,7 +89,7 @@ export function StartersList() {
           ...module.extensions.starterslistColumns.map((col) => ({
             ...col,
             headerName: t(col.headerName || "", { ns: module.name }),
-            valueGetter: (params) =>
+            valueGetter: (params: any) =>
               t(col.valueGetter?.(params) || "", { ns: module.name }),
           }))
         );
@@ -107,7 +106,7 @@ export function StartersList() {
       flex: 1,
       disableColumnMenu: true,
       renderInPdf: true,
-      renderInXlsx: true
+      renderInXlsx: true,
     },
     {
       field: "starter.lastname",
@@ -116,7 +115,7 @@ export function StartersList() {
       flex: 1,
       disableColumnMenu: true,
       renderInPdf: true,
-      renderInXlsx: true
+      renderInXlsx: true,
     },
     {
       field: "starter.sex",
@@ -125,7 +124,7 @@ export function StartersList() {
       flex: 1,
       disableColumnMenu: true,
       renderInPdf: true,
-      renderInXlsx: true
+      renderInXlsx: true,
     },
     {
       field: "starter.birthyear",
@@ -133,7 +132,7 @@ export function StartersList() {
       valueGetter: (params) => params.row.starter.birthyear,
       disableColumnMenu: true,
       renderInPdf: true,
-      renderInXlsx: true
+      renderInXlsx: true,
     },
     {
       field: "club.name",
@@ -142,7 +141,7 @@ export function StartersList() {
       flex: 1,
       filterOperators: [inFilter],
       renderInPdf: false,
-      renderInXlsx: true
+      renderInXlsx: true,
     },
     {
       field: "club.location",
@@ -151,7 +150,7 @@ export function StartersList() {
       flex: 1,
       filterOperators: [inFilter],
       renderInPdf: false,
-      renderInXlsx: true
+      renderInXlsx: true,
     },
     ...moduleColumns,
     {
@@ -179,7 +178,7 @@ export function StartersList() {
 
   function onRemoveRows(rows: Map<GridRowId, GridValidRowModel>) {
     const deletionArray: StarterLink[] = [];
-    rows.forEach((row) => deletionArray.push(row));
+    rows.forEach((row) => deletionArray.push(row as StarterLink));
     setToDeleteStarters(deletionArray);
     setOpenDialog("deleteStarter");
   }
@@ -230,9 +229,7 @@ export function StartersList() {
 
   return (
     <>
-      <PaperExtended
-        title={t(`starters`, { count: 2 })}
-      >
+      <PaperExtended title={t(`starters`, { count: 2 })}>
         <Box sx={{ height: "80vh", width: "100%" }}>
           <DataGrid
             loading={loading}
@@ -266,6 +263,7 @@ export function StartersList() {
             }}
             slotProps={{
               columnMenu: {
+                // @ts-expect-error
                 rows: starterLinksData?.starterLinks || [],
               },
               toolbar: {

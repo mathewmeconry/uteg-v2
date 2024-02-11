@@ -20,7 +20,7 @@ import {
   useGridApiContext,
 } from "@mui/x-data-grid";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import { useTranslation } from "react-i18next";

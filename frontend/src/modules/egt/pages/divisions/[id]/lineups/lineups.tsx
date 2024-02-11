@@ -2,6 +2,7 @@ import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
 import { PaperExtended } from "../../../../../../components/paperExtended";
 import {
+  EgtLineup,
   EgtStarterLink,
   useEgtDivisionQuery,
   useEgtStarterLinkUnassignedQuery,
@@ -67,7 +68,7 @@ export function Lineups() {
         />
         <ListItemText
           primary={t("sex", { ns: "common" })}
-          secondary={t(division?.egtDivision?.sex)}
+          secondary={t(division?.egtDivision?.sex!)}
         />
         <ListItemText
           primary={t("ground", { ns: "common" })}
@@ -105,7 +106,7 @@ export function Lineups() {
       <Lineup
         key={lineup.id}
         id={lineup.id}
-        lineups={division?.egtDivision?.lineups || []}
+        lineups={division?.egtDivision?.lineups as EgtLineup[] || []}
       />
     ));
   }
@@ -138,21 +139,21 @@ export function Lineups() {
       {
         field: "starter.firstname",
         headerName: t("firstname", { ns: "common" }),
-        valueGetter: (params) => params.row.starterlink.starter.firstname,
+        valueGetter: (params: any) => params.row.starterlink.starter.firstname,
         flex: 1,
         disableColumnMenu: true,
       },
       {
         field: "starter.lastname",
         headerName: t("lastname", { ns: "common" }),
-        valueGetter: (params) => params.row.starterlink.starter.lastname,
+        valueGetter: (params: any) => params.row.starterlink.starter.lastname,
         flex: 1,
         disableColumnMenu: true,
       },
       {
         field: "club.name",
         headerName: t("club", { ns: "common" }),
-        valueGetter: (params) => params.row.starterlink.club.name,
+        valueGetter: (params: any) => params.row.starterlink.club.name,
         flex: 1,
         disableColumnMenu: true,
       },
@@ -175,7 +176,7 @@ export function Lineups() {
             </Typography>
           </Typography>
           <DataGrid
-            rows={unassignedStarters?.egtStarterLinkUnassigned || []}
+            rows={unassignedStarters?.egtStarterLinkUnassigned as EgtStarterLink[] || []}
             sx={{
               minHeight: "20vh",
             }}

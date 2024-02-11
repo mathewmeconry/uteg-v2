@@ -7,7 +7,7 @@ import {
   Page,
 } from "@react-pdf/renderer";
 import { EgtStarterRanking, Sex } from "../../../../__generated__/graphql";
-import { memo, useCallback, useMemo } from "react";
+import { memo, useCallback } from "react";
 import { TFunction } from "i18next";
 
 Font.register({

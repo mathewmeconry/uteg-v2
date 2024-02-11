@@ -221,15 +221,15 @@ export function DivisionlistToolbar(props: {
               <Typography variant="body1"> ({selectedRows.size})</Typography>
             </Button>
           </Tooltip>
-          <Tooltip
-            title={t("juging_report", {
-              ns: "common",
-              count: selectedRows.size,
-              type: t("division", { count: selectedRows.size }),
-            })}
-          >
-            {pdfLoading && <LinearProgress sx={{ width: "5vw" }} />}
-            {!pdfLoading && (
+          {pdfLoading && <LinearProgress sx={{ width: "5vw" }} />}
+          {!pdfLoading && (
+            <Tooltip
+              title={t("juging_report", {
+                ns: "common",
+                count: selectedRows.size,
+                type: t("division", { count: selectedRows.size }),
+              })}
+            >
               <Button
                 color="primary"
                 onClick={() => exportDivisionSelectionPdf(selectedRows)}
@@ -237,8 +237,8 @@ export function DivisionlistToolbar(props: {
                 <FileDownloadIcon />
                 <Typography variant="body1"> ({selectedRows.size})</Typography>
               </Button>
-            )}
-          </Tooltip>
+            </Tooltip>
+          )}
         </>
       )}
       <GridToolbarDensitySelector />

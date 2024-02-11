@@ -7,14 +7,7 @@ import { FormTextInput } from "../../../../components/form/FormTextInput";
 
 export function BasicInformation() {
   const { t } = useTranslation();
-  const {
-    register,
-    watch,
-    setValue,
-    getValues,
-    control: formControl,
-    formState: { errors: formErrors },
-  } = useFormContext();
+  const form = useFormContext();
 
   return (
     <Box sx={{ display: "flex", width: 1, flexDirection: "column" }}>
@@ -22,29 +15,29 @@ export function BasicInformation() {
         name="basic.name"
         label="name"
         fieldProps={{ type: "name" }}
-        control={formControl}
         rules={{ required: true }}
       />
       <FormTextInput
         name="basic.location"
         label="location"
         fieldProps={{ type: "string" }}
-        control={formControl}
         rules={{ required: true }}
       />
       <DatePicker
         label={t("start_date")}
         minDate={dayjs()}
-        onChange={(value): void => setValue("basic.startDate", value)}
-        value={getValues("basic.startDate")}
+        onChange={(value): void => form.setValue("basic.startDate", value)}
+        value={form.watch("basic.startDate")}
         slotProps={{
           textField: {
             variant: "filled",
             size: "small",
             margin: "normal",
-            error: !!formErrors?.basic?.startDate,
-            helperText: formErrors?.basic?.startDate?.message?.toString(),
-            ...register("basic.startDate", {
+            // @ts-expect-error
+            error: !!form.formState.errors?.basic?.startDate,
+            // @ts-expect-error
+            helperText: form.formState.errors?.basic?.startDate?.message?.toString(),
+            ...form.register("basic.startDate", {
               required: true,
               validate: (value: Dayjs) => value.isValid(),
             }),
@@ -53,22 +46,24 @@ export function BasicInformation() {
       />
       <DatePicker
         label={t("end_date")}
-        minDate={watch("basic.startDate") || dayjs()}
-        onChange={(value): void => setValue("basic.endDate", value)}
-        value={getValues("basic.endDate")}
+        minDate={form.watch("basic.startDate") || dayjs()}
+        onChange={(value): void => form.setValue("basic.endDate", value)}
+        value={form.getValues("basic.endDate")}
         slotProps={{
           textField: {
             variant: "filled",
             size: "small",
             margin: "normal",
-            error: !!formErrors?.basic?.endDate,
-            helperText: formErrors?.basic?.endDate?.message?.toString(),
-            ...register("basic.endDate", {
+            // @ts-expect-error
+            error: !!form.formState.errors?.basic?.endDate,
+            // @ts-expect-error
+            helperText: form.formState.errors?.basic?.endDate?.message?.toString(),
+            ...form.register("basic.endDate", {
               required: true,
               validate: (value: Dayjs) =>
                 value.isValid() &&
-                (value.isSame(getValues("basic.startDate")) ||
-                  value.isAfter(getValues("basic.startDate"))),
+                (value.isSame(form.getValues("basic.startDate")) ||
+                  value.isAfter(form.getValues("basic.startDate"))),
             }),
           },
         }}
