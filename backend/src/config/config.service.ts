@@ -24,7 +24,23 @@ export class ConfigService {
   }
 
   public get<T>(key: string): T {
-    return this.settings.get(key);
+    const found = this.settings.get(key);
+    if (found) {
+      return found;
+    }
+
+    // loading from process.env
+    const processEnv = process.env[key];
+    if (processEnv) {
+      if (!isNaN(parseInt(processEnv))) {
+        return parseInt(processEnv) as T;
+      }
+      if (['true', 'false'].includes(processEnv)) {
+        return (processEnv === 'true') as T;
+      }
+      return processEnv as T;
+    }
+    return null;
   }
 
   public set(key: string, value: any): void {
