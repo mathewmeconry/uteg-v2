@@ -143,8 +143,8 @@ export function HomeLayout() {
               open={Boolean(anchorEl)}
               onClose={handleClose}
             >
-              <MenuItem onClick={handleProfile}>Profile</MenuItem>
-              <MenuItem onClick={handleLogout}>Logout</MenuItem>
+              <MenuItem onClick={handleProfile}>{t("profile")}</MenuItem>
+              <MenuItem onClick={handleLogout}>{t("logout")}</MenuItem>
             </Menu>
           </div>
         </Toolbar>

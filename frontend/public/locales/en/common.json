@@ -100,5 +100,6 @@
   "profile": "Profile",
   "english": "English",
   "german": "German",
-  "language": "Language"
+  "language": "Language",
+  "logout": "Logout"
 }
