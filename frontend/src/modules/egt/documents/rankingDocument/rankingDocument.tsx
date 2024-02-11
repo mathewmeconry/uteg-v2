@@ -12,12 +12,12 @@ import { TFunction } from "i18next";
 
 Font.register({
   family: "Roboto",
-  src: "http://fonts.gstatic.com/s/roboto/v15/dtpHsbgPEm2lVWciJZ0P-A.ttf",
+  src: "https://fonts.gstatic.com/s/roboto/v15/dtpHsbgPEm2lVWciJZ0P-A.ttf",
   fontWeight: 300,
 });
 Font.register({
   family: "Roboto",
-  src: "http://fonts.gstatic.com/s/roboto/v15/bdHGHleUa-ndQCOrdpfxfw.ttf",
+  src: "https://fonts.gstatic.com/s/roboto/v15/bdHGHleUa-ndQCOrdpfxfw.ttf",
   fontWeight: 700,
 });
 
