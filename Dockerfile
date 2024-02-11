@@ -18,4 +18,4 @@ COPY --from=builder /app/frontend/dist frontend/
 COPY --from=builder /app/backend/dist dist
 COPY --from=builder /app/backend/node_modules node_modules
 
-CMD ["node", "dist/main.js"]
+CMD ["node", "node_modules/typeorm/cli", "migration:run", "-d", "./dist/typeorm.js", ";", "node", "dist/main.js"]
