@@ -1,7 +1,7 @@
 import gql from "graphql-tag";
 
-export const CURRENT_USER = gql`
-    query currentUser {
+export const CURRENT_I18N_USER = gql`
+    query currentI18NUser {
         currentUser {
             id
             language

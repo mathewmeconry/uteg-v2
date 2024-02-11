@@ -3,7 +3,7 @@ import { initReactI18next, useTranslation } from "react-i18next";
 
 import Backend from "i18next-http-backend";
 import LanguageDetector from "i18next-browser-languagedetector";
-import { useCurrentUserQuery } from "./__generated__/graphql";
+import { useCurrentI18NUserQuery } from "./__generated__/graphql";
 import { useEffect } from "react";
 // don't want to use this?
 // have a look at the Quick start guide
@@ -39,7 +39,7 @@ export default i18n;
 
 export function UpdateLanaguage() {
   const { i18n } = useTranslation();
-  const { data: currentUserData } = useCurrentUserQuery();
+  const { data: currentUserData } = useCurrentI18NUserQuery();
 
   useEffect(() => {
     if (currentUserData) {
