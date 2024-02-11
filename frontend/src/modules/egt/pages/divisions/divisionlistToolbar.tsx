@@ -225,7 +225,7 @@ export function DivisionlistToolbar(props: {
           {!pdfLoading && (
             <Tooltip
               title={t("juging_report", {
-                ns: "common",
+                ns: "egt",
                 count: selectedRows.size,
                 type: t("division", { count: selectedRows.size }),
               })}
