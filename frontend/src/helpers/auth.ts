@@ -1,8 +1,8 @@
 import { isExpired } from "react-jwt";
 
 export async function getToken(email: string, password: string) {
-  const resp = await fetch(`${import.meta.env.VITE_BACKEND_URI}/auth`, {
-    method: "POST",
+  const resp = await fetch(`${import.meta.env.VITE_BACKEND_URI || ""}/auth`, {
+    method: "POST", 
     headers: {
       "Content-Type": "application/json",
     },
