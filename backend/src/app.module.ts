@@ -2,11 +2,13 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+import { ServeStaticModule } from '@nestjs/serve-static';
 import { ConfigModule } from './config/config.module';
 import { ConfigService } from './config/config.service';
 import { BaseModule } from './base/base.module';
 import { AuthModule } from './auth/auth.module';
 import { EGTModule } from './egt/egt.module';
+import * as path from 'path';
 
 @Module({
   imports: [
@@ -23,7 +25,7 @@ import { EGTModule } from './egt/egt.module';
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_DATABASE'),
         synchronize: configService.get<boolean>('DB_SYNCHRONIZE'),
-        autoLoadEntities: true
+        autoLoadEntities: true,
       }),
       inject: [ConfigService],
     }),
@@ -35,9 +37,12 @@ import { EGTModule } from './egt/egt.module';
       playground: true,
       buildSchemaOptions: {
         dateScalarMode: 'timestamp',
-        numberScalarMode: 'integer'
-      }
-    })
+        numberScalarMode: 'integer',
+      },
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: path.join(__dirname, '..', 'frontend'),
+    }),
   ],
 })
 export class AppModule {}
