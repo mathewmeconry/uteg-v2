@@ -95,5 +95,11 @@
   "final": "End",
   "break": "Pause",
   "saved": "Gespeichert",
-  "total": "Gesamt"
+  "total": "Gesamt",
+  "information": "Information",
+  "security": "Sicherheit",
+  "profile": "Profil",
+  "english": "Englisch",
+  "german": "Deutsch",
+  "language": "Sprache"
   }

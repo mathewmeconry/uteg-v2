@@ -94,5 +94,11 @@
   "final": "Final",
   "break": "Break",
   "saved": "Saved",
-  "total": "Total"
+  "total": "Total",
+  "information": "Information",
+  "security": "Security",
+  "profile": "Profile",
+  "english": "English",
+  "german": "German",
+  "language": "Language"
 }

@@ -12,7 +12,7 @@ import { FormTextInput } from "../../components/form/FormTextInput.tsx";
 export function Register() {
   const [createUser, { loading, error }] = useCreateUserMutation();
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const form = useForm();
 
   if (isTokenValid()) {
@@ -37,6 +37,7 @@ export function Register() {
         variables: {
           email: data.email,
           password: data.password,
+          language: i18n.language
         },
       });
       await getToken(data.email, data.password);

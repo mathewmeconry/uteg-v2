@@ -55,6 +55,7 @@ input CreateStarterLinkInput {
 
 input CreateUserInput {
   email: String!
+  language: String!
   password: String!
 }
 
@@ -201,12 +202,14 @@ type Mutation {
   updateEgtDivisionState(data: UpdateEGTDivisionStateInput!): EGTDivision!
   updateStarter(data: UpdateStarterInput!, id: ID!): Starter!
   updateStarterLink(data: UpdateStarterLinkInput!, id: ID!): StarterLink!
+  updateUser(data: UpdateUserInput!): User!
 }
 
 type Query {
   clubs: [Club!]!
   competition(id: ID!): Competition!
   competitions: [Competition!]!
+  currentUser: User!
   egtCategorySettings(category: Int!, competitionID: ID!, sex: Sex!): EGTCategorySettings!
   egtDevices(competitionID: ID!): [EGTDevice!]!
   egtDivision(id: ID!): EGTDivision
@@ -288,8 +291,15 @@ input UpdateStarterLinkInput {
   competitionID: ID!
 }
 
+input UpdateUserInput {
+  email: String!
+  id: ID!
+  language: String!
+}
+
 type User {
   email: String!
   globalRole: Roles!
   id: ID!
+  language: String!
 }

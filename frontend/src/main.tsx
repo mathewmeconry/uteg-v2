@@ -31,6 +31,8 @@ import { HomeLayout } from "./layouts/homelayout";
 import { CompetitionLayout } from "./layouts/competitionlayout";
 import { EGTModule } from "./modules/egt";
 import { registerModule } from "./hooks/useModules/useModules";
+import { Profile } from "./pages/profile/profile";
+import { UpdateLanaguage } from "./i18n";
 
 const theme = createTheme();
 
@@ -57,7 +59,13 @@ const routes: RouteObject[] = [
     children: [
       {
         path: "/profile",
-        element: <>TODO</>,
+        element: <Profile />,
+        handle: {
+          layout: {
+            title: "profile",
+            returnable: true
+          }
+        }
       },
       {
         path: "/home",
@@ -128,6 +136,7 @@ const router = createBrowserRouter(routes);
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <ApolloProvider client={apolloClient}>
+      <UpdateLanaguage />
       <CssBaseline>
         <SnackbarProvider autoHideDuration={3000} preventDuplicate={true} />
         <ThemeProvider theme={theme}>

@@ -162,11 +162,11 @@ export function DivisionlistToolbar(props: {
   }, [downloadingPdf]);
 
   function renderExportMenuItems() {
-    if (competitionLoading) {
+    if (competitionLoading || !competition) {
       return <LinearProgress />;
     }
 
-    const { grounds } = competition!.competition;
+    const { grounds } = competition.competition;
     const menuItems: JSX.Element[] = [];
     for (let i = 1; i <= grounds; i++) {
       menuItems.push(

@@ -24,6 +24,23 @@ export class UserService {
     return this.userRepository.save(user);
   }
 
+  /**
+   * Save the user to the database after checking for password update.
+   * Only use if the password has been changed and not hashed or has not changed!
+   *
+   * @param {User} user - the user to be saved
+   * @return {Promise<User>} the saved user
+   */
+  async save(user: User): Promise<User> {
+    const dbUser = await this.findOne(user.id);
+    // passwords are different thus we assume the password needs to be hashed
+    if (dbUser.password !== user.password) {
+      user.password = await this.hash(user.password);
+    }
+
+    return this.userRepository.save(user);
+  }
+
   findAll(): Promise<User[]> {
     return this.userRepository.find();
   }
@@ -44,11 +61,7 @@ export class UserService {
     await this.userRepository.delete(id);
   }
 
-  link(
-    user: User,
-    competition: Competition,
-    role: ROLES,
-  ): Promise<UserLink> {
+  link(user: User, competition: Competition, role: ROLES): Promise<UserLink> {
     const userLink = new UserLink();
     userLink.user = Promise.resolve(user);
     userLink.competition = Promise.resolve(competition);
@@ -85,8 +98,8 @@ export class UserService {
   }
 
   async getGlobalRole(userID: number): Promise<ROLES> {
-    const entity = await this.userRepository.findOneBy({id: userID})
-    return entity.globalRole
+    const entity = await this.userRepository.findOneBy({ id: userID });
+    return entity.globalRole;
   }
 
   hash(data: string): Promise<string> {

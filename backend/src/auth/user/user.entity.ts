@@ -19,4 +19,8 @@ export class User {
   @Field(() => ROLES)
   @Column({ default: ROLES.VIEWER })
   globalRole: ROLES;
+
+  @Column({ default: 'en' })
+  @Field()
+  language?: string;
 }
