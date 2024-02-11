@@ -10,7 +10,7 @@ export function EGTSettings() {
     return (
       <Grid item xs={2} md={1.5}>
         <Typography>
-          {t(`category_${category + 1}`, { context: sex.toLowerCase() })}
+          {t(`category_${category}`, { context: sex.toLowerCase() })}
           <FormTextInput
             name={`module.egt.categories.${sex}.${category}.honourPrecentage`}
             defaultValue="33"
@@ -29,14 +29,14 @@ export function EGTSettings() {
         {t("categories")} {t("FEMALE", { ns: "common" })}
       </Typography>
       <Grid container spacing={2}>
-        {[...Array(8).keys()].map((key) => renderCategory(key, "FEMALE"))}
+        {[1, 2, 3, 4, 5, 6, 7, 8].map((key) => renderCategory(key, "FEMALE"))}
       </Grid>
 
       <Typography sx={{ mt: 2, mb: 2 }} variant="h6">
         {t("categories")} {t("MALE", { ns: "common" })}
       </Typography>
       <Grid container spacing={2}>
-        {[...Array(8).keys()].map((key) => renderCategory(key, "MALE"))}
+        {[1, 2, 3, 4, 5, 6, 7, 8].map((key) => renderCategory(key, "MALE"))}
       </Grid>
     </>
   );

@@ -11,7 +11,7 @@ export function EGTSettingsReview() {
     return (
       <Grid item xs={2} md={1.5}>
         <Divider>
-          {t(`category_${category + 1}`, { context: sex.toLowerCase() })}
+          {t(`category_${category}`, { context: sex.toLowerCase() })}
         </Divider>
         <Typography variant="body2">{t('honourPrecentage')}: {value.honourPrecentage}%</Typography>
       </Grid>
@@ -24,7 +24,7 @@ export function EGTSettingsReview() {
         {t("categories")} {t("FEMALE", { ns: "common" })}
       </Typography>
       <Grid container spacing={2} justifyContent={"space-around"} sx={{width: 1}}>
-        {[...Array(8).keys()].map((key) =>
+        {[1,2,3,4,5,6,7,8].map((key) =>
           renderCategory(
             key,
             "FEMALE",
@@ -36,7 +36,7 @@ export function EGTSettingsReview() {
         {t("categories")} {t("MALE", { ns: "common" })}
       </Typography>
       <Grid container spacing={2}>
-        {[...Array(8).keys()].map((key) =>
+        {[1,2,3,4,5,6,7,8].map((key) =>
           renderCategory(
             key,
             "MALE",
