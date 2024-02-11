@@ -61,7 +61,7 @@ export function Review() {
         </Grid>
       </Grid>
       <Divider sx={{ mt: 3 }}>
-        {t("settings", {
+        {t("settings_named", {
           name: t("module", {
             ns: "common",
             count: Object.keys(formValues.setup.modules).length,

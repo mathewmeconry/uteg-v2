@@ -209,7 +209,7 @@ export function RoundGrading(props: RoundGradingProps) {
           <TableCell key={key}>
             {t("grade_labled", {
               ns: "common",
-              label: t("final", { ns: "common" }),
+              label: t("final_grade", { ns: "common" }),
             })}
           </TableCell>
         );

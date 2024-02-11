@@ -246,7 +246,7 @@ export function JudgingDocument(props: JudgingDocumentProps) {
           <Text style={styles.tableCell}>
             {props.t("grade_labled", {
               ns: "common",
-              label: props.t("final", {
+              label: props.t("final_grade", {
                 ns: "common",
               }),
             })}

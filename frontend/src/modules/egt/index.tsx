@@ -88,7 +88,7 @@ const starterListColumns: Array<GridColDefExtension | GridActionsColDef> = [
   },
   {
     field: "egt.device",
-    headerName: "device",
+    headerName: "starting_device",
     valueGetter: (params) =>
       params.row.egt?.lineup?.device?.deviceNumber
         ? `device_${params.row.egt?.lineup?.device?.deviceNumber}`
