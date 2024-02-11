@@ -2,7 +2,7 @@ import { useParams } from "react-router-dom";
 import { useEgtGradingDivisionsIdsQuery } from "../../../../__generated__/graphql";
 import { Skeleton, Tab, Tabs, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
-import { useCallback, useState } from "react";
+import { useMemo, useState } from "react";
 import { RoundGrading } from "./RoundGrading";
 
 type DeviceGradingProps = {
@@ -26,7 +26,7 @@ export function DeviceGrading(props: DeviceGradingProps) {
       },
     },
   });
-  const maxRounds = useCallback(() => {
+  const maxRounds = useMemo(() => {
     if (!divisionsData) {
       return 0;
     }
@@ -39,6 +39,10 @@ export function DeviceGrading(props: DeviceGradingProps) {
     }
     return max;
   }, [divisionsData]);
+
+  if (maxRounds <= props.device) {
+    return null;
+  }
 
   if (divisionsDataLoading) {
     return <Skeleton />;
@@ -62,7 +66,7 @@ export function DeviceGrading(props: DeviceGradingProps) {
         {t(`device_${props.device}`, { ns: "egt" })}
       </Typography>
       <Tabs variant="fullWidth" onChange={(_, v) => setRound(v)} value={round}>
-        {[...Array(maxRounds()).keys()].map((i) => (
+        {[...Array(maxRounds).keys()].map((i) => (
           <Tab key={i} label={t(`round`, { ns: "egt", number: i + 1 })} />
         ))}
       </Tabs>

@@ -7,7 +7,7 @@ import {
   Page,
 } from "@react-pdf/renderer";
 import { EgtStarterRanking, Sex } from "../../../../__generated__/graphql";
-import { memo, useCallback } from "react";
+import { memo, useMemo } from "react";
 import { TFunction } from "i18next";
 
 Font.register({
@@ -105,7 +105,7 @@ export type RankingDocumentProps = {
 };
 
 function RankingDocumentNonMemo(props: RankingDocumentProps) {
-  const highestDeviceCount = useCallback(() => {
+  const highestDeviceCount = useMemo(() => {
     let max = 0;
     props.rankings.forEach((r) => {
       if (r.grades.length > max) {
@@ -115,7 +115,7 @@ function RankingDocumentNonMemo(props: RankingDocumentProps) {
     return max;
   }, [props.rankings]);
 
-  const highestGrades = useCallback(() => {
+  const highestGrades = useMemo(() => {
     const highestGrades: number[] = Array(5).fill(0);
     for (const ranking of props.rankings) {
       for (const grade of ranking.grades) {
@@ -146,7 +146,7 @@ function RankingDocumentNonMemo(props: RankingDocumentProps) {
     const grades = [...item.grades].sort(
       (a, b) => a.deviceNumber - b.deviceNumber
     );
-    const highGrades = highestGrades();
+    const highGrades = highestGrades;
 
     return (
       <View style={styles.tableRow}>
@@ -226,7 +226,7 @@ function RankingDocumentNonMemo(props: RankingDocumentProps) {
                 {props.t("club", { ns: "common" })}
               </Text>
             </View>
-            {[...Array(highestDeviceCount()).keys()].map((i) => (
+            {[...Array(highestDeviceCount).keys()].map((i) => (
               <View style={{ ...styles.tableCol, ...styles.grade }}>
                 <Text key={i} style={{ ...styles.tableCell }}>
                   {props.t(`device_${i}_short`, { ns: "egt" })}

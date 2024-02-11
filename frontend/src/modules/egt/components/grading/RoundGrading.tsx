@@ -19,7 +19,7 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import { useCallback, useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { FormTextInput } from "../../../../components/form/FormTextInput";
 import { FieldValues, FormProvider, useForm, useWatch } from "react-hook-form";
@@ -92,7 +92,7 @@ export function RoundGrading(props: RoundGradingProps) {
         const grade = gradesData.starterGrades.find(
           (grade) => grade.starterlink.id === starter.starterlink.id
         );
-        if (maxInputs() > 1) {
+        if (maxInputs > 1) {
           values[starter.starterlink.id] = {
             final: grade?.value.toString() ?? "",
           };
@@ -104,7 +104,7 @@ export function RoundGrading(props: RoundGradingProps) {
     }
   }, [gradesData]);
 
-  const maxInputs = useCallback(() => {
+  const maxInputs = useMemo(() => {
     let inputs = 1;
     if (!deviceData?.egtJudgingDevice) {
       return inputs;
@@ -129,7 +129,7 @@ export function RoundGrading(props: RoundGradingProps) {
   }, [deviceData]);
 
   useEffect(() => {
-    if (maxInputs() > 1) {
+    if (maxInputs > 1) {
       for (const starterId of Object.keys(formValues)) {
         const starter = deviceData?.egtJudgingDevice.starterslist.find(
           (starter) => starter.id === starterId
@@ -152,7 +152,7 @@ export function RoundGrading(props: RoundGradingProps) {
         }
       }
     }
-  }, [formValues, maxInputs()]);
+  }, [formValues, maxInputs]);
 
   if (divisionsDataLoading || deviceDataLoading) {
     return [...Array(5).keys()].map((key) => <Skeleton key={key} />);
@@ -166,7 +166,7 @@ export function RoundGrading(props: RoundGradingProps) {
     const grades: GradeInput[] = [];
     for (const starter of Object.keys(values)) {
       let finalGrade = values[starter];
-      if (maxInputs() > 1) {
+      if (maxInputs > 1) {
         finalGrade = finalGrade["final"];
       }
 
@@ -199,12 +199,12 @@ export function RoundGrading(props: RoundGradingProps) {
   }
 
   function renderInputHeaders() {
-    if (maxInputs() === 1) {
+    if (maxInputs === 1) {
       return <TableCell>{t("grade", { ns: "common" })}</TableCell>;
     }
 
-    return [...Array(maxInputs() + 1).keys()].map((key) => {
-      if (key === maxInputs()) {
+    return [...Array(maxInputs + 1).keys()].map((key) => {
+      if (key === maxInputs) {
         return (
           <TableCell key={key}>
             {t("grade_labled", {
@@ -253,8 +253,8 @@ export function RoundGrading(props: RoundGradingProps) {
       Object.keys(previousValues).filter(
         (key) => key !== "final" && previousValues[key]
       ).length > 0;
-    return [...Array(maxInputs() + 1).keys()].map((key) => {
-      if (key === maxInputs()) {
+    return [...Array(maxInputs + 1).keys()].map((key) => {
+      if (key === maxInputs) {
         return (
           <TableCell key={`${starter.id}_${key}`}>
             <FormTextInput
@@ -295,7 +295,7 @@ export function RoundGrading(props: RoundGradingProps) {
             disabled={
               !!previousValues["final"] &&
               !previousSet &&
-              key < (categorySettings?.inputs ?? maxInputs())
+              key < (categorySettings?.inputs ?? maxInputs)
             }
             rules={{
               required: false,
@@ -361,7 +361,7 @@ export function RoundGrading(props: RoundGradingProps) {
           <TableFooter>
             <TableRow>
               <TableCell
-                colSpan={3 + (maxInputs() > 1 ? maxInputs() + 1 : maxInputs())}
+                colSpan={3 + (maxInputs > 1 ? maxInputs + 1 : maxInputs)}
                 align="right"
               >
                 <Button

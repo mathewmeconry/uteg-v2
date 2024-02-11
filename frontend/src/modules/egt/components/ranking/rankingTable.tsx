@@ -9,7 +9,7 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import React, { useCallback } from "react";
+import React, { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 export type RankingTableProps = {
@@ -19,7 +19,7 @@ export type RankingTableProps = {
 export function RankingTable(props: RankingTableProps) {
   const { t } = useTranslation(["egt", "common"]);
 
-  const highestDeviceCount = useCallback(() => {
+  const highestDeviceCount = useMemo(() => {
     let max = 0;
     props.rankings.forEach((r) => {
       if (r.grades.length > max) {
@@ -29,7 +29,7 @@ export function RankingTable(props: RankingTableProps) {
     return max;
   }, [props.rankings]);
 
-  const highestGrades = useCallback(() => {
+  const highestGrades = useMemo(() => {
     const highestGrades: number[] = Array(5).fill(0);
     for (const ranking of props.rankings) {
       for (const grade of ranking.grades) {
@@ -74,7 +74,7 @@ export function RankingTable(props: RankingTableProps) {
     const grades = [...item.grades].sort(
       (a, b) => a.deviceNumber - b.deviceNumber
     );
-    const highGrades = highestGrades();
+    const highGrades = highestGrades;
 
     return (
       <>
@@ -116,7 +116,7 @@ export function RankingTable(props: RankingTableProps) {
           <TableCell>{t("firstname", { ns: "common" })}</TableCell>
           <TableCell>{t("lastname", { ns: "common" })}</TableCell>
           <TableCell>{t("club", { ns: "common" })}</TableCell>
-          {[...Array(highestDeviceCount()).keys()].map((i) => (
+          {[...Array(highestDeviceCount).keys()].map((i) => (
             <TableCell key={i} sx={{ textAlign: "center" }}>
               {t(`device_${i}_short`, { ns: "egt" })}
             </TableCell>

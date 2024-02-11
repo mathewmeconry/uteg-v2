@@ -20,7 +20,7 @@
   "updated": "{{name}} aktualisiert",
   "link_updated": "{{name}} Verknüpfung aktualisiert",
   "update": "{{name}} aktualisieren",
-  "go_back": "{{name}} zurück",
+  "go_back": "Zurück zur {{name}}",
   "home": "Startseite",
   "competition": "Wettkampf",
   "permission_denied": "Zugriff verweigert!",
