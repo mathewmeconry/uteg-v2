@@ -217,7 +217,7 @@ export function Divisionslist() {
           <Tooltip
             title={t("assign_to", {
               what: t("starters", { ns: "common" }),
-              to: t("division"),
+              to: t("starting_device"),
             })}
           >
             <GroupsIcon />
