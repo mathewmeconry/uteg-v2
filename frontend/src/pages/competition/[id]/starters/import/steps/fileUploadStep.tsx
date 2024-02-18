@@ -4,7 +4,7 @@ import { Box, Button, IconButton, Typography, styled } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import AttachFileIcon from "@mui/icons-material/AttachFile";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
-import { ChangeEvent } from "react";
+import { ChangeEvent, useMemo, DragEvent } from "react";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -27,8 +27,12 @@ export function FileUploadStep(props: FileUploadStepProps) {
   const { t } = useTranslation();
   const { files } = props;
 
-  function renderFile() {
-    const filesComponents = files.map((file, index) => {
+  const filesComponents = useMemo(() => {
+    if (files.length === 0) {
+      return null;
+    }
+
+    const filecomps = files.map((file, index) => {
       return (
         <Box sx={{ display: "flex", alignItems: "center" }} key={index}>
           <AttachFileIcon />
@@ -45,11 +49,39 @@ export function FileUploadStep(props: FileUploadStepProps) {
         </Box>
       );
     });
-
     return (
       <>
-        {filesComponents}
+        <Typography sx={{ mt: 2 }}>{t("files")}</Typography>
+        {filecomps}
+      </>
+    );
+  }, [files]);
+
+  function processFiles(inputFiles: FileList | null | undefined) {
+    const chosenFiles: File[] = [];
+    if (inputFiles) {
+      for (let i = 0; i < inputFiles.length; i++) {
+        const item = inputFiles.item(i);
+        if (item) {
+          chosenFiles.push(item);
+        }
+      }
+    }
+    props.onChange([...files, ...chosenFiles]);
+  }
+
+  function renderFileUpload() {
+    return (
+      <Box
+        sx={{
+          mt: 2,
+          minHeight: 250,
+          border: "1px dashed grey",
+          borderRadius: 1,
+        }}
+      >
         <Button
+          // @ts-expect-error
           component="label"
           sx={{
             display: "flex",
@@ -58,6 +90,15 @@ export function FileUploadStep(props: FileUploadStepProps) {
             minHeight: 250,
           }}
           fullWidth
+          onDrop={(event: DragEvent<HTMLAnchorElement>) => {
+            event.preventDefault();
+            event.stopPropagation();
+            processFiles(event.dataTransfer?.files);
+          }}
+          onDragOver={(event) => {
+            event.preventDefault();
+            event.stopPropagation();
+          }}
         >
           <Typography textAlign="center">
             <UploadFileIcon />
@@ -67,44 +108,27 @@ export function FileUploadStep(props: FileUploadStepProps) {
             type="file"
             accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             onChange={(event: ChangeEvent<HTMLInputElement>) => {
-              const chosenFiles: File[] = [];
-              if (event.currentTarget.files) {
-                for (let i = 0; i < event.currentTarget.files.length; i++) {
-                  const item = event.currentTarget.files.item(i);
-                  if (item) {
-                    chosenFiles.push(item);
-                  }
-                }
-              }
-              props.onChange([...files, ...chosenFiles]);
+              processFiles(event.currentTarget.files);
             }}
             multiple
           />
         </Button>
-      </>
+      </Box>
     );
   }
 
   return (
     <Box sx={{ display: "flex", width: 1, flexDirection: "column" }}>
       <FormClubAutocomplete rules={{ required: true }} />
-      <Box
-        sx={{
-          mt: 2,
-          minHeight: 250,
-          border: "1px dashed grey",
-          borderRadius: 1,
-        }}
-      >
-        {renderFile()}
-      </Box>
+      {filesComponents}
+      {renderFileUpload()}
       <Typography variant="caption">
         {t("starters_import_file_clarifications")}
-        <ul style={{margin: 0}}>
-          <li>{t('firstname')}</li>
-          <li>{t('lastname')}</li>
-          <li>{t('birthyear')}</li>
-          <li>{t('sex')}</li>
+        <ul style={{ margin: 0 }}>
+          <li>{t("firstname")}</li>
+          <li>{t("lastname")}</li>
+          <li>{t("birthyear")}</li>
+          <li>{t("sex")}</li>
         </ul>
       </Typography>
     </Box>

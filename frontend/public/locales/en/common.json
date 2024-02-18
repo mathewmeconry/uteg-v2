@@ -103,5 +103,6 @@
   "language": "Language",
   "logout": "Logout",
   "general": "General",
-  "starters_import_file_clarifications": "At least one worksheet need to contain the following columns:"
+  "starters_import_file_clarifications": "At least one worksheet need to contain the following columns:",
+  "files": "Files"
 }
