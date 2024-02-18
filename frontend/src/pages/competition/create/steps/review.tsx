@@ -17,26 +17,26 @@ export function Review() {
 
   return (
     <Box sx={{ display: "flex", width: 1, flexDirection: "column" }}>
-      <Divider>{t("basic_information")}</Divider>
+      <Divider>{t("general_information")}</Divider>
       <Grid container>
         <Grid xs={6} md={3} item sx={{ mt: 1 }}>
           <Typography variant="body1">{t("name")}</Typography>
-          <Typography variant="body2">{formValues.basic.name}</Typography>
+          <Typography variant="body2">{formValues.general.name}</Typography>
         </Grid>
         <Grid xs={6} md={3} item sx={{ mt: 1 }}>
           <Typography variant="body1">{t("location")}</Typography>
-          <Typography variant="body2">{formValues.basic.location}</Typography>
+          <Typography variant="body2">{formValues.general.location}</Typography>
         </Grid>
         <Grid xs={6} md={3} item sx={{ mt: 1 }}>
           <Typography variant="body1">{t("start_date")}</Typography>
           <Typography variant="body2">
-            {formValues.basic.startDate.format("L")}
+            {formValues.general.startDate.format("L")}
           </Typography>
         </Grid>
         <Grid xs={6} md={3} item sx={{ mt: 1 }}>
           <Typography variant="body1">{t("end_date")}</Typography>
           <Typography variant="body2">
-            {formValues.basic.endDate.format("L")}
+            {formValues.general.endDate.format("L")}
           </Typography>
         </Grid>
       </Grid>

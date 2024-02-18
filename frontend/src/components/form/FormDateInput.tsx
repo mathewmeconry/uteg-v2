@@ -1,11 +1,7 @@
-import {
-  CircularProgress,
-  Skeleton,
-  TextField,
-  TextFieldProps,
-  Typography,
-} from "@mui/material";
-import { PropsWithChildren, ReactElement, useEffect } from "react";
+import { Skeleton, Typography } from "@mui/material";
+import { DatePicker } from "@mui/x-date-pickers";
+import dayjs, { Dayjs } from "dayjs";
+import { ReactElement, useEffect } from "react";
 import {
   FieldValues,
   RegisterOptions,
@@ -14,20 +10,20 @@ import {
 } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
-export type FormTextInputProps = PropsWithChildren & {
+export type FormDateInputProps = {
   name: string;
   label?: string;
   ns?: string;
   labelVariables?: { [index: string]: any };
-  fieldProps?: TextFieldProps;
-  defaultValue?: string;
+  defaultValue?: Dayjs | "";
   annotation?: string;
   annotationNs?: string;
   fullWidth?: boolean;
   disabled?: boolean;
   loading?: boolean;
   initialLoading?: boolean;
-  endAdornment?: string;
+  minDate?: Dayjs;
+  maxDate?: Dayjs;
   rules:
     | Omit<
         RegisterOptions<FieldValues, any>,
@@ -36,7 +32,7 @@ export type FormTextInputProps = PropsWithChildren & {
     | undefined;
 };
 
-export function FormTextInput(props: FormTextInputProps) {
+export function FormDateInput(props: FormDateInputProps) {
   const { control: formControl, setValue } = useFormContext();
   const { t } = useTranslation();
   const {
@@ -46,12 +42,12 @@ export function FormTextInput(props: FormTextInputProps) {
     name: props.name,
     control: formControl,
     rules: props.rules,
-    defaultValue: props.defaultValue ?? "",
+    defaultValue: props.defaultValue ? dayjs(props.defaultValue) : "",
   });
 
   useEffect(() => {
     if (props.defaultValue) {
-      setValue(props.name, props.defaultValue);
+      setValue(props.name, dayjs(props.defaultValue));
     }
   }, [props.defaultValue]);
 
@@ -70,43 +66,38 @@ export function FormTextInput(props: FormTextInputProps) {
     );
   }
 
-  const textField = (
-    <TextField
+  const dateField = (
+    <DatePicker
       key={props.name}
       label={label}
-      variant="standard"
-      margin="normal"
-      fullWidth={props.fullWidth ?? true}
-      {...props.fieldProps}
-      error={invalid}
-      helperText={error?.message?.toString()}
+      minDate={props.minDate}
+      maxDate={props.maxDate}
       onChange={field.onChange}
-      disabled={props.disabled}
-      inputProps={{
-        onBlur: field.onBlur,
-      }}
       value={field.value}
-      ref={field.ref}
-      InputProps={{
-        endAdornment: (
-          <>
-            {props.loading ? <CircularProgress size={20} /> : null}
-            {props.endAdornment}
-          </>
-        ),
+      disabled={props.disabled}
+      slotProps={{
+        textField: {
+          variant: "standard",
+          size: "small",
+          margin: "normal",
+          error: invalid,
+          helperText: error?.message?.toString(),
+          fullWidth: props.fullWidth,
+          sx: {
+            paddingLeft: 0,
+          },
+        },
       }}
-    >
-      {props.children}
-    </TextField>
+    />
   );
 
   if (props.initialLoading) {
     return (
       <Skeleton variant="text" width={props.fullWidth ? "100%" : "auto"}>
-        {textField}
+        {dateField}
       </Skeleton>
     );
   }
 
-  return textField;
+  return dateField;
 }

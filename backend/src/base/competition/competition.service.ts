@@ -25,6 +25,10 @@ export class CompetitionService {
     return competition;
   }
 
+  async save(competition: Competition): Promise<Competition> {
+    return this.competitionRepository.save(competition);
+  }
+
   findAll(): Promise<Competition[]> {
     return this.competitionRepository.find();
   }

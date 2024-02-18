@@ -8,7 +8,7 @@ export function EGTSettings() {
 
   function renderCategory(category: number, sex: Sex) {
     return (
-      <Grid item xs={2} md={1.5}>
+      <Grid item xs={12} md={3} lg={1.5}>
         <Typography>
           {t(`category_${category}`, { context: sex.toLowerCase() })}
           <FormTextInput

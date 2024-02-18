@@ -23,7 +23,7 @@ input CreateClubInput {
   name: String!
 }
 
-input CreateCompetition {
+input CreateCompetitionInput {
   endDate: Timestamp!
   grounds: Int! = 1
   location: String!
@@ -187,7 +187,7 @@ input GradeInput {
 type Mutation {
   addGrades(grades: [GradeInput!]!): [Grade!]!
   createClub(data: CreateClubInput!): Club!
-  createCompetition(competition: CreateCompetition!): Competition!
+  createCompetition(competition: CreateCompetitionInput!): Competition!
   createEgtDivision(data: CreateEGTDivisionInput!): EGTDivision!
   createStarter(data: CreateStarterInput!): Starter!
   createStarterLink(data: CreateStarterLinkInput!): StarterLink!
@@ -199,6 +199,7 @@ type Mutation {
   egtStarterLink(data: EGTStarterLinkInput!): EGTStarterLink!
   removeEgtDivision(id: ID!): EGTDivision!
   removeStarterLink(id: ID!): StarterLink!
+  updateCompetition(data: UpdateCompetitionInput!, id: ID!): Competition!
   updateEgtDivisionState(data: UpdateEGTDivisionStateInput!): EGTDivision!
   updateStarter(data: UpdateStarterInput!, id: ID!): Starter!
   updateStarterLink(data: UpdateStarterLinkInput!, id: ID!): StarterLink!
@@ -271,6 +272,15 @@ type StarterLink {
 `Date` type as integer. Type represents date and time as number of milliseconds from start of UNIX epoch.
 """
 scalar Timestamp
+
+input UpdateCompetitionInput {
+  endDate: Timestamp
+  grounds: Int = 1
+  location: String
+  modules: [String!]
+  name: String
+  startDate: Timestamp
+}
 
 input UpdateEGTDivisionStateInput {
   currentRound: Int!

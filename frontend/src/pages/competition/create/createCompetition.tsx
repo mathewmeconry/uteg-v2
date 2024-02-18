@@ -7,12 +7,16 @@ import {
   Paper,
   Step,
   StepButton,
+  useMediaQuery,
   Stepper,
   Typography,
+  useTheme,
+  StepLabel,
+  StepContent,
 } from "@mui/material";
 import { useMemo, useState } from "react";
-import { BasicInformation } from "./steps/basicInformation";
-import { FormProvider, useForm } from "react-hook-form";
+import { GeneralInformation } from "./steps/generalInformation";
+import { FormProvider, useForm, useFormState } from "react-hook-form";
 import { Setup } from "./steps/setup";
 import { ModulesSettings } from "./steps/modulesSettings";
 import { Users } from "./steps/users";
@@ -24,8 +28,12 @@ import { useModules } from "../../../hooks/useModules/useModules";
 
 export function CreateCompetition() {
   const { t } = useTranslation();
+  const theme = useTheme();
+  const belowSmall = useMediaQuery(theme.breakpoints.down("sm"));
   const [activeStep, setActiveStep] = useState(0);
-  const form = useForm();
+  const form = useForm({
+    mode: "all",
+  });
   const [createCompetition, { loading }] = useCreateCompetitionMutation();
   const navigate = useNavigate();
   const [competitionId, setCompetitionId] = useState<string>();
@@ -37,14 +45,16 @@ export function CreateCompetition() {
     )
   );
   const [modulesLoading, setModulesLoading] = useState(false);
+  const { isValid: isFormValid } = useFormState({
+    control: form.control,
+  });
 
   function handleBack() {
     setActiveStep(activeStep - 1);
   }
 
   async function handleNext() {
-    await form.trigger();
-    if (form.formState.isValid) {
+    if (isFormValid) {
       setActiveStep(activeStep + 1);
     }
   }
@@ -55,10 +65,10 @@ export function CreateCompetition() {
       const formValues = form.getValues();
       const competition = await createCompetition({
         variables: {
-          name: formValues.basic.name,
-          location: formValues.basic.location,
-          startDate: formValues.basic.startDate,
-          endDate: formValues.basic.endDate,
+          name: formValues.general.name,
+          location: formValues.general.location,
+          startDate: formValues.general.startDate,
+          endDate: formValues.general.endDate,
           grounds: parseInt(formValues.setup.grounds),
           modules: Object.keys(formValues.setup.modules).filter(
             (key) => formValues.setup.modules[key]
@@ -92,8 +102,8 @@ export function CreateCompetition() {
   const steps = useMemo(
     () => [
       {
-        label: t("basic_information"),
-        component: <BasicInformation />,
+        label: t("general_information"),
+        component: <GeneralInformation />,
       },
       {
         label: t("setup"),
@@ -115,25 +125,7 @@ export function CreateCompetition() {
     []
   );
 
-  function renderContent() {
-    if (loading || modulesLoading) {
-      return (
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            mt: 5,
-          }}
-        >
-          <CircularProgress />
-          <Typography variant="h5">
-            {t("creating", { name: t("competition") })}
-          </Typography>
-        </Box>
-      );
-    }
-
+  function renderSuccess() {
     if (competitionId) {
       return (
         <Box
@@ -147,7 +139,7 @@ export function CreateCompetition() {
           <Typography variant="h5">
             {t("created", {
               type: t("competition"),
-              name: form.getValues("basic.name"),
+              name: form.getValues("general.name"),
             })}
           </Typography>
           <Button
@@ -168,31 +160,58 @@ export function CreateCompetition() {
         </Box>
       );
     }
+    return null;
+  }
+
+  function renderContent(step?: number) {
+    if (loading || modulesLoading) {
+      return (
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            mt: 5,
+          }}
+        >
+          <CircularProgress />
+          <Typography variant="h5">
+            {t("creating", { name: t("competition") })}
+          </Typography>
+        </Box>
+      );
+    }
+
+    if (!step && competitionId) {
+      return renderSuccess();
+    }
 
     return (
       <>
         <Typography sx={{ mt: 2, mb: 1, py: 1 }} variant="h4">
-          {steps[activeStep].label}
+          {steps[step ?? activeStep].label}
         </Typography>
-        <FormProvider {...form}>{steps[activeStep].component}</FormProvider>
+        <FormProvider {...form}>
+          {steps[step ?? activeStep].component}
+        </FormProvider>
         <Divider sx={{ mt: 2 }}></Divider>
         <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
           <Button
             variant="outlined"
             color="inherit"
-            disabled={activeStep === 0}
+            disabled={(step ?? activeStep) === 0}
             onClick={handleBack}
             sx={{ mr: 1 }}
           >
             {t("back")}
           </Button>
           <Box sx={{ flex: "1 1 auto" }} />
-          {activeStep !== steps.length - 1 && (
+          {(step ?? activeStep) !== steps.length - 1 && (
             <Button variant="outlined" onClick={handleNext} sx={{ mr: 1 }}>
               {t("next")}
             </Button>
           )}
-          {activeStep === steps.length - 1 && (
+          {(step ?? activeStep) === steps.length - 1 && (
             <Button
               variant="outlined"
               color="success"
@@ -207,9 +226,35 @@ export function CreateCompetition() {
     );
   }
 
+  if (belowSmall) {
+    return (
+      <Paper sx={{ p: 2 }}>
+        <Stepper
+          activeStep={activeStep}
+          alternativeLabel={!belowSmall}
+          orientation={belowSmall ? "vertical" : "horizontal"}
+          onClick={(e) => e.stopPropagation()}
+        >
+          {steps.map((step, index) => (
+            <Step key={step.label}>
+              <StepLabel>{step.label}</StepLabel>
+              <StepContent>{renderContent(index)}</StepContent>
+            </Step>
+          ))}
+        </Stepper>
+        {renderSuccess()}
+      </Paper>
+    );
+  }
+
   return (
     <Paper sx={{ p: 2 }}>
-      <Stepper activeStep={activeStep} alternativeLabel>
+      <Stepper
+        activeStep={activeStep}
+        alternativeLabel={!belowSmall}
+        orientation={belowSmall ? "vertical" : "horizontal"}
+        onClick={(e) => e.stopPropagation()}
+      >
         {steps.map((step) => (
           <Step key={step.label}>
             <StepButton>{step.label}</StepButton>

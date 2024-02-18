@@ -33,6 +33,7 @@ import { EGTModule } from "./modules/egt";
 import { registerModule } from "./hooks/useModules/useModules";
 import { Profile } from "./pages/profile/profile";
 import { UpdateLanaguage } from "./i18n";
+import { Settings } from "./pages/competition/settings/settings";
 
 const theme = createTheme();
 
@@ -104,6 +105,10 @@ const routes: RouteObject[] = [
           {
             path: "dashboard",
             element: <Dashboard />,
+          },
+          {
+            path: "settings",
+            element: <Settings />
           },
           {
             path: "starters",

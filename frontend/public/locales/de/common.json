@@ -56,7 +56,7 @@
   "start_over": "Von vorne",
   "stvID": "STV ID",
   "birthyear": "Jahrgang",
-  "basic_information": "Grundlegende Informationen",
+  "general_information": "Allgemeine Informationen",
   "setup": "Setup",
   "module_one": "Modul",
   "module_other": "Module",
@@ -101,5 +101,6 @@
   "english": "Englisch",
   "german": "Deutsch",
   "language": "Sprache",
-  "logout": "Logout"
+  "logout": "Logout",
+  "general": "Allgemein"
 }

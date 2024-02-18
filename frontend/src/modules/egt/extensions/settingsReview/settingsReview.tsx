@@ -9,7 +9,7 @@ export function EGTSettingsReview() {
 
   function renderCategory(category: number, sex: Sex, value: any) {
     return (
-      <Grid item xs={2} md={1.5}>
+      <Grid item xs={12} md={3} lg={1.5}>
         <Divider>
           {t(`category_${category}`, { context: sex.toLowerCase() })}
         </Divider>
