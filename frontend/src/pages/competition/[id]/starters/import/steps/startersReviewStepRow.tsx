@@ -22,10 +22,6 @@ function Row(props: StartersReviewStepRowProps) {
   const modules = useModules(id || "");
   const starter = useWatch({ name: `starters.${props.index}`, control });
 
-  if (modules.loading) {
-    return <Skeleton variant="text" />;
-  }
-
   function swapFirstLastname(index: number, update = true) {
     const starter = props.starter;
     const firstname = starter.firstname;
@@ -45,6 +41,7 @@ function Row(props: StartersReviewStepRowProps) {
           name={`starters.${props.index}.stvID`}
           fieldProps={{ size: "small", label: "", margin: "none" }}
           rules={{ required: false }}
+          initialLoading={modules.loading}
         />
       </TableCell>
       <TableCell>
@@ -53,6 +50,7 @@ function Row(props: StartersReviewStepRowProps) {
           name={`starters.${props.index}.firstname`}
           fieldProps={{ size: "small", label: "", margin: "none" }}
           rules={{ required: true }}
+          initialLoading={modules.loading}
         />
       </TableCell>
       <TableCell padding="none">
@@ -66,6 +64,7 @@ function Row(props: StartersReviewStepRowProps) {
           name={`starters.${props.index}.lastname`}
           fieldProps={{ size: "small", label: "", margin: "none" }}
           rules={{ required: true }}
+          initialLoading={modules.loading}
         />
       </TableCell>
       <TableCell>
@@ -74,6 +73,7 @@ function Row(props: StartersReviewStepRowProps) {
           name={`starters.${props.index}.birthyear`}
           fieldProps={{ size: "small", label: "", type: "number" }}
           rules={{ required: true }}
+          initialLoading={modules.loading}
         />
       </TableCell>
       <TableCell>
@@ -86,6 +86,7 @@ function Row(props: StartersReviewStepRowProps) {
             label: "",
           }}
           rules={{ required: true }}
+          initialLoading={modules.loading}
         >
           <MenuItem value="MALE">{t("male")}</MenuItem>
           <MenuItem value="FEMALE">{t("female")}</MenuItem>
@@ -110,6 +111,7 @@ function Row(props: StartersReviewStepRowProps) {
       </TableCell>
     </>
   );
+
 }
 
 export const StartersReviewStepRow = memo<StartersReviewStepRowProps>(Row);
