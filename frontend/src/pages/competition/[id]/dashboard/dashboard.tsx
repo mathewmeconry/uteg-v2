@@ -2,7 +2,7 @@ import { useParams } from "react-router-dom";
 import { useCompetitionDashboardStatsQuery } from "../../../../__generated__/graphql";
 import { useTranslation } from "react-i18next";
 import { NumberStatsCard } from "../../../../components/cards/NumberStatsCard";
-import { Grid, Skeleton } from "@mui/material";
+import { Grid } from "@mui/material";
 
 export function Dashboard() {
   const { id } = useParams();

@@ -1,6 +1,6 @@
 import { memo } from "react";
 import { Starter } from "../../../../../../__generated__/graphql";
-import { TableCell, IconButton, MenuItem, Skeleton } from "@mui/material";
+import { TableCell, IconButton, MenuItem } from "@mui/material";
 import { ClearIcon } from "@mui/x-date-pickers";
 import { FormTextInput } from "../../../../../../components/form/FormTextInput";
 import { useFormContext, useWatch } from "react-hook-form";
