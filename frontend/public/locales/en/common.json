@@ -102,5 +102,6 @@
   "german": "German",
   "language": "Language",
   "logout": "Logout",
-  "general": "General"
+  "general": "General",
+  "starters_import_file_clarifications": "At least one worksheet need to contain the following columns:"
 }

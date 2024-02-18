@@ -98,6 +98,15 @@ export function FileUploadStep(props: FileUploadStepProps) {
       >
         {renderFile()}
       </Box>
+      <Typography variant="caption">
+        {t("starters_import_file_clarifications")}
+        <ul style={{margin: 0}}>
+          <li>{t('firstname')}</li>
+          <li>{t('lastname')}</li>
+          <li>{t('birthyear')}</li>
+          <li>{t('sex')}</li>
+        </ul>
+      </Typography>
     </Box>
   );
 }

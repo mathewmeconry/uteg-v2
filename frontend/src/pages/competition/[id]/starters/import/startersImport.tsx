@@ -47,7 +47,10 @@ export function StartersImport() {
       return [];
     }
 
-    return getModulesHandlers<ParseStarterFromSheetHandler>(modules.modules, "parseStarterFromSheet");
+    return getModulesHandlers<ParseStarterFromSheetHandler>(
+      modules.modules,
+      "parseStarterFromSheet"
+    );
   }, [modules]);
 
   useEffect(() => {
@@ -80,7 +83,7 @@ export function StartersImport() {
       ),
     },
     {
-      label: t("starter", {count: 2}),
+      label: t("starter", { count: 2 }),
       component: <StartersReviewStep />,
     },
     {

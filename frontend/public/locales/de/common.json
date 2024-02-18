@@ -102,5 +102,6 @@
   "german": "Deutsch",
   "language": "Sprache",
   "logout": "Logout",
-  "general": "Allgemein"
+  "general": "Allgemein",
+  "starters_import_file_clarifications": "Mindestens eine Arbeitsmappe muss folgende Spalten enthalten:"
 }
