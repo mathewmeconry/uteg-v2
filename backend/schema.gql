@@ -16,6 +16,13 @@ type Competition {
   modules: [String!]!
   name: String!
   startDate: Timestamp!
+  stats: CompetitionStats!
+}
+
+type CompetitionStats {
+  clubs: Int!
+  grades: Int!
+  starters: Int!
 }
 
 input CreateClubInput {

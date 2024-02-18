@@ -1,5 +1,6 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { StarterLink } from '../starterLink/starterLink.entity';
 
 @ObjectType()
 @Entity()
@@ -15,4 +16,7 @@ export class Club {
   @Field()
   @Column()
   location: string;
+
+  @OneToMany((type) => StarterLink, (starterLink) => starterLink.club)
+  starterLinks: StarterLink[];
 }

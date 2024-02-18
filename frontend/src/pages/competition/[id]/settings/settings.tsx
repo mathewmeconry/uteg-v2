@@ -1,14 +1,14 @@
 import { useTranslation } from "react-i18next";
-import { PaperExtended } from "../../../components/paperExtended";
+import { PaperExtended } from "../../../../components/paperExtended";
 import { Box, Button, Typography } from "@mui/material";
 import { FieldValues, FormProvider, useForm } from "react-hook-form";
-import { FormTextInput } from "../../../components/form/FormTextInput";
+import { FormTextInput } from "../../../../components/form/FormTextInput";
 import { useParams } from "react-router-dom";
 import {
   useCompetitionSettingsQuery,
   useCompetitionSettingsUpdateMutation,
-} from "../../../__generated__/graphql";
-import { FormDateInput } from "../../../components/form/FormDateInput";
+} from "../../../../__generated__/graphql";
+import { FormDateInput } from "../../../../components/form/FormDateInput";
 import dayjs from "dayjs";
 import { enqueueSnackbar } from "notistack";
 

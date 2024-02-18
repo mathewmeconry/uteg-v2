@@ -76,4 +76,17 @@ export class GradeService {
       .andWhere('grade.deviceNumber = :device', { device })
       .getOne();
   }
+
+  async countGrades(competitionID: number): Promise<number> {
+    const { count } = await this.gradeRepository
+      .createQueryBuilder('grade')
+      .select('COUNT(DISTINCT grade.id)', 'count')
+      .leftJoin('grade.starterlink', 'starterlink')
+      .leftJoin('starterlink.competition', 'competition')
+      .where('competition.id = :competition', {
+        competition: competitionID,
+      })
+      .getRawOne<{ count: number }>();
+    return count;
+  }
 }

@@ -36,4 +36,17 @@ export class ClubService {
 
     return this.clubRepository.save(club);
   }
+
+  async countClubs(competitionId: number): Promise<number> {
+    const { count } = await this.clubRepository
+      .createQueryBuilder('club')
+      .select('COUNT(DISTINCT club.id)', 'count')
+      .leftJoin('club.starterLinks', 'starterLinks')
+      .where('starterLinks.competitionId = :competitionId', {
+        competitionId,
+      })
+      .getRawOne<{ count: number }>();
+
+    return count;
+  }
 }

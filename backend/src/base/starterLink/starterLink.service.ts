@@ -52,7 +52,7 @@ export class StarterLinkService {
     if (!starterLink) {
       throw new NotFoundException();
     }
-    const cloned = {...starterLink}
+    const cloned = { ...starterLink };
     await this.starterLinkRepository.remove(starterLink);
     return cloned;
   }
@@ -116,5 +116,17 @@ export class StarterLinkService {
         },
       },
     });
+  }
+
+  async countStarters(competitionID: number): Promise<number> {
+    const { count } = await this.starterLinkRepository
+      .createQueryBuilder('starterLink')
+      .select('COUNT(DISTINCT starterLink.starter)', 'count')
+      .leftJoin('starterLink.competition', 'competition')
+      .where('competition.id = :competition', {
+        competition: competitionID,
+      })
+      .getRawOne<{ count: number }>();
+    return count;
   }
 }

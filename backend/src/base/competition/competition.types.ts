@@ -1,4 +1,4 @@
-import { Field, ID, InputType, Int, PartialType } from '@nestjs/graphql';
+import { Field, ID, InputType, Int, ObjectType, PartialType } from '@nestjs/graphql';
 
 @InputType()
 export class CreateCompetitionInput {
@@ -27,4 +27,16 @@ export class UpdateCompetitionInput extends PartialType(
 ) {
   @Field(() => [String], { nullable: true })
   modules?: string[];
+}
+
+@ObjectType()
+export class CompetitionStats {
+  @Field(() => Int)
+  starters: number;
+
+  @Field(() => Int)
+  clubs: number;
+
+  @Field(() => Int)
+  grades: number;
 }

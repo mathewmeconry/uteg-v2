@@ -24,7 +24,7 @@ import { createTheme, ThemeProvider } from "@mui/material";
 import { CreateCompetition } from "./pages/competition/create/createCompetition";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { Dashboard } from "./pages/competition/[id]/dashboard";
+import { Dashboard } from "./pages/competition/[id]/dashboard/dashboard";
 import { StartersList } from "./pages/competition/[id]/starters/starterslist";
 import { StartersImport } from "./pages/competition/[id]/starters/import/startersImport";
 import { HomeLayout } from "./layouts/homelayout";
@@ -33,7 +33,7 @@ import { EGTModule } from "./modules/egt";
 import { registerModule } from "./hooks/useModules/useModules";
 import { Profile } from "./pages/profile/profile";
 import { UpdateLanaguage } from "./i18n";
-import { Settings } from "./pages/competition/settings/settings";
+import { Settings } from "./pages/competition/[id]/settings/settings";
 
 const theme = createTheme();
 
