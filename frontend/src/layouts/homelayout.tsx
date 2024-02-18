@@ -19,6 +19,7 @@ import {
   useMatches,
   useNavigate,
   useOutletContext,
+  useParams,
 } from "react-router-dom";
 import { enqueueSnackbar } from "notistack";
 import { useTranslation } from "react-i18next";
@@ -48,6 +49,7 @@ export function HomeLayout() {
   const props = parseMatches(
     matches as UIMatch<unknown, { layout: RouteHandleLayout }>[]
   );
+  const { id } = useParams();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const navigate = useNavigate();
   const { t } = useTranslation("common");
@@ -86,6 +88,14 @@ export function HomeLayout() {
   };
 
   const handleBack = () => {
+    if (location.key === "default") {
+      if(!id) {
+        navigate("/home");
+        return;
+      }
+      navigate(`/competition/${id}/dashboard`);
+      return
+    }
     navigate(-1);
   };
 
