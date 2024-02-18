@@ -61,5 +61,6 @@
   "ranking": "Rangliste",
   "rankings": "Ranglisten {{category}}",
   "honourPrecentage": "Auszeichnungsprozentsatz",
-  "intermediate": "Laufende"
+  "intermediate": "Laufende",
+  "invalid_division_ignore": "Ungültige Abteilungen werden ignoriert"
 }

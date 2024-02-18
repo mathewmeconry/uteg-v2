@@ -106,5 +106,6 @@
   "starters_import_file_clarifications": "At least one worksheet need to contain the following columns:",
   "files": "Files",
   "clubs": "Clubs",
-  "grades": "Grades"
+  "grades": "Grades",
+  "not_found_typed": "{{name}} not found"
 }

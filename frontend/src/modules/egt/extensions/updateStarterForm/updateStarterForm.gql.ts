@@ -1,8 +1,11 @@
 import gql from "graphql-tag";
 
 export const EGT_STARTER_LINK_MUTATION = gql`
-  mutation egtStarterLinkMutation($data: EGTStarterLinkInput!) {
-    egtStarterLink(data: $data) {
+  mutation egtStarterLinkMutation(
+    $data: EGTStarterLinkInput!
+    $ignoreDivision: Boolean
+  ) {
+    egtStarterLink(data: $data, ignoreDivision: $ignoreDivision) {
       id
       category
       division {
@@ -28,9 +31,9 @@ export const GET_EGT_STARTER_LINK = gql`
 export const GET_EGT_DIVISIONS = gql`
   query egtDivisionsUpdateStarterForm($filter: EGTDivisionFilterInput!) {
     egtDivisions(filter: $filter) {
-        id
-        number
-        ground
+      id
+      number
+      ground
     }
   }
-`
+`;

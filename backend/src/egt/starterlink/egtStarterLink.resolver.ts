@@ -62,6 +62,8 @@ export class EGTStarterLinkResolver {
   @Mutation(() => EGTStarterLink, { name: 'egtStarterLink' })
   async create(
     @Args('data') linkData: EGTStarterLinkInput,
+    @Args('ignoreDivision', { nullable: true, defaultValue: false })
+    ignoreDivision: boolean = false, // ignores if the division doesn't exist
   ): Promise<EGTStarterLink> {
     if (linkData.divisionID && linkData.divisionNumber) {
       throw new BadRequestException();
@@ -112,10 +114,12 @@ export class EGTStarterLinkResolver {
         linkData.divisionNumber,
       );
 
-      if (!division) {
+      if (!division && !ignoreDivision) {
         throw new Error('Division not found');
       }
-      link.division = Promise.resolve(division);
+      if (division) {
+        link.division = Promise.resolve(division);
+      }
     }
 
     if (linkData.divisionID) {

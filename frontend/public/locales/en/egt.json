@@ -61,5 +61,6 @@
   "ranking": "Ranking",
   "rankings": "Rankings {{category}}",
   "honourPrecentage": "Honours",
-  "intermediate": "Intermediate"
+  "intermediate": "Intermediate",
+  "invalid_division_ignore": "Invalid divisions will be ignored"
 }

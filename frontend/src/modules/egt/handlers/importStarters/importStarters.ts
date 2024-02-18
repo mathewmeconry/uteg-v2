@@ -28,6 +28,7 @@ export async function importStarters(
                 ? parseInt(starter.egt.divisionNumber)
                 : undefined,
             },
+            ignoreDivision: true,
           },
         });
         progressUpdater((oldProgress) => oldProgress + 1);

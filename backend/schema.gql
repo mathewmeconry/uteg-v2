@@ -203,7 +203,7 @@ type Mutation {
   egtLineupAdvanceRound(id: ID!, override: Boolean = false, round: Int!): EGTLineup!
   egtLineupAdvanceRounds(ids: [ID!]!, override: Boolean = false, round: Int!): [EGTLineup!]!
   egtSettings(competitionID: ID, data: EGTSettingsInput!): EGTSettings!
-  egtStarterLink(data: EGTStarterLinkInput!): EGTStarterLink!
+  egtStarterLink(data: EGTStarterLinkInput!, ignoreDivision: Boolean = false): EGTStarterLink!
   removeEgtDivision(id: ID!): EGTDivision!
   removeStarterLink(id: ID!): StarterLink!
   updateCompetition(data: UpdateCompetitionInput!, id: ID!): Competition!
