@@ -42,7 +42,16 @@ function getField(
       case "kat.":
         if (field === "category") {
           // @ts-ignore we know the key is part of the row
-          return row[key];
+          return row[key]
+            .toString()
+            .toLowerCase()
+            .replace("k", "")
+            .replace("h", "8")
+            .replace("men", "8")
+            .replace("herren", "8")
+            .replace("d", "8")
+            .replace("women", "8")
+            .replace("damen", "8");
         }
         break;
       case "division":
