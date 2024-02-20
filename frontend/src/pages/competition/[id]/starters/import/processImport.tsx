@@ -98,6 +98,7 @@ function detectSex(sex: string): Sex {
     case "f":
     case "w":
     case "weiblich":
+    case "female":
       return "FEMALE";
     default:
       return "MALE";
