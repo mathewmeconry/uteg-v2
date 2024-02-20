@@ -45,6 +45,7 @@ function getField(
           return row[key]
             .toString()
             .toLowerCase()
+            .replace(/\s/g, "")
             .replace("k", "")
             .replace("h", "8")
             .replace("men", "8")
@@ -62,7 +63,7 @@ function getField(
       case "abt.":
         if (field === "divisionNumber") {
           // @ts-ignore we know the key is part of the row
-          return row[key];
+          return parseInt(row[key].toString().replace(/\s/g, ""));
         }
         break;
     }
