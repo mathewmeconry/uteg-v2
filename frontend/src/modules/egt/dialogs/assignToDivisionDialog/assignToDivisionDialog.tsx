@@ -121,7 +121,7 @@ export function AssignToDivisionDialog(props: AssignToDivisionDialogProps) {
               variables: {
                 data: {
                   divisionID: divisionId,
-                  id: starter.id,
+                  id: starter.egt.id,
                 },
               },
             });
