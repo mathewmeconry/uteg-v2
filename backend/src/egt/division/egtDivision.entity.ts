@@ -10,6 +10,7 @@ import {
 import { EGTDivisionStates } from './egtDivision.types';
 import { EGTLineup } from '../lineup/egtLineup.entity';
 import { SEX } from 'src/base/starter/starter.types';
+import { EGTStarterLink } from '../starterlink/egtStarterLink.entity';
 
 @ObjectType()
 @Entity()
@@ -49,6 +50,9 @@ export class EGTDivision {
   @Field(() => Int)
   @Column()
   number: number;
+
+  @OneToMany(() => EGTStarterLink, (link) => link.division)
+  starterLinks: Promise<EGTStarterLink[]>;
 
   get totalRounds(): number {
     switch (this.sex) {

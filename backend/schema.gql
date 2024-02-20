@@ -112,6 +112,7 @@ type EGTDivision {
   starters: StarterLink!
   state: EGTDivisionStates!
   totalRounds: Int!
+  totalStarters: Int!
 }
 
 input EGTDivisionFilterInput {

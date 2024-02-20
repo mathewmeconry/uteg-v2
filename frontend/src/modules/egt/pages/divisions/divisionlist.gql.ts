@@ -11,6 +11,7 @@ export const GET_DIVISIONS = gql`
       category
       sex
       number
+      totalStarters
     }
   }
 `;

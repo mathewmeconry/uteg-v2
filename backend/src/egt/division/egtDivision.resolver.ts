@@ -106,6 +106,11 @@ export class EGTDivisionResolver {
     );
   }
 
+  @ResolveField(() => Int)
+  async totalStarters(@Parent() division: EGTDivision): Promise<number> {
+    return (await division.starterLinks).length;
+  }
+
   @ResolveField(() => [EGTLineup])
   async lineups(@Parent() division: EGTDivision): Promise<EGTLineup[]> {
     return division.lineups;

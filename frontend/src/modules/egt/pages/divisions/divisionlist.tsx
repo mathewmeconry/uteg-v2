@@ -193,6 +193,12 @@ export function Divisionslist() {
       },
     },
     {
+      field: "totalStarters",
+      headerName: t('starters', {ns: 'common'}),
+      disableColumnMenu: true,
+      flex: 1,
+    },
+    {
       type: "actions",
       headerName: t("actions", { ns: "common" }),
       field: "actions",
