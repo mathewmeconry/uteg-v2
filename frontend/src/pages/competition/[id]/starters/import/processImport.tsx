@@ -46,12 +46,12 @@ function parseSheet(
       sex: detectSex(normalizeField(row[indexes.sex])),
       starterLinks: [],
     };
-    for(const parser of moduleParsers) {
-      if(parser) {
+    for (const parser of moduleParsers) {
+      if (parser) {
         starter = {
           ...starter,
-          ...parser(row)
-        }
+          ...parser(row),
+        };
       }
     }
     starters.push(starter);
@@ -61,6 +61,9 @@ function parseSheet(
 }
 
 export function normalizeField(field: string | number): string {
+  if (!field) {
+    return "";
+  }
   return field.toString().trim();
 }
 
