@@ -157,7 +157,7 @@ function getFieldIndexes(data: SheetRow): Indexes {
       case "sex":
         indexes.sex = key;
         break;
-      case "brith year":
+      case "birth year":
       case "birthyear":
       case "jahrgang":
       case "geburtsjahr":
