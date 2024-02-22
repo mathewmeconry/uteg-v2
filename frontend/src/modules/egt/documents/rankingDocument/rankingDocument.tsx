@@ -55,8 +55,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     width: "90vw",
     borderBottomWidth: 1,
-    height: "30pt",
-    paddingTop: 8,
+    height: "20pt",
+    paddingTop: "1.75pt",
   },
   tableCol: {
   },
