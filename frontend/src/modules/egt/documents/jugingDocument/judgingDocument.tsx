@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
   page: {
     flexDirection: "column",
     fontFamily: "Roboto",
-    margin: "5vw",
+    padding: "5vw",
     fontWeight: 300,
   },
   section: {
