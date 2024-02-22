@@ -30,8 +30,9 @@ const styles = StyleSheet.create({
   page: {
     flexDirection: "column",
     fontFamily: "Roboto",
-    margin: "5vw",
+    padding: "5vw",
     fontWeight: 300,
+    height: "50px",
   },
   section: {
     marginBottom: 20,
@@ -52,7 +53,6 @@ const styles = StyleSheet.create({
   tableRow: {
     display: "flex",
     flexDirection: "row",
-    width: "90vw",
     borderBottomWidth: 1,
   },
   tableCol: {
@@ -88,7 +88,7 @@ export function StarterslistDocument(props: StarterslistDocumentProps) {
       .filter((starter) => starter.club.id === club.id)
       .sort(
         (a, b) =>
-        // @ts-expect-error
+          // @ts-expect-error
           (parseInt(a.egt?.lineup?.device?.deviceNumber || "") || 0) -
           // @ts-expect-error
           (parseInt(b.egt?.lineup?.device?.deviceNumber || "") || 0)
@@ -101,50 +101,61 @@ export function StarterslistDocument(props: StarterslistDocumentProps) {
       .sort((a, b) => a.starter.sex.localeCompare(b.starter.sex));
   }
 
-  return (
-    <Document>
-      <Page size="A4" style={styles.page} wrap={true}>
-        {uniqueClubs.map((club) => {
-          const starters = getStarters(club);
-          if (starters.length === 0) {
-            return null;
-          }
-          return (
-            <View style={styles.section} key={club.id} wrap={false}>
+  function renderClubs(clubs: Club[]) {
+    const views: React.ReactElement[] = [];
+    for (const club of clubs) {
+      const starters = getStarters(club);
+      if (starters.length === 0) {
+        return null;
+      }
+      const startersElements: React.ReactElement[] = [];
+      for (const starter of starters) {
+        startersElements.push(
+          <View style={styles.tableRow} key={`row-${starter.id}`} wrap={false}>
+            {filteredColumns.map((column) => (
+              <View
+                style={styles.tableCol}
+                key={`row-${starter.id}-col-${column.field}`}
+              >
+                <Text style={styles.tableCell}>
+                  {column.valueGetter
+                    ? column.valueGetter({
+                        row: starter,
+                      } as GridValueGetterParams)
+                    : ""}
+                </Text>
+              </View>
+            ))}
+          </View>
+        );
+      }
+      const header = (
+        <View style={styles.section} key={club.id}>
+          <View style={styles.table} key={`table-${club.id}`} minPresenceAhead={55}>
               <Text style={styles.h1}>{club.name}</Text>
-              <View style={styles.table} key={`table-${club.id}`}>
-                <View style={styles.tableHeaderRow} key={`header-${club.id}`}>
-                  {filteredColumns.map((column) => (
-                    <View
-                      style={styles.tableCol}
-                      key={`header-col-${column.field}`}
-                    >
-                      <Text style={styles.tableCell}>{column.headerName}</Text>
-                    </View>
-                  ))}
-                </View>
-                {starters.map((starter) => (
-                  <View style={styles.tableRow} key={`row-${starter.id}`}>
-                    {filteredColumns.map((column) => (
-                      <View
-                        style={styles.tableCol}
-                        key={`row-${starter.id}-col-${column.field}`}
-                      >
-                        <Text style={styles.tableCell}>
-                          {column.valueGetter
-                            ? column.valueGetter({
-                                row: starter,
-                              } as GridValueGetterParams)
-                            : ""}
-                        </Text>
-                      </View>
-                    ))}
+              <View fixed style={styles.tableHeaderRow} key={`header-${club.id}`}>
+                {filteredColumns.map((column) => (
+                  <View
+                    style={styles.tableCol}
+                    key={`header-col-${column.field}`}
+                  >
+                    <Text style={styles.tableCell}>{column.headerName}</Text>
                   </View>
                 ))}
               </View>
-            </View>
-          );
-        })}
+            {startersElements}
+          </View>
+        </View>
+      );
+      views.push(header);
+    }
+    return views;
+  }
+
+  return (
+    <Document>
+      <Page size="A4" style={styles.page} wrap>
+        {renderClubs(uniqueClubs)}
       </Page>
     </Document>
   );
