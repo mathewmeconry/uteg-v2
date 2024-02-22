@@ -34,7 +34,7 @@ import * as path from 'path';
       autoSchemaFile: 'schema.gql',
       installSubscriptionHandlers: true,
       sortSchema: true,
-      playground: true,
+      playground: process.env.NODE_ENV === 'development',
       buildSchemaOptions: {
         dateScalarMode: 'timestamp',
         numberScalarMode: 'integer',
