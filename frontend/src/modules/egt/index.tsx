@@ -90,7 +90,7 @@ const starterListColumns: Array<GridColDefExtension | GridActionsColDef> = [
     field: "egt.device",
     headerName: "starting_device",
     valueGetter: (params) =>
-      params.row.egt?.lineup?.device?.deviceNumber
+      params.row.egt?.lineup?.device?.deviceNumber !== undefined
         ? `device_${params.row.egt?.lineup?.device?.deviceNumber}`
         : "",
     disableColumnMenu: true,
