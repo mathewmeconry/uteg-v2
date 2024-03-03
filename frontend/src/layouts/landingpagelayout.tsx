@@ -4,8 +4,8 @@ import { PropsWithChildren } from "react";
 export function LandingPageLayout(props: PropsWithChildren) {
   return (
     <Grid container spacing={2} sx={{ height: "100%" }}>
-      <Grid xs={4}></Grid>
-      <Grid xs={4}>
+      <Grid xs={2} md={4}></Grid>
+      <Grid xs={8} md={4}>
         <Box sx={{ height: "100%", display: 'flex' }}>{props.children}</Box>
       </Grid>
     </Grid>

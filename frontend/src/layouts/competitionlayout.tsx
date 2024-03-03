@@ -35,13 +35,14 @@ export type MenuItem = {
 
 export function CompetitionLayout() {
   const { id } = useParams();
-  const { drawerWidth, drawerOpen, setDrawerOpen } = useHomeLayoutContext();
+  const { drawerWidth, drawerOpen, setDrawerOpen, drawerVariant } = useHomeLayoutContext();
   const { modules: competitionModules } = useModules(id || "");
   const { data, loading } = useCompetitionNameQuery({ variables: { id: id! } });
   const { t } = useTranslation();
   const [submenuStates, setSubmenuStates] = useState<{
     [index: string]: boolean;
   }>({});
+
 
   function renderName() {
     if (loading) {
@@ -134,7 +135,7 @@ export function CompetitionLayout() {
         anchor="left"
         open={drawerOpen}
         onClose={() => setDrawerOpen(false)}
-        variant="temporary"
+        variant={drawerVariant}
         sx={{
           width: drawerWidth,
           flexShrink: 0,

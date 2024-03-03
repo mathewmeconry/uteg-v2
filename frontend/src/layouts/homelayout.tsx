@@ -7,9 +7,10 @@ import {
   MenuItem,
   Toolbar,
   Typography,
+  useMediaQuery,
   useTheme,
 } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { isTokenValid, removeToken } from "../helpers/auth";
 import {
   Navigate,
@@ -56,6 +57,23 @@ export function HomeLayout() {
   const theme = useTheme();
   const [drawerOpen, setDrawerOpen] = useState(false);
 
+  const bigScreen = useMediaQuery(theme.breakpoints.up("lg"));
+  const mediumScreen = useMediaQuery(theme.breakpoints.only("md"));
+  const smallScreen = useMediaQuery(theme.breakpoints.down("sm"));
+
+  const drawerVariant = useMemo(() => {
+    if (!bigScreen) {
+      return "temporary";
+    }
+    return "persistent";
+  }, [bigScreen]);
+
+  useEffect(() => {
+    if (bigScreen) {
+      setDrawerOpen(true);
+    }
+  }, [bigScreen, mediumScreen, smallScreen]);
+
   if (!isTokenValid()) {
     enqueueSnackbar(t("permission_denied"), {
       variant: "error",
@@ -65,8 +83,10 @@ export function HomeLayout() {
   }
 
   useEffect(() => {
-    setDrawerOpen(false);
-  }, [location]);
+    if(!bigScreen) {
+      setDrawerOpen(false);
+    }
+  }, [location, bigScreen]);
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -89,12 +109,12 @@ export function HomeLayout() {
 
   const handleBack = () => {
     if (location.key === "default") {
-      if(!id) {
+      if (!id) {
         navigate("/home");
         return;
       }
       navigate(`/competition/${id}/dashboard`);
-      return
+      return;
     }
     navigate(-1);
   };
@@ -160,8 +180,19 @@ export function HomeLayout() {
         </Toolbar>
       </AppBar>
       <Toolbar />
-      <Box sx={{ m: 1, mt: 2 }}>
-        <Outlet context={{ drawerWidth, drawerOpen, setDrawerOpen }} />
+      <Box
+        sx={{ m: 1, mt: 2 }}
+        style={{
+          transition: theme.transitions.create(["margin"], {
+            easing: theme.transitions.easing.sharp,
+            duration: theme.transitions.duration.enteringScreen,
+          }),
+          marginLeft: drawerOpen && bigScreen ? drawerWidth + 8 : "8px",
+        }}
+      >
+        <Outlet
+          context={{ drawerWidth, drawerOpen, setDrawerOpen, drawerVariant }}
+        />
       </Box>
     </>
   );
@@ -171,6 +202,7 @@ export type HomeLayoutContextType = {
   drawerWidth: number;
   drawerOpen: boolean;
   setDrawerOpen: (state: boolean) => void;
+  drawerVariant: "persistent" | "temporary";
 };
 export function useHomeLayoutContext(): HomeLayoutContextType {
   return useOutletContext<HomeLayoutContextType>();
