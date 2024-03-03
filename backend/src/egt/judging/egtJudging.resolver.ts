@@ -13,7 +13,7 @@ export class EGTJudgingResolver {
   @Inject()
   private readonly egtJudgingService: EGTJudgingService;
 
-  @Role(ROLES.VIEWER)
+  @Role(ROLES.JUDGE)
   @Query(() => [EGTJudgingDevice], { name: 'egtJudgingDevices' })
   async getDivisionJudging(
     @Args('ids', { type: () => [ID] }) ids: number[],
@@ -22,7 +22,7 @@ export class EGTJudgingResolver {
     return this.egtJudgingService.getJudging(ids, round);
   }
 
-  @Role(ROLES.VIEWER)
+  @Role(ROLES.JUDGE)
   @Query(() => EGTJudgingDevice, {
     name: 'egtJudgingDevice',
   })

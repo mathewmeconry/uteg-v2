@@ -107,5 +107,9 @@
   "files": "Files",
   "clubs": "Clubs",
   "grades": "Grades",
-  "not_found_typed": "{{name}} not found"
+  "not_found_typed": "{{name}} not found",
+
+  "reset": "Reset",
+  "copy": "Copy",
+  "loading": "Loading..."
 }

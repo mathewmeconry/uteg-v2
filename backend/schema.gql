@@ -192,6 +192,13 @@ input GradeInput {
   value: Float!
 }
 
+type Judgetoken {
+  device: Int!
+  ground: Int!
+  id: ID!
+  token: String!
+}
+
 type Mutation {
   addGrades(grades: [GradeInput!]!): [Grade!]!
   createClub(data: CreateClubInput!): Club!
@@ -207,6 +214,7 @@ type Mutation {
   egtStarterLink(data: EGTStarterLinkInput!, ignoreDivision: Boolean = false): EGTStarterLink!
   removeEgtDivision(id: ID!): EGTDivision!
   removeStarterLink(id: ID!): StarterLink!
+  resetJudgeToken(id: ID!): Judgetoken!
   updateCompetition(data: UpdateCompetitionInput!, id: ID!): Competition!
   updateEgtDivisionState(data: UpdateEGTDivisionStateInput!): EGTDivision!
   updateStarter(data: UpdateStarterInput!, id: ID!): Starter!
@@ -230,7 +238,9 @@ type Query {
   egtStarterLink(id: ID, starterLinkID: ID): EGTStarterLink
   egtStarterLinkUnassigned(divisionID: ID!): [EGTStarterLink!]!
   egtStarterRankings(category: Int!, competitionID: ID!, sex: Sex!): [EGTStarterRanking!]!
+  findJudgeToken(competitionID: ID!, create: Boolean! = false, device: Int!, ground: Int!): Judgetoken
   grades: [Grade!]!
+  judgeToken(id: Int!): Judgetoken!
   starterGrades(device: Int, starterlinkIds: [ID!]!): [Grade!]!
   starterLink(id: ID!): StarterLink
   starterLinks(competitionID: ID!, sex: String): [StarterLink!]!

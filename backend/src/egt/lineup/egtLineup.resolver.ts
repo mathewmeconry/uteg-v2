@@ -17,6 +17,7 @@ import { EGTLineupService } from './egtLineup.service';
 import { EGTStarterLink } from '../starterlink/egtStarterLink.entity';
 import { EGTDevice } from '../device/egtDevice.entity';
 import { EGTDivisionService } from '../division/egtDivision.service';
+import { Judge } from 'src/auth/decorators/judge.decorator';
 
 @Resolver(EGTLineup)
 @UseGuards(EGTLineupGuard, RoleGuard)
@@ -27,7 +28,7 @@ export class EGTLineupResolver {
   @Inject()
   private readonly egtDivisionService: EGTDivisionService;
 
-  @Role(ROLES.VIEWER)
+  @Role(ROLES.JUDGE)
   @Query(() => EGTLineup, { nullable: true, name: 'egtLineup' })
   async findOne(
     @Args('id', { type: () => ID }) id: number,
@@ -54,6 +55,7 @@ export class EGTLineupResolver {
   }
 
   @Role(ROLES.ADMIN)
+  @Judge()
   @Mutation(() => [EGTLineup], { name: 'egtLineupAdvanceRounds' })
   async advanceRounds(
     @Args('ids', { type: () => [ID] }) ids: number[],

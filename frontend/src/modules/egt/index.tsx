@@ -20,6 +20,9 @@ import MilitaryTechIcon from "@mui/icons-material/MilitaryTech";
 import { EGTSettings } from "./extensions/settings/settings";
 import { createCompetition } from "./handlers/createCompetition/createCompetition";
 import { EGTSettingsReview } from "./extensions/settingsReview/settingsReview";
+import Judges from "./pages/judges/judges";
+import GavelIcon from "@mui/icons-material/Gavel";
+import Judging from "./pages/judging/judging";
 
 const routes: RouteObject[] = [
   {
@@ -56,6 +59,27 @@ const routes: RouteObject[] = [
       {
         path: "ranking",
         element: <Ranking />,
+      },
+      {
+        path: "judges",
+        element: <Judges />,
+      },
+      {
+        path: "judging",
+        handle: {
+          layout: {
+            hasDrawer: false,
+            hideAccount: true,
+            skipTokenCheck: true,
+            hideAppbar: true,
+          },
+        },
+        children: [
+          {
+            path: ":token",
+            element: <Judging />,
+          },
+        ],
       },
     ],
   },
@@ -224,12 +248,12 @@ export const EGTModule: Module = {
     starterslistColumns: starterListColumns,
     starterslistSelectedRowsActions: StarterslistSelectedRowsActions,
     settings: EGTSettings,
-    settingsReview: EGTSettingsReview
+    settingsReview: EGTSettingsReview,
   },
   handlers: {
     parseStarterFromSheet: parseStarterFromSheet,
     importStarters: importStarters,
-    createCompetition: createCompetition
+    createCompetition: createCompetition,
   },
   transformers: {
     starterLinksQuery: starterLinksQueryTransformer,
@@ -252,6 +276,12 @@ export const EGTModule: Module = {
       text: "ranking",
       key: "ranking",
       to: "/competition/:id/egt/ranking",
+    },
+    {
+      icon: <GavelIcon />,
+      text: "judges",
+      key: "judges",
+      to: "/competition/:id/egt/judges",
     },
   ],
 };

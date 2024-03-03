@@ -62,5 +62,9 @@
   "rankings": "Rankings {{category}}",
   "honourPrecentage": "Honours",
   "intermediate": "Intermediate",
-  "invalid_division_ignore": "Invalid divisions will be ignored"
+  "invalid_division_ignore": "Invalid divisions will be ignored",
+
+  "judges": "Judges",
+  "token_reset": "Token reset",
+  "judging": "Judging"
 }

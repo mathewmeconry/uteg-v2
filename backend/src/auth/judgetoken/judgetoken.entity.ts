@@ -10,12 +10,17 @@ export class Judgetoken {
   id: number;
 
   @ManyToOne(() => Competition)
-  competition: Competition;
+  competition: Promise<Competition>;
 
   @Column()
+  @Field(() => Int)
   device: number;
 
   @Field(() => Int)
   @Column()
   ground: number;
+
+  @Column()
+  @Field()
+  token: string;
 }

@@ -5,4 +5,7 @@ export type RouteHandleLayout = {
   returnable?: boolean;
   icons?: ReactElement[];
   hasDrawer?: boolean
+  hideAccount?: boolean
+  skipTokenCheck?: boolean
+  hideAppbar?: boolean
 };

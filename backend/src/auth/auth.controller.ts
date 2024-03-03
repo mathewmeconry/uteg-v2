@@ -17,4 +17,14 @@ export class AuthController {
       token: await this.authService.authenticate(email, password),
     };
   }
+
+  @Post('token')
+  @Public()
+  async authenticateWithToken(
+    @Body('token') token: string
+  ): Promise<{token: string}> {
+    return {
+      token: await this.authService.authenticateWithToken(token),
+    }
+  }
 }

@@ -10,6 +10,7 @@ import { ROLE_KEY } from '../decorators/role.decorator';
 import { Reflector } from '@nestjs/core';
 import { ROLES } from '../types';
 import { GLOBAL_ROLE_KEY } from '../decorators/globalRole.decorator';
+import { JUDGE_KEY } from '../decorators/judge.decorator';
 
 @Injectable()
 export class RoleGuard implements CanActivate {
@@ -29,14 +30,34 @@ export class RoleGuard implements CanActivate {
       GLOBAL_ROLE_KEY,
       [context.getHandler(), context.getClass()],
     );
+    const judgeAllowed = this.reflector.getAllAndOverride<boolean>(JUDGE_KEY, [
+      context.getHandler(),
+      context.getClass(),
+    ]);
 
     if (!role && !globalRole) {
       return true;
     }
 
+    if (ctx.getContext().judge) {
+      if (role <= ROLES.JUDGE || judgeAllowed) {
+        return this.authService.authorizeJudge(
+          ctx.getContext().judge.sub,
+          ctx.getContext().competition,
+        );
+      }
+    }
+
+    if (!ctx.getContext().user) {
+      return false;
+    }
+
     if (globalRole) {
       if (
-        await this.authService.globalAuthorize(ctx.getContext().user.id, globalRole)
+        await this.authService.globalAuthorize(
+          ctx.getContext().user.id,
+          globalRole,
+        )
       ) {
         return true;
       }

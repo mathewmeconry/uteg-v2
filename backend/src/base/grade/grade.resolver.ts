@@ -7,6 +7,7 @@ import { ROLES } from 'src/auth/types';
 import { RoleGuard } from 'src/auth/guards/role.guard';
 import { GradeGuard } from './grade.guard';
 import { GradeInput } from './grade.types';
+import { Judge } from 'src/auth/decorators/judge.decorator';
 
 @Resolver(() => Grade)
 @UseGuards(GradeGuard, RoleGuard)
@@ -14,13 +15,13 @@ export class GradeResolver {
   @Inject()
   private gradeService: GradeService;
 
-  @Role(ROLES.VIEWER)
+  @Role(ROLES.JUDGE)
   @Query(() => [Grade], { name: 'grades' })
   async findAll(): Promise<Grade[]> {
     return this.gradeService.findAll();
   }
 
-  @Role(ROLES.VIEWER)
+  @Role(ROLES.JUDGE)
   @Query(() => [Grade], {name: 'starterGrades'})
   async findForStarters(
     @Args('starterlinkIds', {type: () => [ID]}) starterlinkIds: number[],
@@ -30,6 +31,7 @@ export class GradeResolver {
   }
 
   @Role(ROLES.ADMIN)
+  @Judge()
   @Mutation(() => [Grade], { name: 'addGrades' })
   async addBulk(
     @Args('grades', { type: () => [GradeInput] }) grades: GradeInput[],

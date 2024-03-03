@@ -74,7 +74,7 @@ export function HomeLayout() {
     }
   }, [bigScreen, mediumScreen, smallScreen]);
 
-  if (!isTokenValid()) {
+  if (!isTokenValid() && !props.skipTokenCheck) {
     enqueueSnackbar(t("permission_denied"), {
       variant: "error",
       key: "permissionDenied",
@@ -83,7 +83,7 @@ export function HomeLayout() {
   }
 
   useEffect(() => {
-    if(!bigScreen) {
+    if (!bigScreen) {
       setDrawerOpen(false);
     }
   }, [location, bigScreen]);
@@ -121,65 +121,71 @@ export function HomeLayout() {
 
   return (
     <>
-      <AppBar>
-        <Toolbar
-          style={{
-            transition: theme.transitions.create(["margin"], {
-              easing: theme.transitions.easing.sharp,
-              duration: theme.transitions.duration.enteringScreen,
-            }),
-            marginLeft: drawerOpen ? drawerWidth : 0,
-          }}
-        >
-          {props.returnable && (
-            <ArrowBackIosNewIcon
-              onClick={handleBack}
-              sx={{ mr: 3, cursor: "pointer" }}
-            />
-          )}
-          {props.hasDrawer && (
-            <MenuIcon
-              key="menu"
-              sx={{ mr: 2, cursor: "pointer" }}
-              onClick={() => setDrawerOpen(!drawerOpen)}
-            />
-          )}
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            {props.title && t(props.title)}
-          </Typography>
-          <div>
-            <IconButton
-              size="large"
-              aria-label="account of current user"
-              aria-controls="menu-appbar"
-              aria-haspopup="true"
-              onClick={handleMenu}
-              color="inherit"
-            >
-              <AccountCircle />
-            </IconButton>
-            <Menu
-              id="menu-appbar"
-              anchorEl={anchorEl}
-              anchorOrigin={{
-                vertical: "top",
-                horizontal: "right",
+      {!props.hideAppbar && (
+        <>
+          <AppBar>
+            <Toolbar
+              style={{
+                transition: theme.transitions.create(["margin"], {
+                  easing: theme.transitions.easing.sharp,
+                  duration: theme.transitions.duration.enteringScreen,
+                }),
+                marginLeft: drawerOpen && props.hasDrawer ? drawerWidth : 0,
               }}
-              keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              open={Boolean(anchorEl)}
-              onClose={handleClose}
             >
-              <MenuItem onClick={handleProfile}>{t("profile")}</MenuItem>
-              <MenuItem onClick={handleLogout}>{t("logout")}</MenuItem>
-            </Menu>
-          </div>
-        </Toolbar>
-      </AppBar>
-      <Toolbar />
+              {props.returnable && (
+                <ArrowBackIosNewIcon
+                  onClick={handleBack}
+                  sx={{ mr: 3, cursor: "pointer" }}
+                />
+              )}
+              {props.hasDrawer && (
+                <MenuIcon
+                  key="menu"
+                  sx={{ mr: 2, cursor: "pointer" }}
+                  onClick={() => setDrawerOpen(!drawerOpen)}
+                />
+              )}
+              <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+                {props.title && t(props.title)}
+              </Typography>
+              {!props.hideAccount && (
+                <div>
+                  <IconButton
+                    size="large"
+                    aria-label="account of current user"
+                    aria-controls="menu-appbar"
+                    aria-haspopup="true"
+                    onClick={handleMenu}
+                    color="inherit"
+                  >
+                    <AccountCircle />
+                  </IconButton>
+                  <Menu
+                    id="menu-appbar"
+                    anchorEl={anchorEl}
+                    anchorOrigin={{
+                      vertical: "top",
+                      horizontal: "right",
+                    }}
+                    keepMounted
+                    transformOrigin={{
+                      vertical: "top",
+                      horizontal: "right",
+                    }}
+                    open={Boolean(anchorEl)}
+                    onClose={handleClose}
+                  >
+                    <MenuItem onClick={handleProfile}>{t("profile")}</MenuItem>
+                    <MenuItem onClick={handleLogout}>{t("logout")}</MenuItem>
+                  </Menu>
+                </div>
+              )}
+            </Toolbar>
+          </AppBar>
+          <Toolbar />
+        </>
+      )}
       <Box
         sx={{ m: 1, mt: 2 }}
         style={{
@@ -187,7 +193,10 @@ export function HomeLayout() {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.enteringScreen,
           }),
-          marginLeft: drawerOpen && bigScreen ? drawerWidth + 8 : "8px",
+          marginLeft:
+            drawerOpen && bigScreen && props.hasDrawer
+              ? drawerWidth + 8
+              : "8px",
         }}
       >
         <Outlet
