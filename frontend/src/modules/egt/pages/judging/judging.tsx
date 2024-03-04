@@ -7,7 +7,7 @@ import {
   isTokenValid,
 } from "../../../../helpers/auth";
 import { useEffect, useState } from "react";
-import { Box, CircularProgress, Typography } from "@mui/material";
+import { Box, CircularProgress } from "@mui/material";
 import {
   useEgtJudgingArrayLazyQuery,
   useEgtJudgingCompetitionLazyQuery,
@@ -25,15 +25,15 @@ export default function Judging() {
   const { t } = useTranslation(["egt", "common"]);
   const { token } = useParams();
   const [tokenData, setTokenData] = useState<JudgingTokenData | null>(null);
-  const [round, setRound] = useState(0);
+  const [round, _setRound] = useState(0);
   const [authenticating, setAuthenticating] = useState(true);
   const [
     queryCompetition,
-    { data: competition, loading: competitionLoading },
+    { data: _competition, loading: competitionLoading },
   ] = useEgtJudgingCompetitionLazyQuery();
   const [
     queryJudgingArray,
-    { data: judgingArray, loading: judgingArrayLoading },
+    { data: _judgingArray, loading: judgingArrayLoading },
   ] = useEgtJudgingArrayLazyQuery();
   const [
     queryDivisions,

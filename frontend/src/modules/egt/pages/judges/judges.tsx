@@ -38,12 +38,7 @@ export default function Judges() {
   const [resetToken, { loading: resetting }] = useEgtJudgesResetTokenMutation();
 
   useEffect(() => {
-    let active = true;
     load();
-    return () => {
-      active = false;
-    };
-
     async function load() {
       const tokens: Judgetoken[] = [];
       for (let i = 0; i < 5; i++) {
