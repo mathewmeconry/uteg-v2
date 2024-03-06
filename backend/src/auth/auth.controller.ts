@@ -7,7 +7,7 @@ export class AuthController {
   @Inject()
   private authService: AuthService;
 
-  @Post()
+  @Post('/')
   @Public()
   async authenticate(
     @Body('email') email: string,

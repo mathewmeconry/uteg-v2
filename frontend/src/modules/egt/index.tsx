@@ -92,7 +92,7 @@ const starterListColumns: Array<GridColDefExtension | GridActionsColDef> = [
     valueGetter: (params) => {
       if (params.row.egt?.category) {
         if (params.row.egt?.category === 8) {
-          return `category_${params.row.egt?.category}_${params.row.starter?.sex}`;
+          return `category_${params.row.egt?.category}_${params.row.starter?.sex.toLowerCase()}`;
         }
         return `category_${params.row.egt?.category}`;
       }

@@ -69,10 +69,12 @@ export function HomeLayout() {
   }, [bigScreen]);
 
   useEffect(() => {
-    if (bigScreen) {
+    if (bigScreen && props.hasDrawer) {
       setDrawerOpen(true);
+    } else {
+      setDrawerOpen(false);
     }
-  }, [bigScreen, mediumScreen, smallScreen]);
+  }, [bigScreen, mediumScreen, smallScreen, props.hasDrawer]);
 
   if (!isTokenValid() && !props.skipTokenCheck) {
     enqueueSnackbar(t("permission_denied"), {
@@ -130,7 +132,7 @@ export function HomeLayout() {
                   easing: theme.transitions.easing.sharp,
                   duration: theme.transitions.duration.enteringScreen,
                 }),
-                marginLeft: drawerOpen && props.hasDrawer ? drawerWidth : 0,
+                marginLeft: drawerOpen ? drawerWidth : 0,
               }}
             >
               {props.returnable && (
