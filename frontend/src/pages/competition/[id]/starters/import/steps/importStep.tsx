@@ -132,6 +132,11 @@ export function ImportStep() {
             ]);
           }
           starter.id = id;
+        }).catch(e => {
+          setFailures((oldFailures) => [
+            ...oldFailures,
+            { step: "importing", starter: starter },
+          ]);
         })
       );
     }
