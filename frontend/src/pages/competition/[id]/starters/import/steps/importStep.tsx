@@ -254,7 +254,10 @@ export function ImportStep() {
       }}
     >
       {!step && renderConfirmation()}
-      {(step === "importing" || step === "linking") && renderProgressBar()}
+      {(step === "importing" ||
+        step === "linking" ||
+        step === "processingModules") &&
+        renderProgressBar()}
       {step === "done" && renderDone()}
     </Box>
   );
