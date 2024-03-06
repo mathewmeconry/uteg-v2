@@ -1,10 +1,10 @@
 import { ListItemIcon, Menu, MenuItem } from "@mui/material";
 import { GridColumnMenuProps, useGridApiContext } from "@mui/x-data-grid";
-import { StarterLink } from "../../../../__generated__/graphql";
+import { StarterLink } from "../../__generated__/graphql";
 import { useEffect, useMemo } from "react";
 import Check from "@mui/icons-material/Check";
 
-export function StarterlistColumnMenu(
+export function GridColumnFilterMenu(
   props: GridColumnMenuProps & {
     rows: StarterLink[];
   }
@@ -16,7 +16,7 @@ export function StarterlistColumnMenu(
 
   const deduplicatedItems = useMemo(() => {
     const filterValues: string[] = [];
-    for (const row of props.rows) {
+    for (const row of (props.rows ?? [])) {
       if (props.colDef.valueGetter) {
         // @ts-expect-error
         const rowValue = props.colDef.valueGetter({ row: row });
@@ -28,59 +28,71 @@ export function StarterlistColumnMenu(
     return filterValues.sort();
   }, [props.rows]);
 
-  function getClubFilterItem() {
-    for (const filterItem of gridApi.current.state.filter.filterModel.items) {
-      if (filterItem.field === "club.name" && filterItem.operator === "in") {
-        return filterItem;
-      }
+  function getFilterItem() {
+    const index = getFilterItemIndex();
+    if (index === -1) {
+      return {
+        field: props.colDef.field,
+        operator: "in",
+        value: [],
+      };
     }
-    return {
-      field: "club.name",
-      operator: "in",
-      value: [],
-    };
+    return gridApi.current.state.filter.filterModel.items[index];
+  }
+
+  function getFilterItemIndex() {
+    return gridApi.current.state.filter.filterModel.items.findIndex(
+      (filterItem) => {
+        return (
+          filterItem.field === props.colDef.field &&
+          filterItem.operator === "in"
+        );
+      }
+    );
   }
 
   useEffect(() => {
-    const filterItem = getClubFilterItem();
+    const filterItemIndex = getFilterItemIndex();
+    if (filterItemIndex === -1) {
+      return;
+    }
+
+    const filterItem = getFilterItem();
     if (filterItem.value.length > 0) {
       filterItem.value = filterItem.value.filter((value: string) =>
         deduplicatedItems.includes(value)
       );
-
-      if (filterItem.value.length === 0) {
-        gridApi.current.setFilterModel({
-          items: [],
-        });
-      } else {
-        gridApi.current.setFilterModel({
-          items: [filterItem],
-        });
-      }
     }
+
+    const newFilterItems = gridApi.current.state.filter.filterModel.items;
+    newFilterItems[filterItemIndex] = filterItem;
+
+    gridApi.current.setFilterModel({
+      items: newFilterItems,
+    });
   }, [deduplicatedItems]);
 
   function onItemClick(value: string) {
-    const clubFilter = getClubFilterItem();
-    if (clubFilter.value.includes(value)) {
-      clubFilter.value.splice(clubFilter.value.indexOf(value), 1);
+    const filterItem = getFilterItem();
+    if (filterItem.value.includes(value)) {
+      filterItem.value.splice(filterItem.value.indexOf(value), 1);
     } else {
-      clubFilter.value.push(value);
+      filterItem.value.push(value);
     }
 
     if (
-      clubFilter.value.length === 0 ||
-      JSON.stringify(deduplicatedItems) ===
-        JSON.stringify(clubFilter.value.sort())
+      filterItem.value.length === 0 ||
+      JSON.stringify(deduplicatedItems) === JSON.stringify(filterItem.value)
     ) {
       gridApi.current.setFilterModel({
         items: [],
       });
-    } else {
-      gridApi.current.setFilterModel({
-        items: [clubFilter],
-      });
+      return;
     }
+
+    gridApi.current.setFilterModel({
+      items: [filterItem],
+    });
   }
 
   return (
@@ -91,7 +103,7 @@ export function StarterlistColumnMenu(
     >
       {deduplicatedItems.map((value, index) => (
         <MenuItem onClick={() => onItemClick(value)} key={index}>
-          {getClubFilterItem().value.includes(value) && (
+          {getFilterItem().value.includes(value) && (
             <ListItemIcon>
               <Check />
             </ListItemIcon>

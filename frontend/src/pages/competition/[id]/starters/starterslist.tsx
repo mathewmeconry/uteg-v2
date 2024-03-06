@@ -10,8 +10,6 @@ import {
   DataGrid,
   GridActionsCellItem,
   GridActionsColDef,
-  GridFilterItem,
-  GridFilterOperator,
   GridRowId,
   GridValidRowModel,
 } from "@mui/x-data-grid";
@@ -25,11 +23,12 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { UpdateStarterDialog } from "../../../../dialogs/updateStarterDialog/updateStarterDialog";
 import { ApolloError, useQuery } from "@apollo/client";
 import { StarterslistToolbar } from "./starterslistToolbar";
-import { StarterlistColumnMenu } from "./starterslistColumnMenu";
+import { GridColumnFilterMenu } from "../../../../components/grid/gridColumnFilterMenu";
 import { DeleteConfirmationDialog } from "../../../../dialogs/deleteConfirmationDialog/deleteConfirmationDialog";
 import { List, ListItem, Typography } from "@mui/material";
 import { useModules } from "../../../../hooks/useModules/useModules";
 import { GridColDefExtension } from "../../../../types/GridColDefExtension";
+import inFilter from "../../../../components/grid/inFilterOperator";
 
 export function StartersList() {
   const { id } = useParams();
@@ -64,22 +63,6 @@ export function StartersList() {
     },
     fetchPolicy: "cache-and-network",
   });
-
-  const inFilter: GridFilterOperator = {
-    label: t("In"),
-    value: "in",
-    // @ts-ignore need to add noop based on the docs (https://mui.com/x/react-data-grid/filtering/customization/#optimize-performance)
-    getApplyFilterFn: () => {},
-    getApplyFilterFnV7: (filterItem: GridFilterItem) => {
-      return (value: string): boolean => {
-        if (filterItem.value.length === 0) {
-          return true;
-        }
-
-        return filterItem.value.includes(value);
-      };
-    },
-  };
 
   const moduleColumns = useMemo(() => {
     const columns: Array<GridColDefExtension | GridActionsColDef> = [];
@@ -122,7 +105,7 @@ export function StartersList() {
       headerName: t("sex"),
       valueGetter: (params) => t(params.row.starter.sex),
       flex: 1,
-      disableColumnMenu: true,
+      filterOperators: [inFilter],
       renderInPdf: true,
       renderInXlsx: true,
     },
@@ -148,7 +131,6 @@ export function StartersList() {
       headerName: t("location"),
       valueGetter: (params) => params.row.club.location,
       flex: 1,
-      filterOperators: [inFilter],
       renderInPdf: false,
       renderInXlsx: true,
     },
@@ -259,7 +241,7 @@ export function StartersList() {
             checkboxSelection
             slots={{
               toolbar: StarterslistToolbar,
-              columnMenu: StarterlistColumnMenu,
+              columnMenu: GridColumnFilterMenu,
             }}
             slotProps={{
               columnMenu: {

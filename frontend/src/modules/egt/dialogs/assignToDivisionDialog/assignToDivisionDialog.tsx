@@ -115,7 +115,7 @@ export function AssignToDivisionDialog(props: AssignToDivisionDialogProps) {
       if (starter && starter.egt?.category && starter.egt?.id) {
         const divisionId =
           data[`${starter.egt.category}_${starter.starter.sex}`];
-        if (divisionId !== starter.egt?.division?.id) {
+        if (divisionId && divisionId !== starter.egt?.division?.id) {
           try {
             await assignMutataion({
               variables: {
@@ -162,7 +162,7 @@ export function AssignToDivisionDialog(props: AssignToDivisionDialogProps) {
         annotation={category.sex.toLowerCase()}
         ns="egt"
         fieldProps={{ select: true }}
-        rules={{ required: true }}
+        rules={{ required: false }}
       >
         {...(divisions[`${category.category}_${category.sex}`] || []).map(
           (division) => (

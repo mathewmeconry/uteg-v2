@@ -23,6 +23,7 @@ import { EGTSettingsReview } from "./extensions/settingsReview/settingsReview";
 import Judges from "./pages/judges/judges";
 import GavelIcon from "@mui/icons-material/Gavel";
 import Judging from "./pages/judging/judging";
+import inFilter from "../../components/grid/inFilterOperator";
 
 const routes: RouteObject[] = [
   {
@@ -98,7 +99,7 @@ const starterListColumns: Array<GridColDefExtension | GridActionsColDef> = [
       }
       return "";
     },
-    disableColumnMenu: true,
+    filterOperators: [inFilter],
     renderInPdf: true,
     renderInXlsx: true,
   },

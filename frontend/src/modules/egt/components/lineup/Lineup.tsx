@@ -11,6 +11,8 @@ import { LineupToolbar } from "./LineupToolbar";
 import EditIcon from "@mui/icons-material/Edit";
 import { useState } from "react";
 import { UpdateStarterDialog } from "../../../../dialogs/updateStarterDialog/updateStarterDialog";
+import inFilter from "../../../../components/grid/inFilterOperator";
+import { GridColumnFilterMenu } from "../../../../components/grid/gridColumnFilterMenu";
 
 export function Lineup(props: { id: string; lineups: EgtLineup[] }) {
   const { t } = useTranslation(["common", "egt"]);
@@ -65,7 +67,7 @@ export function Lineup(props: { id: string; lineups: EgtLineup[] }) {
       headerName: t("club"),
       valueGetter: (params: any) => params.row.starterlink.club.name,
       flex: 1,
-      disableColumnMenu: true,
+      filterOperators: [inFilter],
     },
     {
       type: "actions",
@@ -101,8 +103,13 @@ export function Lineup(props: { id: string; lineups: EgtLineup[] }) {
           density="compact"
           slots={{
             toolbar: LineupToolbar,
+            columnMenu: GridColumnFilterMenu,
           }}
           slotProps={{
+            columnMenu: {
+              // @ts-expect-error
+              rows: lineup?.egtLineup?.starterlinks || [],
+            },
             toolbar: {
               lineups: props.lineups,
             },
