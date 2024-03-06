@@ -108,8 +108,8 @@
   "clubs": "Clubs",
   "grades": "Grades",
   "not_found_typed": "{{name}} not found",
-
   "reset": "Reset",
   "copy": "Copy",
-  "loading": "Loading..."
+  "loading": "Loading...",
+  "processingModules": "Processing modules"
 }

@@ -62,5 +62,8 @@
   "rankings": "Ranglisten {{category}}",
   "honourPrecentage": "Auszeichnungsprozentsatz",
   "intermediate": "Laufende",
-  "invalid_division_ignore": "Ungültige Abteilungen werden ignoriert"
+  "invalid_division_ignore": "Ungültige Abteilungen werden ignoriert",
+  "judges": "Wertungsrichter",
+  "token_reset": "Token zurücksetzen",
+  "judging": "Werten"
 }

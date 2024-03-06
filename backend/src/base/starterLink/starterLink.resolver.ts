@@ -98,9 +98,10 @@ export class StarterLinkResolver {
       starterLink.competition = Promise.resolve(
         await this.competitionService.findOne(linkData.competitionID),
       );
-      return this.starterLinkService.create(starterLink);
+      const result = await this.starterLinkService.create(starterLink);
+      return result
     } catch (e) {
-      if (e instanceof AlreadyExistingException) {
+      if (e.message === "Already Existing") {
         const starterlink = await this.starterLinkService.findForCompetition(
           linkData.starterID,
           linkData.competitionID,

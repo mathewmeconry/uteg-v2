@@ -19,7 +19,7 @@ export const CREATE_STARTER = gql`
 
 export const LINK_STARTER = gql`
   mutation upsertStarterLink($input: CreateStarterLinkInput!) {
-    createStarterLink(data: $input) {
+    upsertStarterLink(data: $input) {
       id
       starter {
         id

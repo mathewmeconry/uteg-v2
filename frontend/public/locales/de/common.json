@@ -107,5 +107,9 @@
   "files": "Dateien",
   "clubs": "Vereine",
   "grades": "Noten",
-  "not_found_typed": "{{name}} nicht gefunden"
+  "not_found_typed": "{{name}} nicht gefunden",
+  "reset": "Zurücksetzen",
+  "copy": "Kopieren",
+  "loading": "Laden...",
+  "processingModules": "Verarbeite Module"
 }

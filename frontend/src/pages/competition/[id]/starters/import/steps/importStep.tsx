@@ -51,18 +51,20 @@ export function ImportStep() {
     setStep("linking");
     const starterLinks = await linkStarters();
     setStep("processingModules");
-    await moduleImportHandlers.map((handler) => {
-      if (handler) {
-        handler(
-          starters,
-          starterLinks
-            .map((result) => result && result.link)
-            .filter((link) => link) as StarterLink[],
-          setProgress,
-          setFailures
-        );
-      }
-    });
+    await Promise.all(
+      moduleImportHandlers.map((handler) => {
+        if (handler) {
+          return handler(
+            starters,
+            starterLinks
+              .map((result) => result && result.link)
+              .filter((link) => link) as StarterLink[],
+            setProgress,
+            setFailures
+          );
+        }
+      })
+    );
     setStep("done");
   }
 
@@ -103,13 +105,13 @@ export function ImportStep() {
           },
         },
       });
-      if (!result.data?.createStarterLink) {
+      if (!result.data?.upsertStarterLink) {
         return { state: false };
       }
 
       return {
         state: true,
-        link: result.data?.createStarterLink as StarterLink,
+        link: result.data?.upsertStarterLink as StarterLink,
       };
     } catch (e) {
       if (e instanceof ApolloError) {
@@ -123,21 +125,23 @@ export function ImportStep() {
     const promises = [];
     for (const starter of starters) {
       promises.push(
-        importStarter(starter).then((id) => {
-          setProgress((oldProgress) => oldProgress + progressPerStep);
-          if (!id) {
+        importStarter(starter)
+          .then((id) => {
+            setProgress((oldProgress) => oldProgress + progressPerStep);
+            if (!id) {
+              setFailures((oldFailures) => [
+                ...oldFailures,
+                { step: "importing", starter: starter },
+              ]);
+            }
+            starter.id = id;
+          })
+          .catch((_) => {
             setFailures((oldFailures) => [
               ...oldFailures,
               { step: "importing", starter: starter },
             ]);
-          }
-          starter.id = id;
-        }).catch(_ => {
-          setFailures((oldFailures) => [
-            ...oldFailures,
-            { step: "importing", starter: starter },
-          ]);
-        })
+          })
       );
     }
     await Promise.all(promises);
@@ -191,6 +195,11 @@ export function ImportStep() {
         {step === "linking" && (
           <Typography>
             {t("linking", { name: t("starter", { count: 2 }) })}
+          </Typography>
+        )}
+        {step === "processingModules" && (
+          <Typography>
+            {t("processingModules", { name: t("starter", { count: 2 }) })}
           </Typography>
         )}
         <LinearProgress
