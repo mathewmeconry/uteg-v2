@@ -14,7 +14,7 @@ import {
 import { FieldValues, FormProvider, useForm, useWatch } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import {
-  useCreateStarterLinkMutation,
+  useUpsertStarterLinkMutation,
   useCreateStarterMutation,
   useStartersAutocompleteLazyQuery,
 } from "../../__generated__/graphql";
@@ -68,7 +68,7 @@ export function CreateStarterDialog(props: {
     },
   });
   const [createStarterMutation] = useCreateStarterMutation();
-  const [createStarterLinkMutation] = useCreateStarterLinkMutation();
+  const [createStarterLinkMutation] = useUpsertStarterLinkMutation();
   const [
     queryStarters,
     { data: starters, loading: startersLoading },

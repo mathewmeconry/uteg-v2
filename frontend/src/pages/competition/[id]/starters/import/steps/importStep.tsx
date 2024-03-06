@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import {
   Starter,
   StarterLink,
-  useCreateStarterLinkMutation,
+  useUpsertStarterLinkMutation,
   useCreateStarterMutation,
 } from "../../../../../../__generated__/graphql";
 import { useNavigate, useParams } from "react-router-dom";
@@ -28,7 +28,7 @@ export function ImportStep() {
   >();
   const [progress, setProgress] = useState(20);
   const [createStarterMutation] = useCreateStarterMutation();
-  const [linkStarterMutation] = useCreateStarterLinkMutation();
+  const [linkStarterMutation] = useUpsertStarterLinkMutation();
   const modules = useModules(competitionID || "");
   const moduleImportHandlers = useMemo(() => {
     return getModulesHandlers<ImportStartersHandler>(
@@ -132,7 +132,7 @@ export function ImportStep() {
             ]);
           }
           starter.id = id;
-        }).catch(e => {
+        }).catch(_ => {
           setFailures((oldFailures) => [
             ...oldFailures,
             { step: "importing", starter: starter },
