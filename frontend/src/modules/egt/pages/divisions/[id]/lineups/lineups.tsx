@@ -21,6 +21,8 @@ import { LineupToolbar } from "../../../../components/lineup/LineupToolbar";
 import { useState } from "react";
 import EditIcon from "@mui/icons-material/Edit";
 import { UpdateStarterDialog } from "../../../../../../dialogs/updateStarterDialog/updateStarterDialog";
+import { GridColumnFilterMenu } from "../../../../../../components/grid/gridColumnFilterMenu";
+import inFilter from "../../../../../../components/grid/inFilterOperator";
 
 export function Lineups() {
   const { divisionID } = useParams();
@@ -155,7 +157,7 @@ export function Lineups() {
         headerName: t("club", { ns: "common" }),
         valueGetter: (params: any) => params.row.starterlink.club.name,
         flex: 1,
-        disableColumnMenu: true,
+        filterOperators: [inFilter],
       },
       {
         type: "actions",
@@ -189,8 +191,13 @@ export function Lineups() {
             checkboxSelection
             slots={{
               toolbar: LineupToolbar,
+              columnMenu: GridColumnFilterMenu,
             }}
             slotProps={{
+              columnMenu: {
+                // @ts-expect-error
+                rows: unassignedStarters?.egtStarterLinkUnassigned || [],
+              },
               toolbar: {
                 lineups: division?.egtDivision?.lineups || [],
               },
