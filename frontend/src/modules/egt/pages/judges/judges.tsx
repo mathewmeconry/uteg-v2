@@ -117,7 +117,7 @@ export default function Judges() {
         document.location.origin
       }/competition/${id}/egt/judging/${encodeURIComponent(token.token)}`;
       qrCodes.push(
-        <Grid item key={token.id} md={4} lg={3} sm={6} mt={2}>
+        <Grid item key={token.id} md={6} lg={4} sm={12} mt={2}>
           <Typography variant="h5">
             {t(`device_${token.device}`, { ns: "egt" })}
             <ClipboardCopy value={location} />
