@@ -1,7 +1,6 @@
 import {
   Button,
   ButtonGroup,
-  LinearProgress,
   ListItemIcon,
   ListItemText,
   Menu,
@@ -30,7 +29,7 @@ import { useModules } from "../../../../hooks/useModules/useModules";
 import ListIcon from "@mui/icons-material/List";
 import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 import { StarterslistDocument } from "../../../../documents/starterslistDocument/starterslistDocument";
-import { StarterLink } from "../../../../__generated__/graphql";
+import { StarterLink, useCompetitionNameQuery } from "../../../../__generated__/graphql";
 import { GridColDefExtension } from "../../../../types/GridColDefExtension";
 import UploadIcon from "@mui/icons-material/Upload";
 import { usePdfDownload } from "../../../../hooks/usePdfDownload/usePdfDownload";
@@ -44,6 +43,11 @@ export function StarterslistToolbar(props: {
   const selectedRows = gridApi.current.getSelectedRows();
   const rows = gridExpandedSortedRowEntriesSelector(gridApi);
   const { id } = useParams();
+  const {data: competitionName} = useCompetitionNameQuery({
+    variables: {
+      id: id!
+    }
+  })
   const modules = useModules(id!);
   const [exportAnchorEl, setExportAnchorEl] = useState<null | HTMLElement>(
     null
@@ -96,6 +100,7 @@ export function StarterslistToolbar(props: {
       document: StarterslistDocument({
         starters: rows.map((row) => row.model) as StarterLink[],
         columns,
+        competitionName: competitionName?.competition.name || ""
       }),
       filename: `${t("starter", { count: rows.length })}.pdf`,
     });
@@ -162,7 +167,7 @@ export function StarterslistToolbar(props: {
               <PictureAsPdfIcon fontSize="small" />
             </ListItemIcon>
             <ListItemText>
-              {pdfLoading ? <LinearProgress /> : "PDF"}
+              {pdfLoading ? <Typography>{t("loading")}</Typography> : "PDF"}
             </ListItemText>
           </MenuItem>
         </Menu>

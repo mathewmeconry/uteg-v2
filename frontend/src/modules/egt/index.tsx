@@ -101,6 +101,7 @@ const starterListColumns: Array<GridColDefExtension | GridActionsColDef> = [
     },
     filterOperators: [inFilter],
     renderInPdf: true,
+    pdfWidth: "63pt",
     renderInXlsx: true,
   },
   {
@@ -109,6 +110,7 @@ const starterListColumns: Array<GridColDefExtension | GridActionsColDef> = [
     valueGetter: (params) => params.row.egt?.division?.number,
     disableColumnMenu: true,
     renderInPdf: true,
+    pdfWidth: "63pt",
     renderInXlsx: true,
   },
   {
@@ -116,10 +118,11 @@ const starterListColumns: Array<GridColDefExtension | GridActionsColDef> = [
     headerName: "starting_device",
     valueGetter: (params) =>
       params.row.egt?.lineup?.device?.deviceNumber !== undefined
-        ? `device_${params.row.egt?.lineup?.device?.deviceNumber}`
+        ? `device_${params.row.egt?.lineup?.device?.deviceNumber}_short`
         : "",
     disableColumnMenu: true,
     renderInPdf: true,
+    pdfWidth: "63pt",
     renderInXlsx: true,
   },
 ];

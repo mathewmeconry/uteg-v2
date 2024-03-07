@@ -8,11 +8,13 @@ import {
   Text,
   Font,
 } from "@react-pdf/renderer";
+import { Style } from "@react-pdf/types";
 import { GridColDefExtension } from "../../types/GridColDefExtension";
 
 export type StarterslistDocumentProps = {
   starters: StarterLink[];
   columns: GridColDefExtension[];
+  competitionName: string;
 };
 
 Font.register({
@@ -25,30 +27,23 @@ Font.register({
   src: "https://fonts.gstatic.com/s/roboto/v15/bdHGHleUa-ndQCOrdpfxfw.ttf",
   fontWeight: 700,
 });
+Font.registerHyphenationCallback((word) => [word]);
 
-const styles = StyleSheet.create({
+const styles = StyleSheet.create<{ [index: string]: Style }>({
   page: {
     flexDirection: "column",
     fontFamily: "Roboto",
-    padding: "5vw",
+    padding: "35pt",
+    paddingTop: "45pt",
     fontWeight: 300,
-    height: "50px",
   },
-  section: {
+  margin: {
     marginBottom: 20,
-    width: "90vw",
   },
   h1: {
-    width: "90vw",
     fontSize: "14pt",
     fontWeight: 700,
-    marginBottom: 10,
-  },
-  table: {
-    fontFamily: "Roboto",
-    display: "flex",
-    flexDirection: "column",
-    width: "90vw",
+    paddingBottom: 10,
   },
   tableRow: {
     display: "flex",
@@ -56,20 +51,24 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
   },
   tableCol: {
-    width: "90vw",
+    width: "22pt",
   },
   tableCell: {
     fontSize: "9pt",
     padding: "2pt",
-    width: "90vw",
   },
   tableHeaderRow: {
     display: "flex",
     flexDirection: "row",
-    width: "90vw",
     fontSize: "9pt",
     fontWeight: 700,
     borderBottomWidth: "1.5pt",
+  },
+  competitionName: {
+    position: "absolute",
+    top: "15pt",
+    right: "35pt",
+    fontSize: "11pt",
   },
 });
 
@@ -101,20 +100,101 @@ export function StarterslistDocument(props: StarterslistDocumentProps) {
       .sort((a, b) => a.starter.sex.localeCompare(b.starter.sex));
   }
 
+  function getTotalHeight(headersRendered: number, startersRendered: number) {
+    let headerHeight = headersRendered * 73;
+    let startersHeight = startersRendered * 16;
+
+    return headerHeight + startersHeight;
+  }
+
+  function getTableHeaderRow(pageBreak?: boolean) {
+    return (
+      <View
+        style={styles.tableHeaderRow}
+        key={`header-${Math.random()}`}
+        break={pageBreak}
+      >
+        {filteredColumns.map((column) => (
+          <View
+            style={{
+              ...styles.tableCol,
+              width: column.pdfWidth ?? styles.tableCol.width,
+            }}
+            key={`header-col-${column.field}`}
+          >
+            <Text style={styles.tableCell}>{column.headerName}</Text>
+          </View>
+        ))}
+      </View>
+    );
+  }
+
   function renderClubs(clubs: Club[]) {
     const views: React.ReactElement[] = [];
+    let headersRendered = 0;
+    let startersRendered = 0;
     for (const club of clubs) {
+      headersRendered++;
+      let headerbreak = false;
+
       const starters = getStarters(club);
       if (starters.length === 0) {
         return null;
       }
       const startersElements: React.ReactElement[] = [];
-      for (const starter of starters) {
+      for (const i in starters) {
+        const starter = starters[i];
+        startersRendered++;
+        let pagebreak = false;
+        if (getTotalHeight(headersRendered, startersRendered) > 750) {
+          pagebreak = true;
+          headersRendered = 0;
+          startersRendered = 0;
+        }
+
+        // if only 2 would be left break
+        if (
+          starters.length - 1 - parseInt(i) < 3 &&
+          getTotalHeight(
+            headersRendered,
+            startersRendered + starters.length - 1 - parseInt(i)
+          ) > 750
+        ) {
+          pagebreak = true;
+          headersRendered = 0;
+          startersRendered = 0;
+        }
+
+        // break header to next page
+        if (parseInt(i) < 3 && pagebreak) {
+          pagebreak = false;
+          headerbreak = true;
+          headersRendered = 1;
+        }
+
+        let style = {
+          ...styles.tableRow,
+        };
+
+        if (parseInt(i) === starters.length - 1) {
+          style = {
+            ...style,
+            ...styles.margin,
+          };
+        }
+
+        if (pagebreak) {
+          startersElements.push(getTableHeaderRow(true));
+        }
+
         startersElements.push(
-          <View style={styles.tableRow} key={`row-${starter.id}`} wrap={false}>
+          <View style={style} key={`row-${starter.id}`} wrap={true}>
             {filteredColumns.map((column) => (
               <View
-                style={styles.tableCol}
+                style={{
+                  ...styles.tableCol,
+                  width: column.pdfWidth ?? styles.tableCol.width,
+                }}
                 key={`row-${starter.id}-col-${column.field}`}
               >
                 <Text style={styles.tableCell}>
@@ -130,22 +210,13 @@ export function StarterslistDocument(props: StarterslistDocumentProps) {
         );
       }
       const header = (
-        <View style={styles.section} key={club.id}>
-          <View style={styles.table} key={`table-${club.id}`} minPresenceAhead={55}>
-              <Text style={styles.h1}>{club.name}</Text>
-              <View fixed style={styles.tableHeaderRow} key={`header-${club.id}`}>
-                {filteredColumns.map((column) => (
-                  <View
-                    style={styles.tableCol}
-                    key={`header-col-${column.field}`}
-                  >
-                    <Text style={styles.tableCell}>{column.headerName}</Text>
-                  </View>
-                ))}
-              </View>
-            {startersElements}
-          </View>
-        </View>
+        <>
+          <Text style={styles.h1} break={headerbreak}>
+            {club.name}
+          </Text>
+          {getTableHeaderRow()}
+          {startersElements}
+        </>
       );
       views.push(header);
     }
@@ -153,8 +224,15 @@ export function StarterslistDocument(props: StarterslistDocumentProps) {
   }
 
   return (
-    <Document>
+    <Document
+      author="https://app.uteg.ch"
+      title={props.competitionName}
+      creator="UTEG"
+    >
       <Page size="A4" style={styles.page} wrap>
+        <Text style={styles.competitionName} fixed>
+          {props.competitionName}
+        </Text>
         {renderClubs(uniqueClubs)}
       </Page>
     </Document>

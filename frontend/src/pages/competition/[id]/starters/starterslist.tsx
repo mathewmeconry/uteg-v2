@@ -89,6 +89,7 @@ export function StartersList() {
       flex: 1,
       disableColumnMenu: true,
       renderInPdf: true,
+      pdfWidth: "108pt",
       renderInXlsx: true,
     },
     {
@@ -98,6 +99,7 @@ export function StartersList() {
       flex: 1,
       disableColumnMenu: true,
       renderInPdf: true,
+      pdfWidth: "108pt",
       renderInXlsx: true,
     },
     {
@@ -107,6 +109,7 @@ export function StartersList() {
       flex: 1,
       filterOperators: [inFilter],
       renderInPdf: true,
+      pdfWidth: "63pt",
       renderInXlsx: true,
     },
     {
@@ -115,6 +118,7 @@ export function StartersList() {
       valueGetter: (params) => params.row.starter.birthyear,
       disableColumnMenu: true,
       renderInPdf: true,
+      pdfWidth: "54pt",
       renderInXlsx: true,
     },
     {
