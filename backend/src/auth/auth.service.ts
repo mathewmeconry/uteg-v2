@@ -4,6 +4,7 @@ import { ConfigService } from 'src/config/config.service';
 import { ROLES } from './types';
 import { UserService } from './user/user.service';
 import { JudgetokenService } from './judgetoken/judgetoken.service';
+import { Field, ObjectType } from '@nestjs/graphql';
 
 export enum JwtType {
   USER,

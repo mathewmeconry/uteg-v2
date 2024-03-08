@@ -20,7 +20,7 @@ export class UserResolver {
     return this.userService.findAll();
   }
 
-  @Query(() => User, { name: 'currentUser' })
+  @Query(() => User, { name: 'currentUser', nullable: true })
   async currentUser(@Context() ctx: { user: User }): Promise<User> {
     return ctx.user;
   }

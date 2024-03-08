@@ -227,7 +227,7 @@ type Query {
   clubs: [Club!]!
   competition(id: ID!): Competition!
   competitions: [Competition!]!
-  currentUser: User!
+  currentUser: User
   egtCategorySettings(category: Int!, competitionID: ID!, sex: Sex!): EGTCategorySettings!
   egtDevices(competitionID: ID!): [EGTDevice!]!
   egtDivision(id: ID!): EGTDivision
