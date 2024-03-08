@@ -1,4 +1,4 @@
-import { Divider, Paper, Typography } from "@mui/material";
+import { Divider, Grid, Paper, Typography } from "@mui/material";
 import { Box, SxProps } from "@mui/system";
 import React, { PropsWithChildren } from "react";
 
@@ -12,17 +12,29 @@ export type PaperExtendedProps = {
 export function PaperExtended(props: PaperExtendedProps & PropsWithChildren) {
   return (
     <Paper sx={{ padding: 2, ...props.sx }}>
-      <Typography variant="h4">
-        {props.title}
-        {props.titleSuffix && (
-          <Box sx={{ float: "right", display: "inline" }}>
-            <Typography variant="caption">{props.titleSuffix}</Typography>
-          </Box>
-        )}
-        <Box sx={{ float: "right", display: "inline" }}>
-          {props.actions || []}
-        </Box>
-      </Typography>
+      <Grid container spacing={2} justifyContent={"space-between"}>
+        <Grid item xs="auto">
+          <Typography variant="h4">{props.title}</Typography>
+        </Grid>
+        <Grid
+          item
+          container
+          xs={12}
+          md={3}
+          justifyContent={"space-between"}
+          alignItems={"flex-end"}
+        >
+          <Grid item xs="auto">
+            {props.titleSuffix && (
+              <Typography variant="caption">{props.titleSuffix}</Typography>
+            )}
+          </Grid>
+
+          <Grid item xs="auto">
+            {props.actions || []}
+          </Grid>
+        </Grid>
+      </Grid>
       <Divider sx={{ mb: 2 }} />
       {props.children}
     </Paper>

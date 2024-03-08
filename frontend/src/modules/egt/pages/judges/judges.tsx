@@ -60,7 +60,7 @@ export default function Judges() {
       }
       setTokens(tokens);
     }
-  }, []);
+  }, [selectedTab]);
 
   async function resetTokenClick(id: string) {
     try {

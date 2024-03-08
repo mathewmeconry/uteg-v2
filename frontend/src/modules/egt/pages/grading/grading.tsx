@@ -5,7 +5,7 @@ import { useParams } from "react-router-dom";
 import { useEgtGradingGroundsQuery } from "../../../../__generated__/graphql";
 import { LinearProgress, Tab, Tabs } from "@mui/material";
 import { ReactElement, useState } from "react";
-import { DeviceGrading } from "../../components/grading/DeviceGrading";
+import { DeviceGrading, DeviceGradingMode } from "../../components/grading/DeviceGrading";
 
 export function Grading() {
   const { id } = useParams();
@@ -47,7 +47,7 @@ export function Grading() {
 
     const gradings: ReactElement[] = [];
     for (let i = 0; i < 5; i++) {
-      gradings.push(<DeviceGrading device={i} ground={selectedTab + 1} key={i} />);
+      gradings.push(<DeviceGrading device={i} ground={selectedTab + 1} key={i} mode={DeviceGradingMode.TABLE} />);
     }
     return gradings;
   }

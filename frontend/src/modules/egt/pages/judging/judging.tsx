@@ -1,19 +1,21 @@
 import { useTranslation } from "react-i18next";
 import { PaperExtended } from "../../../../components/paperExtended";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   authWithJudgeToken,
   getTokenData,
   isTokenValid,
+  removeToken,
 } from "../../../../helpers/auth";
 import { useEffect, useState } from "react";
-import { Box, CircularProgress } from "@mui/material";
+import { Box, CircularProgress, IconButton, Tooltip } from "@mui/material";
+import { useEgtJudgingCompetitionLazyQuery } from "../../../../__generated__/graphql";
 import {
-  useEgtJudgingArrayLazyQuery,
-  useEgtJudgingCompetitionLazyQuery,
-  useEgtJudgingDivisionsIdsLazyQuery,
-} from "../../../../__generated__/graphql";
-import { DeviceGrading } from "../../components/grading/DeviceGrading";
+  DeviceGrading,
+  DeviceGradingMode,
+} from "../../components/grading/DeviceGrading";
+import LogoutIcon from "@mui/icons-material/Logout";
+import { enqueueSnackbar } from "notistack";
 
 export type JudgingTokenData = {
   competition: number;
@@ -25,20 +27,12 @@ export default function Judging() {
   const { t } = useTranslation(["egt", "common"]);
   const { token } = useParams();
   const [tokenData, setTokenData] = useState<JudgingTokenData | null>(null);
-  const [round, _setRound] = useState(0);
+  const navigate = useNavigate();
   const [authenticating, setAuthenticating] = useState(true);
   const [
     queryCompetition,
-    { data: _competition, loading: competitionLoading },
+    { data: competition, loading: competitionLoading },
   ] = useEgtJudgingCompetitionLazyQuery();
-  const [
-    queryJudgingArray,
-    { data: _judgingArray, loading: judgingArrayLoading },
-  ] = useEgtJudgingArrayLazyQuery();
-  const [
-    queryDivisions,
-    { data: divisions, loading: divisionsLoading },
-  ] = useEgtJudgingDivisionsIdsLazyQuery();
 
   useEffect(() => {
     setTokenData(getTokenData());
@@ -51,29 +45,8 @@ export default function Judging() {
           id: tokenData?.competition.toString(),
         },
       });
-      queryDivisions({
-        variables: {
-          filter: {
-            competitionID: tokenData?.competition.toString(),
-            ground: tokenData?.ground,
-            state: "RUNNING",
-          },
-        },
-      });
     }
   }, [tokenData]);
-
-  useEffect(() => {
-    if (divisions && divisions.egtDivisions.length > 0 && tokenData) {
-      queryJudgingArray({
-        variables: {
-          device: tokenData?.device,
-          round: round,
-          ids: divisions.egtDivisions.map((division) => division.id),
-        },
-      });
-    }
-  }, [divisions]);
 
   function renderLoading() {
     return (
@@ -92,6 +65,12 @@ export default function Judging() {
     );
   }
 
+  function logout() {
+    removeToken();
+    enqueueSnackbar(t("logged_out", { ns: "common" }), { variant: "success" });
+    navigate("/login");
+  }
+
   if (!isTokenValid()) {
     authWithJudgeToken(token || "").then(() => setAuthenticating(false));
     return renderLoading();
@@ -101,21 +80,32 @@ export default function Judging() {
     }
   }
 
-  if (
-    !tokenData ||
-    competitionLoading ||
-    judgingArrayLoading ||
-    divisionsLoading
-  ) {
+  if (!tokenData || competitionLoading) {
     return renderLoading();
   }
 
   return (
     <PaperExtended
       title={t(`device_${tokenData?.device}`)}
-      titleSuffix={t("ground_typed", { name: tokenData?.ground, ns: "common" })}
+      titleSuffix={
+        t("ground_typed", { name: tokenData?.ground, ns: "common" }) +
+          " - " +
+          competition?.competition.name ?? t("loading", { ns: "common" })
+      }
+      actions={[
+        <Tooltip title={t("logout", { ns: "common" })}>
+          <IconButton onClick={logout}>
+            <LogoutIcon />
+          </IconButton>
+        </Tooltip>,
+      ]}
     >
-      <DeviceGrading device={tokenData?.device} ground={tokenData?.ground} />
+      <DeviceGrading
+        device={tokenData?.device}
+        ground={tokenData?.ground}
+        mode={DeviceGradingMode.SINGLE}
+        hideTitle={true}
+      />
     </PaperExtended>
   );
 }

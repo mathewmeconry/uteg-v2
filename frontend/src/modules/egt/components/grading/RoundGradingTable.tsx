@@ -31,7 +31,7 @@ type RoundGradingProps = {
   round: number;
 };
 
-export function RoundGrading(props: RoundGradingProps) {
+export function RoundGradingTable(props: RoundGradingProps) {
   const { id } = useParams();
   const { t } = useTranslation(["egt", "common"]);
   const {
