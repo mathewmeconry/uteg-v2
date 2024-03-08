@@ -43,7 +43,7 @@ export function UpdateLanaguage() {
 
   useEffect(() => {
     if (currentUserData) {
-      i18n.changeLanguage(currentUserData.currentUser.language);
+      i18n.changeLanguage(currentUserData.currentUser?.language);
     }
   }, [currentUserData]);
 
