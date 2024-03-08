@@ -77,13 +77,13 @@ export default function GradingListDialog(props: GradingListDialogProps) {
 
         {starters.map((round, roundIndex) => (
           <>
-            <Typography variant="h5" sx={{ ml: 6, mt: 2 }} key={roundIndex}>
+            <Typography variant="h5" sx={{ ml: 4, mt: 2 }} key={roundIndex}>
               {t("round", { ns: "egt", number: roundIndex + 1 })}
             </Typography>
             <Table sx={{ mb: 4 }}>
               <TableHead>
                 <TableRow>
-                  <TableCell sx={{ width: "1vw" }}></TableCell>
+                  <TableCell sx={{ width: "2vw", p: 0 }}></TableCell>
                   <TableCell sx={{ width: "35vw" }}>
                     {t("firstname", { ns: "common" })}
                   </TableCell>
@@ -98,9 +98,9 @@ export default function GradingListDialog(props: GradingListDialogProps) {
               <TableBody>
                 {round.map((starter) => (
                   <TableRow key={starter.id}>
-                    <TableCell>
+                    <TableCell sx={{p: 0}}>
                       {starter.id === props.currentStarter ? (
-                        <ForwardIcon />
+                        <ForwardIcon fontSize="small" />
                       ) : null}
                     </TableCell>
                     <TableCell>
