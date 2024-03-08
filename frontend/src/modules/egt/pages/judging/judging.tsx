@@ -90,7 +90,7 @@ export default function Judging() {
       titleSuffix={
         t("ground_typed", { name: tokenData?.ground, ns: "common" }) +
           " - " +
-          competition?.competition.name ?? t("loading", { ns: "common" })
+          competition?.competition.name || t("loading", { ns: "common" })
       }
       actions={[
         <Tooltip title={t("logout", { ns: "common" })}>

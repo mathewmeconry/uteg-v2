@@ -1,5 +1,5 @@
 import { Divider, Grid, Paper, Typography } from "@mui/material";
-import { Box, SxProps } from "@mui/system";
+import { SxProps } from "@mui/system";
 import React, { PropsWithChildren } from "react";
 
 export type PaperExtendedProps = {

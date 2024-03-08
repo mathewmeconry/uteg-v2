@@ -20,14 +20,14 @@ export function Information() {
   const form = useForm();
 
   useEffect(() => {
-    if (currentUserData) {
+    if (currentUserData && currentUserData.currentUser) {
       form.setValue("email", currentUserData.currentUser.email);
       form.setValue("language", currentUserData.currentUser.language);
     }
   }, [currentUserData]);
 
   async function onSubmit(data: any) {
-    if (!currentUserData) {
+    if (!currentUserData || !currentUserData.currentUser) {
       enqueueSnackbar(t("error"), { variant: "error" });
       return;
     }
