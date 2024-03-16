@@ -111,5 +111,6 @@
   "reset": "Zurücksetzen",
   "copy": "Kopieren",
   "loading": "Laden...",
-  "processingModules": "Verarbeite Module"
+  "processingModules": "Verarbeite Module",
+  "finished": "Fertig 🎉"
 }

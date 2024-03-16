@@ -120,6 +120,7 @@ export function DeviceGrading(props: DeviceGradingProps) {
             round={round}
             maxRounds={maxRounds}
             advanceRound={advanceRound}
+            isFinished={isFinished}
           />
         );
     }

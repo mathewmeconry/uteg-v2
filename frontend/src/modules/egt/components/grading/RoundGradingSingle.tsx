@@ -35,6 +35,7 @@ export type RoundGradingSingleProps = {
   round: number;
   maxRounds: number;
   advanceRound?: () => void;
+  isFinished: boolean;
 };
 
 export default function RoundGradingSingle(props: RoundGradingSingleProps) {
@@ -510,6 +511,12 @@ export default function RoundGradingSingle(props: RoundGradingSingleProps) {
     () => deviceData?.egtJudgingDevice.starterslist[starterIndex],
     [deviceData, starterIndex]
   );
+
+  if (props.isFinished) {
+    return (
+      <Typography variant="h5" sx={{ mt: 3, textAlign: 'center' }}>{t("finished", { ns: "common" })}</Typography>
+    );
+  }
 
   if (divisionsDataLoading || deviceDataLoading || gradesLoading) {
     return <LinearProgress />;

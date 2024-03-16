@@ -111,5 +111,6 @@
   "reset": "Reset",
   "copy": "Copy",
   "loading": "Loading...",
-  "processingModules": "Processing modules"
+  "processingModules": "Processing modules",
+  "finished": "Finished 🎉"
 }
