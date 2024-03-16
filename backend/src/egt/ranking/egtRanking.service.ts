@@ -78,6 +78,7 @@ export class EGTRankingService {
       const grade = starterRanking.grades.find((g) => g.deviceNumber === i);
       if (!grade) {
         const grade = new Grade();
+        grade.id = -1;
         grade.deviceNumber = i;
         (grade.module = 'egt'),
           (grade.starterlink = Promise.resolve(starterlink));

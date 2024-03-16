@@ -32,7 +32,9 @@ import * as path from 'path';
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: 'schema.gql',
-      installSubscriptionHandlers: true,
+      subscriptions: {
+        'graphql-ws': true,
+      },
       sortSchema: true,
       playground: process.env.NODE_ENV === 'development',
       buildSchemaOptions: {
