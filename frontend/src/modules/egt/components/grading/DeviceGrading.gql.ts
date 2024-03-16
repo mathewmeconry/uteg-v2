@@ -5,6 +5,7 @@ gql`
     egtDivisions(filter: $filter) {
       id
       totalRounds
+      currentRound
     }
   }
 `;

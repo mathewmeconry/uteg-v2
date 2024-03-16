@@ -19,6 +19,7 @@ export type FormTextInputProps = PropsWithChildren & {
   label?: string;
   ns?: string;
   labelVariables?: { [index: string]: any };
+  disableLabel?: boolean;
   fieldProps?: TextFieldProps;
   defaultValue?: string;
   annotation?: string;
@@ -73,7 +74,7 @@ export function FormTextInput(props: FormTextInputProps) {
   const textField = (
     <TextField
       key={props.name}
-      label={label}
+      label={props.disableLabel ? "" : label}
       variant="standard"
       margin="normal"
       fullWidth={props.fullWidth ?? true}

@@ -2,7 +2,7 @@ import { useParams } from "react-router-dom";
 import { useEgtGradingDivisionsIdsQuery } from "../../../../__generated__/graphql";
 import { Skeleton, Tab, Tabs, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { RoundGradingTable } from "./RoundGradingTable";
 import RoundGradingSingle from "./RoundGradingSingle";
 
@@ -16,11 +16,13 @@ type DeviceGradingProps = {
   ground: number;
   mode: DeviceGradingMode;
   hideTitle?: boolean;
+  hideRound?: boolean;
 };
 
 export function DeviceGrading(props: DeviceGradingProps) {
   const { id } = useParams();
   const [round, setRound] = useState(0);
+  const [isFinished, setIsFinished] = useState(false)
   const { t } = useTranslation(["egt", "common"]);
   const {
     data: divisionsData,
@@ -33,20 +35,33 @@ export function DeviceGrading(props: DeviceGradingProps) {
         state: "RUNNING",
       },
     },
+    fetchPolicy: "no-cache",
   });
-  const maxRounds = useMemo(() => {
+
+  const { maxRounds, lowestRound } = useMemo(() => {
     if (!divisionsData) {
-      return 0;
+      return { maxRounds: 0, lowestRound: 0 };
     }
 
     let max = 0;
+    // start high so we can progress down to the real value
+    let lowest = Infinity;
     for (const division of divisionsData.egtDivisions) {
       if (division.totalRounds > max) {
         max = division.totalRounds;
       }
+      if (division.currentRound < lowest) {
+        lowest = division.currentRound;
+      }
     }
-    return max;
+    return { maxRounds: max, lowestRound: lowest };
   }, [divisionsData]);
+
+  useEffect(() => {
+    if (lowestRound !== undefined) {
+      setRound(lowestRound);
+    }
+  }, [lowestRound]);
 
   if (!divisionsData?.egtDivisions || divisionsData.egtDivisions.length === 0) {
     if (divisionsData?.egtDivisions.length === 0 && props.device === 0) {
@@ -66,6 +81,14 @@ export function DeviceGrading(props: DeviceGradingProps) {
 
   if (maxRounds <= props.device) {
     return null;
+  }
+
+  function advanceRound() {
+    if (round < maxRounds - 1) {
+      setRound(round + 1);
+    } else {
+      setIsFinished(true)
+    }
   }
 
   function renderRoundGrading() {
@@ -96,6 +119,7 @@ export function DeviceGrading(props: DeviceGradingProps) {
             ground={props.ground}
             round={round}
             maxRounds={maxRounds}
+            advanceRound={advanceRound}
           />
         );
     }
@@ -106,9 +130,11 @@ export function DeviceGrading(props: DeviceGradingProps) {
       {!props.hideTitle && (
         <Typography sx={{ mt: 3 }} variant="h5">
           {t(`device_${props.device}`, { ns: "egt" })}
-          <Typography variant="h5">
-            {t(`round`, { ns: "egt", number: round + 1 })}
-          </Typography>
+          {!props.hideRound && (
+            <Typography variant="h5">
+              {t(`round`, { ns: "egt", number: round + 1 })}
+            </Typography>
+          )}
         </Typography>
       )}
 

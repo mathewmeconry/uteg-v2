@@ -3,6 +3,11 @@ import {
   Grid,
   IconButton,
   LinearProgress,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
   Typography,
 } from "@mui/material";
 import { enqueueSnackbar } from "notistack";
@@ -29,6 +34,7 @@ export type RoundGradingSingleProps = {
   ground: number;
   round: number;
   maxRounds: number;
+  advanceRound?: () => void;
 };
 
 export default function RoundGradingSingle(props: RoundGradingSingleProps) {
@@ -75,14 +81,18 @@ export default function RoundGradingSingle(props: RoundGradingSingleProps) {
   const formValues = useWatch({ control: form.control });
 
   useEffect(() => {
-    deviceQuery({
-      variables: {
-        device: props.device,
-        round: props.round,
-        ids: divisionsData?.egtDivisions?.map((division) => division.id) ?? [],
-      },
-    });
-    gradesQuery();
+    let divisionIds =
+      divisionsData?.egtDivisions?.map((division) => division.id) ?? [];
+    if (divisionIds.length > 0) {
+      deviceQuery({
+        variables: {
+          device: props.device,
+          round: props.round,
+          ids: divisionIds,
+        },
+      });
+      gradesQuery();
+    }
   }, [divisionsData, props.round]);
 
   useEffect(() => {
@@ -198,18 +208,21 @@ export default function RoundGradingSingle(props: RoundGradingSingleProps) {
         value: parseFloat(finalGrade),
       });
     }
-
-    const result = await addGradesMutation({
-      variables: {
-        grades,
-      },
-    });
-    if (result.errors) {
+    try {
+      const result = await addGradesMutation({
+        variables: {
+          grades,
+        },
+      });
+      if (result.errors) {
+        enqueueSnackbar(t("error", { ns: "common" }));
+        return;
+      }
+      enqueueSnackbar(t("saved", { ns: "common" }), { variant: "success" });
+    } catch (e) {
+      console.error(e);
       enqueueSnackbar(t("error", { ns: "common" }));
-      return;
     }
-    enqueueSnackbar(t("saved", { ns: "common" }), { variant: "success" });
-
     advanceLineupsMutation({
       variables: {
         round: props.round + 1,
@@ -217,6 +230,13 @@ export default function RoundGradingSingle(props: RoundGradingSingleProps) {
           deviceData?.egtJudgingDevice.lineups.map((lineup) => lineup.id) ?? [],
       },
     });
+
+    setInReview(false);
+    setStarterIndex(0);
+
+    if (props.advanceRound) {
+      props.advanceRound();
+    }
   }
 
   function renderGradeInputs(starter: EgtStarterLink) {
@@ -315,8 +335,92 @@ export default function RoundGradingSingle(props: RoundGradingSingleProps) {
     }
   }
 
+  function renderReview() {
+    return (
+      <>
+        <Typography variant="h5" sx={{ pt: 2, mb: 2 }}>
+          {t("review", { ns: "common" })}
+        </Typography>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>{t("firstname", { ns: "common" })}</TableCell>
+              <TableCell>{t("lastname", { ns: "common" })}</TableCell>
+              <TableCell>{t("category", { ns: "egt" })}</TableCell>
+              <TableCell>{t("final_grade", { ns: "common" })}</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {deviceData?.egtJudgingDevice?.starterslist?.map((starter) => {
+              const realStarter = starter.starterlink.starter;
+              return (
+                <TableRow>
+                  <TableCell>{realStarter.firstname}</TableCell>
+                  <TableCell>{realStarter.lastname}</TableCell>
+                  <TableCell>
+                    {t(
+                      `category_${
+                        starter.category
+                      }_${realStarter.sex.toLowerCase()}`
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    <FormTextInput
+                      key={starter.id}
+                      name={`${starter.starterlink.id}${
+                        maxInputs > 1 ? ".final" : ""
+                      }`}
+                      disableLabel
+                      fieldProps={{
+                        variant: "standard",
+                      }}
+                      fullWidth={true}
+                      rules={{
+                        required: true,
+                        min: 0,
+                        max: 10,
+                      }}
+                    />
+                  </TableCell>
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
+        <Grid
+          container
+          direction="row"
+          spacing={2}
+          justifyContent={"space-between"}
+          sx={{ mt: 2 }}
+        >
+          <Grid item xs={4}>
+            <Button
+              variant="outlined"
+              color="info"
+              onClick={() => setInReview(false)}
+              disabled={starterIndex === 0}
+            >
+              {t("back", { ns: "common" })}
+            </Button>
+          </Grid>
+          <Grid item xs={4} sx={{ textAlign: "right" }}>
+            <Button
+              variant="contained"
+              color="success"
+              onClick={() => form.handleSubmit(onFormSubmit)()}
+            >
+              {t("save", { ns: "common" })}
+            </Button>
+          </Grid>
+        </Grid>
+      </>
+    );
+  }
+
   function renderContent(starter: EgtStarterLink) {
     if (inReview) {
+      return renderReview();
     }
 
     return (
@@ -392,7 +496,6 @@ export default function RoundGradingSingle(props: RoundGradingSingleProps) {
                 color="success"
                 type="submit"
                 onClick={() => setInReview(true)}
-                disabled={!form.formState.isValid}
               >
                 {t("review", { ns: "common" })}
               </Button>
@@ -416,9 +519,17 @@ export default function RoundGradingSingle(props: RoundGradingSingleProps) {
     return null;
   }
 
+  if (deviceData.egtJudgingDevice.starterslist.length === 0) {
+    return (
+      <Typography variant="h5" sx={{ mt: 3 }}>
+        {t("no_started", { name: t("division") })}
+      </Typography>
+    );
+  }
+
   return (
     <>
-      <form onSubmit={form.handleSubmit(onFormSubmit)}>
+      <form>
         <FormProvider {...form}>
           {renderContent(starter as EgtStarterLink)}
         </FormProvider>
