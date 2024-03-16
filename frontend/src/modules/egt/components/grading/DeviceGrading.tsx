@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import { useEgtGradingDivisionsIdsQuery } from "../../../../__generated__/graphql";
 import { Skeleton, Tab, Tabs, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
@@ -21,8 +21,13 @@ type DeviceGradingProps = {
 
 export function DeviceGrading(props: DeviceGradingProps) {
   const { id } = useParams();
-  const [round, setRound] = useState(0);
-  const [isFinished, setIsFinished] = useState(false)
+  const [searchParams, setSearchParams] = useSearchParams({
+    round: "0",
+  });
+  const [round, setRound] = useState(
+    parseInt(searchParams.get("round") || "0")
+  );
+  const [isFinished, setIsFinished] = useState(false);
   const { t } = useTranslation(["egt", "common"]);
   const {
     data: divisionsData,
@@ -58,10 +63,18 @@ export function DeviceGrading(props: DeviceGradingProps) {
   }, [divisionsData]);
 
   useEffect(() => {
-    if (lowestRound !== undefined) {
+    if (lowestRound !== undefined && lowestRound > round) {
       setRound(lowestRound);
     }
   }, [lowestRound]);
+
+  useEffect(() => {
+    if (props.mode === DeviceGradingMode.SINGLE) {
+      setSearchParams({
+        round: round.toString(),
+      });
+    }
+  }, [round]);
 
   if (!divisionsData?.egtDivisions || divisionsData.egtDivisions.length === 0) {
     if (divisionsData?.egtDivisions.length === 0 && props.device === 0) {
@@ -87,7 +100,7 @@ export function DeviceGrading(props: DeviceGradingProps) {
     if (round < maxRounds - 1) {
       setRound(round + 1);
     } else {
-      setIsFinished(true)
+      setIsFinished(true);
     }
   }
 
