@@ -17,7 +17,7 @@ type DeviceGradingProps = {
   mode: DeviceGradingMode;
   hideTitle?: boolean;
   hideRound?: boolean;
-  divisionIds: string[];
+  divisionIds?: string[];
   onlyRunning: boolean;
 };
 
