@@ -1,4 +1,3 @@
-import { useParams } from "react-router-dom";
 import {
   EgtDeviceAggregationMode,
   EgtStarterLink,

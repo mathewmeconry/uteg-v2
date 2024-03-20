@@ -14,9 +14,7 @@ import { enqueueSnackbar } from "notistack";
 import { useEffect, useMemo, useState } from "react";
 import { useForm, useWatch, FieldValues, FormProvider } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { useParams } from "react-router-dom";
 import {
-  useEgtDivisionsIdsQuery,
   useEgtDeviceGradingLazyQuery,
   useEgtStarterGradesLazyQuery,
   useEgtAddGradesMutation,
