@@ -105,6 +105,7 @@ export default function Judging() {
         ground={tokenData?.ground}
         mode={DeviceGradingMode.SINGLE}
         hideTitle={true}
+        onlyRunning
       />
     </PaperExtended>
   );

@@ -35,6 +35,7 @@ import { CreateDivisionDialog } from "../../dialogs/createDivisionDialog/createD
 import { DeleteConfirmationDialog } from "../../../../dialogs/deleteConfirmationDialog/deleteConfirmationDialog";
 import { ApolloError } from "@apollo/client";
 import { StartDivisionsDialog } from "../../dialogs/startDivisionsDialog/startDivisionsDialog";
+import GradingIcon from "@mui/icons-material/Grading";
 
 export function Divisionslist() {
   const { id } = useParams();
@@ -194,7 +195,7 @@ export function Divisionslist() {
     },
     {
       field: "totalStarters",
-      headerName: t('starters', {ns: 'common'}),
+      headerName: t("starters", { ns: "common" }),
       disableColumnMenu: true,
       flex: 1,
     },
@@ -234,6 +235,19 @@ export function Divisionslist() {
         color="inherit"
         onClick={() =>
           navigate(`/competition/${id}/egt/division/${division.id}/lineups`)
+        }
+      />,
+      <GridActionsCellItem
+        icon={
+          <Tooltip title={t("grading")}>
+            <GradingIcon />
+          </Tooltip>
+        }
+        label="Grading"
+        className="textPrimary"
+        color="inherit"
+        onClick={() =>
+          navigate(`/competition/${id}/egt/division/${division.id}/grading`)
         }
       />,
       <GridActionsCellItem

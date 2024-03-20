@@ -66,6 +66,10 @@ export class EGTDivisionService {
       qb.andWhere('division.state = :state', { state: filter.state });
     }
 
+    if (filter.ids && filter.ids.length > 0) {
+      qb.andWhere(`division.id IN (:divisionIds)`, { divisionIds: filter.ids });
+    }
+
     return qb.orderBy('category', 'ASC').addOrderBy('number', 'ASC').getMany();
   }
 

@@ -119,6 +119,7 @@ input EGTDivisionFilterInput {
   category: Int
   competitionID: ID!
   ground: Int
+  ids: [ID!]
   sex: Sex
   state: EGTDivisionStates
 }

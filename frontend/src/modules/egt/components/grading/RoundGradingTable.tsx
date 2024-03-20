@@ -6,7 +6,6 @@ import {
   useEgtAddGradesMutation,
   useEgtAdvanceLineupsMutation,
   useEgtDeviceGradingLazyQuery,
-  useEgtDivisionsIdsQuery,
   useEgtStarterGradesLazyQuery,
 } from "../../../../__generated__/graphql";
 import {
@@ -29,23 +28,12 @@ type RoundGradingProps = {
   device: number;
   ground: number;
   round: number;
+  divisionIds: string[]
 };
 
 export function RoundGradingTable(props: RoundGradingProps) {
-  const { id } = useParams();
   const { t } = useTranslation(["egt", "common"]);
-  const {
-    data: divisionsData,
-    loading: divisionsDataLoading,
-  } = useEgtDivisionsIdsQuery({
-    variables: {
-      filter: {
-        competitionID: id!,
-        ground: props.ground,
-        state: "RUNNING",
-      },
-    },
-  });
+  
   const [
     deviceQuery,
     { loading: deviceDataLoading, data: deviceData },
@@ -74,11 +62,11 @@ export function RoundGradingTable(props: RoundGradingProps) {
       variables: {
         device: props.device,
         round: props.round,
-        ids: divisionsData?.egtDivisions?.map((division) => division.id) ?? [],
+        ids: props.divisionIds,
       },
     });
     gradesQuery();
-  }, [divisionsData, props.round]);
+  }, [props.divisionIds, props.round]);
 
   useEffect(() => {
     if (gradesData?.starterGrades) {
@@ -154,11 +142,11 @@ export function RoundGradingTable(props: RoundGradingProps) {
     }
   }, [formValues, maxInputs]);
 
-  if (divisionsDataLoading || deviceDataLoading) {
+  if (deviceDataLoading) {
     return [...Array(5).keys()].map((key) => <Skeleton key={key} />);
   }
 
-  if (!divisionsData?.egtDivisions || !deviceData?.egtJudgingDevice) {
+  if (!props.divisionIds || !deviceData?.egtJudgingDevice) {
     return null;
   }
 

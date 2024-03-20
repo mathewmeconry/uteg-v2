@@ -36,26 +36,15 @@ export type RoundGradingSingleProps = {
   maxRounds: number;
   advanceRound?: () => void;
   isFinished: boolean;
+  divisionIds: string[];
 };
 
 export default function RoundGradingSingle(props: RoundGradingSingleProps) {
-  const { id } = useParams();
   const { t } = useTranslation(["egt", "common"]);
   const [starterIndex, setStarterIndex] = useState(0);
   const [inReview, setInReview] = useState(false);
   const [openGradingList, setOpenGradingList] = useState(false);
-  const {
-    data: divisionsData,
-    loading: divisionsDataLoading,
-  } = useEgtDivisionsIdsQuery({
-    variables: {
-      filter: {
-        competitionID: id!,
-        ground: props.ground,
-        state: "RUNNING",
-      },
-    },
-  });
+
   const [
     deviceQuery,
     { loading: deviceDataLoading, data: deviceData },
@@ -82,19 +71,17 @@ export default function RoundGradingSingle(props: RoundGradingSingleProps) {
   const formValues = useWatch({ control: form.control });
 
   useEffect(() => {
-    let divisionIds =
-      divisionsData?.egtDivisions?.map((division) => division.id) ?? [];
-    if (divisionIds.length > 0) {
+    if (props.divisionIds.length > 0) {
       deviceQuery({
         variables: {
           device: props.device,
           round: props.round,
-          ids: divisionIds,
+          ids: props.divisionIds,
         },
       });
       gradesQuery();
     }
-  }, [divisionsData, props.round]);
+  }, [props.divisionIds, props.round]);
 
   useEffect(() => {
     if (gradesData?.starterGrades) {
@@ -514,15 +501,17 @@ export default function RoundGradingSingle(props: RoundGradingSingleProps) {
 
   if (props.isFinished) {
     return (
-      <Typography variant="h5" sx={{ mt: 3, textAlign: 'center' }}>{t("finished", { ns: "common" })}</Typography>
+      <Typography variant="h5" sx={{ mt: 3, textAlign: "center" }}>
+        {t("finished", { ns: "common" })}
+      </Typography>
     );
   }
 
-  if (divisionsDataLoading || deviceDataLoading || gradesLoading) {
+  if (deviceDataLoading || gradesLoading) {
     return <LinearProgress />;
   }
 
-  if (!divisionsData?.egtDivisions || !deviceData?.egtJudgingDevice) {
+  if (!deviceData?.egtJudgingDevice) {
     return null;
   }
 
@@ -546,9 +535,7 @@ export default function RoundGradingSingle(props: RoundGradingSingleProps) {
         onClose={() => setOpenGradingList(false)}
         maxRounds={props.maxRounds}
         device={props.device}
-        divisionIds={
-          divisionsData?.egtDivisions?.map((division) => division.id) ?? []
-        }
+        divisionIds={props.divisionIds}
         currentStarter={starter?.id}
       />
     </>

@@ -24,6 +24,7 @@ import Judges from "./pages/judges/judges";
 import GavelIcon from "@mui/icons-material/Gavel";
 import Judging from "./pages/judging/judging";
 import inFilter from "../../components/grid/inFilterOperator";
+import DivisionGrading from "./pages/divisions/[id]/grading/divisionGrading";
 
 const routes: RouteObject[] = [
   {
@@ -48,6 +49,10 @@ const routes: RouteObject[] = [
                     hasDrawer: false,
                   },
                 },
+              },
+              {
+                path: "grading",
+                element: <DivisionGrading />,
               },
             ],
           },
@@ -93,7 +98,9 @@ const starterListColumns: Array<GridColDefExtension | GridActionsColDef> = [
     valueGetter: (params) => {
       if (params.row.egt?.category) {
         if (params.row.egt?.category === 8) {
-          return `category_${params.row.egt?.category}_${params.row.starter?.sex.toLowerCase()}`;
+          return `category_${
+            params.row.egt?.category
+          }_${params.row.starter?.sex.toLowerCase()}`;
         }
         return `category_${params.row.egt?.category}`;
       }

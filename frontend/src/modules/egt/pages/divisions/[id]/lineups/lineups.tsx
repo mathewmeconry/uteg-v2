@@ -7,14 +7,7 @@ import {
   useEgtDivisionQuery,
   useEgtStarterLinkUnassignedQuery,
 } from "../../../../../../__generated__/graphql";
-import {
-  Box,
-  CircularProgress,
-  List,
-  ListItemText,
-  Skeleton,
-  Typography,
-} from "@mui/material";
+import { Box, CircularProgress, Typography } from "@mui/material";
 import { Lineup } from "../../../../components/lineup/Lineup";
 import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
 import { LineupToolbar } from "../../../../components/lineup/LineupToolbar";
@@ -23,6 +16,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import { UpdateStarterDialog } from "../../../../../../dialogs/updateStarterDialog/updateStarterDialog";
 import { GridColumnFilterMenu } from "../../../../../../components/grid/gridColumnFilterMenu";
 import inFilter from "../../../../../../components/grid/inFilterOperator";
+import DivisionInfo from "../../../../components/division/DivisionInfo";
 
 export function Lineups() {
   const { divisionID } = useParams();
@@ -44,50 +38,6 @@ export function Lineups() {
     },
   });
 
-  function renderInfo() {
-    if (loading) {
-      return (
-        <List>
-          <Skeleton variant="text" />
-          <Skeleton variant="text" />
-          <Skeleton variant="text" />
-          <Skeleton variant="text" />
-          <Skeleton variant="text" />
-          <Skeleton variant="text" />
-        </List>
-      );
-    }
-
-    return (
-      <List sx={{ display: "flex", flexDirection: "column" }}>
-        <ListItemText
-          primary={t("category", { ns: "egt" })}
-          secondary={division?.egtDivision?.category}
-        />
-        <ListItemText
-          primary={t("number", { ns: "common" })}
-          secondary={division?.egtDivision?.number}
-        />
-        <ListItemText
-          primary={t("sex", { ns: "common" })}
-          secondary={t(division?.egtDivision?.sex!)}
-        />
-        <ListItemText
-          primary={t("ground", { ns: "common" })}
-          secondary={division?.egtDivision?.ground}
-        />
-        <ListItemText
-          primary={t("currentRound", { ns: "egt" })}
-          secondary={division?.egtDivision?.currentRound}
-        />
-        <ListItemText
-          primary={t("totalRounds", { ns: "egt" })}
-          secondary={division?.egtDivision?.totalRounds}
-        />
-      </List>
-    );
-  }
-
   function renderLineups() {
     if (loading) {
       return (
@@ -108,7 +58,7 @@ export function Lineups() {
       <Lineup
         key={lineup.id}
         id={lineup.id}
-        lineups={division?.egtDivision?.lineups as EgtLineup[] || []}
+        lineups={(division?.egtDivision?.lineups as EgtLineup[]) || []}
       />
     ));
   }
@@ -178,7 +128,10 @@ export function Lineups() {
             </Typography>
           </Typography>
           <DataGrid
-            rows={unassignedStarters?.egtStarterLinkUnassigned as EgtStarterLink[] || []}
+            rows={
+              (unassignedStarters?.egtStarterLinkUnassigned as EgtStarterLink[]) ||
+              []
+            }
             sx={{
               minHeight: "20vh",
             }}
@@ -221,7 +174,7 @@ export function Lineups() {
   return (
     <>
       <PaperExtended title={t("division_info", { ns: "egt" })}>
-        {renderInfo()}
+        <DivisionInfo id={divisionID!} />
       </PaperExtended>
       <PaperExtended
         sx={{ mt: 2 }}

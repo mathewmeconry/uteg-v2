@@ -17,6 +17,8 @@ type DeviceGradingProps = {
   mode: DeviceGradingMode;
   hideTitle?: boolean;
   hideRound?: boolean;
+  divisionIds: string[];
+  onlyRunning: boolean;
 };
 
 export function DeviceGrading(props: DeviceGradingProps) {
@@ -37,7 +39,8 @@ export function DeviceGrading(props: DeviceGradingProps) {
       filter: {
         competitionID: id!,
         ground: props.ground,
-        state: "RUNNING",
+        state: props.onlyRunning ? "RUNNING" : null,
+        ids: props.divisionIds,
       },
     },
     fetchPolicy: "no-cache",
@@ -122,6 +125,9 @@ export function DeviceGrading(props: DeviceGradingProps) {
               device={props.device}
               ground={props.ground}
               round={round}
+              divisionIds={
+                divisionsData?.egtDivisions.map((division) => division.id) ?? []
+              }
             />
           </>
         );
@@ -134,6 +140,9 @@ export function DeviceGrading(props: DeviceGradingProps) {
             maxRounds={maxRounds}
             advanceRound={advanceRound}
             isFinished={isFinished}
+            divisionIds={
+              divisionsData?.egtDivisions.map((division) => division.id) ?? []
+            }
           />
         );
     }

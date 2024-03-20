@@ -57,6 +57,7 @@ export function Grading() {
           ground={selectedTab + 1}
           key={i}
           mode={DeviceGradingMode.TABLE}
+          onlyRunning
         />
       );
     }

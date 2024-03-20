@@ -3,13 +3,9 @@ import {
   ID,
   InputType,
   Int,
-  ObjectType,
   registerEnumType,
 } from '@nestjs/graphql';
 import { SEX } from 'src/base/starter/starter.types';
-import { EGTDivision } from './egtDivision.entity';
-import { EGTStarterLink } from '../starterlink/egtStarterLink.entity';
-import { EGTDevice } from '../device/egtDevice.entity';
 
 @InputType()
 export class EGTDivisionFilterInput {
@@ -27,6 +23,9 @@ export class EGTDivisionFilterInput {
 
   @Field(() => EGTDivisionStates, { nullable: true })
   state?: EGTDivisionStates;
+
+  @Field(() => [ID], {nullable: true})
+  ids?: number[]
 }
 
 @InputType()
