@@ -27,12 +27,12 @@ type RoundGradingProps = {
   device: number;
   ground: number;
   round: number;
-  divisionIds: string[]
+  divisionIds: string[];
 };
 
 export function RoundGradingTable(props: RoundGradingProps) {
   const { t } = useTranslation(["egt", "common"]);
-  
+
   const [
     deviceQuery,
     { loading: deviceDataLoading, data: deviceData },
@@ -193,12 +193,7 @@ export function RoundGradingTable(props: RoundGradingProps) {
     return [...Array(maxInputs + 1).keys()].map((key) => {
       if (key === maxInputs) {
         return (
-          <TableCell key={key}>
-            {t("grade_labled", {
-              ns: "common",
-              label: t("final_grade", { ns: "common" }),
-            })}
-          </TableCell>
+          <TableCell key={key}>{t("final_grade", { ns: "common" })}</TableCell>
         );
       }
 
@@ -327,6 +322,7 @@ export function RoundGradingTable(props: RoundGradingProps) {
             <TableRow>
               <TableCell>{t("firstname", { ns: "common" })}</TableCell>
               <TableCell>{t("lastname", { ns: "common" })}</TableCell>
+              <TableCell>{t("club", { ns: "common" })}</TableCell>
               <TableCell>{t("category", { ns: "egt" })}</TableCell>
               {renderInputHeaders()}
             </TableRow>
@@ -336,6 +332,7 @@ export function RoundGradingTable(props: RoundGradingProps) {
               <TableRow key={starter.id}>
                 <TableCell>{starter.starterlink?.starter?.firstname}</TableCell>
                 <TableCell>{starter.starterlink?.starter?.lastname}</TableCell>
+                <TableCell>{starter.starterlink?.club.name}</TableCell>
                 <TableCell>
                   {t(`category_${starter.category}`, {
                     context: starter.starterlink.starter.sex,

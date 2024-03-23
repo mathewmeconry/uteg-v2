@@ -104,6 +104,7 @@ type Starter = {
   id: string;
   firstname: string;
   lastname: string;
+  club: string;
   category: number;
 };
 
@@ -111,6 +112,7 @@ export function JudgingDocument(props: JudgingDocumentProps) {
   const translations = {
     firstname: (_?: string) => props.t("firstname", { ns: "common" }),
     lastname: (_?: string) => props.t("lastname", { ns: "common" }),
+    club: (_: string) => props.t("club", { ns: "common" }),
     category: (_?: string) => props.t("category", { ns: "egt" }),
     grade: (_?: string) => props.t("grade", { ns: "common" }),
     grade_labled: (label?: string) =>
@@ -146,6 +148,7 @@ export function JudgingDocument(props: JudgingDocumentProps) {
         id: egtStarterlink.id,
         firstname: egtStarterlink.starterlink.starter.firstname,
         lastname: egtStarterlink.starterlink.starter.lastname,
+        club: egtStarterlink.starterlink.club.name,
         category: egtStarterlink.category || 0,
       }));
       device.rounds[round] = starters;
@@ -244,11 +247,8 @@ export function JudgingDocument(props: JudgingDocumentProps) {
       gradeInputs.push(
         <View style={styles.tableCol} key={`header_${device.number}_total`}>
           <Text style={styles.tableCell}>
-            {props.t("grade_labled", {
+            {props.t("final_grade", {
               ns: "common",
-              label: props.t("final_grade", {
-                ns: "common",
-              }),
             })}
           </Text>
         </View>
@@ -295,6 +295,9 @@ export function JudgingDocument(props: JudgingDocumentProps) {
             </View>
             <View style={styles.tableCol}>
               <Text style={styles.tableCell}>{starter.lastname}</Text>
+            </View>
+            <View style={styles.tableCol}>
+              <Text style={styles.tableCell}>{starter.club}</Text>
             </View>
             <View style={styles.tableCol}>
               <Text style={styles.tableCell}>

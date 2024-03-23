@@ -24,6 +24,10 @@ export const GET_DEVICE_GRADING = gql`
             lastname
             sex
           }
+          club {
+            id
+            name
+          }
         }
         category
       }
