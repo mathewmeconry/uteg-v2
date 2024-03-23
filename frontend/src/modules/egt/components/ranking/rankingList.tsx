@@ -96,7 +96,7 @@ export function RankingList(props: RankingListProps) {
           rankings={rankingData?.egtStarterRankings as EgtStarterRanking[]}
         />
       ),
-      filename: `${t("rankings", {
+      filename: `${t("ranking_typed", {
         ns: "egt",
         category: t(`category_${props.category}`, {
           ns: "egt",

@@ -59,7 +59,7 @@
   "aggregationMode_AVG": "Durchscnitt",
   "grading": "Noteneingabe",
   "ranking": "Rangliste",
-  "rankings": "Ranglisten {{category}}",
+  "ranking_typed": "Rangliste {{category}}",
   "honourPrecentage": "Auszeichnungsprozentsatz",
   "intermediate": "Laufende",
   "invalid_division_ignore": "Ungültige Abteilungen werden ignoriert",

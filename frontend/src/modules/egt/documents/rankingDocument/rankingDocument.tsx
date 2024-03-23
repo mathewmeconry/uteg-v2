@@ -198,7 +198,7 @@ function RankingDocumentNonMemo(props: RankingDocumentProps) {
     <Document>
       <Page size="A4" style={styles.page} wrap={true}>
         <Text style={styles.h1}>
-          {props.t("rankings", {
+          {props.t("ranking_typed", {
             ns: "egt",
             category: props.t(`category_${props.category}`, {
               ns: "egt",
