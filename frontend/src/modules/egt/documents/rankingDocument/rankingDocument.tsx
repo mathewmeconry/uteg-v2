@@ -6,7 +6,11 @@ import {
   View,
   Page,
 } from "@react-pdf/renderer";
-import { EgtStarterRanking, Sex } from "../../../../__generated__/graphql";
+import {
+  Competition,
+  EgtStarterRanking,
+  Sex,
+} from "../../../../__generated__/graphql";
 import { memo, useMemo } from "react";
 import { TFunction } from "i18next";
 
@@ -36,13 +40,19 @@ const styles = StyleSheet.create({
     width: "90vw",
     fontSize: "14pt",
     fontWeight: 700,
-    marginBottom: 10,
   },
   h2: {
     width: "90vw",
     fontSize: "12pt",
     fontWeight: 300,
-    marginBottom: 10,
+  },
+  h3: {
+    width: "90vw",
+    fontSize: "10pt",
+    fontWeight: 300,
+  },
+  gray: {
+    color: "#6e6e6e",
   },
   table: {
     fontFamily: "Roboto",
@@ -58,8 +68,7 @@ const styles = StyleSheet.create({
     height: "20pt",
     paddingTop: "1.75pt",
   },
-  tableCol: {
-  },
+  tableCol: {},
   tableCell: {
     fontSize: "9pt",
     padding: "2pt",
@@ -80,20 +89,20 @@ const styles = StyleSheet.create({
     borderBottomWidth: "1.5pt",
   },
   rank: {
-    width: "31pt"
+    width: "31pt",
   },
   name: {
-    width: "94pt"
+    width: "94pt",
   },
   club: {
-    width: "139pt"
+    width: "139pt",
   },
   grade: {
     width: "49pt",
     textAlign: "center",
   },
   award: {
-    width: "13pt"
+    width: "13pt",
   },
 });
 
@@ -102,6 +111,7 @@ export type RankingDocumentProps = {
   sex: Sex;
   category: number;
   rankings: EgtStarterRanking[];
+  competition: Partial<Competition>;
 };
 
 function RankingDocumentNonMemo(props: RankingDocumentProps) {
@@ -205,6 +215,9 @@ function RankingDocumentNonMemo(props: RankingDocumentProps) {
               context: props.sex.toLowerCase(),
             }),
           })}
+        </Text>
+        <Text style={{ ...styles.h3, ...styles.gray, marginBottom: "10pt" }}>
+          {props.competition.name}
         </Text>
         <View style={styles.table}>
           <View style={styles.tableHeaderRow}>

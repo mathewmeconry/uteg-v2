@@ -53,3 +53,12 @@ export const UPDATE_EGT_CATEGORY_SETTINGS = gql`
     }
   }
 `;
+
+gql`
+  query EgtRankingListCompetition($id: ID!) {
+    competition(id: $id) {
+      id
+      name
+    }
+  }
+`

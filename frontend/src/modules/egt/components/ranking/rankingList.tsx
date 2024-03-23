@@ -1,8 +1,10 @@
 import { useParams } from "react-router-dom";
 import {
+  Competition,
   EgtStarterRanking,
   Sex,
   useEgtCategorySettingsQuery,
+  useEgtRankingListCompetitionQuery,
   useEgtStarterRankingQuery,
   useUpdateEgtCategorySettingsMutation,
 } from "../../../../__generated__/graphql";
@@ -34,6 +36,14 @@ export function RankingList(props: RankingListProps) {
   const [showIntermediate, setShowIntermediate] = useState(false);
   const { id } = useParams();
   const {
+    data: competitionData,
+    loading: competitionLoading,
+  } = useEgtRankingListCompetitionQuery({
+    variables: {
+      id: id!,
+    },
+  });
+  const {
     data: rankingData,
     loading: rankingLoading,
     error: rankingError,
@@ -61,9 +71,7 @@ export function RankingList(props: RankingListProps) {
       sex: props.sex,
     },
   });
-  const [
-    categorySettingsMutation,
-  ] = useUpdateEgtCategorySettingsMutation();
+  const [categorySettingsMutation] = useUpdateEgtCategorySettingsMutation();
 
   async function onHonourPercentageChange(value: string) {
     const result = await categorySettingsMutation({
@@ -94,6 +102,7 @@ export function RankingList(props: RankingListProps) {
           sex={props.sex}
           category={props.category}
           rankings={rankingData?.egtStarterRankings as EgtStarterRanking[]}
+          competition={competitionData?.competition as Partial<Competition>}
         />
       ),
       filename: `${t("ranking_typed", {
@@ -107,10 +116,8 @@ export function RankingList(props: RankingListProps) {
     pdfDownload();
   }
 
-  if (rankingLoading) {
-    return Array.from(Array(10).keys()).map((_) => (
-      <Skeleton variant="text" />
-    ));
+  if (rankingLoading || competitionLoading) {
+    return Array.from(Array(10).keys()).map((_) => <Skeleton variant="text" />);
   }
 
   if (rankingError) {
