@@ -39,7 +39,6 @@ const styles = StyleSheet.create({
   },
   section: {
     marginBottom: 20,
-    width: "90vw",
   },
   h1: {
     width: "90vw",
@@ -57,38 +56,33 @@ const styles = StyleSheet.create({
     fontFamily: "Roboto",
     display: "flex",
     flexDirection: "column",
-    width: "90vw",
   },
   tableRow: {
     display: "flex",
     flexDirection: "row",
-    width: "90vw",
     borderBottomWidth: 1,
     height: "30pt",
     paddingTop: 8,
   },
-  tableCol: {
-    width: "90vw",
-  },
   tableCell: {
     fontSize: "9pt",
     padding: "2pt",
-    width: "90vw",
   },
   tableCellAnnotation: {
     fontSize: "7pt",
     color: "grey",
-    width: "90vw",
     marginBottom: "2pt",
     marginTop: "auto",
   },
   tableHeaderRow: {
     display: "flex",
     flexDirection: "row",
-    width: "90vw",
     fontSize: "9pt",
     fontWeight: 700,
     borderBottomWidth: "1.5pt",
+  },
+  grade: {
+    textAlign: "center",
   },
 });
 
@@ -117,6 +111,14 @@ export function JudgingDocument(props: JudgingDocumentProps) {
     grade: (_?: string) => props.t("grade", { ns: "common" }),
     grade_labled: (label?: string) =>
       props.t("grade_labled", { ns: "common", label }),
+  };
+  const widths = {
+    firstname: "98pt",
+    lastname: "98pt",
+    club: "98pt",
+    category: "40pt",
+    grade: "80pt",
+    grade_labled: "80pt",
   };
 
   let groupedByDevices: Device[] = [];
@@ -205,7 +207,7 @@ export function JudgingDocument(props: JudgingDocumentProps) {
     const gradeInputs: ReactElement[] = [];
     for (let i = 0; i < inputsCount; i++) {
       gradeInputs.push(
-        <View style={styles.tableCol}>
+        <View style={{ width: widths.grade, ...styles.grade }}>
           {deviceWithOverride.inputs <= i && (
             <Text style={styles.tableCell}>------</Text>
           )}
@@ -215,7 +217,7 @@ export function JudgingDocument(props: JudgingDocumentProps) {
 
     if (inputsCount > 1) {
       gradeInputs.push(
-        <View style={styles.tableCol}>
+        <View style={{ width: widths.grade, ...styles.grade }}>
           <Text style={styles.tableCellAnnotation}>
             {props.t(`aggregationMode_${deviceWithOverride.aggregationMode}`, {
               ns: "egt",
@@ -233,7 +235,13 @@ export function JudgingDocument(props: JudgingDocumentProps) {
     const gradeInputs: ReactElement[] = [];
     for (let i = 0; i < inputsCount; i++) {
       gradeInputs.push(
-        <View style={styles.tableCol} key={`header_${device.number}_${i}`}>
+        <View
+          style={{
+            width: inputsCount !== 1 ? widths.grade : "180pt",
+            ...styles.grade,
+          }}
+          key={`header_${device.number}_${i}`}
+        >
           <Text style={styles.tableCell}>
             {inputsCount == 1
               ? props.t("grade", { ns: "common" })
@@ -245,7 +253,10 @@ export function JudgingDocument(props: JudgingDocumentProps) {
 
     if (inputsCount > 1) {
       gradeInputs.push(
-        <View style={styles.tableCol} key={`header_${device.number}_total`}>
+        <View
+          style={{ width: widths.grade, ...styles.grade }}
+          key={`header_${device.number}_total`}
+        >
           <Text style={styles.tableCell}>
             {props.t("final_grade", {
               ns: "common",
@@ -278,7 +289,9 @@ export function JudgingDocument(props: JudgingDocumentProps) {
               .filter((key) => translations[key as keyof typeof translations])
               .map((key) => (
                 <View
-                  style={styles.tableCol}
+                  style={{
+                    width: widths[key as keyof typeof widths],
+                  }}
                   key={`${device.number}_${round}_${key}`}
                 >
                   <Text style={styles.tableCell}>
@@ -290,16 +303,16 @@ export function JudgingDocument(props: JudgingDocumentProps) {
         </View>
         {...starters.map((starter) => (
           <View style={styles.tableRow} key={`${device.number}_${starter.id}`}>
-            <View style={styles.tableCol}>
+            <View style={{ width: widths.firstname }}>
               <Text style={styles.tableCell}>{starter.firstname}</Text>
             </View>
-            <View style={styles.tableCol}>
+            <View style={{ width: widths.lastname }}>
               <Text style={styles.tableCell}>{starter.lastname}</Text>
             </View>
-            <View style={styles.tableCol}>
+            <View style={{ width: widths.club }}>
               <Text style={styles.tableCell}>{starter.club}</Text>
             </View>
-            <View style={styles.tableCol}>
+            <View style={{ width: widths.category }}>
               <Text style={styles.tableCell}>
                 {props.t(`category_${starter.category}`, { ns: "egt" })}
               </Text>
