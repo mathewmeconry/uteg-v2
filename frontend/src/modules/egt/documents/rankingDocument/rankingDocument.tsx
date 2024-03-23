@@ -159,7 +159,7 @@ function RankingDocumentNonMemo(props: RankingDocumentProps) {
     const highGrades = highestGrades;
 
     return (
-      <View style={styles.tableRow}>
+      <View style={styles.tableRow} wrap={false}>
         <View style={{ ...styles.tableCol, ...styles.rank }}>
           <Text style={styles.tableCell}>{item.rank}</Text>
         </View>
@@ -219,44 +219,42 @@ function RankingDocumentNonMemo(props: RankingDocumentProps) {
         <Text style={{ ...styles.h3, ...styles.gray, marginBottom: "10pt" }}>
           {props.competition.name}
         </Text>
-        <View style={styles.table}>
-          <View style={styles.tableHeaderRow}>
-            <View style={{ ...styles.tableCol, ...styles.rank }}>
-              <Text style={styles.tableCell}></Text>
-            </View>
-            <View style={{ ...styles.tableCol, ...styles.name }}>
-              <Text style={styles.tableCell}>
-                {props.t("firstname", { ns: "common" })}
-              </Text>
-            </View>
-            <View style={{ ...styles.tableCol, ...styles.name }}>
-              <Text style={styles.tableCell}>
-                {props.t("lastname", { ns: "common" })}
-              </Text>
-            </View>
-            <View style={{ ...styles.tableCol, ...styles.club }}>
-              <Text style={styles.tableCell}>
-                {props.t("club", { ns: "common" })}
-              </Text>
-            </View>
-            {[...Array(highestDeviceCount).keys()].map((i) => (
-              <View style={{ ...styles.tableCol, ...styles.grade }}>
-                <Text key={i} style={{ ...styles.tableCell }}>
-                  {props.t(`device_${i}_short`, { ns: "egt" })}
-                </Text>
-              </View>
-            ))}
-            <View style={{ ...styles.tableCol, ...styles.grade }}>
-              <Text style={styles.tableCell}>
-                {props.t("total", { ns: "common" })}
-              </Text>
-            </View>
-            <View style={{ ...styles.tableCol, ...styles.award }}>
-              <Text style={styles.tableCell}></Text>
-            </View>
+        <View style={styles.tableHeaderRow} fixed>
+          <View style={{ ...styles.tableCol, ...styles.rank }}>
+            <Text style={styles.tableCell}></Text>
           </View>
-          {props.rankings.map((ranking) => renderRow(ranking))}
+          <View style={{ ...styles.tableCol, ...styles.name }}>
+            <Text style={styles.tableCell}>
+              {props.t("firstname", { ns: "common" })}
+            </Text>
+          </View>
+          <View style={{ ...styles.tableCol, ...styles.name }}>
+            <Text style={styles.tableCell}>
+              {props.t("lastname", { ns: "common" })}
+            </Text>
+          </View>
+          <View style={{ ...styles.tableCol, ...styles.club }}>
+            <Text style={styles.tableCell}>
+              {props.t("club", { ns: "common" })}
+            </Text>
+          </View>
+          {[...Array(highestDeviceCount).keys()].map((i) => (
+            <View style={{ ...styles.tableCol, ...styles.grade }}>
+              <Text key={i} style={{ ...styles.tableCell }}>
+                {props.t(`device_${i}_short`, { ns: "egt" })}
+              </Text>
+            </View>
+          ))}
+          <View style={{ ...styles.tableCol, ...styles.grade }}>
+            <Text style={styles.tableCell}>
+              {props.t("total", { ns: "common" })}
+            </Text>
+          </View>
+          <View style={{ ...styles.tableCol, ...styles.award }}>
+            <Text style={styles.tableCell}></Text>
+          </View>
         </View>
+        {props.rankings.map((ranking) => renderRow(ranking))}
       </Page>
     </Document>
   );
