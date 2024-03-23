@@ -345,7 +345,7 @@ export function RoundGradingTable(props: RoundGradingProps) {
           <TableFooter>
             <TableRow>
               <TableCell
-                colSpan={3 + (maxInputs > 1 ? maxInputs + 1 : maxInputs)}
+                colSpan={4 + (maxInputs > 1 ? maxInputs + 1 : maxInputs)}
                 align="right"
               >
                 <Button
