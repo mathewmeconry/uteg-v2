@@ -155,7 +155,7 @@ export function Lineups() {
                 lineups: division?.egtDivision?.lineups || [],
               },
             }}
-            pageSizeOptions={[5, 10]}
+            pageSizeOptions={[10, 20, 50, 100]}
             density="compact"
           />
         </Box>
