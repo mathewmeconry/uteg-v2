@@ -102,15 +102,27 @@ export class EGTRankingService {
       return next.total - prev.total;
     }
 
-    for (let i = 0; i < prev.grades.length; i++) {
-      const prevGrade = this.getGrade(prev, i);
-      const nextGrade = this.getGrade(next, i);
+    // First device in the system is horizontal bar
+    // but the rules say we have to start with floor
+    // thus start with floor, wrap if limit is reached
+    // and break if we are back at the floor
+    let device = 1;
+    while (true) {
+      const prevGrade = this.getGrade(prev, device);
+      const nextGrade = this.getGrade(next, device);
       if (!prevGrade || !nextGrade) {
         return 0;
       }
-
       if (prevGrade.value !== nextGrade.value) {
         return nextGrade.value - prevGrade.value;
+      }
+      device++;
+      if (device > prev.grades.length) {
+        device = 0;
+      }
+
+      if (device === 1) {
+        return 0;
       }
     }
   }
