@@ -42,7 +42,7 @@ export default function Judging() {
     if (tokenData) {
       queryCompetition({
         variables: {
-          id: tokenData?.competition.toString(),
+          id: (tokenData.competition ?? "").toString(),
         },
       });
     }
