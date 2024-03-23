@@ -53,6 +53,12 @@ const routes: RouteObject[] = [
               {
                 path: "grading",
                 element: <DivisionGrading />,
+                handle: {
+                  layout: {
+                    returnable: true,
+                    hasDrawer: false,
+                  },
+                },
               },
             ],
           },
