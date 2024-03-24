@@ -87,10 +87,13 @@ export class EGTRankingService {
       }
     }
 
-    starterRanking.total = starterRanking.grades.reduce(
-      (prev, curr) => prev + parseFloat(curr.value.toString()),
-      0,
-    );
+    starterRanking.total =
+      Math.round(
+        starterRanking.grades.reduce(
+          (prev, curr) => prev + parseFloat(curr.value.toString()),
+          0,
+        ) * 100,
+      ) / 100;
     starterRanking.rank = 0;
     starterRanking.award = Award.NONE;
 
