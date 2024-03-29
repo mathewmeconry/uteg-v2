@@ -159,7 +159,7 @@ export function Settings() {
             <img
               style={{ display: "block" }}
               height={100}
-              src={`${import.meta.env.VITE_BACKEND_URI}/${
+              src={`${import.meta.env.VITE_BACKEND_URI || ""}/${
                 competitionData?.competition?.logo
               }`}
             />

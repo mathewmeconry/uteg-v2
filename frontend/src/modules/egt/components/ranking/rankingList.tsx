@@ -103,7 +103,7 @@ export function RankingList(props: RankingListProps) {
           category={props.category}
           rankings={rankingData?.egtStarterRankings as EgtStarterRanking[]}
           competition={competitionData?.competition as Partial<Competition>}
-          backendUri={import.meta.env.VITE_BACKEND_URI}
+          backendUri={import.meta.env.VITE_BACKEND_URI || ""}
         />
       ),
       filename: `${t("ranking_typed", {
