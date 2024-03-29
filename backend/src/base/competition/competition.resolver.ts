@@ -25,6 +25,9 @@ import { CompetitionGuard } from './competition.guard';
 import { ClubService } from '../club/club.service';
 import { StarterLinkService } from '../starterLink/starterLink.service';
 import { GradeService } from '../grade/grade.service';
+import { Upload } from '../../scalars/upload.scalar';
+import { FileUpload } from 'graphql-upload-ts';
+import * as path from 'path';
 
 @Resolver(() => Competition)
 @UseGuards(CompetitionGuard, RoleGuard)
@@ -56,6 +59,21 @@ export class CompetitionResolver {
     @Args('id', { type: () => ID }) id: number,
   ): Promise<Competition> {
     return this.competitionService.findOne(id);
+  }
+
+  @Mutation(() => Competition, { name: 'competitionLogo' })
+  @Role(ROLES.ADMIN)
+  async logoUpload(
+    @Args('id', { type: () => ID }) id: number,
+    @Args('logo', { type: () => Upload }) logo: FileUpload,
+  ): Promise<Competition> {
+    let competition = await this.competitionService.findOne(id);
+    if (!competition) {
+      throw new NotFoundException();
+    }
+    await this.competitionService.deleteLogo(competition);
+    competition.logoPath = await this.competitionService.saveLogoFile(logo);
+    return this.competitionService.save(competition);
   }
 
   @Mutation(() => Competition, { name: 'createCompetition' })
@@ -103,6 +121,11 @@ export class CompetitionResolver {
     if (data.modules) {
       competition.modules = data.modules;
     }
+
+    if(data.deleteLogo) {
+      competition = await this.competitionService.deleteLogo(competition)
+    }
+
     return this.competitionService.save(competition);
   }
 
@@ -113,5 +136,11 @@ export class CompetitionResolver {
       grades: await this.gradeService.countGrades(competition.id),
       starters: await this.starterLinkService.countStarters(competition.id),
     };
+  }
+
+  @ResolveField(() => String, { nullable: true })
+  logo(@Parent() competition): string {
+    if (!competition.logoPath) return null;
+    return path.basename(competition.logoPath);
   }
 }

@@ -17,17 +17,15 @@ import { GradeService } from './grade/grade.service';
 import { StarterLinkService } from './starterLink/starterLink.service';
 import { AuthModule } from 'src/auth/auth.module';
 import { ModuleService } from './modules/module.service';
+import { ConfigModule } from 'src/config/config.module';
+import { FileModule } from 'src/file/file.module';
 
 @Module({
   imports: [
+    ConfigModule,
     AuthModule,
-    TypeOrmModule.forFeature([
-      Club,
-      Competition,
-      Grade,
-      Starter,
-      StarterLink,
-    ]),
+    TypeOrmModule.forFeature([Club, Competition, Grade, Starter, StarterLink]),
+    FileModule,
   ],
   exports: [
     TypeOrmModule,
@@ -36,7 +34,7 @@ import { ModuleService } from './modules/module.service';
     GradeService,
     StarterService,
     StarterLinkService,
-    ModuleService
+    ModuleService,
   ],
   providers: [
     ClubResolver,
@@ -49,7 +47,7 @@ import { ModuleService } from './modules/module.service';
     GradeService,
     StarterService,
     StarterLinkService,
-    ModuleService
+    ModuleService,
   ],
 })
 export class BaseModule {}

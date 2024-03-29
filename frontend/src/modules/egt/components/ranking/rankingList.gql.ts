@@ -59,6 +59,7 @@ gql`
     competition(id: $id) {
       id
       name
+      logo
     }
   }
 `

@@ -5,6 +5,7 @@ import {
   Text,
   View,
   Page,
+  Image,
 } from "@react-pdf/renderer";
 import {
   Competition,
@@ -37,17 +38,14 @@ const styles = StyleSheet.create({
     width: "90vw",
   },
   h1: {
-    width: "90vw",
     fontSize: "14pt",
     fontWeight: 700,
   },
   h2: {
-    width: "90vw",
     fontSize: "12pt",
     fontWeight: 300,
   },
   h3: {
-    width: "90vw",
     fontSize: "10pt",
     fontWeight: 300,
   },
@@ -104,6 +102,18 @@ const styles = StyleSheet.create({
   award: {
     width: "13pt",
   },
+  logo: {
+    height: "30pt",
+    objectFit: "contain",
+    alignSelf: "flex-end",
+  },
+  header: {
+    display: "flex",
+    flexDirection: "row",
+    width: "100%",
+    marginBottom: "10pt",
+    justifyContent: "space-between",
+  },
 });
 
 export type RankingDocumentProps = {
@@ -112,6 +122,7 @@ export type RankingDocumentProps = {
   category: number;
   rankings: EgtStarterRanking[];
   competition: Partial<Competition>;
+  backendUri: string;
 };
 
 function RankingDocumentNonMemo(props: RankingDocumentProps) {
@@ -207,18 +218,28 @@ function RankingDocumentNonMemo(props: RankingDocumentProps) {
   return (
     <Document>
       <Page size="A4" style={styles.page} wrap={true}>
-        <Text style={styles.h1}>
-          {props.t("ranking_typed", {
-            ns: "egt",
-            category: props.t(`category_${props.category}`, {
-              ns: "egt",
-              context: props.sex.toLowerCase(),
-            }),
-          })}
-        </Text>
-        <Text style={{ ...styles.h3, ...styles.gray, marginBottom: "10pt" }}>
-          {props.competition.name}
-        </Text>
+        <View fixed style={styles.header}>
+          <View>
+            <Text style={styles.h1}>
+              {props.t("ranking_typed", {
+                ns: "egt",
+                category: props.t(`category_${props.category}`, {
+                  ns: "egt",
+                  context: props.sex.toLowerCase(),
+                }),
+              })}
+            </Text>
+            <Text style={{ ...styles.h3, ...styles.gray }}>
+              {props.competition.name}
+            </Text>
+          </View>
+          {props.competition.logo && (
+            <Image
+              src={`${props.backendUri}/${props.competition.logo}`}
+              style={styles.logo}
+            />
+          )}
+        </View>
         <View style={styles.tableHeaderRow} fixed>
           <View style={{ ...styles.tableCol, ...styles.rank }}>
             <Text style={styles.tableCell}></Text>

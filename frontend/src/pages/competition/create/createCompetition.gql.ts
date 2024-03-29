@@ -14,3 +14,12 @@ export const CREATE_COMPETITION = gql`
         }
     }
 `;
+
+gql`
+  mutation createCompeitionLogo($id: ID!, $logo: Upload!) {
+    competitionLogo(id: $id, logo: $logo) {
+      id
+      logo
+    }
+  }
+`;

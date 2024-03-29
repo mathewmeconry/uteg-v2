@@ -21,7 +21,10 @@ import { Setup } from "./steps/setup";
 import { ModulesSettings } from "./steps/modulesSettings";
 import { Users } from "./steps/users";
 import { Review } from "./steps/review";
-import { useCreateCompetitionMutation } from "../../../__generated__/graphql";
+import {
+  useCreateCompeitionLogoMutation,
+  useCreateCompetitionMutation,
+} from "../../../__generated__/graphql";
 import { enqueueSnackbar } from "notistack";
 import { useNavigate } from "react-router-dom";
 import { useModules } from "../../../hooks/useModules/useModules";
@@ -35,6 +38,10 @@ export function CreateCompetition() {
     mode: "all",
   });
   const [createCompetition, { loading }] = useCreateCompetitionMutation();
+  const [
+    createCompetitionLogo,
+    { loading: logoLoading },
+  ] = useCreateCompeitionLogoMutation();
   const navigate = useNavigate();
   const [competitionId, setCompetitionId] = useState<string>();
   const moduleSelection = form.getValues("setup.modules");
@@ -79,6 +86,16 @@ export function CreateCompetition() {
       if (!competition.data?.createCompetition.id) {
         throw new Error("Something failed");
       }
+
+      if (formValues.general.logo && formValues.general.logo[0]) {
+        await createCompetitionLogo({
+          variables: {
+            id: competition.data.createCompetition.id,
+            logo: formValues.general.logo[0],
+          },
+        });
+      }
+
       setCompetitionId(competition.data.createCompetition.id);
 
       setModulesLoading(true);
@@ -164,7 +181,7 @@ export function CreateCompetition() {
   }
 
   function renderContent(step?: number) {
-    if (loading || modulesLoading) {
+    if (loading || modulesLoading || logoLoading) {
       return (
         <Box
           sx={{

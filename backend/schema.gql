@@ -13,6 +13,7 @@ type Competition {
   grounds: Int!
   id: ID!
   location: String!
+  logo: String
   modules: [String!]!
   name: String!
   startDate: Timestamp!
@@ -202,6 +203,7 @@ type Judgetoken {
 
 type Mutation {
   addGrades(grades: [GradeInput!]!): [Grade!]!
+  competitionLogo(id: ID!, logo: Upload!): Competition!
   createClub(data: CreateClubInput!): Club!
   createCompetition(competition: CreateCompetitionInput!): Competition!
   createEgtDivision(data: CreateEGTDivisionInput!): EGTDivision!
@@ -294,6 +296,7 @@ type StarterLink {
 scalar Timestamp
 
 input UpdateCompetitionInput {
+  deleteLogo: Boolean! = false
   endDate: Timestamp
   grounds: Int = 1
   location: String
@@ -326,6 +329,9 @@ input UpdateUserInput {
   id: ID!
   language: String!
 }
+
+"""Upload files"""
+scalar Upload
 
 type User {
   email: String!

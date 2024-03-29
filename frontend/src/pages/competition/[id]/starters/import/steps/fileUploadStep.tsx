@@ -1,22 +1,11 @@
 import { FormClubAutocomplete } from "../../../../../../components/form/FormClubAutocomplete";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
-import { Box, Button, IconButton, Typography, styled } from "@mui/material";
+import { Box, Button, IconButton, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import AttachFileIcon from "@mui/icons-material/AttachFile";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import { ChangeEvent, useMemo, DragEvent } from "react";
-
-const VisuallyHiddenInput = styled("input")({
-  clip: "rect(0 0 0 0)",
-  clipPath: "inset(50%)",
-  height: 1,
-  overflow: "hidden",
-  position: "absolute",
-  bottom: 0,
-  left: 0,
-  whiteSpace: "nowrap",
-  width: 1,
-});
+import VisuallyHiddenInput from "../../../../../../components/form/VisuallyHiddenInput";
 
 type FileUploadStepProps = {
   onChange: (files: File[]) => void;

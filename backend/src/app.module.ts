@@ -9,8 +9,12 @@ import { BaseModule } from './base/base.module';
 import { AuthModule } from './auth/auth.module';
 import { EGTModule } from './egt/egt.module';
 import * as path from 'path';
+import { Upload } from './scalars/upload.scalar';
 
 @Module({
+  providers: [
+    Upload
+  ],
   imports: [
     BaseModule,
     AuthModule,
@@ -42,8 +46,17 @@ import * as path from 'path';
         numberScalarMode: 'integer',
       },
     }),
-    ServeStaticModule.forRoot({
-      rootPath: path.join(__dirname, '..', 'frontend'),
+    ServeStaticModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => [
+        {
+          rootPath: configService.get('PERSISTENT_STORAGE_PATH'),
+        },
+        {
+          rootPath: path.join(__dirname, '..', 'frontend'),
+        },
+      ],
+      inject: [ConfigService],
     }),
   ],
 })

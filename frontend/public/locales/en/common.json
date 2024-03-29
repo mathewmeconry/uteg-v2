@@ -112,5 +112,6 @@
   "copy": "Copy",
   "loading": "Loading...",
   "processingModules": "Processing modules",
-  "finished": "Finished 🎉"
+  "finished": "Finished 🎉",
+  "logo": "Logo"
 }

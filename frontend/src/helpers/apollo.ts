@@ -1,33 +1,22 @@
-import { ApolloClient, InMemoryCache, createHttpLink } from "@apollo/client";
-import { setContext } from "@apollo/client/link/context";
+import { ApolloClient, InMemoryCache } from "@apollo/client";
 import { isTokenValid } from "./auth";
+import createUploadLink from "apollo-upload-client/createUploadLink.mjs";
 
-const httpLink = createHttpLink({
+const token = localStorage.getItem("token");
+if (!isTokenValid()) {
+  console.log("INVALID!");
+}
+
+const uploadLink = createUploadLink({
   uri: `${import.meta.env.VITE_BACKEND_URI || ""}/graphql`,
-});
-
-const authLink = setContext((_, { headers }) => {
-  const token = localStorage.getItem("token");
-
-  if (!token) {
-    return {
-      headers: {},
-    };
-  }
-
-  if (!isTokenValid()) {
-    console.log("INVALID!");
-  }
-
-  return {
-    headers: {
-      ...headers,
-      authorization: token ? `Bearer ${token}` : "",
-    },
-  };
+  headers: {
+    "Apollo-Require-Preflight": "true",
+    authorization: token ? `Bearer ${token}` : "",
+  },
 });
 
 export const apolloClient = new ApolloClient({
-  link: authLink.concat(httpLink),
+  // @ts-expect-error
+  link: uploadLink,
   cache: new InMemoryCache(),
 });
