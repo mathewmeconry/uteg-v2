@@ -12,9 +12,7 @@ import * as path from 'path';
 import { Upload } from './scalars/upload.scalar';
 
 @Module({
-  providers: [
-    Upload
-  ],
+  providers: [Upload],
   imports: [
     BaseModule,
     AuthModule,
@@ -51,9 +49,19 @@ import { Upload } from './scalars/upload.scalar';
       useFactory: (configService: ConfigService) => [
         {
           rootPath: configService.get('PERSISTENT_STORAGE_PATH'),
+          serveRoot: '/static',
+          serveStaticOptions: {
+            fallthrough: true,
+            index: false,
+            redirect: false,
+          },
         },
         {
           rootPath: path.join(__dirname, '..', 'frontend'),
+          serveStaticOptions: {
+            fallthrough: true,
+            redirect: true,
+          },
         },
       ],
       inject: [ConfigService],

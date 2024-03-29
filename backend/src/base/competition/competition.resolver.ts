@@ -122,8 +122,8 @@ export class CompetitionResolver {
       competition.modules = data.modules;
     }
 
-    if(data.deleteLogo) {
-      competition = await this.competitionService.deleteLogo(competition)
+    if (data.deleteLogo) {
+      competition = await this.competitionService.deleteLogo(competition);
     }
 
     return this.competitionService.save(competition);
@@ -141,6 +141,6 @@ export class CompetitionResolver {
   @ResolveField(() => String, { nullable: true })
   logo(@Parent() competition): string {
     if (!competition.logoPath) return null;
-    return path.basename(competition.logoPath);
+    return `static/${path.basename(competition.logoPath)}`;
   }
 }
