@@ -1,10 +1,14 @@
 import { useParams, useSearchParams } from "react-router-dom";
-import { useEgtGradingDivisionsIdsQuery } from "../../../../__generated__/graphql";
 import { Skeleton, Tab, Tabs, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { useEffect, useMemo, useState } from "react";
 import { RoundGradingTable } from "./RoundGradingTable";
 import RoundGradingSingle from "./RoundGradingSingle";
+import { graphql } from "../../../../__new_generated__/gql";
+import useEGTDivisions from "../../hooks/useEGTDivisions/useEGTDivisions";
+import { EgtDivisionStates } from "../../../../__new_generated__/graphql";
+import usePrevious from "../../../../hooks/usePrev/usePrev";
+import { enqueueSnackbar } from "notistack";
 
 export enum DeviceGradingMode {
   SINGLE = "SINGLE",
@@ -21,6 +25,14 @@ type DeviceGradingProps = {
   onlyRunning: boolean;
 };
 
+const DeviceGradingDivisionFragment = graphql(`
+  fragment DeviceGradingDivisionFragment on EGTDivision {
+    id
+    totalRounds
+    currentRound
+  }
+`);
+
 export function DeviceGrading(props: DeviceGradingProps) {
   const { id } = useParams();
   const [searchParams, setSearchParams] = useSearchParams({
@@ -34,17 +46,30 @@ export function DeviceGrading(props: DeviceGradingProps) {
   const {
     data: divisionsData,
     loading: divisionsDataLoading,
-  } = useEgtGradingDivisionsIdsQuery({
-    variables: {
-      filter: {
-        competitionID: id!,
-        ground: props.ground,
-        state: props.onlyRunning ? "RUNNING" : null,
-        ids: props.divisionIds,
-      },
+  } = useEGTDivisions(DeviceGradingDivisionFragment, {
+    filter: {
+      competitionID: id!,
+      ground: props.ground,
+      state: props.onlyRunning ? EgtDivisionStates.Running : undefined,
+      ids: props.divisionIds,
     },
-    fetchPolicy: "no-cache",
   });
+  const previousData = usePrevious(divisionsData);
+  useEffect(() => {
+    if (
+      divisionsData?.length !== previousData?.length &&
+      divisionsData &&
+      divisionsData.length > 0
+    ) {
+      enqueueSnackbar(
+        t("started", {
+          ns: "egt",
+          name: t("division", { ns: "egt", count: divisionsData?.length }),
+        }),
+        { variant: "success", key: "device_grading_division_started" }
+      );
+    }
+  }, [divisionsData]);
 
   const { maxRounds, lowestRound } = useMemo(() => {
     if (!divisionsData) {
@@ -54,13 +79,16 @@ export function DeviceGrading(props: DeviceGradingProps) {
     let max = 0;
     // start high so we can progress down to the real value
     let lowest = Infinity;
-    for (const division of divisionsData.egtDivisions) {
+    for (const division of divisionsData) {
       if (division.totalRounds > max) {
         max = division.totalRounds;
       }
       if (division.currentRound < lowest) {
         lowest = division.currentRound;
       }
+    }
+    if (divisionsData.length === 0) {
+      lowest = 0;
     }
     return { maxRounds: max, lowestRound: lowest };
   }, [divisionsData]);
@@ -79,8 +107,8 @@ export function DeviceGrading(props: DeviceGradingProps) {
     }
   }, [round]);
 
-  if (!divisionsData?.egtDivisions || divisionsData.egtDivisions.length === 0) {
-    if (divisionsData?.egtDivisions.length === 0 && props.device === 0) {
+  if (!divisionsData || divisionsData.length === 0) {
+    if (divisionsData && divisionsData.length === 0 && props.device === 0) {
       return (
         <Typography variant="h5" sx={{ mt: 3 }}>
           {t("no_started", { name: t("division") })}
@@ -125,9 +153,7 @@ export function DeviceGrading(props: DeviceGradingProps) {
               device={props.device}
               ground={props.ground}
               round={round}
-              divisionIds={
-                divisionsData?.egtDivisions.map((division) => division.id) ?? []
-              }
+              divisionIds={divisionsData?.map((division) => division.id) ?? []}
             />
           </>
         );
@@ -140,9 +166,7 @@ export function DeviceGrading(props: DeviceGradingProps) {
             maxRounds={maxRounds}
             advanceRound={advanceRound}
             isFinished={isFinished}
-            divisionIds={
-              divisionsData?.egtDivisions.map((division) => division.id) ?? []
-            }
+            divisionIds={divisionsData?.map((division) => division.id) ?? []}
           />
         );
     }

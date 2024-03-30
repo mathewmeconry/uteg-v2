@@ -94,7 +94,7 @@ export class EGTDivisionResolver {
     return this.egtDivisionService.updateState(data);
   }
 
-  @Role(ROLES.VIEWER)
+  @Role(ROLES.JUDGE)
   @Subscription(() => EGTDivision, {
     name: 'egtDivision',
     async filter(
