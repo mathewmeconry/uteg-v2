@@ -30,6 +30,7 @@ const DeviceGradingDivisionFragment = graphql(`
     id
     totalRounds
     currentRound
+    state
   }
 `);
 
