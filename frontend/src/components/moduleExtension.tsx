@@ -1,12 +1,12 @@
 import { Divider, LinearProgress } from "@mui/material";
-import { ModuleExtensions } from "../modules/types";
+import { ModuleExtensions as ModuleExtensionsType } from "../modules/types";
 import { useModules } from "../hooks/useModules/useModules";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 export type ModuleExtensionProps = {
   competitionId: string;
-  extensionName: keyof ModuleExtensions;
+  extensionName: keyof ModuleExtensionsType;
 };
 
 export function ModuleExtensions(props: ModuleExtensionProps) {
