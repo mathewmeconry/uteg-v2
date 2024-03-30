@@ -2,6 +2,7 @@ import { TypedDocumentNode, useQuery, useSubscription } from "@apollo/client";
 import { useEffect, useMemo, useState } from "react";
 import { graphql } from "../../../../__new_generated__/gql";
 import { FragmentType } from "../../../../__new_generated__";
+import { EgtDivisionStates } from "../../../../__new_generated__/graphql";
 
 type VariablesOf<T> = T extends TypedDocumentNode<infer _, infer VariablesType>
   ? VariablesType
@@ -100,16 +101,34 @@ export default function useEGTDivisions<
 
   useEffect(() => {
     if (subscriptionData && subscriptionData.egtDivision) {
+      let filterout = false;
+      if (
+        variables?.filter.state &&
+        (subscriptionData.egtDivision as {
+          id: string;
+          state: EgtDivisionStates;
+        }).state !== variables.filter.state
+      ) {
+        filterout = true;
+      }
       const index =
         data?.findIndex((d) => d.id === subscriptionData.egtDivision.id) ?? -1;
       if (index > -1) {
-        setData((state) => {
-          const cloned = [...state!];
-          cloned[index] = subscriptionData.egtDivision;
-          return cloned;
-        });
+        if (filterout) {
+          setData((state) =>
+            state?.filter((d) => d.id !== subscriptionData.egtDivision.id)
+          );
+        } else {
+          setData((state) => {
+            const cloned = [...state!];
+            cloned[index] = subscriptionData.egtDivision;
+            return cloned;
+          });
+        }
       } else {
-        setData((state) => [...state!, subscriptionData.egtDivision]);
+        if (!filterout) {
+          setData((state) => [...state!, subscriptionData.egtDivision]);
+        }
       }
     }
   }, [subscriptionData]);
@@ -117,6 +136,6 @@ export default function useEGTDivisions<
   return {
     loading,
     data: data as ResultOf<T>[],
-    refetch
+    refetch,
   };
 }
