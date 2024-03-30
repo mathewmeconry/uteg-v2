@@ -1,17 +1,19 @@
-import { ApolloClient, InMemoryCache } from "@apollo/client";
+import { ApolloClient, InMemoryCache, split } from "@apollo/client";
 import { isTokenValid } from "./auth";
 import createUploadLink from "apollo-upload-client/createUploadLink.mjs";
 import { GraphQLWsLink } from "@apollo/client/link/subscriptions";
 import { createClient } from "graphql-ws";
-import { RetryLink } from "@apollo/client/link/retry";
+import { getMainDefinition } from "@apollo/client/utilities";
 
 const token = localStorage.getItem("token");
 if (!isTokenValid()) {
   console.log("INVALID!");
 }
 
+const backend = import.meta.env.VITE_BACKEND_URI ?? document.location.origin;
+
 const uploadLink = createUploadLink({
-  uri: `${import.meta.env.VITE_BACKEND_URI || ""}/graphql`,
+  uri: `${backend}/graphql`,
   headers: {
     "Apollo-Require-Preflight": "true",
     authorization: token ? `Bearer ${token}` : "",
@@ -20,7 +22,7 @@ const uploadLink = createUploadLink({
 
 const wsLink = new GraphQLWsLink(
   createClient({
-    url: `${import.meta.env.VITE_BACKEND_URI || ""}/graphql`
+    url: `${backend}/graphql`
       .replace("https://", "wss://")
       .replace("http://", "ws://"),
     connectionParams: {
@@ -29,14 +31,13 @@ const wsLink = new GraphQLWsLink(
   })
 );
 
-const splitLink = new RetryLink().split(
+const splitLink = split(
   (op) => {
-    for (const variable of Object.values(op.variables)) {
-      if (variable instanceof File) {
-        return false;
-      }
-    }
-    return true;
+    const definition = getMainDefinition(op.query);
+    return (
+      definition.kind === "OperationDefinition" &&
+      definition.operation === "subscription"
+    );
   },
   wsLink,
   // @ts-expect-error
