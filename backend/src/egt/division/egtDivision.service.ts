@@ -201,4 +201,35 @@ export class EGTDivisionService {
 
     await this.egtDivisionRepository.save(divisions);
   }
+
+  async filter(
+    filter: EGTDivisionFilterInput,
+    divisions: EGTDivision[],
+  ): Promise<EGTDivision[]> {
+    let filtered = divisions;
+
+    if (filter.ids && filter.ids.length > 0) {
+      filtered = filtered.filter((d) => filter.ids.includes(d.id));
+    }
+
+    if (filter.category) {
+      filtered = filtered.filter((d) => d.category === filter.category);
+    }
+
+    if (filter.sex) {
+      filtered = filtered.filter((d) => d.sex === filter.sex);
+    }
+
+    if (filter.state) {
+      filtered = filtered.filter((d) => d.state === filter.state);
+    }
+
+    if (filter.competitionID) {
+      filtered = filtered.filter(
+        async (d) => (await d.competition).id === filter.competitionID,
+      );
+    }
+
+    return filtered;
+  }
 }

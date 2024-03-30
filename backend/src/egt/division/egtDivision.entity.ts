@@ -1,6 +1,8 @@
 import { Field, ID, Int, ObjectType } from '@nestjs/graphql';
 import { Competition } from 'src/base/competition/competition.entity';
 import {
+  AfterInsert,
+  AfterUpdate,
   Column,
   Entity,
   ManyToOne,
@@ -11,6 +13,14 @@ import { EGTDivisionStates } from './egtDivision.types';
 import { EGTLineup } from '../lineup/egtLineup.entity';
 import { SEX } from 'src/base/starter/starter.types';
 import { EGTStarterLink } from '../starterlink/egtStarterLink.entity';
+import { PubSub } from 'graphql-subscriptions';
+
+export const EGTDivisionPubSub = new PubSub();
+
+export enum EGTDivisionPubSubEvents {
+  UPDATE = 'update',
+  CREATE = 'create',
+}
 
 @ObjectType()
 @Entity()
@@ -63,5 +73,15 @@ export class EGTDivision {
       default:
         return 0;
     }
+  }
+
+  @AfterInsert()
+  onCreate() {
+    EGTDivisionPubSub.publish(EGTDivisionPubSubEvents.CREATE, this);
+  }
+
+  @AfterUpdate()
+  onUpdate() {
+    EGTDivisionPubSub.publish(EGTDivisionPubSubEvents.UPDATE, this);
   }
 }

@@ -10,3 +10,7 @@ export enum ROLES {
 registerEnumType(ROLES, {
   name: 'Roles',
 });
+
+export type AuthContext = {
+  competition?: number;
+};

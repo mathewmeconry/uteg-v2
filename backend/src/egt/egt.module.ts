@@ -24,6 +24,7 @@ import { EGTRankingResolver } from './ranking/egtRanking.resolver';
 import { EGTSettingsService } from './settings/egtSettings.service';
 import { EGTSettingsResolver } from './settings/egtSettings.resolver';
 import { EGTSettings } from './settings/egtSettings.entity';
+import { EGTDivisionGuard } from './division/egtDivision.guard';
 
 @Module({
   imports: [
@@ -47,6 +48,7 @@ import { EGTSettings } from './settings/egtSettings.entity';
     EGTLineupResolver,
     EGTDeviceService,
     EGTDeviceResolver,
+    EGTDivisionGuard,
     EGTJudgingService,
     EGTJudgingResolver,
     EGTRankingService,
