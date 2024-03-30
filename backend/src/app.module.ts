@@ -35,7 +35,15 @@ import { Upload } from './scalars/upload.scalar';
       driver: ApolloDriver,
       autoSchemaFile: 'schema.gql',
       subscriptions: {
-        'graphql-ws': true,
+        'graphql-ws': {
+          path: '/graphql',
+        },
+        'subscriptions-transport-ws': {
+          onConnect: (context: any) => {
+            return context;
+          },
+          path: '/graphql',
+        },
       },
       sortSchema: true,
       playground: process.env.NODE_ENV === 'development',

@@ -53,6 +53,7 @@
   "assign_to": "Assign {{what}} to {{to}}",
   "juging_report": "Juging Report",
   "no_started": "No {{name}} started",
+  "started": "{{name}} started",
   "round": "Round {{number}}",
   "aggregationMode_MIN": "Lowest",
   "aggregationMode_MAX": "Highest",

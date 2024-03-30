@@ -2,7 +2,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import {
   EgtDivision,
   EgtDivisionStates,
-  useEgtDivisionsQuery,
   useRemoveEgtDivisionMutation,
 } from "../../../../__generated__/graphql";
 import {
@@ -16,7 +15,7 @@ import { useTranslation } from "react-i18next";
 import { PaperExtended } from "../../../../components/paperExtended";
 import { enqueueSnackbar } from "notistack";
 import { Error } from "../../../../components/error";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { DivisionlistToolbar } from "./divisionlistToolbar";
 import PendingIcon from "@mui/icons-material/Pending";
 import {
@@ -36,6 +35,23 @@ import { DeleteConfirmationDialog } from "../../../../dialogs/deleteConfirmation
 import { ApolloError } from "@apollo/client";
 import { StartDivisionsDialog } from "../../dialogs/startDivisionsDialog/startDivisionsDialog";
 import GradingIcon from "@mui/icons-material/Grading";
+import { graphql } from "../../../../__new_generated__/gql";
+import useEGTDivisions from "../../hooks/useEGTDivisions/useEGTDivisions";
+import usePrevious from "../../../../hooks/usePrev/usePrev";
+
+const DivisionListFragment = graphql(`
+  fragment DivisionListFragment on EGTDivision {
+    id
+    ground
+    state
+    currentRound
+    totalRounds
+    category
+    sex
+    number
+    totalStarters
+  }
+`);
 
 export function Divisionslist() {
   const { id } = useParams();
@@ -45,15 +61,40 @@ export function Divisionslist() {
   const [toDeleteDivisions, setToDeleteDivisions] = useState<EgtDivision[]>([]);
   const [toStartDivisions, setToStartDivisions] = useState<EgtDivision[]>([]);
   const [removeDivision] = useRemoveEgtDivisionMutation();
-  const {
-    data: divisionsData,
-    loading,
-    refetch: refetchDivisions,
-  } = useEgtDivisionsQuery({
-    variables: {
-      competitionID: id || "",
-    },
-  });
+
+  const { data: divisionsData, loading } = useEGTDivisions(
+    DivisionListFragment,
+    {
+      filter: {
+        competitionID: id!,
+      },
+    }
+  );
+  const previousData = usePrevious(divisionsData);
+  useEffect(() => {
+    if (!divisionsData) {
+      return;
+    }
+
+    const diffs: Partial<EgtDivision>[] = [];
+    for (const index in divisionsData) {
+      if (
+        divisionsData[index] !== previousData?.[index] &&
+        divisionsData[index].id === previousData?.[index].id
+      ) {
+        diffs.push(divisionsData[index]);
+      }
+    }
+
+    for (const diff of diffs) {
+      if (diff.state === "RUNNING") {
+        enqueueSnackbar(
+          t("started", { ns: "egt", name: t("division", { ns: "egt" }) }),
+          { variant: "success" }
+        );
+      }
+    }
+  }, [divisionsData]);
 
   if (!id) {
     enqueueSnackbar("Ooops", { variant: "error" });
@@ -111,7 +152,6 @@ export function Divisionslist() {
     }
     setOpenDialog("");
     setToDeleteDivisions([]);
-    refetchDivisions();
   }
 
   const columns: Array<GridColDef | GridActionsColDef> = [
@@ -280,14 +320,13 @@ export function Divisionslist() {
 
     return actions;
   }
-
   return (
     <>
       <PaperExtended title={t("division", { count: 2, ns: "egt" })}>
         <Box sx={{ height: "80vh", width: "100%" }}>
           <DataGrid
             loading={loading}
-            rows={divisionsData?.egtDivisions || []}
+            rows={divisionsData || []}
             columns={columns}
             initialState={{
               pagination: {
@@ -323,7 +362,6 @@ export function Divisionslist() {
           isOpen={openDialog === "createDivision"}
           onClose={() => {
             setOpenDialog("");
-            refetchDivisions();
           }}
         />
         <DeleteConfirmationDialog

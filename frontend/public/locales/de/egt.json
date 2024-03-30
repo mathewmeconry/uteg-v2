@@ -53,6 +53,7 @@
   "assign_to": "{{what}} an {{to}} zuweisen",
   "juging_report": "Wertungsrichterblätter",
   "no_started": "Keine {{name}} gestartet",
+  "started": "{{name}} gestartet",
   "round": "Druchgang {{number}}",
   "aggregationMode_MIN": "Tiefste",
   "aggregationMode_MAX": "Höchste",

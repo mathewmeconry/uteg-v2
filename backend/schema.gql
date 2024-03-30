@@ -290,6 +290,10 @@ type StarterLink {
   starter: Starter!
 }
 
+type Subscription {
+  egtDivision(filter: EGTDivisionFilterInput!): EGTDivision!
+}
+
 """
 `Date` type as integer. Type represents date and time as number of milliseconds from start of UNIX epoch.
 """

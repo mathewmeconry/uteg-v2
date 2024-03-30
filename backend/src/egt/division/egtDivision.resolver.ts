@@ -7,8 +7,13 @@ import {
   ResolveField,
   Int,
   Parent,
+  Subscription,
 } from '@nestjs/graphql';
-import { EGTDivision } from './egtDivision.entity';
+import {
+  EGTDivision,
+  EGTDivisionPubSub,
+  EGTDivisionPubSubEvents,
+} from './egtDivision.entity';
 import { Inject, NotFoundException, UseGuards } from '@nestjs/common';
 import { RoleGuard } from 'src/auth/guards/role.guard';
 import { EGTDivisionGuard } from './egtDivision.guard';
@@ -33,6 +38,9 @@ export class EGTDivisionResolver {
 
   @Inject()
   private competitionService: CompetitionService;
+
+  @Inject()
+  private egtDivisionGuard: EGTDivisionGuard;
 
   @Role(ROLES.JUDGE)
   @Query(() => [EGTDivision], { name: 'egtDivisions' })
@@ -84,6 +92,31 @@ export class EGTDivisionResolver {
     data: UpdateEGTDivisionStateInput,
   ): Promise<EGTDivision> {
     return this.egtDivisionService.updateState(data);
+  }
+
+  @Role(ROLES.JUDGE)
+  @Subscription(() => EGTDivision, {
+    name: 'egtDivision',
+    async filter(
+      this: EGTDivisionResolver,
+      payload: EGTDivision,
+      variables: { filter: EGTDivisionFilterInput },
+      context,
+    ) {
+      const filtered = await this.egtDivisionService.filter(variables.filter, [
+        payload,
+      ]);
+      return await this.egtDivisionGuard.canAccess(filtered, context);
+    },
+    resolve: (payload) => payload,
+  })
+  subscription(
+    @Args('filter') filter: EGTDivisionFilterInput,
+  ): AsyncIterator<EGTDivision, any, undefined> {
+    return EGTDivisionPubSub.asyncIterator([
+      EGTDivisionPubSubEvents.CREATE,
+      EGTDivisionPubSubEvents.UPDATE,
+    ]);
   }
 
   @ResolveField(() => Int)

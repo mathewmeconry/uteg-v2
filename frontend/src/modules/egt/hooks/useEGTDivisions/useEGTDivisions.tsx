@@ -1,0 +1,120 @@
+import { TypedDocumentNode, useQuery, useSubscription } from "@apollo/client";
+import { useEffect, useMemo, useState } from "react";
+import { graphql } from "../../../../__new_generated__/gql";
+import { FragmentType } from "../../../../__new_generated__";
+
+type VariablesOf<T> = T extends TypedDocumentNode<infer _, infer VariablesType>
+  ? VariablesType
+  : never;
+
+type ResultOf<T> = T extends TypedDocumentNode<infer ResultType, infer _>
+  ? ResultType
+  : never;
+
+type ReturnType<T extends TypedDocumentNode<{ id: string }, any>> = {
+  loading: boolean;
+  data?: ResultOf<T>[];
+};
+
+graphql(`
+  fragment useEGTDivision_PlaceholderFragment on EGTDivision {
+    id
+  }
+`);
+
+const QUERY = graphql(`
+  query useEGTDivisionQuery($filter: EGTDivisionFilterInput!) {
+    egtDivisions(filter: $filter) {
+      ...useEGTDivision_PlaceholderFragment
+    }
+  }
+`);
+
+const SUBSCRIPTION = graphql(`
+  subscription useEGTDivisionSubscription($filter: EGTDivisionFilterInput!) {
+    egtDivision(filter: $filter) {
+      ...useEGTDivision_PlaceholderFragment
+    }
+  }
+`);
+
+export default function useEGTDivisions<
+  T extends TypedDocumentNode<{ id: string }, any>
+>(fragment: T, variables?: VariablesOf<typeof QUERY>): ReturnType<T> {
+  const [loading, setLoading] = useState(false);
+  const [data, setData] = useState<ResultOf<T>[]>();
+
+  const fragmentClone = useMemo(() => {
+    const fragmentClone = {
+      ...fragment.definitions[0],
+    };
+    if (fragmentClone.kind === "FragmentDefinition") {
+      // @ts-expect-error Override frozen attribute to "fake" fragment
+      fragmentClone.name.value = "useEGTDivision_PlaceholderFragment";
+    }
+    return (fragmentClone as any) as typeof fragment;
+  }, [fragment]);
+
+  const queryClone = useMemo(() => {
+    const clone = {
+      ...QUERY,
+      definitions: [QUERY.definitions[0], fragmentClone],
+    };
+
+    return clone as TypedDocumentNode<FragmentType<T>, VariablesOf<T>>;
+  }, [fragmentClone]);
+
+  const { loading: queryLoading, data: queryData } = useQuery<{
+    egtDivisions: ResultOf<T>[];
+  }>(queryClone, {
+    variables,
+  });
+
+  const subscriptionClone = useMemo(() => {
+    const clone = {
+      ...SUBSCRIPTION,
+      definitions: [SUBSCRIPTION.definitions[0], fragmentClone],
+    };
+    return clone as TypedDocumentNode<FragmentType<T>, VariablesOf<T>>;
+  }, [fragmentClone]);
+
+  const { data: subscriptionData } = useSubscription<{
+    egtDivision: ResultOf<T>;
+  }>(subscriptionClone, {
+    variables: {
+      filter: {
+        ...variables?.filter,
+        state: undefined,
+      },
+    },
+  });
+
+  useEffect(() => {
+    setLoading(queryLoading);
+  }, [queryLoading]);
+
+  useEffect(() => {
+    setData(queryData?.egtDivisions);
+  }, [queryData]);
+
+  useEffect(() => {
+    if (subscriptionData && subscriptionData.egtDivision) {
+      const index =
+        data?.findIndex((d) => d.id === subscriptionData.egtDivision.id) ?? -1;
+      if (index > -1) {
+        setData((state) => {
+          const cloned = [...state!];
+          cloned[index] = subscriptionData.egtDivision;
+          return cloned;
+        });
+      } else {
+        setData((state) => [...state!, subscriptionData.egtDivision]);
+      }
+    }
+  }, [subscriptionData]);
+
+  return {
+    loading,
+    data: data as ResultOf<T>[],
+  };
+}

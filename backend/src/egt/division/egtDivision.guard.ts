@@ -6,6 +6,8 @@ import {
 } from '@nestjs/common';
 import { GqlExecutionContext } from '@nestjs/graphql';
 import { EGTDivisionService } from './egtDivision.service';
+import { EGTDivision } from './egtDivision.entity';
+import { AuthContext } from 'src/auth/types';
 
 @Injectable()
 export class EGTDivisionGuard implements CanActivate {
@@ -15,7 +17,7 @@ export class EGTDivisionGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const ectx = GqlExecutionContext.create(context);
     const args = ectx.getArgs();
-    const ctx = ectx.getContext();
+    const ctx = ectx.getContext<AuthContext>();
 
     if (args.id) {
       ctx.competition = (
@@ -61,6 +63,24 @@ export class EGTDivisionGuard implements CanActivate {
       return true;
     }
 
+    if (args.competitionID) {
+      ctx.competition = args.competitionID;
+      return true;
+    }
+
     return false;
+  }
+
+  async canAccess(
+    egtDivisions: EGTDivision[],
+    context: AuthContext,
+  ): Promise<boolean> {
+    for (const d of egtDivisions) {
+      const competition = await d.competition;
+      if (competition?.id != context.competition) {
+        return false;
+      }
+    }
+    return true;
   }
 }
