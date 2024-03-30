@@ -62,7 +62,7 @@ export function Divisionslist() {
   const [toStartDivisions, setToStartDivisions] = useState<EgtDivision[]>([]);
   const [removeDivision] = useRemoveEgtDivisionMutation();
 
-  const { data: divisionsData, loading } = useEGTDivisions(
+  const { data: divisionsData, loading, refetch: refetchDivisions } = useEGTDivisions(
     DivisionListFragment,
     {
       filter: {
@@ -80,7 +80,7 @@ export function Divisionslist() {
     for (const index in divisionsData) {
       if (
         divisionsData[index] !== previousData?.[index] &&
-        divisionsData[index].id === previousData?.[index].id
+        divisionsData[index].id === previousData?.[index]?.id
       ) {
         diffs.push(divisionsData[index]);
       }
@@ -152,6 +152,7 @@ export function Divisionslist() {
     }
     setOpenDialog("");
     setToDeleteDivisions([]);
+    refetchDivisions();
   }
 
   const columns: Array<GridColDef | GridActionsColDef> = [

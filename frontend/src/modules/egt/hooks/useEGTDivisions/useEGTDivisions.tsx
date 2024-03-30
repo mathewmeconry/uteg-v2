@@ -14,6 +14,7 @@ type ResultOf<T> = T extends TypedDocumentNode<infer ResultType, infer _>
 type ReturnType<T extends TypedDocumentNode<{ id: string }, any>> = {
   loading: boolean;
   data?: ResultOf<T>[];
+  refetch: () => void;
 };
 
 graphql(`
@@ -64,7 +65,7 @@ export default function useEGTDivisions<
     return clone as TypedDocumentNode<FragmentType<T>, VariablesOf<T>>;
   }, [fragmentClone]);
 
-  const { loading: queryLoading, data: queryData } = useQuery<{
+  const { loading: queryLoading, data: queryData, refetch } = useQuery<{
     egtDivisions: ResultOf<T>[];
   }>(queryClone, {
     variables,
@@ -116,5 +117,6 @@ export default function useEGTDivisions<
   return {
     loading,
     data: data as ResultOf<T>[],
+    refetch
   };
 }
