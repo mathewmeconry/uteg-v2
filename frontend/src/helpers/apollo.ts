@@ -3,6 +3,7 @@ import { isTokenValid } from "./auth";
 import createUploadLink from "apollo-upload-client/createUploadLink.mjs";
 import { GraphQLWsLink } from "@apollo/client/link/subscriptions";
 import { createClient } from "graphql-ws";
+import { RetryLink } from "@apollo/client/link/retry";
 
 const token = localStorage.getItem("token");
 if (!isTokenValid()) {
@@ -28,8 +29,21 @@ const wsLink = new GraphQLWsLink(
   })
 );
 
-export const apolloClient = new ApolloClient({
+const splitLink = new RetryLink().split(
+  (op) => {
+    for (const variable of Object.values(op.variables)) {
+      if (variable instanceof File) {
+        return false;
+      }
+    }
+    return true;
+  },
+  wsLink,
   // @ts-expect-error
-  link: wsLink.concat(uploadLink),
+  uploadLink
+);
+
+export const apolloClient = new ApolloClient({
+  link: splitLink,
   cache: new InMemoryCache(),
 });
