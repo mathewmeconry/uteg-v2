@@ -1,9 +1,4 @@
-import {
-  ApolloClient,
-  InMemoryCache,
-  operationName,
-  split,
-} from "@apollo/client";
+import { ApolloClient, ApolloLink, InMemoryCache, split } from "@apollo/client";
 import { isTokenValid } from "./auth";
 import createUploadLink from "apollo-upload-client/createUploadLink.mjs";
 import { GraphQLWsLink } from "@apollo/client/link/subscriptions";
@@ -32,18 +27,27 @@ const wsLink = new GraphQLWsLink(
     url: `${backend}/graphql`
       .replace("https://", "wss://")
       .replace("http://", "ws://"),
+    connectionParams: () => ({
+      Authorization: getToken(),
+    }),
   })
 );
+
+const authMiddleware = new ApolloLink((operation, forward) => {
+  // add the authorization to the headers
+  operation.setContext(({ headers = {} }) => ({
+    headers: {
+      ...headers,
+      Authorization: getToken(),
+    },
+  }));
+
+  return forward(operation);
+});
 
 const splitLink = split(
   (op) => {
     const definition = getMainDefinition(op.query);
-    op.setContext(({ headers = {} }) => ({
-      headers: {
-        ...headers,
-        Authorization: getToken(),
-      },
-    }));
     return (
       definition.kind === "OperationDefinition" &&
       definition.operation === "subscription"
@@ -55,6 +59,6 @@ const splitLink = split(
 );
 
 export const apolloClient = new ApolloClient({
-  link: splitLink,
+  link: authMiddleware.concat(splitLink),
   cache: new InMemoryCache(),
 });
