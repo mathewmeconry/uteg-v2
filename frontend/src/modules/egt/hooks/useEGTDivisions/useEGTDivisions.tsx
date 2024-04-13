@@ -70,6 +70,7 @@ export default function useEGTDivisions<
     egtDivisions: ResultOf<T>[];
   }>(queryClone, {
     variables,
+    fetchPolicy: "network-only",
   });
 
   const subscriptionClone = useMemo(() => {
@@ -88,6 +89,9 @@ export default function useEGTDivisions<
         ...variables?.filter,
         state: undefined,
       },
+    },
+    onError: (e) => {
+      console.error(e);
     },
   });
 
