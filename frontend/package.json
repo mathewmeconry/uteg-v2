@@ -11,7 +11,7 @@
     "codegen": "graphql-codegen --config codegen.ts"
   },
   "dependencies": {
-    "@apollo/client": "^3.8.8",
+    "@apollo/client": "^3.9.1",
     "@fontsource/roboto": "^5.0.8",
     "@mui/icons-material": "^5.15.2",
     "@mui/material": "^5.15.2",
