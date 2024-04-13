@@ -1,7 +1,7 @@
 import { useParams, useSearchParams } from "react-router-dom";
 import { Skeleton, Tab, Tabs, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { RoundGradingTable } from "./RoundGradingTable";
 import RoundGradingSingle from "./RoundGradingSingle";
 import { graphql } from "../../../../__new_generated__/gql";
@@ -43,6 +43,7 @@ export function DeviceGrading(props: DeviceGradingProps) {
     parseInt(searchParams.get("round") || "0")
   );
   const [isFinished, setIsFinished] = useState(false);
+  const [blockReset, setBlockReset] = useState(false);
   const { t } = useTranslation(["egt", "common"]);
   const {
     data: divisionsData,
@@ -56,6 +57,16 @@ export function DeviceGrading(props: DeviceGradingProps) {
     },
   });
   const previousData = usePrevious(divisionsData);
+  const finishedTimeout = useRef<NodeJS.Timeout>();
+
+  useEffect(() => {
+    return () => {
+      if (finishedTimeout.current) {
+        clearTimeout(finishedTimeout.current);
+      }
+    };
+  }, []);
+
   useEffect(() => {
     if (
       divisionsData?.length !== previousData?.length &&
@@ -71,6 +82,10 @@ export function DeviceGrading(props: DeviceGradingProps) {
       );
     }
   }, [divisionsData]);
+
+  useEffect(() => {
+    reset();
+  }, [divisionsData, blockReset]);
 
   const { maxRounds, lowestRound } = useMemo(() => {
     if (!divisionsData) {
@@ -108,24 +123,14 @@ export function DeviceGrading(props: DeviceGradingProps) {
     }
   }, [round]);
 
-  if (!divisionsData || divisionsData.length === 0) {
-    if (divisionsData && divisionsData.length === 0 && props.device === 0) {
-      return (
-        <Typography variant="h5" sx={{ mt: 3 }}>
-          {t("no_started", { name: t("division") })}
-        </Typography>
-      );
+  function reset() {
+    if (divisionsData?.length === 0 && !divisionsDataLoading && !blockReset) {
+      setIsFinished(false);
+      setRound(0);
+      if (finishedTimeout.current) {
+        clearTimeout(finishedTimeout.current);
+      }
     }
-
-    return null;
-  }
-
-  if (divisionsDataLoading) {
-    return <Skeleton />;
-  }
-
-  if (maxRounds <= props.device) {
-    return null;
   }
 
   function advanceRound() {
@@ -133,6 +138,10 @@ export function DeviceGrading(props: DeviceGradingProps) {
       setRound(round + 1);
     } else {
       setIsFinished(true);
+      setBlockReset(true);
+      finishedTimeout.current = setTimeout(() => {
+        setBlockReset(false);
+      }, 5000);
     }
   }
 
@@ -171,6 +180,30 @@ export function DeviceGrading(props: DeviceGradingProps) {
           />
         );
     }
+  }
+
+  if ((!divisionsData || divisionsData.length === 0) && !isFinished) {
+    if (
+      divisionsData &&
+      divisionsData.length === 0 &&
+      (props.device === 0 || props.mode === DeviceGradingMode.SINGLE)
+    ) {
+      return (
+        <Typography variant="h5" sx={{ mt: 3 }}>
+          {t("no_started", { name: t("division") })}
+        </Typography>
+      );
+    }
+
+    return null;
+  }
+
+  if (divisionsDataLoading) {
+    return <Skeleton />;
+  }
+
+  if (maxRounds <= props.device && !isFinished) {
+    return null;
   }
 
   return (
