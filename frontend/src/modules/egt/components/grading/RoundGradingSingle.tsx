@@ -77,9 +77,17 @@ export default function RoundGradingSingle(props: RoundGradingSingleProps) {
           ids: props.divisionIds,
         },
       });
-      gradesQuery();
     }
   }, [props.divisionIds, props.round]);
+
+  useEffect(() => {
+    if (
+      deviceData?.egtJudgingDevice &&
+      deviceData.egtJudgingDevice.starterslist.length > 0
+    ) {
+      gradesQuery();
+    }
+  }, [deviceData?.egtJudgingDevice]);
 
   useEffect(() => {
     if (gradesData?.starterGrades) {
@@ -195,16 +203,18 @@ export default function RoundGradingSingle(props: RoundGradingSingleProps) {
       });
     }
     try {
-      const result = await addGradesMutation({
-        variables: {
-          grades,
-        },
-      });
-      if (result.errors) {
-        enqueueSnackbar(t("error", { ns: "common" }));
-        return;
+      if (grades.length > 0) {
+        const result = await addGradesMutation({
+          variables: {
+            grades,
+          },
+        });
+        if (result.errors) {
+          enqueueSnackbar(t("error", { ns: "common" }));
+          return;
+        }
+        enqueueSnackbar(t("saved", { ns: "common" }), { variant: "success" });
       }
-      enqueueSnackbar(t("saved", { ns: "common" }), { variant: "success" });
     } catch (e) {
       console.error(e);
       enqueueSnackbar(t("error", { ns: "common" }));
@@ -515,9 +525,32 @@ export default function RoundGradingSingle(props: RoundGradingSingleProps) {
 
   if (deviceData.egtJudgingDevice.starterslist.length === 0) {
     return (
-      <Typography variant="h5" sx={{ mt: 3 }}>
-        {t("no_started", { name: t("division") })}
-      </Typography>
+      <>
+        <Typography variant="caption" sx={{ textAlign: "center" }}>
+          {t("round", { ns: "egt", number: props.round + 1 })}
+        </Typography>
+        <Typography variant="h5" sx={{ mt: 3, textAlign: "center" }}>
+          {t("break", { ns: "common" })}
+        </Typography>
+        <Grid
+          container
+          direction="row"
+          spacing={2}
+          justifyContent={"space-between"}
+          sx={{ mt: 2 }}
+        >
+          <Grid item xs={2} sx={{ textAlign: "center" }}></Grid>
+          <Grid item xs={4} sx={{ textAlign: "right" }}>
+            <Button
+              variant="contained"
+              color="info"
+              onClick={() => onFormSubmit({})}
+            >
+              {t("next", { ns: "common" })}
+            </Button>
+          </Grid>
+        </Grid>
+      </>
     );
   }
 
