@@ -143,7 +143,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     <ApolloProvider client={apolloClient}>
       <UpdateLanaguage />
       <CssBaseline>
-        <SnackbarProvider autoHideDuration={3000} preventDuplicate={true} />
+        <SnackbarProvider autoHideDuration={3000} preventDuplicate={true} maxSnack={5} />
         <ThemeProvider theme={theme}>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <RouterProvider router={router} />

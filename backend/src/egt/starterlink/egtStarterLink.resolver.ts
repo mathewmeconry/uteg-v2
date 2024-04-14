@@ -6,8 +6,13 @@ import {
   Query,
   ResolveField,
   Resolver,
+  Subscription,
 } from '@nestjs/graphql';
-import { EGTStarterLink } from './egtStarterLink.entity';
+import {
+  EGTStarterLink,
+  EGTStarterLinkPubSub,
+  EGTStarterLinkPubSubEvents,
+} from './egtStarterLink.entity';
 import { Inject, UseGuards } from '@nestjs/common';
 import { RoleGuard } from 'src/auth/guards/role.guard';
 import { EGTStarterLinkGuard } from './egtStarterLink.guard';
@@ -18,12 +23,20 @@ import { ROLES } from 'src/auth/types';
 import { EGTStarterLinkInput } from './egtStarterLink.types';
 import { EGTLineup } from '../lineup/egtLineup.entity';
 import { StarterLink } from 'src/base/starterLink/starterLink.entity';
+import { Judge } from 'src/auth/decorators/judge.decorator';
+import { StarterLinkService } from 'src/base/starterLink/starterLink.service';
 
 @Resolver(() => EGTStarterLink)
 @UseGuards(EGTStarterLinkGuard, RoleGuard)
 export class EGTStarterLinkResolver {
   @Inject()
   private egtStarterLinkService: EGTStarterLinkService;
+
+  @Inject()
+  private egtStarterLinkGuard: EGTStarterLinkGuard;
+
+  @Inject()
+  private starterLinkService: StarterLinkService;
 
   @Role(ROLES.VIEWER)
   @Query(() => EGTStarterLink, { nullable: true, name: 'egtStarterLink' })
@@ -36,6 +49,17 @@ export class EGTStarterLinkResolver {
       return this.egtStarterLinkService.findOne(id);
     }
     return this.egtStarterLinkService.findByStarterLink(starterLinkID);
+  }
+
+  @Role(ROLES.VIEWER)
+  @Judge()
+  @Query(() => [EGTStarterLink], { name: 'egtStarterLinks' })
+  async egtStarterLinks(
+    @Args('ids', { type: () => [ID] }) ids: number[],
+    @Args('withDeleted', { nullable: true, defaultValue: false })
+    withDeleted: boolean = false,
+  ): Promise<EGTStarterLink[]> {
+    return this.egtStarterLinkService.findByIds(ids, withDeleted);
   }
 
   @Role(ROLES.VIEWER)
@@ -56,6 +80,30 @@ export class EGTStarterLinkResolver {
     return this.egtStarterLinkService.create(linkData, ignoreDivision);
   }
 
+  @Role(ROLES.JUDGE)
+  @Subscription(() => EGTStarterLink, {
+    name: 'egtStarterLinks',
+    async filter(
+      this: EGTStarterLinkResolver,
+      payload: EGTStarterLink,
+      variables: { ids: string[] },
+      context,
+    ) {
+      if (variables.ids.includes(payload.id.toString())) {
+        return await this.egtStarterLinkGuard.canAccess(payload, context);
+      }
+      return false;
+    },
+    resolve: (payload) => payload,
+  })
+  subscription(@Args('ids', { type: () => [ID] }) _ids: number[]) {
+    return EGTStarterLinkPubSub.asyncIterator([
+      EGTStarterLinkPubSubEvents.CREATE,
+      EGTStarterLinkPubSubEvents.UPDATE,
+      EGTStarterLinkPubSubEvents.DELETE,
+    ]);
+  }
+
   @ResolveField(() => EGTDivision, { nullable: true })
   async division(
     @Parent() egtStarterLink: EGTStarterLink,
@@ -72,7 +120,7 @@ export class EGTStarterLinkResolver {
   async starterlink(
     @Parent() egtStarterLink: EGTStarterLink,
   ): Promise<StarterLink> {
-    return egtStarterLink.starterLink;
+    return this.starterLinkService.findOne(egtStarterLink.starterLinkId, true);
   }
 
   @ResolveField()

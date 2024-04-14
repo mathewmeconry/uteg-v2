@@ -398,6 +398,7 @@ export type Query = {
   egtSettings: EgtSettings;
   egtStarterLink?: Maybe<EgtStarterLink>;
   egtStarterLinkUnassigned: Array<EgtStarterLink>;
+  egtStarterLinks: Array<EgtStarterLink>;
   egtStarterRankings: Array<EgtStarterRanking>;
   findJudgeToken?: Maybe<Judgetoken>;
   grades: Array<Grade>;
@@ -468,6 +469,12 @@ export type QueryEgtStarterLinkArgs = {
 
 export type QueryEgtStarterLinkUnassignedArgs = {
   divisionID: Scalars['ID']['input'];
+};
+
+
+export type QueryEgtStarterLinksArgs = {
+  ids: Array<Scalars['ID']['input']>;
+  withDeleted?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 
@@ -556,11 +563,17 @@ export type StarterLink = {
 export type Subscription = {
   __typename?: 'Subscription';
   egtDivision: EgtDivision;
+  egtStarterLinks: EgtStarterLink;
 };
 
 
 export type SubscriptionEgtDivisionArgs = {
   filter: EgtDivisionFilterInput;
+};
+
+
+export type SubscriptionEgtStarterLinksArgs = {
+  ids: Array<Scalars['ID']['input']>;
 };
 
 export type UpdateCompetitionInput = {
@@ -608,6 +621,19 @@ export type User = {
 
 export type DeviceGradingDivisionFragmentFragment = { __typename?: 'EGTDivision', id: string, totalRounds: number, currentRound: number, state: EgtDivisionStates } & { ' $fragmentName'?: 'DeviceGradingDivisionFragmentFragment' };
 
+export type RoundGradingSingleFragment = { __typename?: 'EGTStarterLink', id: string, isDeleted: boolean, category?: number | null, starterlink: { __typename?: 'StarterLink', id: string, starter: { __typename?: 'Starter', id: string, firstname: string, lastname: string, sex: Sex }, club: { __typename?: 'Club', id: string, name: string } } } & { ' $fragmentName'?: 'RoundGradingSingleFragment' };
+
+export type RoundGradingTableFragment = { __typename?: 'EGTStarterLink', id: string, isDeleted: boolean, category?: number | null, starterlink: { __typename?: 'StarterLink', id: string, starter: { __typename?: 'Starter', id: string, firstname: string, lastname: string, sex: Sex }, club: { __typename?: 'Club', id: string, name: string } } } & { ' $fragmentName'?: 'RoundGradingTableFragment' };
+
+export type EgtGradingListQueryQueryVariables = Exact<{
+  ids: Array<Scalars['ID']['input']> | Scalars['ID']['input'];
+  round: Scalars['Int']['input'];
+  device: Scalars['Int']['input'];
+}>;
+
+
+export type EgtGradingListQueryQuery = { __typename?: 'Query', egtJudgingDevice: { __typename?: 'EGTJudgingDevice', starterslist: Array<{ __typename?: 'EGTStarterLink', id: string, category?: number | null, isDeleted: boolean, starterlink: { __typename?: 'StarterLink', id: string, starter: { __typename?: 'Starter', id: string, firstname: string, lastname: string } } }> } };
+
 export type UseEgtDivision_PlaceholderFragmentFragment = { __typename?: 'EGTDivision', id: string } & { ' $fragmentName'?: 'UseEgtDivision_PlaceholderFragmentFragment' };
 
 export type UseEgtDivisionQueryQueryVariables = Exact<{
@@ -630,10 +656,39 @@ export type UseEgtDivisionSubscriptionSubscription = { __typename?: 'Subscriptio
     & { ' $fragmentRefs'?: { 'UseEgtDivision_PlaceholderFragmentFragment': UseEgtDivision_PlaceholderFragmentFragment } }
   ) };
 
+export type UseEgtStarterLinks_PlaceholderFragmentFragment = { __typename?: 'EGTStarterLink', id: string } & { ' $fragmentName'?: 'UseEgtStarterLinks_PlaceholderFragmentFragment' };
+
+export type UseEgtStarterLinksQueryQueryVariables = Exact<{
+  ids: Array<Scalars['ID']['input']> | Scalars['ID']['input'];
+  withDeleted?: InputMaybe<Scalars['Boolean']['input']>;
+}>;
+
+
+export type UseEgtStarterLinksQueryQuery = { __typename?: 'Query', egtStarterLinks: Array<(
+    { __typename?: 'EGTStarterLink' }
+    & { ' $fragmentRefs'?: { 'UseEgtStarterLinks_PlaceholderFragmentFragment': UseEgtStarterLinks_PlaceholderFragmentFragment } }
+  )> };
+
+export type UseEegtStarterLinksSubscriptionSubscriptionVariables = Exact<{
+  ids: Array<Scalars['ID']['input']> | Scalars['ID']['input'];
+}>;
+
+
+export type UseEegtStarterLinksSubscriptionSubscription = { __typename?: 'Subscription', egtStarterLinks: (
+    { __typename?: 'EGTStarterLink' }
+    & { ' $fragmentRefs'?: { 'UseEgtStarterLinks_PlaceholderFragmentFragment': UseEgtStarterLinks_PlaceholderFragmentFragment } }
+  ) };
+
 export type DivisionListFragmentFragment = { __typename?: 'EGTDivision', id: string, ground: number, state: EgtDivisionStates, currentRound: number, totalRounds: number, category: number, sex: Sex, number: number, totalStarters: number } & { ' $fragmentName'?: 'DivisionListFragmentFragment' };
 
 export const DeviceGradingDivisionFragmentFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"DeviceGradingDivisionFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"EGTDivision"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"totalRounds"}},{"kind":"Field","name":{"kind":"Name","value":"currentRound"}},{"kind":"Field","name":{"kind":"Name","value":"state"}}]}}]} as unknown as DocumentNode<DeviceGradingDivisionFragmentFragment, unknown>;
+export const RoundGradingSingleFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"RoundGradingSingle"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"EGTStarterLink"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"isDeleted"}},{"kind":"Field","name":{"kind":"Name","value":"starterlink"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"starter"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"firstname"}},{"kind":"Field","name":{"kind":"Name","value":"lastname"}},{"kind":"Field","name":{"kind":"Name","value":"sex"}}]}},{"kind":"Field","name":{"kind":"Name","value":"club"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"category"}}]}}]} as unknown as DocumentNode<RoundGradingSingleFragment, unknown>;
+export const RoundGradingTableFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"RoundGradingTable"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"EGTStarterLink"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"isDeleted"}},{"kind":"Field","name":{"kind":"Name","value":"starterlink"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"starter"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"firstname"}},{"kind":"Field","name":{"kind":"Name","value":"lastname"}},{"kind":"Field","name":{"kind":"Name","value":"sex"}}]}},{"kind":"Field","name":{"kind":"Name","value":"club"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"category"}}]}}]} as unknown as DocumentNode<RoundGradingTableFragment, unknown>;
 export const UseEgtDivision_PlaceholderFragmentFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"useEGTDivision_PlaceholderFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"EGTDivision"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]} as unknown as DocumentNode<UseEgtDivision_PlaceholderFragmentFragment, unknown>;
+export const UseEgtStarterLinks_PlaceholderFragmentFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"useEGTStarterLinks_PlaceholderFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"EGTStarterLink"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]} as unknown as DocumentNode<UseEgtStarterLinks_PlaceholderFragmentFragment, unknown>;
 export const DivisionListFragmentFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"DivisionListFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"EGTDivision"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"ground"}},{"kind":"Field","name":{"kind":"Name","value":"state"}},{"kind":"Field","name":{"kind":"Name","value":"currentRound"}},{"kind":"Field","name":{"kind":"Name","value":"totalRounds"}},{"kind":"Field","name":{"kind":"Name","value":"category"}},{"kind":"Field","name":{"kind":"Name","value":"sex"}},{"kind":"Field","name":{"kind":"Name","value":"number"}},{"kind":"Field","name":{"kind":"Name","value":"totalStarters"}}]}}]} as unknown as DocumentNode<DivisionListFragmentFragment, unknown>;
+export const EgtGradingListQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"EGTGradingListQuery"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"ids"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"round"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"device"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"egtJudgingDevice"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"ids"},"value":{"kind":"Variable","name":{"kind":"Name","value":"ids"}}},{"kind":"Argument","name":{"kind":"Name","value":"round"},"value":{"kind":"Variable","name":{"kind":"Name","value":"round"}}},{"kind":"Argument","name":{"kind":"Name","value":"device"},"value":{"kind":"Variable","name":{"kind":"Name","value":"device"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"starterslist"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"category"}},{"kind":"Field","name":{"kind":"Name","value":"isDeleted"}},{"kind":"Field","name":{"kind":"Name","value":"starterlink"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"starter"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"firstname"}},{"kind":"Field","name":{"kind":"Name","value":"lastname"}}]}}]}}]}}]}}]}}]} as unknown as DocumentNode<EgtGradingListQueryQuery, EgtGradingListQueryQueryVariables>;
 export const UseEgtDivisionQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"useEGTDivisionQuery"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filter"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"EGTDivisionFilterInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"egtDivisions"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filter"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"useEGTDivision_PlaceholderFragment"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"useEGTDivision_PlaceholderFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"EGTDivision"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]} as unknown as DocumentNode<UseEgtDivisionQueryQuery, UseEgtDivisionQueryQueryVariables>;
 export const UseEgtDivisionSubscriptionDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"subscription","name":{"kind":"Name","value":"useEGTDivisionSubscription"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filter"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"EGTDivisionFilterInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"egtDivision"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filter"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"useEGTDivision_PlaceholderFragment"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"useEGTDivision_PlaceholderFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"EGTDivision"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]} as unknown as DocumentNode<UseEgtDivisionSubscriptionSubscription, UseEgtDivisionSubscriptionSubscriptionVariables>;
+export const UseEgtStarterLinksQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"useEGTStarterLinksQuery"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"ids"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"withDeleted"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Boolean"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"egtStarterLinks"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"ids"},"value":{"kind":"Variable","name":{"kind":"Name","value":"ids"}}},{"kind":"Argument","name":{"kind":"Name","value":"withDeleted"},"value":{"kind":"Variable","name":{"kind":"Name","value":"withDeleted"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"useEGTStarterLinks_PlaceholderFragment"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"useEGTStarterLinks_PlaceholderFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"EGTStarterLink"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]} as unknown as DocumentNode<UseEgtStarterLinksQueryQuery, UseEgtStarterLinksQueryQueryVariables>;
+export const UseEegtStarterLinksSubscriptionDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"subscription","name":{"kind":"Name","value":"useEEGTStarterLinksSubscription"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"ids"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"egtStarterLinks"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"ids"},"value":{"kind":"Variable","name":{"kind":"Name","value":"ids"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"useEGTStarterLinks_PlaceholderFragment"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"useEGTStarterLinks_PlaceholderFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"EGTStarterLink"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]} as unknown as DocumentNode<UseEegtStarterLinksSubscriptionSubscription, UseEegtStarterLinksSubscriptionSubscriptionVariables>;

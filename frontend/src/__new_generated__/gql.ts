@@ -14,9 +14,15 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  */
 const documents = {
     "\n  fragment DeviceGradingDivisionFragment on EGTDivision {\n    id\n    totalRounds\n    currentRound\n    state\n  }\n": types.DeviceGradingDivisionFragmentFragmentDoc,
+    "\n  fragment RoundGradingSingle on EGTStarterLink {\n    id\n    isDeleted\n    starterlink {\n      id\n      starter {\n        id\n        firstname\n        lastname\n        sex\n      }\n      club {\n        id\n        name\n      }\n    }\n    category\n  }\n": types.RoundGradingSingleFragmentDoc,
+    "\n  fragment RoundGradingTable on EGTStarterLink {\n    id\n    isDeleted\n    starterlink {\n      id\n      starter {\n        id\n        firstname\n        lastname\n        sex\n      }\n      club {\n        id\n        name\n      }\n    }\n    category\n  }\n": types.RoundGradingTableFragmentDoc,
+    "\n  query EGTGradingListQuery($ids: [ID!]!, $round: Int!, $device: Int!) {\n    egtJudgingDevice(ids: $ids, round: $round, device: $device) {\n      starterslist {\n        id\n        category\n        isDeleted\n        starterlink {\n          id\n          starter {\n            id\n            firstname\n            lastname\n          }\n        }\n      }\n    }\n  }\n": types.EgtGradingListQueryDocument,
     "\n  fragment useEGTDivision_PlaceholderFragment on EGTDivision {\n    id\n  }\n": types.UseEgtDivision_PlaceholderFragmentFragmentDoc,
     "\n  query useEGTDivisionQuery($filter: EGTDivisionFilterInput!) {\n    egtDivisions(filter: $filter) {\n      ...useEGTDivision_PlaceholderFragment\n    }\n  }\n": types.UseEgtDivisionQueryDocument,
     "\n  subscription useEGTDivisionSubscription($filter: EGTDivisionFilterInput!) {\n    egtDivision(filter: $filter) {\n      ...useEGTDivision_PlaceholderFragment\n    }\n  }\n": types.UseEgtDivisionSubscriptionDocument,
+    "\n  fragment useEGTStarterLinks_PlaceholderFragment on EGTStarterLink {\n    id\n  }\n": types.UseEgtStarterLinks_PlaceholderFragmentFragmentDoc,
+    "\n  query useEGTStarterLinksQuery($ids: [ID!]!, $withDeleted: Boolean) {\n    egtStarterLinks(ids: $ids, withDeleted: $withDeleted) {\n      ...useEGTStarterLinks_PlaceholderFragment\n    }\n  }\n": types.UseEgtStarterLinksQueryDocument,
+    "\n  subscription useEEGTStarterLinksSubscription($ids: [ID!]!) {\n    egtStarterLinks(ids: $ids) {\n      ...useEGTStarterLinks_PlaceholderFragment\n    }\n  }\n": types.UseEegtStarterLinksSubscriptionDocument,
     "\n  fragment DivisionListFragment on EGTDivision {\n    id\n    ground\n    state\n    currentRound\n    totalRounds\n    category\n    sex\n    number\n    totalStarters\n  }\n": types.DivisionListFragmentFragmentDoc,
 };
 
@@ -41,6 +47,18 @@ export function graphql(source: "\n  fragment DeviceGradingDivisionFragment on E
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
+export function graphql(source: "\n  fragment RoundGradingSingle on EGTStarterLink {\n    id\n    isDeleted\n    starterlink {\n      id\n      starter {\n        id\n        firstname\n        lastname\n        sex\n      }\n      club {\n        id\n        name\n      }\n    }\n    category\n  }\n"): (typeof documents)["\n  fragment RoundGradingSingle on EGTStarterLink {\n    id\n    isDeleted\n    starterlink {\n      id\n      starter {\n        id\n        firstname\n        lastname\n        sex\n      }\n      club {\n        id\n        name\n      }\n    }\n    category\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  fragment RoundGradingTable on EGTStarterLink {\n    id\n    isDeleted\n    starterlink {\n      id\n      starter {\n        id\n        firstname\n        lastname\n        sex\n      }\n      club {\n        id\n        name\n      }\n    }\n    category\n  }\n"): (typeof documents)["\n  fragment RoundGradingTable on EGTStarterLink {\n    id\n    isDeleted\n    starterlink {\n      id\n      starter {\n        id\n        firstname\n        lastname\n        sex\n      }\n      club {\n        id\n        name\n      }\n    }\n    category\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  query EGTGradingListQuery($ids: [ID!]!, $round: Int!, $device: Int!) {\n    egtJudgingDevice(ids: $ids, round: $round, device: $device) {\n      starterslist {\n        id\n        category\n        isDeleted\n        starterlink {\n          id\n          starter {\n            id\n            firstname\n            lastname\n          }\n        }\n      }\n    }\n  }\n"): (typeof documents)["\n  query EGTGradingListQuery($ids: [ID!]!, $round: Int!, $device: Int!) {\n    egtJudgingDevice(ids: $ids, round: $round, device: $device) {\n      starterslist {\n        id\n        category\n        isDeleted\n        starterlink {\n          id\n          starter {\n            id\n            firstname\n            lastname\n          }\n        }\n      }\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
 export function graphql(source: "\n  fragment useEGTDivision_PlaceholderFragment on EGTDivision {\n    id\n  }\n"): (typeof documents)["\n  fragment useEGTDivision_PlaceholderFragment on EGTDivision {\n    id\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
@@ -50,6 +68,18 @@ export function graphql(source: "\n  query useEGTDivisionQuery($filter: EGTDivis
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n  subscription useEGTDivisionSubscription($filter: EGTDivisionFilterInput!) {\n    egtDivision(filter: $filter) {\n      ...useEGTDivision_PlaceholderFragment\n    }\n  }\n"): (typeof documents)["\n  subscription useEGTDivisionSubscription($filter: EGTDivisionFilterInput!) {\n    egtDivision(filter: $filter) {\n      ...useEGTDivision_PlaceholderFragment\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  fragment useEGTStarterLinks_PlaceholderFragment on EGTStarterLink {\n    id\n  }\n"): (typeof documents)["\n  fragment useEGTStarterLinks_PlaceholderFragment on EGTStarterLink {\n    id\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  query useEGTStarterLinksQuery($ids: [ID!]!, $withDeleted: Boolean) {\n    egtStarterLinks(ids: $ids, withDeleted: $withDeleted) {\n      ...useEGTStarterLinks_PlaceholderFragment\n    }\n  }\n"): (typeof documents)["\n  query useEGTStarterLinksQuery($ids: [ID!]!, $withDeleted: Boolean) {\n    egtStarterLinks(ids: $ids, withDeleted: $withDeleted) {\n      ...useEGTStarterLinks_PlaceholderFragment\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  subscription useEEGTStarterLinksSubscription($ids: [ID!]!) {\n    egtStarterLinks(ids: $ids) {\n      ...useEGTStarterLinks_PlaceholderFragment\n    }\n  }\n"): (typeof documents)["\n  subscription useEEGTStarterLinksSubscription($ids: [ID!]!) {\n    egtStarterLinks(ids: $ids) {\n      ...useEGTStarterLinks_PlaceholderFragment\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

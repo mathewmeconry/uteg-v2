@@ -104,8 +104,14 @@ export class StarterLinkService {
     });
   }
 
-  findOne(id: number): Promise<StarterLink | null> {
-    return this.starterLinkRepository.findOneBy({ id });
+  findOne(id: number, withDeleted = false): Promise<StarterLink | null> {
+    let qb = this.starterLinkRepository.createQueryBuilder();
+
+    if (withDeleted) {
+      qb = qb.withDeleted();
+    }
+
+    return qb.where('id = :id', { id }).getOne();
   }
 
   findForCompetition(

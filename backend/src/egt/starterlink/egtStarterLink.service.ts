@@ -131,11 +131,11 @@ export class EGTStarterLinkService {
 
   findByLineup(
     lineupId: number,
-    includeDeleted?: boolean,
+    withDeleted?: boolean,
   ): Promise<EGTStarterLink[]> {
     let qb = this.egtStarterLinkRepository.createQueryBuilder('est');
 
-    if (includeDeleted) {
+    if (withDeleted) {
       qb = qb.withDeleted();
     }
 
@@ -145,16 +145,27 @@ export class EGTStarterLinkService {
       .getMany();
   }
 
+  async findByIds(
+    ids: number[],
+    withDeleted?: boolean,
+  ): Promise<EGTStarterLink[]> {
+    let qb = this.egtStarterLinkRepository.createQueryBuilder('est');
+
+    if (withDeleted) {
+      qb = qb.withDeleted();
+    }
+
+    const result = await qb.whereInIds(ids).getMany();
+    // sort by requested IDs
+    return ids.map((id) => result.find((el) => el.id == id));
+  }
+
   async save(starterLink: EGTStarterLink): Promise<EGTStarterLink> {
     return this.egtStarterLinkRepository.save(starterLink);
   }
 
   async onStarterLinkDelete(starterLink: StarterLink): Promise<void> {
-    await this.egtStarterLinkRepository
-      .createQueryBuilder()
-      .softDelete()
-      .from(EGTStarterLink)
-      .where('starterLink = :starterLink', { starterLink: starterLink.id })
-      .execute();
+    const link = await this.findByStarterLink(starterLink.id);
+    await this.egtStarterLinkRepository.softRemove(link);
   }
 }

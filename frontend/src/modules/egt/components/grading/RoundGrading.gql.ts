@@ -16,21 +16,6 @@ export const GET_DEVICE_GRADING = gql`
       }
       starterslist {
         id
-        isDeleted
-        starterlink {
-          id
-          starter {
-            id
-            firstname
-            lastname
-            sex
-          }
-          club {
-            id
-            name
-          }
-        }
-        category
       }
       lineups {
         id

@@ -22,6 +22,9 @@ import { useTranslation } from "react-i18next";
 import { FormTextInput } from "../../../../components/form/FormTextInput";
 import { FieldValues, FormProvider, useForm, useWatch } from "react-hook-form";
 import { enqueueSnackbar } from "notistack";
+import { graphql } from "../../../../__new_generated__/gql";
+import useEGTStarterLinks from "../../hooks/useEGTStarterLinks/useEGTStarterLinks";
+import usePrevious from "../../../../hooks/usePrev/usePrev";
 
 type RoundGradingProps = {
   device: number;
@@ -30,6 +33,27 @@ type RoundGradingProps = {
   divisionIds: string[];
 };
 
+const EGTStarterLinkFragment = graphql(`
+  fragment RoundGradingTable on EGTStarterLink {
+    id
+    isDeleted
+    starterlink {
+      id
+      starter {
+        id
+        firstname
+        lastname
+        sex
+      }
+      club {
+        id
+        name
+      }
+    }
+    category
+  }
+`);
+
 export function RoundGradingTable(props: RoundGradingProps) {
   const { t } = useTranslation(["egt", "common"]);
 
@@ -37,6 +61,16 @@ export function RoundGradingTable(props: RoundGradingProps) {
     deviceQuery,
     { loading: deviceDataLoading, data: deviceData },
   ] = useEgtDeviceGradingLazyQuery();
+  const {
+    data: starterLinks,
+    loading: starterLinksLoading,
+  } = useEGTStarterLinks(EGTStarterLinkFragment, {
+    ids:
+      deviceData?.egtJudgingDevice?.starterslist.map(
+        (starterLink) => starterLink.id
+      ) ?? [],
+    withDeleted: true,
+  });
   const [
     gradesQuery,
     { loading: gradesLoading, data: gradesData },
@@ -44,7 +78,7 @@ export function RoundGradingTable(props: RoundGradingProps) {
     variables: {
       device: props.device,
       starterlinkIds:
-        deviceData?.egtJudgingDevice?.starterslist
+        starterLinks
           .filter((starterLink) => !starterLink.isDeleted)
           .map((starterlink) => starterlink.starterlink.id) ?? [],
     },
@@ -52,9 +86,35 @@ export function RoundGradingTable(props: RoundGradingProps) {
   });
   const [addGradesMutation] = useEgtAddGradesMutation();
   const [advanceLineupsMutation] = useEgtAdvanceLineupsMutation();
+  const previousStarterLinks = usePrevious(starterLinks);
 
   const form = useForm();
   const formValues = useWatch({ control: form.control });
+
+  useEffect(() => {
+    if (!previousStarterLinks) {
+      return () => {};
+    }
+
+    for (const starter of starterLinks) {
+      const previousValue = previousStarterLinks.find(
+        (prevStarter) => prevStarter.id === starter.id
+      );
+
+      if (!previousValue?.isDeleted && !!starter.isDeleted) {
+        enqueueSnackbar(
+          t("has_been_deleted", {
+            ns: "common",
+            name: `${starter.starterlink.starter.firstname} ${starter.starterlink.starter.lastname}`,
+          }),
+          {
+            variant: "warning",
+            key: starter.id,
+          }
+        );
+      }
+    }
+  }, [starterLinks]);
 
   useEffect(() => {
     deviceQuery({
@@ -70,7 +130,7 @@ export function RoundGradingTable(props: RoundGradingProps) {
   useEffect(() => {
     if (gradesData?.starterGrades) {
       const values: { [index: string]: string | Object } = {};
-      for (const starter of deviceData?.egtJudgingDevice.starterslist ?? []) {
+      for (const starter of starterLinks) {
         if (starter.isDeleted) {
           continue;
         }
@@ -101,7 +161,7 @@ export function RoundGradingTable(props: RoundGradingProps) {
     }
 
     inputs = deviceData.egtJudgingDevice.device.inputs;
-    for (const starter of deviceData.egtJudgingDevice.starterslist) {
+    for (const starter of starterLinks) {
       if (
         deviceData.egtJudgingDevice.device.overrides.find(
           (override) => override.category === starter.category
@@ -121,7 +181,7 @@ export function RoundGradingTable(props: RoundGradingProps) {
   useEffect(() => {
     if (maxInputs > 1) {
       for (const starterId of Object.keys(formValues)) {
-        const starter = deviceData?.egtJudgingDevice.starterslist.find(
+        const starter = starterLinks.find(
           (starter) => starter.id === starterId
         );
         const categorySettings = getCategorySettings(starter?.category || 1);
@@ -144,7 +204,7 @@ export function RoundGradingTable(props: RoundGradingProps) {
     }
   }, [formValues, maxInputs]);
 
-  if (deviceDataLoading) {
+  if (deviceDataLoading || starterLinksLoading) {
     return [...Array(5).keys()].map((key) => <Skeleton key={key} />);
   }
 
@@ -339,7 +399,7 @@ export function RoundGradingTable(props: RoundGradingProps) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {deviceData.egtJudgingDevice.starterslist.map((starter) => (
+            {starterLinks.map((starter) => (
               <TableRow
                 key={starter.id}
                 sx={{

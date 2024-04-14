@@ -7,10 +7,20 @@ import {
   ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
+  RelationId,
 } from 'typeorm';
 import { EGTDivision } from '../division/egtDivision.entity';
 import { StarterLink } from 'src/base/starterLink/starterLink.entity';
 import { EGTLineup } from '../lineup/egtLineup.entity';
+import { PubSub } from 'graphql-subscriptions';
+
+export const EGTStarterLinkPubSub = new PubSub()
+
+export enum EGTStarterLinkPubSubEvents {
+  UPDATE = 'update',
+  CREATE = 'create',
+  DELETE = 'delete',
+}
 
 @ObjectType()
 @Entity()
@@ -25,6 +35,9 @@ export class EGTStarterLink {
   @OneToOne(() => StarterLink, { onDelete: 'CASCADE' })
   @JoinColumn()
   starterLink: Promise<StarterLink>;
+
+  @RelationId((link: EGTStarterLink) => link.starterLink)
+  starterLinkId: number;
 
   @ManyToOne(() => EGTLineup, { nullable: true, onDelete: 'SET NULL' })
   lineup?: Promise<EGTLineup>;

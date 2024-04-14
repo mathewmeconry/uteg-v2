@@ -13,12 +13,11 @@ import {
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import CloseIcon from "@mui/icons-material/Close";
-import {
-  EgtStarterLink,
-  useEgtDeviceGradingLazyQuery,
-} from "../../../../__generated__/graphql";
+import { EgtStarterLink } from "../../../../__generated__/graphql";
 import { useEffect, useState } from "react";
 import ForwardIcon from "@mui/icons-material/Forward";
+import { graphql } from "../../../../__new_generated__";
+import { useLazyQuery } from "@apollo/client";
 
 export type GradingListDialogProps = {
   open: boolean;
@@ -29,12 +28,31 @@ export type GradingListDialogProps = {
   currentStarter?: string;
 };
 
+const GradingListQueryDocument = graphql(`
+  query EGTGradingListQuery($ids: [ID!]!, $round: Int!, $device: Int!) {
+    egtJudgingDevice(ids: $ids, round: $round, device: $device) {
+      starterslist {
+        id
+        category
+        isDeleted
+        starterlink {
+          id
+          starter {
+            id
+            firstname
+            lastname
+          }
+        }
+      }
+    }
+  }
+`);
+
 export default function GradingListDialog(props: GradingListDialogProps) {
   const { t } = useTranslation(["egt", "common"]);
-  const [
-    deviceQuery,
-    { loading: deviceDataLoading },
-  ] = useEgtDeviceGradingLazyQuery();
+  const [deviceQuery, { loading: deviceDataLoading }] = useLazyQuery(
+    GradingListQueryDocument
+  );
   const [starters, setStarters] = useState<EgtStarterLink[][]>([]);
   useEffect(() => {
     load();
@@ -47,6 +65,7 @@ export default function GradingListDialog(props: GradingListDialogProps) {
             round: i,
             ids: props.divisionIds,
           },
+          fetchPolicy: 'cache-and-network'
         });
 
         if (data.data?.egtJudgingDevice) {

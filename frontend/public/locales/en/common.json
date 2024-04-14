@@ -113,5 +113,6 @@
   "loading": "Loading...",
   "processingModules": "Processing modules",
   "finished": "Finished 🎉",
-  "logo": "Logo"
+  "logo": "Logo",
+  "has_been_deleted": "{{name}} has been deleted!"
 }

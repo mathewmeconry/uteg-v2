@@ -243,6 +243,7 @@ type Query {
   egtSettings(competitionID: ID!): EGTSettings!
   egtStarterLink(id: ID, starterLinkID: ID): EGTStarterLink
   egtStarterLinkUnassigned(divisionID: ID!): [EGTStarterLink!]!
+  egtStarterLinks(ids: [ID!]!, withDeleted: Boolean = false): [EGTStarterLink!]!
   egtStarterRankings(category: Int!, competitionID: ID!, sex: Sex!): [EGTStarterRanking!]!
   findJudgeToken(competitionID: ID!, create: Boolean! = false, device: Int!, ground: Int!): Judgetoken
   grades: [Grade!]!
@@ -295,6 +296,7 @@ type StarterLink {
 
 type Subscription {
   egtDivision(filter: EGTDivisionFilterInput!): EGTDivision!
+  egtStarterLinks(ids: [ID!]!): EGTStarterLink!
 }
 
 """

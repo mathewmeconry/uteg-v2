@@ -27,6 +27,8 @@ import { EGTSettings } from './settings/egtSettings.entity';
 import { EGTDivisionGuard } from './division/egtDivision.guard';
 import { EGTDivisionSubscriber } from './division/egtDivision.subscriber';
 import { StarterLink } from 'src/base/starterLink/starterLink.entity';
+import { EGTStarterLinkSubscriber } from './starterlink/egtStarterLink.subscriber';
+import { EGTStarterLinkGuard } from './starterlink/egtStarterLink.guard';
 
 @Module({
   imports: [
@@ -44,13 +46,14 @@ import { StarterLink } from 'src/base/starterLink/starterLink.entity';
     EGTStarterLinkExtensionResolver,
     EGTStarterLinkResolver,
     EGTStarterLinkService,
+    EGTStarterLinkGuard,
     EGTDivisionService,
     EGTDivisionResolver,
+    EGTDivisionGuard,
     EGTLineupService,
     EGTLineupResolver,
     EGTDeviceService,
     EGTDeviceResolver,
-    EGTDivisionGuard,
     EGTJudgingService,
     EGTJudgingResolver,
     EGTRankingService,
@@ -58,6 +61,7 @@ import { StarterLink } from 'src/base/starterLink/starterLink.entity';
     EGTSettingsService,
     EGTSettingsResolver,
     EGTDivisionSubscriber,
+    EGTStarterLinkSubscriber,
   ],
 })
 export class EGTModule implements OnModuleInit {
@@ -68,7 +72,7 @@ export class EGTModule implements OnModuleInit {
   private deviceService: EGTDeviceService;
 
   @Inject()
-  private starterLinkService: EGTStarterLinkService
+  private starterLinkService: EGTStarterLinkService;
 
   onModuleInit() {
     this.moduleService.registerModule({
