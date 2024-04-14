@@ -1,6 +1,7 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql';
 import {
   Column,
+  DeleteDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
@@ -31,4 +32,7 @@ export class EGTStarterLink {
   @Column({ nullable: true })
   @Field({ nullable: true })
   category?: number;
+
+  @DeleteDateColumn()
+  deletedAt?: Date;
 }

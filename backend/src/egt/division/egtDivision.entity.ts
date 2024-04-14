@@ -1,8 +1,6 @@
 import { Field, ID, Int, ObjectType } from '@nestjs/graphql';
 import { Competition } from 'src/base/competition/competition.entity';
 import {
-  AfterInsert,
-  AfterUpdate,
   Column,
   Entity,
   ManyToOne,
@@ -61,6 +59,10 @@ export class EGTDivision {
   @Column()
   number: number;
 
+  @Field(() => Date, { nullable: true })
+  @Column('datetime', { nullable: true })
+  lastStateTransition?: Date;
+
   @OneToMany(() => EGTStarterLink, (link) => link.division)
   starterLinks: Promise<EGTStarterLink[]>;
 
@@ -73,15 +75,5 @@ export class EGTDivision {
       default:
         return 0;
     }
-  }
-
-  @AfterInsert()
-  onCreate() {
-    EGTDivisionPubSub.publish(EGTDivisionPubSubEvents.CREATE, this);
-  }
-
-  @AfterUpdate()
-  onUpdate() {
-    EGTDivisionPubSub.publish(EGTDivisionPubSubEvents.UPDATE, this);
   }
 }

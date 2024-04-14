@@ -41,13 +41,15 @@ export class GradeGuard implements CanActivate {
           async (id) =>
             await this.starterLinkService
               .findOne(id)
-              .then(async (link) => await link.competition),
+              .then(async (link) => link?.competition ?? null),
         ),
       );
     }
 
     // check if all competitions have the same ids
-    const competitionIds = competitions.map((c) => c.id);
+    const competitionIds = competitions
+      .map((c) => c?.id ?? null)
+      .filter((id) => id !== null);
     const allSameIds = competitionIds.every((id) => id === competitionIds[0]);
 
     if (!allSameIds) {

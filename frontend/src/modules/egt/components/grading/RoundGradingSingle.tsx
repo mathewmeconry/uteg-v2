@@ -236,6 +236,10 @@ export default function RoundGradingSingle(props: RoundGradingSingleProps) {
   }
 
   function renderGradeInputs(starter: EgtStarterLink) {
+    if (starter.isDeleted) {
+      return null;
+    }
+
     const categorySettings = getCategorySettings(starter.category || 1);
 
     if (categorySettings?.inputs === 1) {
@@ -350,7 +354,11 @@ export default function RoundGradingSingle(props: RoundGradingSingleProps) {
             {deviceData?.egtJudgingDevice?.starterslist?.map((starter) => {
               const realStarter = starter.starterlink.starter;
               return (
-                <TableRow>
+                <TableRow
+                  sx={{
+                    textDecoration: starter.isDeleted ? "line-through" : "none",
+                  }}
+                >
                   <TableCell>{realStarter.firstname}</TableCell>
                   <TableCell>{realStarter.lastname}</TableCell>
                   <TableCell>
@@ -361,22 +369,24 @@ export default function RoundGradingSingle(props: RoundGradingSingleProps) {
                     )}
                   </TableCell>
                   <TableCell>
-                    <FormTextInput
-                      key={starter.id}
-                      name={`${starter.starterlink.id}${
-                        maxInputs > 1 ? ".final" : ""
-                      }`}
-                      disableLabel
-                      fieldProps={{
-                        variant: "standard",
-                      }}
-                      fullWidth={true}
-                      rules={{
-                        required: true,
-                        min: 0,
-                        max: 10,
-                      }}
-                    />
+                    {!starter.isDeleted && (
+                      <FormTextInput
+                        key={starter.id}
+                        name={`${starter.starterlink.id}${
+                          maxInputs > 1 ? ".final" : ""
+                        }`}
+                        disableLabel
+                        fieldProps={{
+                          variant: "standard",
+                        }}
+                        fullWidth={true}
+                        rules={{
+                          required: true,
+                          min: 0,
+                          max: 10,
+                        }}
+                      />
+                    )}
                   </TableCell>
                 </TableRow>
               );
@@ -439,7 +449,16 @@ export default function RoundGradingSingle(props: RoundGradingSingleProps) {
           alignItems={"center"}
           sx={{ mt: 2 }}
         >
-          <Grid item xs={12} md={6} lg={3} sx={{ textAlign: "center" }}>
+          <Grid
+            item
+            xs={12}
+            md={6}
+            lg={3}
+            sx={{
+              textAlign: "center",
+              textDecoration: starter.isDeleted ? "line-through" : "none",
+            }}
+          >
             <Typography variant="h5" sx={{ pt: 2, textAlign: "center" }}>
               {starter.starterlink.starter.firstname}
             </Typography>

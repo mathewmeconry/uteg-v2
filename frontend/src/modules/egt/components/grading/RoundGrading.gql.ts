@@ -16,6 +16,7 @@ export const GET_DEVICE_GRADING = gql`
       }
       starterslist {
         id
+        isDeleted
         starterlink {
           id
           starter {

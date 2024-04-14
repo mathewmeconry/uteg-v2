@@ -25,6 +25,8 @@ import { EGTSettingsService } from './settings/egtSettings.service';
 import { EGTSettingsResolver } from './settings/egtSettings.resolver';
 import { EGTSettings } from './settings/egtSettings.entity';
 import { EGTDivisionGuard } from './division/egtDivision.guard';
+import { EGTDivisionSubscriber } from './division/egtDivision.subscriber';
+import { StarterLink } from 'src/base/starterLink/starterLink.entity';
 
 @Module({
   imports: [
@@ -34,7 +36,7 @@ import { EGTDivisionGuard } from './division/egtDivision.guard';
       EGTDivision,
       EGTLineup,
       EGTDevice,
-      EGTSettings
+      EGTSettings,
     ]),
     BaseModule,
   ],
@@ -54,7 +56,8 @@ import { EGTDivisionGuard } from './division/egtDivision.guard';
     EGTRankingService,
     EGTRankingResolver,
     EGTSettingsService,
-    EGTSettingsResolver
+    EGTSettingsResolver,
+    EGTDivisionSubscriber,
   ],
 })
 export class EGTModule implements OnModuleInit {
@@ -64,14 +67,22 @@ export class EGTModule implements OnModuleInit {
   @Inject()
   private deviceService: EGTDeviceService;
 
+  @Inject()
+  private starterLinkService: EGTStarterLinkService
+
   onModuleInit() {
     this.moduleService.registerModule({
       name: 'EGT',
-      competitionInitFunction: this.initCompetition.bind(this),
+      onCompetitionInit: this.onCompetitionInit.bind(this),
+      onStarterLinkDelete: this.onStarterLinkDelete.bind(this),
     });
   }
 
-  private async initCompetition(competition: Competition) {
-    await this.deviceService.initCompetition(competition);
+  private async onCompetitionInit(competition: Competition) {
+    await this.deviceService.onCompetitionInit(competition);
+  }
+
+  private async onStarterLinkDelete(starterLink: StarterLink) {
+    await this.starterLinkService.onStarterLinkDelete(starterLink);
   }
 }

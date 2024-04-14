@@ -25,7 +25,6 @@ import { Starter } from '../starter/starter.entity';
 import { Club } from '../club/club.entity';
 import { Competition } from '../competition/competition.entity';
 import { SEX } from '../starter/starter.types';
-import { AlreadyExistingException } from '../exceptions/AlreadyExisting';
 
 @Resolver(() => StarterLink)
 @UseGuards(StarterLinkGuard, RoleGuard)
@@ -134,16 +133,21 @@ export class StarterLinkResolver {
 
   @ResolveField(() => Starter)
   async starter(@Parent() starterLink: StarterLink): Promise<Starter> {
-    return starterLink.starter;
+    return this.starterService.findOne(starterLink.starterId)
   }
 
   @ResolveField(() => Club)
   async club(@Parent() starterLink: StarterLink): Promise<Club> {
-    return starterLink.club;
+    return this.clubService.findOne(starterLink.clubId)
   }
 
   @ResolveField(() => Competition)
   async competition(@Parent() starterLink: StarterLink): Promise<Competition> {
-    return starterLink.competition;
+    return this.competitionService.findOne(starterLink.competitionId)
+  }
+
+  @ResolveField()
+  isDeleted(@Parent() starterLink: StarterLink): boolean {
+    return !!starterLink.deletedAt;
   }
 }

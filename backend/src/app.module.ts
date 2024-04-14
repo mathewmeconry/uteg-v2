@@ -28,6 +28,7 @@ import { Upload } from './scalars/upload.scalar';
         database: configService.get('DB_DATABASE'),
         synchronize: configService.get<boolean>('DB_SYNCHRONIZE'),
         autoLoadEntities: true,
+        subscribers: ['dist/**/*.subscriber{.ts,.js}'],
       }),
       inject: [ConfigService],
     }),

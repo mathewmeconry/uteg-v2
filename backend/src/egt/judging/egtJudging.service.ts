@@ -5,6 +5,7 @@ import { EGTLineupService } from '../lineup/egtLineup.service';
 import { EGTStarterLink } from '../starterlink/egtStarterLink.entity';
 import { EGTJudgingDevice } from './egtJudging.types';
 import { EGTLineup } from '../lineup/egtLineup.entity';
+import { EGTStarterLinkService } from '../starterlink/egtStarterLink.service';
 
 @Injectable()
 export class EGTJudgingService {
@@ -16,6 +17,9 @@ export class EGTJudgingService {
 
   @Inject()
   private egtDeviceService: EGTDeviceService;
+
+  @Inject()
+  private egtStarterLinkService: EGTStarterLinkService;
 
   async getJudging(
     divisionIds: number[],
@@ -64,7 +68,18 @@ export class EGTJudgingService {
         deviceNumber,
       );
       if (lineup) {
-        starters.push(...(await lineup.starterlinks));
+        const starterLinks = await this.egtStarterLinkService.findByLineup(
+          lineup.id,
+          true,
+        );
+
+        starters.push(
+          ...starterLinks.filter(
+            (starterLink) =>
+              !starterLink.deletedAt ||
+              starterLink.deletedAt > division.lastStateTransition,
+          ),
+        );
         lineups.push(lineup);
       }
     }

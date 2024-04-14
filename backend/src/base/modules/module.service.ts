@@ -1,5 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Competition } from '../competition/competition.entity';
+import { StarterLink } from '../starterLink/starterLink.entity';
 
 @Injectable()
 export class ModuleService {
@@ -16,15 +17,28 @@ export class ModuleService {
   }
 
   getModule(name: string): ModuleRegistration {
-    return this.registeredModules.find((m) => m.name.toLowerCase() === name.toLowerCase());
+    return this.registeredModules.find(
+      (m) => m.name.toLowerCase() === name.toLowerCase(),
+    );
   }
 
-  initCompetition(competition: Competition) {
+  onCompetitionInit(competition: Competition) {
     for (const module of competition.modules) {
       const moduleRegistration = this.getModule(module);
       if (moduleRegistration) {
-        if (moduleRegistration.competitionInitFunction) {
-          moduleRegistration.competitionInitFunction(competition);
+        if (moduleRegistration.onCompetitionInit) {
+          moduleRegistration.onCompetitionInit(competition);
+        }
+      }
+    }
+  }
+
+  onStarterLinkDelete(competition: Competition, starterLink: StarterLink) {
+    for (const module of competition.modules) {
+      const moduleRegistration = this.getModule(module);
+      if (moduleRegistration) {
+        if (moduleRegistration.onStarterLinkDelete) {
+          moduleRegistration.onStarterLinkDelete(starterLink);
         }
       }
     }
@@ -33,5 +47,6 @@ export class ModuleService {
 
 export type ModuleRegistration = {
   name: string;
-  competitionInitFunction?: (competition: Competition) => void | Promise<void>;
+  onCompetitionInit?: (competition: Competition) => void | Promise<void>;
+  onStarterLinkDelete?: (starterLink: StarterLink) => void | Promise<void>;
 };

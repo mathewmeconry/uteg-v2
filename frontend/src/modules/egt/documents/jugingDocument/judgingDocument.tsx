@@ -100,6 +100,7 @@ type Starter = {
   lastname: string;
   club: string;
   category: number;
+  isDeleted: boolean;
 };
 
 export function JudgingDocument(props: JudgingDocumentProps) {
@@ -152,6 +153,7 @@ export function JudgingDocument(props: JudgingDocumentProps) {
         lastname: egtStarterlink.starterlink.starter.lastname,
         club: egtStarterlink.starterlink.club.name,
         category: egtStarterlink.category || 0,
+        isDeleted: egtStarterlink.isDeleted
       }));
       device.rounds[round] = starters;
 
@@ -302,7 +304,13 @@ export function JudgingDocument(props: JudgingDocumentProps) {
           {renderGradesHeaders(device, starterCategoriesdedup)}
         </View>
         {...starters.map((starter) => (
-          <View style={styles.tableRow} key={`${device.number}_${starter.id}`}>
+          <View
+            style={{
+              ...styles.tableRow,
+              textDecoration: starter.isDeleted ? "line-through" : "none",
+            }}
+            key={`${device.number}_${starter.id}`}
+          >
             <View style={{ width: widths.firstname }}>
               <Text style={styles.tableCell}>{starter.firstname}</Text>
             </View>

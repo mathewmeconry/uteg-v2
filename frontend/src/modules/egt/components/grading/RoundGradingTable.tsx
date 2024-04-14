@@ -44,9 +44,9 @@ export function RoundGradingTable(props: RoundGradingProps) {
     variables: {
       device: props.device,
       starterlinkIds:
-        deviceData?.egtJudgingDevice?.starterslist.map(
-          (starterlink) => starterlink.starterlink.id
-        ) ?? [],
+        deviceData?.egtJudgingDevice?.starterslist
+          .filter((starterLink) => !starterLink.isDeleted)
+          .map((starterlink) => starterlink.starterlink.id) ?? [],
     },
     fetchPolicy: "network-only",
   });
@@ -71,6 +71,9 @@ export function RoundGradingTable(props: RoundGradingProps) {
     if (gradesData?.starterGrades) {
       const values: { [index: string]: string | Object } = {};
       for (const starter of deviceData?.egtJudgingDevice.starterslist ?? []) {
+        if (starter.isDeleted) {
+          continue;
+        }
         if (formValues[starter.starterlink.id]) {
           values[starter.starterlink.id] = formValues[starter.starterlink.id];
           continue;
@@ -209,6 +212,10 @@ export function RoundGradingTable(props: RoundGradingProps) {
     const categorySettings = getCategorySettings(starter.category || 1);
 
     if (categorySettings?.inputs === 1) {
+      if (starter.isDeleted) {
+        return <TableCell />;
+      }
+
       return (
         <TableCell>
           <FormTextInput
@@ -236,6 +243,10 @@ export function RoundGradingTable(props: RoundGradingProps) {
         (key) => key !== "final" && previousValues[key]
       ).length > 0;
     return [...Array(maxInputs + 1).keys()].map((key) => {
+      if (starter.isDeleted) {
+        return <TableCell key={`${starter.id}_${key}`} />;
+      }
+
       if (key === maxInputs) {
         return (
           <TableCell key={`${starter.id}_${key}`}>
@@ -329,7 +340,14 @@ export function RoundGradingTable(props: RoundGradingProps) {
           </TableHead>
           <TableBody>
             {deviceData.egtJudgingDevice.starterslist.map((starter) => (
-              <TableRow key={starter.id}>
+              <TableRow
+                key={starter.id}
+                sx={{
+                  textDecoration: starter.isDeleted
+                    ? "line-through"
+                    : undefined,
+                }}
+              >
                 <TableCell>{starter.starterlink?.starter?.firstname}</TableCell>
                 <TableCell>{starter.starterlink?.starter?.lastname}</TableCell>
                 <TableCell>{starter.starterlink?.club.name}</TableCell>

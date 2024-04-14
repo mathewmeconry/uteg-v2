@@ -35,7 +35,7 @@ export class EGTDeviceService {
       .getOne();
   }
 
-  async initCompetition(competition: Competition): Promise<void> {
+  async onCompetitionInit(competition: Competition): Promise<void> {
     const promises: Promise<EGTDevice>[] = [];
     // create for each device a new entity
     const horizontalBar = new EGTDevice();

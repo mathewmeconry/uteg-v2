@@ -97,8 +97,15 @@ export default function GradingListDialog(props: GradingListDialogProps) {
               </TableHead>
               <TableBody>
                 {round.map((starter) => (
-                  <TableRow key={starter.id}>
-                    <TableCell sx={{p: 0}}>
+                  <TableRow
+                    key={starter.id}
+                    sx={{
+                      textDecoration: starter.isDeleted
+                        ? "line-through"
+                        : "none",
+                    }}
+                  >
+                    <TableCell sx={{ p: 0 }}>
                       {starter.id === props.currentStarter ? (
                         <ForwardIcon fontSize="small" />
                       ) : null}

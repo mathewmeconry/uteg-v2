@@ -132,6 +132,7 @@ export type EgtDivision = {
   currentRound: Scalars['Int']['output'];
   ground: Scalars['Int']['output'];
   id: Scalars['ID']['output'];
+  lastStateTransition?: Maybe<Scalars['Timestamp']['output']>;
   lineups: Array<EgtLineup>;
   number: Scalars['Int']['output'];
   sex: Sex;
@@ -188,6 +189,7 @@ export type EgtStarterLink = {
   category?: Maybe<Scalars['Int']['output']>;
   division?: Maybe<EgtDivision>;
   id: Scalars['ID']['output'];
+  isDeleted: Scalars['Boolean']['output'];
   lineup?: Maybe<EgtLineup>;
   starterlink: StarterLink;
 };
@@ -547,6 +549,7 @@ export type StarterLink = {
   competition: Competition;
   egt?: Maybe<EgtStarterLink>;
   id: Scalars['ID']['output'];
+  isDeleted: Scalars['Boolean']['output'];
   starter: Starter;
 };
 

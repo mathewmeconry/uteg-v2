@@ -6,6 +6,7 @@ import { AlreadyExistingException } from '../exceptions/AlreadyExisting';
 import { UpdateStarterLinkInput } from './starterLink.types';
 import { ClubService } from '../club/club.service';
 import { SEX } from '../starter/starter.types';
+import { ModuleService } from '../modules/module.service';
 
 @Injectable()
 export class StarterLinkService {
@@ -14,6 +15,9 @@ export class StarterLinkService {
 
   @Inject()
   private clubService: ClubService;
+
+  @Inject()
+  private moduleService: ModuleService;
 
   async create(starterLink: StarterLink): Promise<StarterLink> {
     const alreadyExisting = await this.starterLinkRepository.findOne({
@@ -25,8 +29,14 @@ export class StarterLinkService {
           id: (await starterLink.starter).id,
         },
       },
+      withDeleted: true,
     });
     if (alreadyExisting) {
+      // if soft-deleted restore it
+      if (alreadyExisting.deletedAt) {
+        await this.starterLinkRepository.restore(alreadyExisting.id);
+        return alreadyExisting;
+      }
       throw new AlreadyExistingException();
     }
 
@@ -53,7 +63,12 @@ export class StarterLinkService {
       throw new NotFoundException();
     }
     const cloned = { ...starterLink };
-    await this.starterLinkRepository.remove(starterLink);
+    await this.moduleService.onStarterLinkDelete(
+      await starterLink.competition,
+      starterLink,
+    );
+    await this.starterLinkRepository.softRemove(starterLink);
+
     return cloned;
   }
 

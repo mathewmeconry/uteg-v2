@@ -107,6 +107,7 @@ type EGTDivision {
   currentRound: Int!
   ground: Int!
   id: ID!
+  lastStateTransition: Timestamp
   lineups: [EGTLineup!]!
   number: Int!
   sex: Sex!
@@ -159,6 +160,7 @@ type EGTStarterLink {
   category: Int
   division: EGTDivision
   id: ID!
+  isDeleted: Boolean!
   lineup: EGTLineup
   starterlink: StarterLink!
 }
@@ -287,6 +289,7 @@ type StarterLink {
   competition: Competition!
   egt: EGTStarterLink
   id: ID!
+  isDeleted: Boolean!
   starter: Starter!
 }
 

@@ -30,7 +30,7 @@ export class CompetitionService {
   async create(competition: Competition, user: User): Promise<Competition> {
     competition = await this.competitionRepository.save(competition);
     await this.userService.link(user, competition, ROLES.ADMIN);
-    await this.moduleService.initCompetition(competition);
+    await this.moduleService.onCompetitionInit(competition);
     return competition;
   }
 

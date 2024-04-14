@@ -57,6 +57,7 @@ export const GET_JUDGING = gql`
       }
       starterslist {
         id
+        isDeleted
         starterlink {
           id
           starter {
