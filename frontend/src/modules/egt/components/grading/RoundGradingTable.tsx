@@ -92,7 +92,7 @@ export function RoundGradingTable(props: RoundGradingProps) {
   const formValues = useWatch({ control: form.control });
 
   useEffect(() => {
-    if (!previousStarterLinks) {
+    if (!previousStarterLinks || previousStarterLinks.length === 0) {
       return () => {};
     }
 
@@ -215,6 +215,13 @@ export function RoundGradingTable(props: RoundGradingProps) {
   async function onFormSubmit(values: FieldValues) {
     const grades: GradeInput[] = [];
     for (const starter of Object.keys(values)) {
+      // skip deleted starters
+      if (
+        starterLinks.find((link) => link.starterlink.id === starter)?.isDeleted
+      ) {
+        continue;
+      }
+
       let finalGrade = values[starter];
       if (maxInputs > 1) {
         finalGrade = finalGrade["final"];

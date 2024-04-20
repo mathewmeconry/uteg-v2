@@ -114,5 +114,6 @@
   "processingModules": "Verarbeite Module",
   "finished": "Fertig 🎉",
   "logo": "Logo",
-  "has_been_deleted": "{{name}} wurde gelöscht!"
+  "has_been_deleted": "{{name}} wurde gelöscht!",
+  "refreshing": "Aktualisierung läuft"
 }

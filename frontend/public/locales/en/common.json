@@ -114,5 +114,6 @@
   "processingModules": "Processing modules",
   "finished": "Finished 🎉",
   "logo": "Logo",
-  "has_been_deleted": "{{name}} has been deleted!"
+  "has_been_deleted": "{{name}} has been deleted!",
+  "refreshing": "Refreshing"
 }

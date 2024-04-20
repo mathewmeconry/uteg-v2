@@ -21,8 +21,8 @@ const documents = {
     "\n  query useEGTDivisionQuery($filter: EGTDivisionFilterInput!) {\n    egtDivisions(filter: $filter) {\n      ...useEGTDivision_PlaceholderFragment\n    }\n  }\n": types.UseEgtDivisionQueryDocument,
     "\n  subscription useEGTDivisionSubscription($filter: EGTDivisionFilterInput!) {\n    egtDivision(filter: $filter) {\n      ...useEGTDivision_PlaceholderFragment\n    }\n  }\n": types.UseEgtDivisionSubscriptionDocument,
     "\n  fragment useEGTStarterLinks_PlaceholderFragment on EGTStarterLink {\n    id\n  }\n": types.UseEgtStarterLinks_PlaceholderFragmentFragmentDoc,
-    "\n  query useEGTStarterLinksQuery($ids: [ID!]!, $withDeleted: Boolean) {\n    egtStarterLinks(ids: $ids, withDeleted: $withDeleted) {\n      ...useEGTStarterLinks_PlaceholderFragment\n    }\n  }\n": types.UseEgtStarterLinksQueryDocument,
-    "\n  subscription useEEGTStarterLinksSubscription($ids: [ID!]!) {\n    egtStarterLinks(ids: $ids) {\n      ...useEGTStarterLinks_PlaceholderFragment\n    }\n  }\n": types.UseEegtStarterLinksSubscriptionDocument,
+    "\n  query useEGTStarterLinksQuery($ids: [ID!], $divisionIDs: [ID!], $withDeleted: Boolean) {\n    egtStarterLinks(ids: $ids, divisionIDs: $divisionIDs, withDeleted: $withDeleted) {\n      ...useEGTStarterLinks_PlaceholderFragment\n    }\n  }\n": types.UseEgtStarterLinksQueryDocument,
+    "\n  subscription useEEGTStarterLinksSubscription($ids: [ID!], $divisionIDs: [ID!]) {\n    egtStarterLinks(ids: $ids, divisionIDs: $divisionIDs) {\n      ...useEGTStarterLinks_PlaceholderFragment\n    }\n  }\n": types.UseEegtStarterLinksSubscriptionDocument,
     "\n  fragment DivisionListFragment on EGTDivision {\n    id\n    ground\n    state\n    currentRound\n    totalRounds\n    category\n    sex\n    number\n    totalStarters\n  }\n": types.DivisionListFragmentFragmentDoc,
 };
 
@@ -75,11 +75,11 @@ export function graphql(source: "\n  fragment useEGTStarterLinks_PlaceholderFrag
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  query useEGTStarterLinksQuery($ids: [ID!]!, $withDeleted: Boolean) {\n    egtStarterLinks(ids: $ids, withDeleted: $withDeleted) {\n      ...useEGTStarterLinks_PlaceholderFragment\n    }\n  }\n"): (typeof documents)["\n  query useEGTStarterLinksQuery($ids: [ID!]!, $withDeleted: Boolean) {\n    egtStarterLinks(ids: $ids, withDeleted: $withDeleted) {\n      ...useEGTStarterLinks_PlaceholderFragment\n    }\n  }\n"];
+export function graphql(source: "\n  query useEGTStarterLinksQuery($ids: [ID!], $divisionIDs: [ID!], $withDeleted: Boolean) {\n    egtStarterLinks(ids: $ids, divisionIDs: $divisionIDs, withDeleted: $withDeleted) {\n      ...useEGTStarterLinks_PlaceholderFragment\n    }\n  }\n"): (typeof documents)["\n  query useEGTStarterLinksQuery($ids: [ID!], $divisionIDs: [ID!], $withDeleted: Boolean) {\n    egtStarterLinks(ids: $ids, divisionIDs: $divisionIDs, withDeleted: $withDeleted) {\n      ...useEGTStarterLinks_PlaceholderFragment\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  subscription useEEGTStarterLinksSubscription($ids: [ID!]!) {\n    egtStarterLinks(ids: $ids) {\n      ...useEGTStarterLinks_PlaceholderFragment\n    }\n  }\n"): (typeof documents)["\n  subscription useEEGTStarterLinksSubscription($ids: [ID!]!) {\n    egtStarterLinks(ids: $ids) {\n      ...useEGTStarterLinks_PlaceholderFragment\n    }\n  }\n"];
+export function graphql(source: "\n  subscription useEEGTStarterLinksSubscription($ids: [ID!], $divisionIDs: [ID!]) {\n    egtStarterLinks(ids: $ids, divisionIDs: $divisionIDs) {\n      ...useEGTStarterLinks_PlaceholderFragment\n    }\n  }\n"): (typeof documents)["\n  subscription useEEGTStarterLinksSubscription($ids: [ID!], $divisionIDs: [ID!]) {\n    egtStarterLinks(ids: $ids, divisionIDs: $divisionIDs) {\n      ...useEGTStarterLinks_PlaceholderFragment\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

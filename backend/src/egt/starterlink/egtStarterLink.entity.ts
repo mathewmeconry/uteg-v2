@@ -32,6 +32,9 @@ export class EGTStarterLink {
   @ManyToOne(() => EGTDivision, { nullable: true, onDelete: 'SET NULL' })
   division?: Promise<EGTDivision>;
 
+  @RelationId((link: EGTStarterLink) => link.division)
+  divisionID?: number;
+
   @OneToOne(() => StarterLink, { onDelete: 'CASCADE' })
   @JoinColumn()
   starterLink: Promise<StarterLink>;

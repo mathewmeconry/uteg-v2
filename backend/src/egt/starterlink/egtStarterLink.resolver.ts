@@ -55,10 +55,19 @@ export class EGTStarterLinkResolver {
   @Judge()
   @Query(() => [EGTStarterLink], { name: 'egtStarterLinks' })
   async egtStarterLinks(
-    @Args('ids', { type: () => [ID] }) ids: number[],
+    @Args('ids', { type: () => [ID], nullable: true }) ids: number[],
+    @Args('divisionIDs', { type: () => [ID], nullable: true })
+    divisionIDs: number[],
     @Args('withDeleted', { nullable: true, defaultValue: false })
     withDeleted: boolean = false,
   ): Promise<EGTStarterLink[]> {
+    if (divisionIDs) {
+      return this.egtStarterLinkService.findByDivisionIDs(
+        divisionIDs,
+        withDeleted,
+      );
+    }
+
     return this.egtStarterLinkService.findByIds(ids, withDeleted);
   }
 
@@ -86,17 +95,28 @@ export class EGTStarterLinkResolver {
     async filter(
       this: EGTStarterLinkResolver,
       payload: EGTStarterLink,
-      variables: { ids: string[] },
+      variables: { ids?: string[]; divisionIDs?: string[] },
       context,
     ) {
-      if (variables.ids.includes(payload.id.toString())) {
+      if (
+        variables.divisionIDs &&
+        variables.divisionIDs.includes(payload.divisionID.toString())
+      ) {
+        return await this.egtStarterLinkGuard.canAccess(payload, context);
+      }
+
+      if (variables.ids && variables.ids.includes(payload.id.toString())) {
         return await this.egtStarterLinkGuard.canAccess(payload, context);
       }
       return false;
     },
     resolve: (payload) => payload,
   })
-  subscription(@Args('ids', { type: () => [ID] }) _ids: number[]) {
+  subscription(
+    @Args('ids', { type: () => [ID], nullable: true }) _ids: number[],
+    @Args('divisionIDs', { type: () => [ID], nullable: true })
+    _divisionIDs: number[],
+  ) {
     return EGTStarterLinkPubSub.asyncIterator([
       EGTStarterLinkPubSubEvents.CREATE,
       EGTStarterLinkPubSubEvents.UPDATE,

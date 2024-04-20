@@ -10,6 +10,7 @@ import { EGTStarterLinkService } from './egtStarterLink.service';
 import { EGTStarterLink } from './egtStarterLink.entity';
 import { AuthContext } from 'src/auth/types';
 import { CompetitionService } from 'src/base/competition/competition.service';
+import { EGTDivisionService } from '../division/egtDivision.service';
 
 @Injectable()
 export class EGTStarterLinkGuard implements CanActivate {
@@ -21,6 +22,9 @@ export class EGTStarterLinkGuard implements CanActivate {
 
   @Inject()
   private competitionService: CompetitionService;
+
+  @Inject()
+  private egtDivisionService: EGTDivisionService;
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const ctx = GqlExecutionContext.create(context);
@@ -76,6 +80,26 @@ export class EGTStarterLinkGuard implements CanActivate {
       return true;
     }
 
+    if (args.divisionIDs) {
+      const divisions = await Promise.all(
+        args.divisionIDs.map((id) => this.egtDivisionService.findOne(id)),
+      );
+      const competitions = await Promise.all(
+        divisions.map((division) => division.competition),
+      );
+
+      const competitionIds = competitions
+        .filter((competition) => !!competition)
+        .map((c) => c.id);
+
+      const allSameIds = competitionIds.every((id) => id === competitionIds[0]);
+      if (!allSameIds) {
+        return false;
+      }
+      ctx.getContext().competition = competitionIds[0];
+      return true;
+    }
+
     const starterLink = await this.starterLinkService.findOne(starterLinkID);
 
     if (starterLink) {
@@ -85,8 +109,13 @@ export class EGTStarterLinkGuard implements CanActivate {
   }
 
   async canAccess(egtStarterLink: EGTStarterLink, context: AuthContext) {
-    const starterLink = await egtStarterLink.starterLink;
-    const competition = await starterLink.competition;
+    const starterLink = await this.starterLinkService.findOne(
+      egtStarterLink.starterLinkId,
+      true,
+    );
+    const competition = await this.competitionService.findOne(
+      starterLink.competitionId,
+    );
     if (context.competition !== competition.id) {
       return false;
     }

@@ -24,16 +24,16 @@ graphql(`
 `);
 
 const QUERY = graphql(`
-  query useEGTStarterLinksQuery($ids: [ID!]!, $withDeleted: Boolean) {
-    egtStarterLinks(ids: $ids, withDeleted: $withDeleted) {
+  query useEGTStarterLinksQuery($ids: [ID!], $divisionIDs: [ID!], $withDeleted: Boolean) {
+    egtStarterLinks(ids: $ids, divisionIDs: $divisionIDs, withDeleted: $withDeleted) {
       ...useEGTStarterLinks_PlaceholderFragment
     }
   }
 `);
 
 const SUBSCRIPTION = graphql(`
-  subscription useEEGTStarterLinksSubscription($ids: [ID!]!) {
-    egtStarterLinks(ids: $ids) {
+  subscription useEEGTStarterLinksSubscription($ids: [ID!], $divisionIDs: [ID!]) {
+    egtStarterLinks(ids: $ids, divisionIDs: $divisionIDs) {
       ...useEGTStarterLinks_PlaceholderFragment
     }
   }

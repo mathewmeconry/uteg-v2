@@ -67,19 +67,17 @@ export default function RoundGradingSingle(props: RoundGradingSingleProps) {
   const [starterIndex, setStarterIndex] = useState(0);
   const [inReview, setInReview] = useState(false);
   const [openGradingList, setOpenGradingList] = useState(false);
+  const [starterLinks, setStarterLinks] = useState<EgtStarterLink[]>([]);
 
   const [
     deviceQuery,
     { loading: deviceDataLoading, data: deviceData },
   ] = useEgtDeviceGradingLazyQuery();
   const {
-    data: starterLinks,
+    data: allStarterLinks,
     loading: starterLinksLoading,
   } = useEGTStarterLinks(EGTStarterLinkFragment, {
-    ids:
-      deviceData?.egtJudgingDevice?.starterslist.map(
-        (starterLink) => starterLink.id
-      ) ?? [],
+    divisionIDs: props.divisionIds,
     withDeleted: true,
   });
   const [
@@ -97,7 +95,7 @@ export default function RoundGradingSingle(props: RoundGradingSingleProps) {
   });
   const [addGradesMutation] = useEgtAddGradesMutation();
   const [advanceLineupsMutation] = useEgtAdvanceLineupsMutation();
-  const previousStarterLinks = usePrevious(starterLinks);
+  const previousStarterLinks = usePrevious(allStarterLinks);
 
   const form = useForm({
     mode: "all",
@@ -105,11 +103,42 @@ export default function RoundGradingSingle(props: RoundGradingSingleProps) {
   const formValues = useWatch({ control: form.control });
 
   useEffect(() => {
-    if (!previousStarterLinks) {
+    if (!deviceDataLoading && !starterLinksLoading && !gradesLoading) {
+      closeSnackbar("refreshing");
+    } else {
+      enqueueSnackbar(t("refreshing", { ns: "common" }), {
+        key: "refreshing",
+        persist: true,
+        variant: "info",
+      });
+    }
+    return () => closeSnackbar("refreshing");
+  }, [deviceDataLoading, starterLinksLoading, gradesLoading]);
+
+  useEffect(() => {
+    const deviceStarters = deviceData?.egtJudgingDevice.starterslist ?? [];
+    const activeStarterLinks =
+      (allStarterLinks.filter(
+        (link) =>
+          deviceStarters.findIndex(
+            (deviceLink) => deviceLink.id === link.id
+          ) !== -1
+      ) as EgtStarterLink[]) ?? [];
+    setStarterLinks(
+      activeStarterLinks.sort(
+        (a, b) =>
+          deviceStarters.findIndex((dl) => dl.id === a.id) -
+          deviceStarters.findIndex((dl) => dl.id === b.id)
+      )
+    );
+  }, [allStarterLinks, deviceData]);
+
+  useEffect(() => {
+    if (!previousStarterLinks || previousStarterLinks.length === 0) {
       return () => {};
     }
 
-    for (const starter of starterLinks) {
+    for (const starter of allStarterLinks) {
       const previousValue = previousStarterLinks.find(
         (prevStarter) => prevStarter.id === starter.id
       );
@@ -137,7 +166,7 @@ export default function RoundGradingSingle(props: RoundGradingSingleProps) {
         );
       }
     }
-  }, [starterLinks]);
+  }, [allStarterLinks]);
 
   useEffect(() => {
     if (props.divisionIds.length > 0) {
@@ -258,17 +287,27 @@ export default function RoundGradingSingle(props: RoundGradingSingleProps) {
   async function onFormSubmit(values: FieldValues) {
     const grades: GradeInput[] = [];
     for (const starter of Object.keys(values)) {
+      // skip deleted starters
+      if (
+        allStarterLinks.find((link) => link.starterlink.id === starter)
+          ?.isDeleted
+      ) {
+        continue;
+      }
+
       let finalGrade = values[starter];
       if (maxInputs > 1) {
         finalGrade = finalGrade["final"];
       }
 
-      grades.push({
-        deviceNumber: props.device,
-        module: "egt",
-        starterlinkId: starter,
-        value: parseFloat(finalGrade),
-      });
+      if (finalGrade) {
+        grades.push({
+          deviceNumber: props.device,
+          module: "egt",
+          starterlinkId: starter,
+          value: parseFloat(finalGrade),
+        });
+      }
     }
     try {
       if (grades.length > 0) {
@@ -278,6 +317,7 @@ export default function RoundGradingSingle(props: RoundGradingSingleProps) {
           },
         });
         if (result.errors) {
+          console.error(result.errors);
           enqueueSnackbar(t("error", { ns: "common" }));
           return;
         }
@@ -594,13 +634,15 @@ export default function RoundGradingSingle(props: RoundGradingSingleProps) {
     );
   }
 
-  if (
-    deviceDataLoading ||
-    gradesLoading ||
-    starterLinksLoading ||
-    starter === undefined
-  ) {
-    return <LinearProgress />;
+  if (starterLinks.length === 0) {
+    if (
+      deviceDataLoading ||
+      gradesLoading ||
+      starterLinksLoading ||
+      starter === undefined
+    ) {
+      return <LinearProgress />;
+    }
   }
 
   if (!deviceData?.egtJudgingDevice) {

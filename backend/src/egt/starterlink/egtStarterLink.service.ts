@@ -160,6 +160,20 @@ export class EGTStarterLinkService {
     return ids.map((id) => result.find((el) => el.id == id));
   }
 
+  async findByDivisionIDs(
+    ids: number[],
+    withDeleted?: boolean,
+  ): Promise<EGTStarterLink[]> {
+    let qb = this.egtStarterLinkRepository.createQueryBuilder('est');
+    if (withDeleted) {
+      qb = qb.withDeleted();
+    }
+
+    qb.leftJoinAndSelect('est.division', 'division');
+    qb.where('est.division.id IN (:...ids)', { ids });
+    return qb.getMany();
+  }
+
   async save(starterLink: EGTStarterLink): Promise<EGTStarterLink> {
     return this.egtStarterLinkRepository.save(starterLink);
   }

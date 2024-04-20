@@ -55,7 +55,9 @@ export default function GradingListDialog(props: GradingListDialogProps) {
   );
   const [starters, setStarters] = useState<EgtStarterLink[][]>([]);
   useEffect(() => {
-    load();
+    if (props.open) {
+      load();
+    }
     async function load() {
       setStarters([]);
       for (let i = 0; i < props.maxRounds; i++) {
@@ -65,7 +67,7 @@ export default function GradingListDialog(props: GradingListDialogProps) {
             round: i,
             ids: props.divisionIds,
           },
-          fetchPolicy: 'cache-and-network'
+          fetchPolicy: "cache-and-network",
         });
 
         if (data.data?.egtJudgingDevice) {

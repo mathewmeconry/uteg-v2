@@ -31,8 +31,11 @@ export class GradeGuard implements CanActivate {
         ),
       );
       competitions = await Promise.all(
-        starterLinks.map((link) => link.competition),
+        starterLinks.filter((link) => link).map((link) => link.competition),
       );
+      if (competitions.length !== args.grades.length) {
+        return false;
+      }
     }
 
     if (args.starterlinkIds) {
