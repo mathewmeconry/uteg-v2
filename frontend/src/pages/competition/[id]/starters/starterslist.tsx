@@ -258,14 +258,17 @@ export function StartersList() {
   });
 
   function onEdit(starterLink: StarterLink) {
-    return () => {
+    return (e: Event) => {
+      e.stopPropagation();
       setToEditLink(starterLink.id);
       setOpenDialog("updateStarter");
+      return false;
     };
   }
 
   function onRemove(starterLink: StarterLink) {
-    return () => {
+    return (e: Event) => {
+      e.stopPropagation();
       setToDeleteStarters([starterLink]);
       setOpenDialog("deleteStarter");
     };
