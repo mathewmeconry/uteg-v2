@@ -8,11 +8,7 @@ import { EGTStartersReviewStepRow } from "./extensions/startersReviewStepRow/sta
 import { parseStarterFromSheet } from "./handlers/parseStarterFromSheet/parseStarterFromSheet";
 import { EGTStartersReviewHeaders } from "./extensions/startersReviewHeaders/startersReviewHeaders";
 import { importStarters } from "./handlers/importStarters/importStarters";
-import { GridActionsColDef } from "@mui/x-data-grid";
-import { DocumentTransform } from "@apollo/client";
-import { Kind, visit } from "graphql";
 import { StarterslistSelectedRowsActions } from "./extensions/starterslistSelectedRowsActions/starterslistSelectedRowsActions";
-import { GridColDefExtension } from "../../types/GridColDefExtension";
 import GradingIcon from "@mui/icons-material/Grading";
 import { Grading } from "./pages/grading/grading";
 import { Ranking } from "./pages/ranking/ranking";
@@ -23,8 +19,10 @@ import { EGTSettingsReview } from "./extensions/settingsReview/settingsReview";
 import Judges from "./pages/judges/judges";
 import GavelIcon from "@mui/icons-material/Gavel";
 import Judging from "./pages/judging/judging";
-import inFilter from "../../components/grid/inFilterOperator";
 import DivisionGrading from "./pages/divisions/[id]/grading/divisionGrading";
+import { graphql } from "../../__new_generated__/gql";
+import { MRT_ColumnDef, MRT_FilterFns } from "material-react-table";
+import { MRT_ColumnDefExtension } from "../../types/MRT_ColumnDefExtension";
 
 const routes: RouteObject[] = [
   {
@@ -97,163 +95,67 @@ const routes: RouteObject[] = [
   },
 ];
 
-const starterListColumns: Array<GridColDefExtension | GridActionsColDef> = [
+const starterListColumns: Array<
+  MRT_ColumnDef<any> | MRT_ColumnDefExtension<any>
+> = [
   {
-    field: "egt.category",
-    headerName: "category",
-    valueGetter: (params) => {
-      if (params.row.egt?.category) {
-        if (params.row.egt?.category === 8) {
-          return `category_${
-            params.row.egt?.category
-          }_${params.row.starter?.sex.toLowerCase()}`;
-        }
-        return `category_${params.row.egt?.category}`;
-      }
-      return "";
-    },
-    filterOperators: [inFilter],
-    renderInPdf: true,
-    pdfWidth: "63pt",
-    renderInXlsx: true,
-  },
-  {
-    field: "egt.division",
-    headerName: "division",
-    valueGetter: (params) => params.row.egt?.division?.number,
-    disableColumnMenu: true,
-    renderInPdf: true,
-    pdfWidth: "63pt",
-    renderInXlsx: true,
-  },
-  {
-    field: "egt.device",
-    headerName: "starting_device",
-    valueGetter: (params) =>
-      params.row.egt?.lineup?.device?.deviceNumber !== undefined
-        ? `device_${params.row.egt?.lineup?.device?.deviceNumber}_short`
+    accessorFn: (row) =>
+      row.egt?.category
+        ? `category_${row.egt.category}_${row.starter.sex.toLowerCase()}`
         : "",
-    disableColumnMenu: true,
+    header: "category",
+    enableGlobalFilter: false,
+    filterVariant: "multi-select",
+    filterFn: MRT_FilterFns.arrIncludesSome,
+    renderInPdf: true,
+    pdfWidth: "63pt",
+    renderInXlsx: true,
+  },
+  {
+    accessorFn: (row) =>
+      row.egt?.division?.number ? row.egt.division.number : "",
+    header: "division",
+    enableGlobalFilter: false,
+    filterVariant: "multi-select",
+    filterFn: MRT_FilterFns.arrIncludesSome,
+    renderInPdf: true,
+    pdfWidth: "63pt",
+    renderInXlsx: true,
+  },
+  {
+    accessorFn: (row) =>
+      row.egt?.lineup?.device?.deviceNumber
+        ? `device_${row.egt?.lineup?.device?.deviceNumber}`
+        : "",
+    header: "starting_device",
+    filterVariant: "multi-select",
+    filterFn: MRT_FilterFns.arrIncludesSome,
+    enableGlobalFilter: false,
     renderInPdf: true,
     pdfWidth: "63pt",
     renderInXlsx: true,
   },
 ];
 
-const starterLinksQueryTransformer = new DocumentTransform((document) => {
-  return visit(document, {
-    Field(field) {
-      if (field.name.value === "starterLinks") {
-        return {
-          ...field,
-          selectionSet: {
-            ...field.selectionSet,
-            selections: [
-              ...(field.selectionSet?.selections || []),
-              {
-                kind: Kind.FIELD,
-                name: {
-                  kind: Kind.NAME,
-                  value: "egt",
-                },
-                selectionSet: {
-                  kind: Kind.SELECTION_SET,
-                  selections: [
-                    {
-                      kind: Kind.FIELD,
-                      name: {
-                        kind: Kind.NAME,
-                        value: "id",
-                      },
-                    },
-                    {
-                      kind: Kind.FIELD,
-                      name: {
-                        kind: Kind.NAME,
-                        value: "category",
-                      },
-                    },
-                    {
-                      kind: Kind.FIELD,
-                      name: {
-                        kind: Kind.NAME,
-                        value: "division",
-                      },
-                      selectionSet: {
-                        kind: Kind.SELECTION_SET,
-                        selections: [
-                          {
-                            kind: Kind.FIELD,
-                            name: {
-                              kind: Kind.NAME,
-                              value: "id",
-                            },
-                          },
-                          {
-                            kind: Kind.FIELD,
-                            name: {
-                              kind: Kind.NAME,
-                              value: "number",
-                            },
-                          },
-                        ],
-                      },
-                    },
-                    {
-                      kind: Kind.FIELD,
-                      name: {
-                        kind: Kind.NAME,
-                        value: "lineup",
-                      },
-                      selectionSet: {
-                        kind: Kind.SELECTION_SET,
-                        selections: [
-                          {
-                            kind: Kind.FIELD,
-                            name: {
-                              kind: Kind.NAME,
-                              value: "id",
-                            },
-                          },
-                          {
-                            kind: Kind.FIELD,
-                            name: {
-                              kind: Kind.NAME,
-                              value: "device",
-                            },
-                            selectionSet: {
-                              kind: Kind.SELECTION_SET,
-                              selections: [
-                                {
-                                  kind: Kind.FIELD,
-                                  name: {
-                                    kind: Kind.NAME,
-                                    value: "id",
-                                  },
-                                },
-                                {
-                                  kind: Kind.FIELD,
-                                  name: {
-                                    kind: Kind.NAME,
-                                    value: "deviceNumber",
-                                  },
-                                },
-                              ],
-                            },
-                          },
-                        ],
-                      },
-                    },
-                  ],
-                },
-              },
-            ],
-          },
-        };
+const StarterLinkFragment = graphql(`
+  fragment EGTStarterListFragment on StarterLink {
+    egt {
+      id
+      category
+      division {
+        id
+        number
       }
-    },
-  });
-});
+      lineup {
+        id
+        device {
+          id
+          deviceNumber
+        }
+      }
+    }
+  }
+`);
 
 export const EGTModule: Module = {
   name: "egt",
@@ -272,8 +174,8 @@ export const EGTModule: Module = {
     importStarters: importStarters,
     createCompetition: createCompetition,
   },
-  transformers: {
-    starterLinksQuery: starterLinksQueryTransformer,
+  fragments: {
+    starterLinkFragment: StarterLinkFragment,
   },
   menuItems: [
     {

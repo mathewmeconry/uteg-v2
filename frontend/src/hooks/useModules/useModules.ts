@@ -1,5 +1,7 @@
-import { useModulesQuery } from "../../__generated__/graphql";
+import { useEffect, useState } from "react";
 import { Module } from "../../modules/types";
+import { graphql } from "../../__new_generated__/gql";
+import { useLazyQuery } from "@apollo/client";
 
 export type ModuleRegistration = {
   name: string;
@@ -13,33 +15,75 @@ export type UseModuleReturn = {
   modules: Module[];
 };
 
+const ModulesQuery = graphql(`
+  query modules($competitionID: ID!) {
+    competition(id: $competitionID) {
+      id
+      modules
+    }
+  }
+`);
+
 export function useModules(
   competitionID?: string,
   modules: string[] = []
 ): UseModuleReturn {
-  if (!competitionID && !modules) {
-    return {
-      loading: false,
-      modules: [],
-    };
-  }
+  const [modulesState, setModulesState] = useState<Module[]>([]);
+  const [modulesQuery, { loading: queryLoading }] = useLazyQuery(ModulesQuery);
+  const [firstLoad, setFirstLoad] = useState(true);
+  const [cachedCompetitionId, setCachedCompetitionId] = useState<string>();
 
-  let hookLoading = false;
-  if (competitionID) {
-    const { data, loading } = useModulesQuery({
-      variables: {
-        competitionID,
-      },
-    });
-    modules = data?.competition.modules || [];
-    hookLoading = loading;
-  }
+  useEffect(() => {
+    if (competitionID !== cachedCompetitionId) {
+      setCachedCompetitionId(competitionID);
+    }
+  }, [competitionID]);
+
+  useEffect(() => {
+    if (modules.length > 0) {
+      setModulesState(
+        registeredModules
+          .filter((module) => modules.includes(module.name))
+          .map((module) => module.hook)
+      );
+      setFirstLoad(false);
+    }
+  }, [modules]);
+
+  useEffect(() => {
+    let active = true;
+    load();
+    return () => {
+      active = false;
+    };
+
+    async function load() {
+      if (cachedCompetitionId) {
+        const queryResult = await modulesQuery({
+          variables: {
+            competitionID: cachedCompetitionId,
+          },
+        });
+        if (!active) {
+          return;
+        }
+        if (queryResult.data && queryResult.data.competition) {
+          setModulesState(
+            registeredModules
+              .filter((module) =>
+                queryResult.data?.competition.modules.includes(module.name)
+              )
+              .map((module) => module.hook)
+          );
+        }
+        setFirstLoad(false);
+      }
+    }
+  }, [cachedCompetitionId]);
 
   return {
-    loading: hookLoading,
-    modules: registeredModules
-      .filter((module) => modules.includes(module.name))
-      .map((module) => module.hook),
+    loading: queryLoading || firstLoad,
+    modules: modulesState,
   };
 }
 

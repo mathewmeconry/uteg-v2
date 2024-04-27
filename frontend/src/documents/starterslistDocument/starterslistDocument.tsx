@@ -1,4 +1,3 @@
-import { GridValueGetterParams } from "@mui/x-data-grid";
 import { Club, StarterLink } from "../../__generated__/graphql";
 import {
   Page,
@@ -9,11 +8,12 @@ import {
   Font,
 } from "@react-pdf/renderer";
 import { Style } from "@react-pdf/types";
-import { GridColDefExtension } from "../../types/GridColDefExtension";
+import { MRT_ColumnDefExtension } from "../../types/MRT_ColumnDefExtension";
+import { Row } from "@tanstack/react-table";
 
 export type StarterslistDocumentProps = {
-  starters: StarterLink[];
-  columns: GridColDefExtension[];
+  starters: Row<StarterLink>[];
+  columns: MRT_ColumnDefExtension<StarterLink>[];
   competitionName: string;
 };
 
@@ -74,7 +74,7 @@ const styles = StyleSheet.create<{ [index: string]: Style }>({
 
 export function StarterslistDocument(props: StarterslistDocumentProps) {
   const clubs = props.starters
-    .map((starter) => starter.club)
+    .map((starter) => starter.original.club)
     .filter((club) => club);
   const uniqueClubs = clubs
     .filter((club, index) => clubs.findIndex((c) => c.id === club.id) === index)
@@ -83,11 +83,12 @@ export function StarterslistDocument(props: StarterslistDocumentProps) {
 
   function getStarters(club: Club) {
     return props.starters
-      .filter((starter) => starter.club)
-      .filter((starter) => starter.club.id === club.id)
+      .filter((starter) => starter.original.club)
+      .filter((starter) => starter.original.club.id === club.id)
       .sort(
         (a, b) =>
-          (parseInt(a.egt?.id || "") || 0) - (parseInt(b.egt?.id || "") || 0)
+          (parseInt(a.original.egt?.id || "") || 0) -
+          (parseInt(b.original.egt?.id || "") || 0)
       )
       .sort(
         (a, b) =>
@@ -98,10 +99,16 @@ export function StarterslistDocument(props: StarterslistDocumentProps) {
       )
       .sort(
         (a, b) =>
-          (a.egt?.division?.number || 0) - (b.egt?.division?.number || 0)
+          (a.original.egt?.division?.number || 0) -
+          (b.original.egt?.division?.number || 0)
       )
-      .sort((a, b) => (a.egt?.category || 0) - (b.egt?.category || 0))
-      .sort((a, b) => a.starter.sex.localeCompare(b.starter.sex));
+      .sort(
+        (a, b) =>
+          (a.original.egt?.category || 0) - (b.original.egt?.category || 0)
+      )
+      .sort((a, b) =>
+        a.original.starter.sex.localeCompare(b.original.starter.sex)
+      );
   }
 
   function getTotalHeight(headersRendered: number, startersRendered: number) {
@@ -124,9 +131,9 @@ export function StarterslistDocument(props: StarterslistDocumentProps) {
               ...styles.tableCol,
               width: column.pdfWidth ?? styles.tableCol.width,
             }}
-            key={`header-col-${column.field}`}
+            key={`header-col-${column.id}`}
           >
-            <Text style={styles.tableCell}>{column.headerName}</Text>
+            <Text style={styles.tableCell}>{column.header}</Text>
           </View>
         ))}
       </View>
@@ -193,23 +200,28 @@ export function StarterslistDocument(props: StarterslistDocumentProps) {
 
         startersElements.push(
           <View style={style} key={`row-${starter.id}`} wrap={true}>
-            {filteredColumns.map((column) => (
-              <View
-                style={{
-                  ...styles.tableCol,
-                  width: column.pdfWidth ?? styles.tableCol.width,
-                }}
-                key={`row-${starter.id}-col-${column.field}`}
-              >
-                <Text style={styles.tableCell}>
-                  {column.valueGetter
-                    ? column.valueGetter({
-                        row: starter,
-                      } as GridValueGetterParams)
-                    : ""}
-                </Text>
-              </View>
-            ))}
+            {starter.getAllCells().map((cell) => {
+              const column = filteredColumns.find(
+                (column) => column.id === cell.column.id
+              );
+              if (!column) {
+                return null;
+              }
+
+              return (
+                <View
+                  style={{
+                    ...styles.tableCol,
+                    width: column.pdfWidth ?? styles.tableCol.width,
+                  }}
+                  key={`row-${starter.id}-col-${column.id}`}
+                >
+                  <Text style={styles.tableCell}>
+                    {cell.renderValue() as string}
+                  </Text>
+                </View>
+              );
+            })}
           </View>
         );
       }

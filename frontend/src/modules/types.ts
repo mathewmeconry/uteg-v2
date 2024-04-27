@@ -1,4 +1,3 @@
-import { GridActionsColDef } from "@mui/x-data-grid";
 import { RouteObject } from "react-router-dom";
 import { MenuItem } from "../layouts/competitionlayout";
 import { SheetRow } from "../pages/competition/[id]/starters/import/processImport";
@@ -6,10 +5,10 @@ import { StartersReviewStepRowProps } from "../pages/competition/[id]/starters/i
 import { StarterLink } from "../__generated__/graphql";
 import { Dispatch, SetStateAction } from "react";
 import { ImportFailure } from "../pages/competition/[id]/starters/import/steps/importStep";
-import { DocumentTransform } from "@apollo/client";
-import { GridColDefExtension } from "../types/GridColDefExtension";
 import { FieldValues } from "react-hook-form";
-
+import { MRT_TableInstance, MRT_ColumnDef } from 'material-react-table'
+import { TypedDocumentNode } from "@apollo/client";
+import { MRT_ColumnDefExtension } from "../types/MRT_ColumnDefExtension";
 export type Module = {
   name: string;
 
@@ -17,7 +16,7 @@ export type Module = {
   menuItems: MenuItem[];
   extensions: ModuleExtensions;
   handlers: ModuleHandlers;
-  transformers: ModuleTransformers;
+  fragments: ModuleFragments;
 };
 
 export type ParseStarterFromSheetHandler = (starters: SheetRow) => Object;
@@ -42,16 +41,18 @@ export type ModuleExtensions = {
   updateStarterForm?: JSX.Element;
   startersReviewStepRow?: React.FunctionComponent<StartersReviewStepRowProps>;
   startersReviewStepHeader?: JSX.Element;
-  starterslistColumns?: Array<GridColDefExtension | GridActionsColDef>;
-  starterslistSelectedRowsActions?: React.FunctionComponent;
+  starterslistColumns?: Array<MRT_ColumnDef<any> | MRT_ColumnDefExtension<any>>;
+  starterslistSelectedRowsActions?: React.FunctionComponent<{table: MRT_TableInstance<StarterLink>}>;
   settings?: React.FunctionComponent<ModulesSettingsProps>;
   settingsReview?: React.FunctionComponent;
 };
 
-export type ModuleTransformers = {
-  starterLinksQuery?: DocumentTransform;
+export type ModuleFragments = {
+  starterLinkFragment?: TypedDocumentNode;
 };
 
 export type ModulesSettingsProps = {
   competitionCreation?: boolean;
 };
+
+

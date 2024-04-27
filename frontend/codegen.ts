@@ -17,7 +17,10 @@ const config: CodegenConfig = {
     },
     'src/__new_generated__/': {
       preset: 'client',
-      documents: ['src/**/*.tsx'],
+      documents: ['src/**/*.tsx', 'src/**/*.ts'],
+      config: {
+
+      }
     }
   }
 };

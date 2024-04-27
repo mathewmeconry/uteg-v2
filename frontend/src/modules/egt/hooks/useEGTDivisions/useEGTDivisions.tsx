@@ -3,20 +3,11 @@ import { useEffect, useMemo, useState } from "react";
 import { graphql } from "../../../../__new_generated__/gql";
 import { FragmentType } from "../../../../__new_generated__";
 import { EgtDivisionStates } from "../../../../__new_generated__/graphql";
-
-type VariablesOf<T> = T extends TypedDocumentNode<infer _, infer VariablesType>
-  ? VariablesType
-  : never;
-
-type ResultOf<T> = T extends TypedDocumentNode<infer ResultType, infer _>
-  ? ResultType
-  : never;
-
-type ReturnType<T extends TypedDocumentNode<{ id: string }, any>> = {
-  loading: boolean;
-  data?: ResultOf<T>[];
-  refetch: () => void;
-};
+import {
+  VariablesOf,
+  ResultOf,
+  ReturnType,
+} from "../../../../types/typeExtractors";
 
 graphql(`
   fragment useEGTDivision_PlaceholderFragment on EGTDivision {

@@ -2,20 +2,11 @@ import { TypedDocumentNode, useQuery, useSubscription } from "@apollo/client";
 import { graphql } from "../../../../__new_generated__/gql";
 import { useEffect, useMemo, useState } from "react";
 import { FragmentType } from "../../../../__new_generated__";
-
-type VariablesOf<T> = T extends TypedDocumentNode<infer _, infer VariablesType>
-  ? VariablesType
-  : never;
-
-type ResultOf<T> = T extends TypedDocumentNode<infer ResultType, infer _>
-  ? ResultType
-  : never;
-
-type ReturnType<T extends TypedDocumentNode<{ id: string }, any>> = {
-  loading: boolean;
-  data: ResultOf<T>[];
-  refetch: () => void;
-};
+import {
+  VariablesOf,
+  ResultOf,
+  ReturnType,
+} from "../../../../types/typeExtractors";
 
 graphql(`
   fragment useEGTStarterLinks_PlaceholderFragment on EGTStarterLink {
@@ -24,15 +15,26 @@ graphql(`
 `);
 
 const QUERY = graphql(`
-  query useEGTStarterLinksQuery($ids: [ID!], $divisionIDs: [ID!], $withDeleted: Boolean) {
-    egtStarterLinks(ids: $ids, divisionIDs: $divisionIDs, withDeleted: $withDeleted) {
+  query useEGTStarterLinksQuery(
+    $ids: [ID!]
+    $divisionIDs: [ID!]
+    $withDeleted: Boolean
+  ) {
+    egtStarterLinks(
+      ids: $ids
+      divisionIDs: $divisionIDs
+      withDeleted: $withDeleted
+    ) {
       ...useEGTStarterLinks_PlaceholderFragment
     }
   }
 `);
 
 const SUBSCRIPTION = graphql(`
-  subscription useEEGTStarterLinksSubscription($ids: [ID!], $divisionIDs: [ID!]) {
+  subscription useEEGTStarterLinksSubscription(
+    $ids: [ID!]
+    $divisionIDs: [ID!]
+  ) {
     egtStarterLinks(ids: $ids, divisionIDs: $divisionIDs) {
       ...useEGTStarterLinks_PlaceholderFragment
     }
