@@ -5,7 +5,7 @@ import { Error } from "../../../../components/error";
 import { PaperExtended } from "../../../../components/paperExtended";
 import { useTranslation } from "react-i18next";
 import { Box } from "@mui/system";
-import { useMemo, useState } from "react";
+import { MouseEventHandler, useMemo, useState } from "react";
 import { CreateStarterDialog } from "../../../../dialogs/createStarterDialog/createStarterDialog";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -171,6 +171,8 @@ export function StartersList() {
         filterFn: "equals",
         filterVariant: "select",
         enableGlobalFilter: false,
+        size: 200,
+        grow: false,
         renderInPdf: true,
         pdfWidth: "63pt",
         renderInXlsx: true,
@@ -210,7 +212,7 @@ export function StartersList() {
     data: starterLinksData?.starterLinks || [],
     enableRowSelection: true,
     enableColumnOrdering: false,
-    enableRowVirtualization: false,
+    enableRowVirtualization: true,
     enableRowActions: true,
     renderRowActions: getColumnActions,
     positionActionsColumn: "last",
@@ -257,8 +259,8 @@ export function StartersList() {
     ),
   });
 
-  function onEdit(starterLink: StarterLink) {
-    return (e: Event) => {
+  function onEdit(starterLink: StarterLink): MouseEventHandler {
+    return (e) => {
       e.stopPropagation();
       setToEditLink(starterLink.id);
       setOpenDialog("updateStarter");
@@ -266,8 +268,8 @@ export function StartersList() {
     };
   }
 
-  function onRemove(starterLink: StarterLink) {
-    return (e: Event) => {
+  function onRemove(starterLink: StarterLink): MouseEventHandler {
+    return (e) => {
       e.stopPropagation();
       setToDeleteStarters([starterLink]);
       setOpenDialog("deleteStarter");
