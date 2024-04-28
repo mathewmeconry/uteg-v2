@@ -1,8 +1,9 @@
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
-import { IconButton, Tooltip } from "@mui/material";
+import { IconButton, Tooltip, Typography } from "@mui/material";
 import { ReactElement, useMemo, useState } from "react";
 import DoneIcon from "@mui/icons-material/Done";
 import { useTranslation } from "react-i18next";
+import { enqueueSnackbar } from "notistack";
 
 export type ClipboardCopyProps = {
   value: string;
@@ -21,10 +22,18 @@ export default function ClipboardCopy(props: ClipboardCopyProps) {
 
   function onClick() {
     setClicked(true);
-    navigator.clipboard.writeText(props.value);
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(props.value);
+    } else {
+      enqueueSnackbar(t("error"), { variant: "error" });
+    }
     setTimeout(() => {
       setClicked(false);
     }, 1000);
+  }
+
+  if (!navigator.clipboard) {
+    return <Typography variant="caption">{props.value}</Typography>;
   }
 
   return (
