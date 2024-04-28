@@ -33,7 +33,11 @@ export default function ClipboardCopy(props: ClipboardCopyProps) {
   }
 
   if (!navigator.clipboard) {
-    return <Typography variant="caption">{props.value}</Typography>;
+    return (
+      <Typography sx={{ m: 1 }} variant="caption">
+        {props.value}
+      </Typography>
+    );
   }
 
   return (
