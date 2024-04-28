@@ -76,12 +76,3 @@ export const STARTER_GRADES = gql`
     }
   }
 `;
-
-export const ADVANCE_LINEUPS = gql`
-  mutation egtAdvanceLineups($ids: [ID!]!, $round: Int!, $override: Boolean) {
-    egtLineupAdvanceRounds(ids: $ids, round: $round, override: $override) {
-      id
-      currentRound
-    }
-  }
-`;

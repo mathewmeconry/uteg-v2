@@ -36,54 +36,6 @@ export class EGTLineupResolver {
     return this.egtLineupService.findOne(id);
   }
 
-  @Role(ROLES.ADMIN)
-  @Mutation(() => EGTLineup, { name: 'egtLineupAdvanceRound' })
-  async advanceRound(
-    @Args('id', { type: () => ID }) id: number,
-    @Args('round') round: number,
-    @Args('override', { nullable: true, defaultValue: false })
-    override: boolean = false,
-  ): Promise<EGTLineup> {
-    const lineup = await this.egtLineupService.findOne(id);
-    if (!lineup) {
-      throw new NotFoundException();
-    }
-    await this.egtLineupService.advanceRound(id, round, override);
-    const division = await lineup.division;
-    await this.egtDivisionService.advanceDivision(division.id);
-    return lineup;
-  }
-
-  @Role(ROLES.ADMIN)
-  @Judge()
-  @Mutation(() => [EGTLineup], { name: 'egtLineupAdvanceRounds' })
-  async advanceRounds(
-    @Args('ids', { type: () => [ID] }) ids: number[],
-    @Args('round') round: number,
-    @Args('override', { nullable: true, defaultValue: false })
-    override: boolean = false,
-  ): Promise<EGTLineup[]> {
-    const lineups = await this.egtLineupService.advanceRounds(
-      ids,
-      round,
-      override,
-    );
-    const divisions = await Promise.all(
-      lineups.map((lineup) => lineup.division),
-    );
-
-    // dedup devisions array by ids
-    const uniqueDivisions = divisions.filter(
-      (division, index) =>
-        divisions.findIndex((div) => div.id === division.id) === index,
-    );
-    await uniqueDivisions.forEach(async (division) => {
-      await this.egtDivisionService.advanceDivision(division.id);
-    });
-
-    return lineups;
-  }
-
   @ResolveField(() => [EGTStarterLink])
   async starterlinks(@Parent() lineup: EGTLineup): Promise<EGTStarterLink[]> {
     return lineup.starterlinks;

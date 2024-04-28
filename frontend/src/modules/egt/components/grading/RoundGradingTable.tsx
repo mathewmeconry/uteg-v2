@@ -2,8 +2,8 @@ import {
   EgtDeviceAggregationMode,
   EgtStarterLink,
   GradeInput,
+  useAdvanceEgtDivisionsDeviceMutation,
   useEgtAddGradesMutation,
-  useEgtAdvanceLineupsMutation,
   useEgtDeviceGradingLazyQuery,
   useEgtStarterGradesLazyQuery,
 } from "../../../../__generated__/graphql";
@@ -85,7 +85,7 @@ export function RoundGradingTable(props: RoundGradingProps) {
     fetchPolicy: "network-only",
   });
   const [addGradesMutation] = useEgtAddGradesMutation();
-  const [advanceLineupsMutation] = useEgtAdvanceLineupsMutation();
+  const [advanceDivisionsDevice] = useAdvanceEgtDivisionsDeviceMutation();
   const previousStarterLinks = usePrevious(starterLinks);
 
   const form = useForm();
@@ -248,11 +248,10 @@ export function RoundGradingTable(props: RoundGradingProps) {
     }
     enqueueSnackbar(t("saved", { ns: "common" }), { variant: "success" });
 
-    advanceLineupsMutation({
+    advanceDivisionsDevice({
       variables: {
-        round: props.round + 1,
-        ids:
-          deviceData?.egtJudgingDevice.lineups.map((lineup) => lineup.id) ?? [],
+        device: props.device,
+        divisions: props.divisionIds,
       },
     });
   }

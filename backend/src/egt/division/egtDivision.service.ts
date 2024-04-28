@@ -105,6 +105,7 @@ export class EGTDivisionService {
       division.category,
       division.sex,
     );
+    division.currentDeviceRound = new Array(division.totalRounds).fill(0);
 
     division = await this.egtDivisionRepository.save(division);
 
@@ -151,13 +152,31 @@ export class EGTDivisionService {
     if (!division) {
       throw new NotFoundException();
     }
-    const lineups = await division.lineups;
-    const lowestRound = Math.min(...lineups.map((l) => l.currentRound));
+    const lowestRound = Math.min(
+      ...division.currentDeviceRound.map((x) => parseInt(x)),
+    );
     division.currentRound = lowestRound;
     if (division.currentRound >= division.totalRounds) {
       division.state = EGTDivisionStates.ENDED;
     }
     return this.egtDivisionRepository.save(division);
+  }
+
+  async advanceDevice(
+    divisionID: number,
+    deviceNumber: number,
+    round: number,
+  ): Promise<EGTDivision> {
+    const division = await this.findOne(divisionID);
+    if (!division) {
+      throw new NotFoundException();
+    }
+
+    if (parseInt(division.currentDeviceRound[deviceNumber]) < round) {
+      division.currentDeviceRound[deviceNumber] = round.toString();
+    }
+    await this.egtDivisionRepository.save(division);
+    return this.advanceDivision(divisionID);
   }
 
   async getNextDivisionNumber(

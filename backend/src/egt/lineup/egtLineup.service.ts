@@ -43,29 +43,4 @@ export class EGTLineupService {
   create(lineup: EGTLineup): Promise<EGTLineup> {
     return this.egtLineupRepository.save(lineup);
   }
-
-  async advanceRounds(
-    ids: number[],
-    round: number,
-    override: boolean,
-  ): Promise<EGTLineup[]> {
-    return Promise.all(ids.map((id) => this.advanceRound(id, round, override)));
-  }
-
-  async advanceRound(
-    id: number,
-    round: number,
-    override: boolean,
-  ): Promise<EGTLineup> {
-    const lineup = await this.findOne(id);
-    if (!lineup) {
-      throw new NotFoundException();
-    }
-
-    if (override || round > lineup.currentRound) {
-      lineup.currentRound = round;
-      await this.egtLineupRepository.save(lineup);
-    }
-    return lineup;
-  }
 }

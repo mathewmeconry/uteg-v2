@@ -19,7 +19,6 @@ export const GET_DEVICE_GRADING = gql`
       }
       lineups {
         id
-        currentRound
       }
     }
   }
@@ -49,11 +48,11 @@ export const STARTER_GRADES = gql`
   }
 `;
 
-export const ADVANCE_LINEUPS = gql`
-  mutation egtAdvanceLineups($ids: [ID!]!, $round: Int!, $override: Boolean) {
-    egtLineupAdvanceRounds(ids: $ids, round: $round, override: $override) {
+export const ADVANCE_DIVISIONS_DEVICE = gql`
+  mutation advanceEgtDivisionsDevice($divisions: [ID!]!, $device: Int!) {
+    advanceEgtDivisionsDevice(ids: $divisions, device: $device) {
       id
       currentRound
     }
   }
-`;
+`

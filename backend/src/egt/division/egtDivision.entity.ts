@@ -42,6 +42,10 @@ export class EGTDivision {
   @Column({ default: 0 })
   currentRound: number;
 
+  @Field(() => [Int])
+  @Column('simple-array', { default: [] })
+  currentDeviceRound: string[];
+
   @OneToMany(() => EGTLineup, (lineup) => lineup.division)
   lineups: Promise<EGTLineup[]>;
 

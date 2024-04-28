@@ -29,6 +29,7 @@ import { CompetitionService } from 'src/base/competition/competition.service';
 import { StarterLink } from 'src/base/starterLink/starterLink.entity';
 import { EGTStarterLink } from '../starterlink/egtStarterLink.entity';
 import { EGTLineup } from '../lineup/egtLineup.entity';
+import { Judge } from 'src/auth/decorators/judge.decorator';
 
 @Resolver(() => EGTDivision)
 @UseGuards(EGTDivisionGuard, RoleGuard)
@@ -92,6 +93,32 @@ export class EGTDivisionResolver {
     data: UpdateEGTDivisionStateInput,
   ): Promise<EGTDivision> {
     return this.egtDivisionService.updateState(data);
+  }
+
+  @Role(ROLES.ADMIN)
+  @Judge()
+  @Mutation(() => EGTDivision, { name: 'advanceEgtDivisionDevice' })
+  async advanceDivisionDevice(
+    @Args('id', { type: () => ID }) divisionID: number,
+    @Args('device', { type: () => Int }) deviceID: number,
+    @Args('round', { type: () => Int }) round: number,
+  ): Promise<EGTDivision> {
+    return this.egtDivisionService.advanceDevice(divisionID, deviceID, round);
+  }
+
+  @Role(ROLES.ADMIN)
+  @Judge()
+  @Mutation(() => EGTDivision, { name: 'advanceEgtDivisionsDevice' })
+  async advanceDivisionsDevice(
+    @Args('ids', { type: () => [ID] }) divisionIDs: number[],
+    @Args('device', { type: () => Int }) deviceID: number,
+    @Args('round', { type: () => Int }) round: number,
+  ): Promise<EGTDivision[]> {
+    return Promise.all(
+      divisionIDs.map((divisionID) =>
+        this.egtDivisionService.advanceDevice(divisionID, deviceID, round),
+      ),
+    );
   }
 
   @Role(ROLES.JUDGE)

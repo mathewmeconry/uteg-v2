@@ -18,10 +18,10 @@ import {
   useEgtDeviceGradingLazyQuery,
   useEgtStarterGradesLazyQuery,
   useEgtAddGradesMutation,
-  useEgtAdvanceLineupsMutation,
   EgtDeviceAggregationMode,
   GradeInput,
   EgtStarterLink,
+  useAdvanceEgtDivisionsDeviceMutation,
 } from "../../../../__generated__/graphql";
 import { FormTextInput } from "../../../../components/form/FormTextInput";
 import ListIcon from "@mui/icons-material/List";
@@ -94,7 +94,7 @@ export default function RoundGradingSingle(props: RoundGradingSingleProps) {
     fetchPolicy: "network-only",
   });
   const [addGradesMutation] = useEgtAddGradesMutation();
-  const [advanceLineupsMutation] = useEgtAdvanceLineupsMutation();
+  const [advanceDivisionsDevice] = useAdvanceEgtDivisionsDeviceMutation();
   const previousStarterLinks = usePrevious(allStarterLinks);
 
   const form = useForm({
@@ -355,11 +355,10 @@ export default function RoundGradingSingle(props: RoundGradingSingleProps) {
       console.error(e);
       enqueueSnackbar(t("error", { ns: "common" }));
     }
-    advanceLineupsMutation({
+    advanceDivisionsDevice({
       variables: {
-        round: props.round + 1,
-        ids:
-          deviceData?.egtJudgingDevice.lineups.map((lineup) => lineup.id) ?? [],
+        device: props.device,
+        divisions: props.divisionIds,
       },
     });
 

@@ -104,6 +104,7 @@ type EGTDeviceOverride {
 
 type EGTDivision {
   category: Int!
+  currentDeviceRound: [Int!]!
   currentRound: Int!
   ground: Int!
   id: ID!
@@ -140,7 +141,6 @@ type EGTJudgingDevice {
 }
 
 type EGTLineup {
-  currentRound: Int!
   device: EGTDevice!
   id: ID!
   starterlinks: [EGTStarterLink!]!
@@ -205,6 +205,8 @@ type Judgetoken {
 
 type Mutation {
   addGrades(grades: [GradeInput!]!): [Grade!]!
+  advanceEgtDivisionDevice(device: Int!, id: ID!, round: Int!): EGTDivision!
+  advanceEgtDivisionsDevice(device: Int!, ids: [ID!]!, round: Int!): EGTDivision!
   competitionLogo(id: ID!, logo: Upload!): Competition!
   createClub(data: CreateClubInput!): Club!
   createCompetition(competition: CreateCompetitionInput!): Competition!
@@ -213,8 +215,6 @@ type Mutation {
   createStarterLink(data: CreateStarterLinkInput!): StarterLink!
   createUser(user: CreateUserInput!): User!
   egtCategorySettings(competitionID: ID!, data: EGTCategorySettingsInput!): EGTCategorySettings!
-  egtLineupAdvanceRound(id: ID!, override: Boolean = false, round: Int!): EGTLineup!
-  egtLineupAdvanceRounds(ids: [ID!]!, override: Boolean = false, round: Int!): [EGTLineup!]!
   egtSettings(competitionID: ID, data: EGTSettingsInput!): EGTSettings!
   egtStarterLink(data: EGTStarterLinkInput!, ignoreDivision: Boolean = false): EGTStarterLink!
   removeEgtDivision(id: ID!): EGTDivision!
