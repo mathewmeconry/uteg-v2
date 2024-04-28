@@ -1,18 +1,18 @@
 import { useEffect, useState } from "react";
 import { default as QRCodeLib } from "qrcode";
-import { Image, Styles } from "@react-pdf/renderer";
+import { Image } from "@react-pdf/renderer";
+import { Style } from "@react-pdf/types";
 
 export type QRCodeProps = {
   value: string;
   inPDF?: boolean;
-  style?: React.CSSProperties | Styles;
   margin?: number;
   scale?: number;
 };
 
 export type QRCodePropsPDF = QRCodeProps & {
   inPDF: true;
-  style?: Styles;
+  style?: Style | Style[];
 };
 
 export type QRCodePropsReact = QRCodeProps & {
@@ -46,12 +46,7 @@ export function QRCode(props: QRCodePropsPDF | QRCodePropsReact) {
   }
 
   if (props.inPDF) {
-    return (
-      <Image
-        src={dataURL}
-        style={{ ...props.style }}
-      />
-    );
+    return <Image src={dataURL} style={{ ...props.style }} />;
   }
 
   return <img src={dataURL} style={props.style} />;
