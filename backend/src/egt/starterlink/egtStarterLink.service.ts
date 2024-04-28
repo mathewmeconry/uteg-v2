@@ -40,7 +40,11 @@ export class EGTStarterLinkService {
 
     let link: EGTStarterLink | null = null;
     if (linkData.starterLinkID) {
-      link = await this.findByStarterLink(linkData.starterLinkID);
+      link = await this.findByStarterLink(linkData.starterLinkID, true);
+      if(link.deletedAt) {
+        await this.egtStarterLinkRepository.restore(link.id);
+        link = await this.findByStarterLink(linkData.starterLinkID);
+      }
     }
 
     if (linkData.id) {
@@ -48,6 +52,7 @@ export class EGTStarterLinkService {
 
       if (link.deletedAt) {
         await this.egtStarterLinkRepository.restore(link.id);
+        link = await this.findOne(linkData.id);
       }
     }
 
@@ -112,9 +117,17 @@ export class EGTStarterLinkService {
     return qb.where('id = :id', { id }).getOne();
   }
 
-  findByStarterLink(id: number): Promise<EGTStarterLink | null> {
-    return this.egtStarterLinkRepository
-      .createQueryBuilder('egtStarterLink')
+  findByStarterLink(
+    id: number,
+    withDeleted?: boolean,
+  ): Promise<EGTStarterLink | null> {
+    let qb = this.egtStarterLinkRepository.createQueryBuilder('egtStarterLink');
+
+    if (withDeleted) {
+      qb = qb.withDeleted();
+    }
+
+    return qb
       .leftJoin('egtStarterLink.starterLink', 'starterLink')
       .where('starterLink.id = :id', { id })
       .getOne();

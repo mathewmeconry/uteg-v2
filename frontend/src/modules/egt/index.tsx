@@ -128,7 +128,7 @@ const starterListColumns: Array<
   },
   {
     accessorFn: (row) =>
-      row.egt?.lineup?.device?.deviceNumber
+      !isNaN(row.egt?.lineup?.device?.deviceNumber)
         ? `device_${row.egt?.lineup?.device?.deviceNumber}`
         : "",
     header: "starting_device",

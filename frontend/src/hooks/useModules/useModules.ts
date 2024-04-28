@@ -63,6 +63,7 @@ export function useModules(
           variables: {
             competitionID: cachedCompetitionId,
           },
+          fetchPolicy: 'cache-first'
         });
         if (!active) {
           return;

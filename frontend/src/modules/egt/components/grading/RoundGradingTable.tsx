@@ -59,7 +59,7 @@ export function RoundGradingTable(props: RoundGradingProps) {
 
   const [
     deviceQuery,
-    { loading: deviceDataLoading, data: deviceData },
+    { loading: deviceDataLoading, data: deviceData, refetch: refetchDevice },
   ] = useEgtDeviceGradingLazyQuery();
   const {
     data: starterLinks,
@@ -114,6 +114,8 @@ export function RoundGradingTable(props: RoundGradingProps) {
         );
       }
     }
+
+    refetchDevice();
   }, [starterLinks]);
 
   useEffect(() => {

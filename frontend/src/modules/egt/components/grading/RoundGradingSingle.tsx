@@ -166,7 +166,10 @@ export default function RoundGradingSingle(props: RoundGradingSingleProps) {
         );
       }
 
-      if (!previousValue && previousStarterLinks.length > 0) {
+      if (
+        (!previousValue || (previousValue.isDeleted && !starter.isDeleted)) &&
+        previousStarterLinks.length > 0
+      ) {
         enqueueSnackbar(
           t("has_been_added", {
             ns: "common",

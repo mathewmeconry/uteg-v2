@@ -42,7 +42,7 @@ export function FormDateInput(props: FormDateInputProps) {
     name: props.name,
     control: formControl,
     rules: props.rules,
-    defaultValue: props.defaultValue ? dayjs(props.defaultValue) : "",
+    defaultValue: props.defaultValue ? dayjs(props.defaultValue) : null,
   });
 
   useEffect(() => {
