@@ -106,6 +106,11 @@ export class EGTDivisionResolver {
       const filtered = await this.egtDivisionService.filter(variables.filter, [
         payload,
       ]);
+
+      if (filtered.length === 0) {
+        return false;
+      }
+
       return await this.egtDivisionGuard.canAccess(filtered, context);
     },
     resolve: (payload) => payload,

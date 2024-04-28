@@ -54,7 +54,7 @@
   "juging_report": "Wertungsrichterblätter",
   "no_started": "Keine {{name}} gestartet",
   "started": "{{name}} gestartet",
-  "round": "Druchgang {{number}}",
+  "round": "Durchgang {{number}}",
   "aggregationMode_MIN": "Tiefste",
   "aggregationMode_MAX": "Höchste",
   "aggregationMode_AVG": "Durchscnitt",

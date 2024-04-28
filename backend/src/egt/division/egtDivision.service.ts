@@ -212,22 +212,26 @@ export class EGTDivisionService {
       filtered = filtered.filter((d) => filter.ids.includes(d.id));
     }
 
-    if (filter.category) {
-      filtered = filtered.filter((d) => d.category === filter.category);
+    if (filter.competitionID) {
+      filtered = filtered.filter(
+        async (d) => (await d.competition).id === filter.competitionID,
+      );
     }
 
     if (filter.sex) {
       filtered = filtered.filter((d) => d.sex === filter.sex);
     }
 
-    if (filter.state) {
-      filtered = filtered.filter((d) => d.state === filter.state);
+    if (filter.ground) {
+      filtered = filtered.filter((d) => d.ground === filter.ground);
     }
 
-    if (filter.competitionID) {
-      filtered = filtered.filter(
-        async (d) => (await d.competition).id === filter.competitionID,
-      );
+    if (filter.category) {
+      filtered = filtered.filter((d) => d.category === filter.category);
+    }
+
+    if (filter.state) {
+      filtered = filtered.filter((d) => d.state === filter.state);
     }
 
     return filtered;
