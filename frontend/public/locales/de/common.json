@@ -115,5 +115,8 @@
   "finished": "Fertig 🎉",
   "logo": "Logo",
   "has_been_deleted": "{{name}} wurde gelöscht!",
-  "refreshing": "Aktualisierung läuft"
+  "refreshing": "Aktualisierung läuft",
+  "reset_all": "Alle zurücksetzen",
+  "notification_one": "Benachrichtigung",
+  "notification_other": "Benachrichtigungen"
 }

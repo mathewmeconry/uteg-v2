@@ -67,7 +67,7 @@ const documents = {
     "\n  fragment DivisionListFragment on EGTDivision {\n    id\n    ground\n    state\n    currentRound\n    totalRounds\n    category\n    sex\n    number\n    totalStarters\n  }\n": types.DivisionListFragmentFragmentDoc,
     "\n  query EgtGradingGrounds($id: ID!) {\n    competition(id: $id) {\n      id\n      grounds\n    }\n  }\n": types.EgtGradingGroundsDocument,
     "\n  query EgtJudgesGrounds($id: ID!) {\n    competition(id: $id) {\n      id\n      grounds\n    }\n  }\n": types.EgtJudgesGroundsDocument,
-    "\n  query EgtJudgesTokens(\n    $competitionID: ID!\n    $ground: Int!\n    $device: Int!\n    $create: Boolean\n  ) {\n    findJudgeToken(\n      competitionID: $competitionID\n      ground: $ground\n      device: $device\n      create: $create\n    ) {\n      id\n      device\n      token\n    }\n  }\n": types.EgtJudgesTokensDocument,
+    "\n  query EgtJudgesTokens(\n    $competitionID: ID!\n    $ground: Int!\n    $device: Int!\n    $create: Boolean\n  ) {\n    findJudgeToken(\n      competitionID: $competitionID\n      ground: $ground\n      device: $device\n      create: $create\n    ) {\n      id\n      device\n      token\n      ground\n    }\n  }\n": types.EgtJudgesTokensDocument,
     "\n  mutation EgtJudgesResetToken($id: ID!) {\n    resetJudgeToken(id: $id) {\n      id\n      token\n    }\n  }\n": types.EgtJudgesResetTokenDocument,
     "\n    query egtJudgingCompetition($id: ID!) {\n        competition(id: $id) {\n            id\n            name\n        }\n    }\n": types.EgtJudgingCompetitionDocument,
     "\n  query egtJudgingDivisionsIds($filter: EGTDivisionFilterInput!) {\n    egtDivisions(filter: $filter) {\n      id\n      totalRounds\n    }\n  }\n": types.EgtJudgingDivisionsIdsDocument,
@@ -317,7 +317,7 @@ export function graphql(source: "\n  query EgtJudgesGrounds($id: ID!) {\n    com
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  query EgtJudgesTokens(\n    $competitionID: ID!\n    $ground: Int!\n    $device: Int!\n    $create: Boolean\n  ) {\n    findJudgeToken(\n      competitionID: $competitionID\n      ground: $ground\n      device: $device\n      create: $create\n    ) {\n      id\n      device\n      token\n    }\n  }\n"): (typeof documents)["\n  query EgtJudgesTokens(\n    $competitionID: ID!\n    $ground: Int!\n    $device: Int!\n    $create: Boolean\n  ) {\n    findJudgeToken(\n      competitionID: $competitionID\n      ground: $ground\n      device: $device\n      create: $create\n    ) {\n      id\n      device\n      token\n    }\n  }\n"];
+export function graphql(source: "\n  query EgtJudgesTokens(\n    $competitionID: ID!\n    $ground: Int!\n    $device: Int!\n    $create: Boolean\n  ) {\n    findJudgeToken(\n      competitionID: $competitionID\n      ground: $ground\n      device: $device\n      create: $create\n    ) {\n      id\n      device\n      token\n      ground\n    }\n  }\n"): (typeof documents)["\n  query EgtJudgesTokens(\n    $competitionID: ID!\n    $ground: Int!\n    $device: Int!\n    $create: Boolean\n  ) {\n    findJudgeToken(\n      competitionID: $competitionID\n      ground: $ground\n      device: $device\n      create: $create\n    ) {\n      id\n      device\n      token\n      ground\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

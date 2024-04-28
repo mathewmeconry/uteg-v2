@@ -25,6 +25,7 @@ export const TOKENS = gql`
       id
       device
       token
+      ground
     }
   }
 `;

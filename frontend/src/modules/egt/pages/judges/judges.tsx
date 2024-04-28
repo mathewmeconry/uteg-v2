@@ -10,6 +10,7 @@ import { ReactElement, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import {
   Box,
+  Button,
   CircularProgress,
   Grid,
   IconButton,
@@ -19,10 +20,13 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import QRCode from "react-qr-code";
 import ClipboardCopy from "../../../../components/ClipboardCopy";
 import { enqueueSnackbar } from "notistack";
-import RefreshIcon from "@mui/icons-material/Refresh";
+import LockResetIcon from "@mui/icons-material/LockReset";
+import DownloadIcon from "@mui/icons-material/Download";
+import { QRCode } from "../../../../components/qrcode/QRCode";
+import { usePdfDownload } from "../../../../hooks/usePdfDownload/usePdfDownload";
+import { JudgingManualDocument } from "../../documents/judgingManualDocument/judgingManualDocument";
 
 export default function Judges() {
   const { id } = useParams();
@@ -36,6 +40,11 @@ export default function Judges() {
   const [tokens, setTokens] = useState<Judgetoken[]>([]);
   const [tokenQuery] = useEgtJudgesTokensLazyQuery();
   const [resetToken, { loading: resetting }] = useEgtJudgesResetTokenMutation();
+  const {
+    update: pdfUpdate,
+    download: pdfDownload,
+    loading: pdfLoading,
+  } = usePdfDownload({});
 
   useEffect(() => {
     load();
@@ -72,15 +81,34 @@ export default function Judges() {
       setTokens((state) => {
         const cloned = [...state];
         cloned[index] = {
-            ...cloned[index],
-            token: data.data?.resetJudgeToken?.token as string
-        }
+          ...cloned[index],
+          token: data.data?.resetJudgeToken?.token as string,
+        };
         return cloned;
       });
       enqueueSnackbar(t("token_reset"), { variant: "success" });
     } catch {
       enqueueSnackbar(t("error"), { variant: "error" });
     }
+  }
+
+  async function resetAllTokensClick() {
+    for (const token of tokens) {
+      await resetTokenClick(token.id);
+    }
+  }
+
+  async function downloadManuals(tokens: Judgetoken[]) {
+    await pdfUpdate({
+      document: (
+        <JudgingManualDocument tokens={tokens} competitionID={id!} t={t} />
+      ),
+      filename: `${t("judging_manual")}_${t("ground_typed", {
+        ns: "common",
+        name: selectedTab + 1,
+      })}_${tokens.map((token) => t(`device_${token.device}`)).join("_")}.pdf`,
+    });
+    pdfDownload();
   }
 
   function renderTabs() {
@@ -121,17 +149,22 @@ export default function Judges() {
           <Typography variant="h5">
             {t(`device_${token.device}`, { ns: "egt" })}
             <ClipboardCopy value={location} />
+            <Tooltip title={t("manual", { count: 1, ns: "egt" })}>
+              <IconButton onClick={() => downloadManuals([token])}>
+                {pdfLoading ? <CircularProgress size={19} /> : <DownloadIcon />}
+              </IconButton>
+            </Tooltip>
             {resetting && <CircularProgress size={19} />}
 
             {!resetting && (
               <Tooltip title={t("reset", { ns: "common" })}>
                 <IconButton onClick={() => resetTokenClick(token.id)}>
-                  <RefreshIcon />
+                  <LockResetIcon />
                 </IconButton>
               </Tooltip>
             )}
           </Typography>
-          <QRCode value={location} />
+          <QRCode value={location} style={{ margin: 1 }} />
         </Grid>
       );
     }
@@ -146,6 +179,22 @@ export default function Judges() {
   return (
     <PaperExtended title={t("judges")}>
       <Box>{renderTabs()}</Box>
+      <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 1 }}>
+        {pdfLoading ? (
+          <LinearProgress />
+        ) : (
+          <Button
+            startIcon={<DownloadIcon />}
+            onClick={() => downloadManuals(tokens)}
+          >
+            {t("manual", { count: 2, ns: "egt" })}
+          </Button>
+        )}
+
+        <Button startIcon={<LockResetIcon />} onClick={resetAllTokensClick}>
+          {t("reset_all", { ns: "common" })}
+        </Button>
+      </Box>
       <Box>{renderJudgeLinks()}</Box>
     </PaperExtended>
   );
