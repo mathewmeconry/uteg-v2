@@ -71,7 +71,7 @@ export default function RoundGradingSingle(props: RoundGradingSingleProps) {
 
   const [
     deviceQuery,
-    { loading: deviceDataLoading, data: deviceData },
+    { loading: deviceDataLoading, data: deviceData, refetch: refetchDevice },
   ] = useEgtDeviceGradingLazyQuery();
   const {
     data: allStarterLinks,
@@ -165,7 +165,32 @@ export default function RoundGradingSingle(props: RoundGradingSingleProps) {
           }
         );
       }
+
+      if (!previousValue && previousStarterLinks.length > 0) {
+        enqueueSnackbar(
+          t("has_been_added", {
+            ns: "common",
+            name: `${starter.starterlink.starter.firstname} ${starter.starterlink.starter.lastname}`,
+          }),
+          {
+            persist: true,
+            variant: "warning",
+            key: starter.id,
+            action: (snackbarId) => (
+              <Button
+                color="inherit"
+                size="small"
+                onClick={() => closeSnackbar(snackbarId)}
+              >
+                <DoneIcon />
+              </Button>
+            ),
+          }
+        );
+      }
     }
+
+    refetchDevice();
   }, [allStarterLinks]);
 
   useEffect(() => {

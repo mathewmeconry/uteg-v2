@@ -118,5 +118,6 @@
   "refreshing": "Aktualisierung läuft",
   "reset_all": "Alle zurücksetzen",
   "notification_one": "Benachrichtigung",
-  "notification_other": "Benachrichtigungen"
+  "notification_other": "Benachrichtigungen",
+  "has_been_added": "{{name}} wurde hinzugefügt!"
 }

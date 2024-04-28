@@ -118,5 +118,6 @@
   "refreshing": "Refreshing",
   "reset_all": "Reset all",
   "notification_one": "Notification",
-  "notification_other": "Notifications"
+  "notification_other": "Notifications",
+  "has_been_added": "{{name}} has been added!"
 }
