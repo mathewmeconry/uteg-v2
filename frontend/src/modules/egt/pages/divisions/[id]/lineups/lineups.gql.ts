@@ -6,7 +6,6 @@ export const GET_DIVISION = gql`
       id
       category
       ground
-      currentRound
       totalRounds
       sex
       number

@@ -49,8 +49,8 @@ export const STARTER_GRADES = gql`
 `;
 
 export const ADVANCE_DIVISIONS_DEVICE = gql`
-  mutation advanceEgtDivisionsDevice($divisions: [ID!]!, $device: Int!) {
-    advanceEgtDivisionsDevice(ids: $divisions, device: $device) {
+  mutation advanceEgtDivisionsDevice($divisions: [ID!]!, $device: Int!, $round: Int!) {
+    advanceEgtDivisionsDevice(ids: $divisions, device: $device, round: $round) {
       id
       currentRound
     }

@@ -252,6 +252,7 @@ export function RoundGradingTable(props: RoundGradingProps) {
       variables: {
         device: props.device,
         divisions: props.divisionIds,
+        round: props.round + 1
       },
     });
   }

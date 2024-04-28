@@ -359,6 +359,7 @@ export default function RoundGradingSingle(props: RoundGradingSingleProps) {
       variables: {
         device: props.device,
         divisions: props.divisionIds,
+        round: props.round + 1
       },
     });
 

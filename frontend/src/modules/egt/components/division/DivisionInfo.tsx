@@ -45,10 +45,6 @@ export default function DivisionInfo(props: DivisionInfoProps) {
         secondary={division?.egtDivision?.ground}
       />
       <ListItemText
-        primary={t("currentRound", { ns: "egt" })}
-        secondary={division?.egtDivision?.currentRound}
-      />
-      <ListItemText
         primary={t("totalRounds", { ns: "egt" })}
         secondary={division?.egtDivision?.totalRounds}
       />
