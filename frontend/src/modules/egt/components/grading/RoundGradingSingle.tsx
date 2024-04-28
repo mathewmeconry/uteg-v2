@@ -384,6 +384,7 @@ export default function RoundGradingSingle(props: RoundGradingSingleProps) {
           key={starter.id}
           name={`${starter.starterlink.id}`}
           label="grade"
+          inputMode="decimal"
           fieldProps={{
             variant: "outlined",
           }}
@@ -411,6 +412,7 @@ export default function RoundGradingSingle(props: RoundGradingSingleProps) {
             key={starter.id}
             name={`${starter.starterlink.id}.final`}
             label="grade_labled"
+            inputMode="decimal"
             fieldProps={{
               variant: "outlined",
             }}
@@ -436,6 +438,7 @@ export default function RoundGradingSingle(props: RoundGradingSingleProps) {
           key={starter.id}
           name={`${starter.starterlink.id}.${key}`}
           label="grade_labled"
+          inputMode="decimal"
           labelVariables={{ label: `${key + 1}.` }}
           fieldProps={{
             variant: "outlined",
@@ -512,6 +515,7 @@ export default function RoundGradingSingle(props: RoundGradingSingleProps) {
                         fieldProps={{
                           variant: "standard",
                         }}
+                        inputMode="decimal"
                         fullWidth={true}
                         rules={{
                           required: true,

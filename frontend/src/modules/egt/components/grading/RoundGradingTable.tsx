@@ -290,6 +290,7 @@ export function RoundGradingTable(props: RoundGradingProps) {
           <FormTextInput
             name={`${starter.starterlink.id}`}
             label="grade"
+            inputMode="decimal"
             fieldProps={{
               size: "small",
             }}
@@ -322,6 +323,7 @@ export function RoundGradingTable(props: RoundGradingProps) {
             <FormTextInput
               name={`${starter.starterlink.id}.final`}
               label="grade_labled"
+              inputMode="decimal"
               fieldProps={{
                 size: "small",
               }}
@@ -349,6 +351,7 @@ export function RoundGradingTable(props: RoundGradingProps) {
           <FormTextInput
             name={`${starter.starterlink.id}.${key}`}
             label="grade_labled"
+            inputMode="decimal"
             labelVariables={{ label: `${key + 1}.` }}
             fieldProps={{
               size: "small",

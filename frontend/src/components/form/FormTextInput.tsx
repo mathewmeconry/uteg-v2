@@ -29,6 +29,16 @@ export type FormTextInputProps = PropsWithChildren & {
   loading?: boolean;
   initialLoading?: boolean;
   endAdornment?: string;
+  inputMode?:
+    | "none"
+    | "text"
+    | "tel"
+    | "url"
+    | "email"
+    | "numeric"
+    | "decimal"
+    | "search"
+    | undefined;
   rules:
     | Omit<
         RegisterOptions<FieldValues, any>,
@@ -85,6 +95,7 @@ export function FormTextInput(props: FormTextInputProps) {
       disabled={props.disabled}
       inputProps={{
         onBlur: field.onBlur,
+        inputMode: props.inputMode,
       }}
       value={field.value}
       ref={field.ref}
