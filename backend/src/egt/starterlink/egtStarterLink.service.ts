@@ -41,7 +41,7 @@ export class EGTStarterLinkService {
     let link: EGTStarterLink | null = null;
     if (linkData.starterLinkID) {
       link = await this.findByStarterLink(linkData.starterLinkID, true);
-      if(link.deletedAt) {
+      if(link && link.deletedAt) {
         await this.egtStarterLinkRepository.restore(link.id);
         link = await this.findByStarterLink(linkData.starterLinkID);
       }
@@ -50,7 +50,7 @@ export class EGTStarterLinkService {
     if (linkData.id) {
       link = await this.findOne(linkData.id, true);
 
-      if (link.deletedAt) {
+      if (link && link.deletedAt) {
         await this.egtStarterLinkRepository.restore(link.id);
         link = await this.findOne(linkData.id);
       }
