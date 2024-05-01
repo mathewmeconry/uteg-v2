@@ -67,12 +67,14 @@ export function UpdateStarterDialog(props: UpdateStarterDialogProps) {
       sex: "MALE",
       birthyear: "",
     },
-    mode: "onChange",
+    mode: "all",
     shouldFocusError: true,
     resetOptions: {
       keepTouched: false,
     },
   });
+  // required to access during render because formState is wrapped with a proxy...
+  const touchedFields = form.formState.touchedFields;
 
   useEffect(() => {
     if (props.linkID) {
@@ -166,11 +168,11 @@ export function UpdateStarterDialog(props: UpdateStarterDialogProps) {
 
   function isStarterTouched() {
     return (
-      form.formState.touchedFields.stvID ||
-      form.formState.touchedFields.firstname ||
-      form.formState.touchedFields.lastname ||
-      form.formState.touchedFields.birthyear ||
-      form.formState.touchedFields.sex
+      touchedFields.stvID ||
+      touchedFields.firstname ||
+      touchedFields.lastname ||
+      touchedFields.birthyear ||
+      touchedFields.sex
     );
   }
 
