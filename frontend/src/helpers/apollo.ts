@@ -27,6 +27,9 @@ const wsLink = new GraphQLWsLink(
     url: `${backend}/graphql`
       .replace("https://", "wss://")
       .replace("http://", "ws://"),
+    connectionAckWaitTimeout: 3000,
+    shouldRetry: () => true,
+    retryAttempts: 1000,
     connectionParams: () => ({
       Authorization: getToken(),
     }),
