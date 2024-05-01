@@ -1,5 +1,6 @@
 import {
   Button,
+  CircularProgress,
   Grid,
   IconButton,
   LinearProgress,
@@ -93,8 +94,11 @@ export default function RoundGradingSingle(props: RoundGradingSingleProps) {
     },
     fetchPolicy: "network-only",
   });
-  const [addGradesMutation] = useEgtAddGradesMutation();
-  const [advanceDivisionsDevice] = useAdvanceEgtDivisionsDeviceMutation();
+  const [addGradesMutation, { loading: saving }] = useEgtAddGradesMutation();
+  const [
+    advanceDivisionsDevice,
+    { loading: advancingDevice },
+  ] = useAdvanceEgtDivisionsDeviceMutation();
   const previousStarterLinks = usePrevious(allStarterLinks);
 
   const form = useForm({
@@ -359,7 +363,7 @@ export default function RoundGradingSingle(props: RoundGradingSingleProps) {
       variables: {
         device: props.device,
         divisions: props.divisionIds,
-        round: props.round + 1
+        round: props.round + 1,
       },
     });
 
@@ -552,8 +556,13 @@ export default function RoundGradingSingle(props: RoundGradingSingleProps) {
               variant="contained"
               color="success"
               onClick={() => form.handleSubmit(onFormSubmit)()}
+              disabled={saving || advancingDevice}
             >
-              {t("save", { ns: "common" })}
+              {saving || advancingDevice ? (
+                <CircularProgress size={19} />
+              ) : (
+                t("save", { ns: "common" })
+              )}
             </Button>
           </Grid>
         </Grid>

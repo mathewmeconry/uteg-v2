@@ -50,7 +50,7 @@ const GradingListQueryDocument = graphql(`
 
 export default function GradingListDialog(props: GradingListDialogProps) {
   const { t } = useTranslation(["egt", "common"]);
-  const [deviceQuery, { loading: deviceDataLoading }] = useLazyQuery(
+  const [deviceQuery] = useLazyQuery(
     GradingListQueryDocument
   );
   const [starters, setStarters] = useState<EgtStarterLink[][]>([]);
@@ -91,61 +91,80 @@ export default function GradingListDialog(props: GradingListDialogProps) {
         </Typography>
       </DialogTitle>
       <DialogContent>
-        {deviceDataLoading &&
-          [...Array(10).keys()].map((key) => (
-            <Skeleton variant="rectangular" sx={{ mt: 2 }} key={key} />
-          ))}
-
-        {starters.map((round, roundIndex) => (
+        {[...Array(props.maxRounds).keys()].map((index) => (
           <>
-            <Typography variant="h5" sx={{ ml: 4, mt: 2 }} key={roundIndex}>
-              {t("round", { ns: "egt", number: roundIndex + 1 })}
-            </Typography>
-            <Table sx={{ mb: 4 }}>
-              <TableHead>
-                <TableRow>
-                  <TableCell sx={{ width: "2vw", p: 0 }}></TableCell>
-                  <TableCell sx={{ width: "35vw" }}>
-                    {t("firstname", { ns: "common" })}
-                  </TableCell>
-                  <TableCell sx={{ width: "35vw" }}>
-                    {t("lastname", { ns: "common" })}
-                  </TableCell>
-                  <TableCell sx={{ width: "20vw" }}>
-                    {t("category", { ns: "egt" })}
-                  </TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {round.map((starter) => (
-                  <TableRow
-                    key={starter.id}
-                    sx={{
-                      textDecoration: starter.isDeleted
-                        ? "line-through"
-                        : "none",
-                    }}
-                  >
-                    <TableCell sx={{ p: 0 }}>
-                      {starter.id === props.currentStarter ? (
-                        <ForwardIcon fontSize="small" />
-                      ) : null}
-                    </TableCell>
-                    <TableCell>
-                      {starter.starterlink?.starter?.firstname}
-                    </TableCell>
-                    <TableCell>
-                      {starter.starterlink?.starter?.lastname}
-                    </TableCell>
-                    <TableCell>
-                      {t(`category_${starter.category}`, {
-                        context: starter.starterlink.starter.sex,
-                      })}
-                    </TableCell>
-                  </TableRow>
+            {!starters[index] && (
+              <>
+                <Skeleton
+                  variant="rectangular"
+                  sx={{ ml: 4, mt: 2 }}
+                  key={index}
+                >
+                  <Typography variant="h5">
+                    {t("round", { ns: "egt", number: 1 })}
+                  </Typography>
+                </Skeleton>
+                {[...Array(5).keys()].map((key) => (
+                  <Skeleton
+                    variant="rectangular"
+                    sx={{ mt: 2 }}
+                    key={`${index}_${key}`}
+                  />
                 ))}
-              </TableBody>
-            </Table>
+              </>
+            )}
+            {starters[index] && (
+              <>
+                <Typography variant="h5" sx={{ ml: 4, mt: 2 }} key={index}>
+                  {t("round", { ns: "egt", number: index + 1 })}
+                </Typography>
+                <Table sx={{ mb: 4 }}>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell sx={{ width: "2vw", p: 0 }}></TableCell>
+                      <TableCell sx={{ width: "35vw" }}>
+                        {t("firstname", { ns: "common" })}
+                      </TableCell>
+                      <TableCell sx={{ width: "35vw" }}>
+                        {t("lastname", { ns: "common" })}
+                      </TableCell>
+                      <TableCell sx={{ width: "20vw" }}>
+                        {t("category", { ns: "egt" })}
+                      </TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {starters[index].map((starter) => (
+                      <TableRow
+                        key={starter.id}
+                        sx={{
+                          textDecoration: starter.isDeleted
+                            ? "line-through"
+                            : "none",
+                        }}
+                      >
+                        <TableCell sx={{ p: 0 }}>
+                          {starter.id === props.currentStarter ? (
+                            <ForwardIcon fontSize="small" />
+                          ) : null}
+                        </TableCell>
+                        <TableCell>
+                          {starter.starterlink?.starter?.firstname}
+                        </TableCell>
+                        <TableCell>
+                          {starter.starterlink?.starter?.lastname}
+                        </TableCell>
+                        <TableCell>
+                          {t(`category_${starter.category}`, {
+                            context: starter.starterlink.starter.sex,
+                          })}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </>
+            )}
           </>
         ))}
       </DialogContent>
