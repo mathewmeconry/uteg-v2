@@ -287,6 +287,7 @@ export default function RoundGradingSingle(props: RoundGradingSingleProps) {
             calcGrade(grades, categorySettings.aggregationMode),
             { shouldDirty: true }
           );
+          form.clearErrors(`${starterId}.final`);
         }
       }
     }

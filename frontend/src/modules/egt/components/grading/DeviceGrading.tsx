@@ -121,7 +121,11 @@ export function DeviceGrading(props: DeviceGradingProps) {
         round: round.toString(),
       });
     }
-  }, [round]);
+
+    if(maxRounds > 0 && round > maxRounds - 1) {
+      setIsFinished(true);
+    }
+  }, [round, maxRounds]);
 
   function reset() {
     if (divisionsData?.length === 0 && !divisionsDataLoading && !blockReset) {
