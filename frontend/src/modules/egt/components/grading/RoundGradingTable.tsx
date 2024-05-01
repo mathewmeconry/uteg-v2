@@ -184,7 +184,7 @@ export function RoundGradingTable(props: RoundGradingProps) {
     if (maxInputs > 1) {
       for (const starterId of Object.keys(formValues)) {
         const starter = starterLinks.find(
-          (starter) => starter.id === starterId
+          (starter) => starter.starterlink.id === starterId
         );
         const categorySettings = getCategorySettings(starter?.category || 1);
         if (!categorySettings) {

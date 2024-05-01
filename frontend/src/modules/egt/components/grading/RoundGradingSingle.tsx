@@ -270,7 +270,7 @@ export default function RoundGradingSingle(props: RoundGradingSingleProps) {
     if (maxInputs > 1) {
       for (const starterId of Object.keys(formValues)) {
         const starter = starterLinks.find(
-          (starter) => starter.id === starterId
+          (starter) => starter.starterlink.id === starterId
         );
         const categorySettings = getCategorySettings(starter?.category || 1);
         if (!categorySettings) {
@@ -677,21 +677,9 @@ export default function RoundGradingSingle(props: RoundGradingSingleProps) {
   }
 
   if (starterLinks.length === 0) {
-    if (
-      deviceDataLoading ||
-      gradesLoading ||
-      starterLinksLoading ||
-      starter === undefined
-    ) {
+    if (deviceDataLoading || gradesLoading || starterLinksLoading) {
       return <LinearProgress />;
     }
-  }
-
-  if (!deviceData?.egtJudgingDevice) {
-    return null;
-  }
-
-  if (starterLinks.length === 0) {
     return (
       <>
         <Typography variant="caption" sx={{ textAlign: "center" }}>
@@ -720,6 +708,10 @@ export default function RoundGradingSingle(props: RoundGradingSingleProps) {
         </Grid>
       </>
     );
+  }
+
+  if (!deviceData?.egtJudgingDevice) {
+    return null;
   }
 
   return (
