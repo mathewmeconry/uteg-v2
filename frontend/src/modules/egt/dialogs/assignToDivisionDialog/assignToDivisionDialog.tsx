@@ -216,7 +216,8 @@ export function AssignToDivisionDialog(props: AssignToDivisionDialogProps) {
                   name={`lineup_${category.category}_${category.sex}`}
                   label={t("device", { ns: "common" })}
                   divisionId={
-                    formData[`division_${category.category}_${category.sex}`] ?? ""
+                    formData[`division_${category.category}_${category.sex}`] ??
+                    ""
                   }
                   rules={{ required: false }}
                 />
@@ -224,7 +225,9 @@ export function AssignToDivisionDialog(props: AssignToDivisionDialogProps) {
             ))}
           </DialogContent>
           <DialogActions>
-            <Button onClick={props.onClose}>{t("cancel")}</Button>
+            <Button onClick={props.onClose}>
+              {t("cancel", { ns: "common" })}
+            </Button>
             <Button variant="contained" color="success" type="submit">
               {storing && <CircularProgress size={24} />}
               {!storing && t("save", { ns: "common" })}
