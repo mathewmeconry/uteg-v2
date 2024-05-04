@@ -233,7 +233,7 @@ export function RoundGradingTable(props: RoundGradingProps) {
         deviceNumber: props.device,
         module: "egt",
         starterlinkId: starter,
-        value: parseFloat(finalGrade),
+        value: parseFloat(finalGrade.replace(",", ".")),
       });
     }
 
@@ -252,7 +252,7 @@ export function RoundGradingTable(props: RoundGradingProps) {
       variables: {
         device: props.device,
         divisions: props.divisionIds,
-        round: props.round + 1
+        round: props.round + 1,
       },
     });
   }

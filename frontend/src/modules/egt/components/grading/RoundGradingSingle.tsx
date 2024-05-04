@@ -338,7 +338,7 @@ export default function RoundGradingSingle(props: RoundGradingSingleProps) {
           deviceNumber: props.device,
           module: "egt",
           starterlinkId: starter,
-          value: parseFloat(finalGrade),
+          value: parseFloat(finalGrade.replace(",", ".")),
         });
       }
     }
