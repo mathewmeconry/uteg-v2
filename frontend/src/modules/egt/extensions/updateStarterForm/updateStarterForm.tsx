@@ -13,6 +13,7 @@ import { ApolloError } from "@apollo/client";
 import { enqueueSnackbar } from "notistack";
 import { useParams } from "react-router-dom";
 import { FormCategorySelect } from "../../components/form/FormCategorySelect";
+import { FormLineupSelect } from "../../components/form/FormLineupSelect";
 
 export function EGTUpdateStarterForm() {
   const { t } = useTranslation("egt");
@@ -22,6 +23,7 @@ export function EGTUpdateStarterForm() {
   const sex = useWatch({ name: "sex", control: formControl });
   const linkId = useWatch({ name: "id", control: formControl });
   const category = useWatch({ name: "category", control: formControl });
+  const division = useWatch({ name: "division", control: formControl });
   const [
     starterQuery,
     { loading: starterLoading, data: starterData },
@@ -40,13 +42,17 @@ export function EGTUpdateStarterForm() {
             starterLinkID: data.id,
             category: parseInt(data.category),
             divisionID: data.division,
+            lineupID: data.lineup,
           },
         },
         update: (cache) => {
           cache.evict({ fieldName: "category" });
         },
       });
-      enqueueSnackbar(t("link_updated", {name: t('egt_starter'), ns: "common"}), { variant: "success" });
+      enqueueSnackbar(
+        t("link_updated", { name: t("egt_starter"), ns: "common" }),
+        { variant: "success" }
+      );
     } catch (e) {
       if (e instanceof ApolloError) {
         enqueueSnackbar(t(e.message), { variant: "error" });
@@ -69,6 +75,12 @@ export function EGTUpdateStarterForm() {
       setValue("division", starterData.egtStarterLink.division.id);
     } else {
       setValue("division", "");
+    }
+
+    if (starterData?.egtStarterLink?.lineup?.id) {
+      setValue("lineup", starterData.egtStarterLink.lineup.id);
+    } else {
+      setValue("lineup", "");
     }
   }, [starterData]);
 
@@ -121,7 +133,7 @@ export function EGTUpdateStarterForm() {
       >
         {divisionData?.egtDivisions.map((division) => (
           <MenuItem key={division.id} value={division.id}>
-            {t("division", {count: 1})} {division.number}
+            {t("division", { count: 1 })} {division.number}
           </MenuItem>
         ))}
       </FormTextInput>
@@ -132,6 +144,7 @@ export function EGTUpdateStarterForm() {
     <>
       {renderCategorySelection()}
       {renderDivisionSelection()}
+      <FormLineupSelect divisionId={division} rules={{ required: false }} />
     </>
   );
 }

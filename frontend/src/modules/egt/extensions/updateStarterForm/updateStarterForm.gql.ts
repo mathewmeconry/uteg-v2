@@ -12,6 +12,13 @@ export const EGT_STARTER_LINK_MUTATION = gql`
         id
         number
       }
+      lineup {
+        id
+        device {
+          id
+          deviceNumber
+        }
+      }
     }
   }
 `;
@@ -22,6 +29,9 @@ export const GET_EGT_STARTER_LINK = gql`
       id
       category
       division {
+        id
+      }
+      lineup {
         id
       }
     }

@@ -5,12 +5,19 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  Divider,
   MenuItem,
   Skeleton,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import { FieldValues, FormProvider, useForm } from "react-hook-form";
+import {
+  FieldValues,
+  FormProvider,
+  useForm,
+  useFormContext,
+  useWatch,
+} from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import {
   EgtDivision,
@@ -23,6 +30,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { FormTextInput } from "../../../../components/form/FormTextInput";
 import { enqueueSnackbar } from "notistack";
+import { FormLineupSelect } from "../../components/form/FormLineupSelect";
 
 export type AssignToDivisionDialogProps = {
   isOpen: boolean;
@@ -64,7 +72,6 @@ export function AssignToDivisionDialog(props: AssignToDivisionDialogProps) {
   }, [props.starters]);
   const [storing, setStoring] = useState(false);
   const [loading, setLoading] = useState(false);
-
   const form = useForm({
     defaultValues: {
       ...categoriesWithSex.reduce((prev, curr) => {
@@ -76,6 +83,7 @@ export function AssignToDivisionDialog(props: AssignToDivisionDialogProps) {
     },
     mode: "onChange",
   });
+  const formData = useWatch({ control: form.control });
 
   const [assignMutataion] = useEgtAssignToDivisionDialogMutationMutation();
   const [divisionQuery] = useEgtAssignToDivisionDialogLazyQuery();
@@ -114,14 +122,17 @@ export function AssignToDivisionDialog(props: AssignToDivisionDialogProps) {
     for (const starter of props.starters) {
       if (starter && starter.egt?.category && starter.egt?.id) {
         const divisionId =
-          data[`${starter.egt.category}_${starter.starter.sex}`];
-        if (divisionId && divisionId !== starter.egt?.division?.id) {
+          data[`division_${starter.egt.category}_${starter.starter.sex}`];
+        const lineupId =
+          data[`lineup_${starter.egt.category}_${starter.starter.sex}`];
+        if (divisionId || lineupId) {
           try {
             await assignMutataion({
               variables: {
                 data: {
-                  divisionID: divisionId,
+                  divisionID: divisionId ?? starter.egt.division?.id,
                   id: starter.egt.id,
+                  lineupID: lineupId ?? starter.egt.lineup?.id,
                 },
               },
             });
@@ -152,14 +163,8 @@ export function AssignToDivisionDialog(props: AssignToDivisionDialogProps) {
 
     return (
       <FormTextInput
-        name={`${category.category}_${category.sex}`}
-        label={t(
-          `category_${category.category}_${category.sex.toLowerCase()}`,
-          {
-            context: category.sex.toLowerCase(),
-          }
-        )}
-        annotation={category.sex.toLowerCase()}
+        name={`division_${category.category}_${category.sex}`}
+        label={t("division")}
         ns="egt"
         fieldProps={{ select: true }}
         rules={{ required: false }}
@@ -192,9 +197,31 @@ export function AssignToDivisionDialog(props: AssignToDivisionDialogProps) {
       <FormProvider {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <DialogContent>
-            {...categoriesWithSex.map((category) =>
-              renderDivisionSelection(category)
-            )}
+            {...categoriesWithSex.map((category) => (
+              <>
+                <Divider key={category.category}>
+                  {t(
+                    `category_${
+                      category.category
+                    }_${category.sex.toLowerCase()}`,
+                    {
+                      context: category.sex.toLowerCase(),
+                    }
+                  )}
+                  {" - "}
+                  {t(category.sex.toLowerCase(), { ns: "common" })}
+                </Divider>
+                {renderDivisionSelection(category)}
+                <FormLineupSelect
+                  name={`lineup_${category.category}_${category.sex}`}
+                  label={t("device", { ns: "common" })}
+                  divisionId={
+                    formData[`division_${category.category}_${category.sex}`] ?? ""
+                  }
+                  rules={{ required: false }}
+                />
+              </>
+            ))}
           </DialogContent>
           <DialogActions>
             <Button onClick={props.onClose}>{t("cancel")}</Button>

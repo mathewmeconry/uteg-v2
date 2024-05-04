@@ -26,6 +26,7 @@ const documents = {
     "\n  query modules($competitionID: ID!) {\n    competition(id: $competitionID) {\n      id\n      modules\n    }\n  }\n": types.ModulesDocument,
     "\n    query currentI18NUser {\n        currentUser {\n            id\n            language\n        }\n    }\n": types.CurrentI18NUserDocument,
     "\n    query competitionName($id: ID!) {\n        competition(id: $id) {\n            id\n            name\n        }\n    }\n": types.CompetitionNameDocument,
+    "\n  query EgtLineupSelect($divisionID: ID!) {\n    egtDivision(id: $divisionID) {\n      id\n      lineups {\n        id\n        device {\n          id\n          deviceNumber\n        }\n      }\n    }\n  }\n": types.EgtLineupSelectDocument,
     "\n  fragment DeviceGradingDivisionFragment on EGTDivision {\n    id\n    totalRounds\n    currentRound\n    state\n  }\n": types.DeviceGradingDivisionFragmentFragmentDoc,
     "\n  query EgtDeviceGrading($ids: [ID!]!, $round: Int!, $device: Int!) {\n    egtJudgingDevice(ids: $ids, round: $round, device: $device) {\n      device {\n        id\n        deviceNumber\n        inputs\n        aggregationMode\n        overrides {\n          category\n          inputs\n          aggregationMode\n        }\n      }\n      starterslist {\n        id\n      }\n      lineups {\n        id\n      }\n    }\n  }\n": types.EgtDeviceGradingDocument,
     "\n  mutation EgtAddGrades($grades: [GradeInput!]!) {\n    addGrades(grades: $grades) {\n      id\n      value\n      starterlink {\n        id\n      }\n    }\n  }\n": types.EgtAddGradesDocument,
@@ -46,8 +47,8 @@ const documents = {
     "\n  query EGTGradingListQuery($ids: [ID!]!, $round: Int!, $device: Int!) {\n    egtJudgingDevice(ids: $ids, round: $round, device: $device) {\n      starterslist {\n        id\n        category\n        isDeleted\n        starterlink {\n          id\n          starter {\n            id\n            firstname\n            lastname\n          }\n          club {\n            id\n            name\n          }\n        }\n      }\n    }\n  }\n": types.EgtGradingListQueryDocument,
     "\n  mutation updateEgtDivisionState($data: UpdateEGTDivisionStateInput!) {\n    updateEgtDivisionState(data: $data) {\n      id\n      state\n      currentRound\n    }\n  }\n": types.UpdateEgtDivisionStateDocument,
     "\n    query StartersReviewStepRowDivisions($filter: EGTDivisionFilterInput!) {\n        egtDivisions(filter: $filter) {\n            id\n            number\n        }\n    }\n": types.StartersReviewStepRowDivisionsDocument,
-    "\n  mutation egtStarterLinkMutation(\n    $data: EGTStarterLinkInput!\n    $ignoreDivision: Boolean\n  ) {\n    egtStarterLink(data: $data, ignoreDivision: $ignoreDivision) {\n      id\n      category\n      division {\n        id\n        number\n      }\n    }\n  }\n": types.EgtStarterLinkMutationDocument,
-    "\n  query egtStarterLink($id: ID, $starterLinkID: ID) {\n    egtStarterLink(id: $id, starterLinkID: $starterLinkID) {\n      id\n      category\n      division {\n        id\n      }\n    }\n  }\n": types.EgtStarterLinkDocument,
+    "\n  mutation egtStarterLinkMutation(\n    $data: EGTStarterLinkInput!\n    $ignoreDivision: Boolean\n  ) {\n    egtStarterLink(data: $data, ignoreDivision: $ignoreDivision) {\n      id\n      category\n      division {\n        id\n        number\n      }\n      lineup {\n        id\n        device {\n          id\n          deviceNumber\n        }\n      }\n    }\n  }\n": types.EgtStarterLinkMutationDocument,
+    "\n  query egtStarterLink($id: ID, $starterLinkID: ID) {\n    egtStarterLink(id: $id, starterLinkID: $starterLinkID) {\n      id\n      category\n      division {\n        id\n      }\n      lineup {\n        id\n      }\n    }\n  }\n": types.EgtStarterLinkDocument,
     "\n  query egtDivisionsUpdateStarterForm($filter: EGTDivisionFilterInput!) {\n    egtDivisions(filter: $filter) {\n      id\n      number\n      ground\n    }\n  }\n": types.EgtDivisionsUpdateStarterFormDocument,
     "\n    mutation createEgtSettings($competitionID: ID!, $data: EGTSettingsInput!) {\n        egtSettings(competitionID: $competitionID, data: $data) {\n            id\n        }\n    }\n": types.CreateEgtSettingsDocument,
     "\n  fragment useEGTDivision_PlaceholderFragment on EGTDivision {\n    id\n  }\n": types.UseEgtDivision_PlaceholderFragmentFragmentDoc,
@@ -153,6 +154,10 @@ export function graphql(source: "\n    query competitionName($id: ID!) {\n      
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
+export function graphql(source: "\n  query EgtLineupSelect($divisionID: ID!) {\n    egtDivision(id: $divisionID) {\n      id\n      lineups {\n        id\n        device {\n          id\n          deviceNumber\n        }\n      }\n    }\n  }\n"): (typeof documents)["\n  query EgtLineupSelect($divisionID: ID!) {\n    egtDivision(id: $divisionID) {\n      id\n      lineups {\n        id\n        device {\n          id\n          deviceNumber\n        }\n      }\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
 export function graphql(source: "\n  fragment DeviceGradingDivisionFragment on EGTDivision {\n    id\n    totalRounds\n    currentRound\n    state\n  }\n"): (typeof documents)["\n  fragment DeviceGradingDivisionFragment on EGTDivision {\n    id\n    totalRounds\n    currentRound\n    state\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
@@ -233,11 +238,11 @@ export function graphql(source: "\n    query StartersReviewStepRowDivisions($fil
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  mutation egtStarterLinkMutation(\n    $data: EGTStarterLinkInput!\n    $ignoreDivision: Boolean\n  ) {\n    egtStarterLink(data: $data, ignoreDivision: $ignoreDivision) {\n      id\n      category\n      division {\n        id\n        number\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation egtStarterLinkMutation(\n    $data: EGTStarterLinkInput!\n    $ignoreDivision: Boolean\n  ) {\n    egtStarterLink(data: $data, ignoreDivision: $ignoreDivision) {\n      id\n      category\n      division {\n        id\n        number\n      }\n    }\n  }\n"];
+export function graphql(source: "\n  mutation egtStarterLinkMutation(\n    $data: EGTStarterLinkInput!\n    $ignoreDivision: Boolean\n  ) {\n    egtStarterLink(data: $data, ignoreDivision: $ignoreDivision) {\n      id\n      category\n      division {\n        id\n        number\n      }\n      lineup {\n        id\n        device {\n          id\n          deviceNumber\n        }\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation egtStarterLinkMutation(\n    $data: EGTStarterLinkInput!\n    $ignoreDivision: Boolean\n  ) {\n    egtStarterLink(data: $data, ignoreDivision: $ignoreDivision) {\n      id\n      category\n      division {\n        id\n        number\n      }\n      lineup {\n        id\n        device {\n          id\n          deviceNumber\n        }\n      }\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  query egtStarterLink($id: ID, $starterLinkID: ID) {\n    egtStarterLink(id: $id, starterLinkID: $starterLinkID) {\n      id\n      category\n      division {\n        id\n      }\n    }\n  }\n"): (typeof documents)["\n  query egtStarterLink($id: ID, $starterLinkID: ID) {\n    egtStarterLink(id: $id, starterLinkID: $starterLinkID) {\n      id\n      category\n      division {\n        id\n      }\n    }\n  }\n"];
+export function graphql(source: "\n  query egtStarterLink($id: ID, $starterLinkID: ID) {\n    egtStarterLink(id: $id, starterLinkID: $starterLinkID) {\n      id\n      category\n      division {\n        id\n      }\n      lineup {\n        id\n      }\n    }\n  }\n"): (typeof documents)["\n  query egtStarterLink($id: ID, $starterLinkID: ID) {\n    egtStarterLink(id: $id, starterLinkID: $starterLinkID) {\n      id\n      category\n      division {\n        id\n      }\n      lineup {\n        id\n      }\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

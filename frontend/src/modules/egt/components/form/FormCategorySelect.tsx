@@ -13,7 +13,8 @@ export type EGTFormCategorySelectProps = {
   sexOverride?: string;
   fieldProps?: TextFieldProps;
   name?: string;
-  initialLoading?: boolean
+  label?: string;
+  initialLoading?: boolean;
   rules:
     | Omit<
         RegisterOptions<FieldValues, any>,
@@ -34,6 +35,7 @@ export function FormCategorySelect(props: EGTFormCategorySelectProps) {
   return (
     <FormTextInput
       name={props.name || "category"}
+      label={props.label || "category"}
       ns="egt"
       defaultValue=""
       rules={props.rules}
