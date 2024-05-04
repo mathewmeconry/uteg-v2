@@ -280,7 +280,9 @@ export default function RoundGradingSingle(props: RoundGradingSingleProps) {
         const grades: number[] = Object.keys(formValues[starterId])
           .filter((key) => key !== "final")
           .map((key) =>
-            parseFloat((formValues[starterId][key] ?? "").replace(",", "."))
+            parseFloat(
+              (formValues[starterId][key] ?? "").toString().replace(",", ".")
+            )
           )
           .filter((grade) => grade);
         if (categorySettings?.inputs > 1 && Object.keys(grades).length > 0) {
@@ -334,13 +336,13 @@ export default function RoundGradingSingle(props: RoundGradingSingleProps) {
       if (maxInputs > 1) {
         finalGrade = finalGrade["final"];
       }
-
+      console.log(values[starter]);
       if (finalGrade) {
         grades.push({
           deviceNumber: props.device,
           module: "egt",
           starterlinkId: starter,
-          value: parseFloat(finalGrade.replace(",", ".")),
+          value: parseFloat(finalGrade.toString().replace(",", ".")),
         });
       }
     }
