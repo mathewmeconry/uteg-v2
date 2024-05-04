@@ -279,7 +279,9 @@ export default function RoundGradingSingle(props: RoundGradingSingleProps) {
 
         const grades: number[] = Object.keys(formValues[starterId])
           .filter((key) => key !== "final")
-          .map((key) => parseFloat(formValues[starterId][key]))
+          .map((key) =>
+            parseFloat((formValues[starterId][key] ?? "").replace(",", "."))
+          )
           .filter((grade) => grade);
         if (categorySettings?.inputs > 1 && Object.keys(grades).length > 0) {
           form.setValue(
