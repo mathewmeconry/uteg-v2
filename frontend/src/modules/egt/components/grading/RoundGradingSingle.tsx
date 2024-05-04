@@ -610,6 +610,9 @@ export default function RoundGradingSingle(props: RoundGradingSingleProps) {
               {starter.starterlink.starter.lastname}
             </Typography>
             <Typography variant="h5" sx={{ pt: 2, textAlign: "center" }}>
+              {starter.starterlink.club.name}
+            </Typography>
+            <Typography variant="h5" sx={{ pt: 2, textAlign: "center" }}>
               {t(
                 `category_${
                   starter.category
