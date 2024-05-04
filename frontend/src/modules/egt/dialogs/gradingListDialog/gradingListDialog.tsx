@@ -54,16 +54,14 @@ const GradingListQueryDocument = graphql(`
 
 export default function GradingListDialog(props: GradingListDialogProps) {
   const { t } = useTranslation(["egt", "common"]);
-  const [deviceQuery] = useLazyQuery(
-    GradingListQueryDocument
-  );
+  const [deviceQuery] = useLazyQuery(GradingListQueryDocument);
   const [starters, setStarters] = useState<EgtStarterLink[][]>([]);
   useEffect(() => {
     if (props.open) {
       load();
     }
     async function load() {
-      setStarters([]);
+      setStarters(new Array(props.maxRounds).fill([]));
       for (let i = 0; i < props.maxRounds; i++) {
         const data = await deviceQuery({
           variables: {
@@ -75,10 +73,12 @@ export default function GradingListDialog(props: GradingListDialogProps) {
         });
 
         if (data.data?.egtJudgingDevice) {
-          setStarters((s) => [
-            ...s,
-            data.data?.egtJudgingDevice.starterslist as EgtStarterLink[],
-          ]);
+          setStarters((s) => {
+            const clone = [...s];
+            clone[i] = data.data?.egtJudgingDevice
+              .starterslist as EgtStarterLink[];
+            return clone;
+          });
         }
       }
     }
@@ -161,9 +161,7 @@ export default function GradingListDialog(props: GradingListDialogProps) {
                         <TableCell>
                           {starter.starterlink?.starter?.lastname}
                         </TableCell>
-                        <TableCell>
-                          {starter.starterlink?.club?.name}
-                        </TableCell>
+                        <TableCell>{starter.starterlink?.club?.name}</TableCell>
                         <TableCell>
                           {t(`category_${starter.category}`, {
                             context: starter.starterlink.starter.sex,
