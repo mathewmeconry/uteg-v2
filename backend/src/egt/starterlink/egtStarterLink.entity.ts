@@ -13,8 +13,13 @@ import { EGTDivision } from '../division/egtDivision.entity';
 import { StarterLink } from 'src/base/starterLink/starterLink.entity';
 import { EGTLineup } from '../lineup/egtLineup.entity';
 import { PubSub } from 'graphql-subscriptions';
+import { EventEmitter } from 'events';
 
-export const EGTStarterLinkPubSub = new PubSub()
+const eventEmitter = new EventEmitter();
+eventEmitter.setMaxListeners(50);
+export const EGTStarterLinkPubSub = new PubSub({
+  eventEmitter,
+});
 
 export enum EGTStarterLinkPubSubEvents {
   UPDATE = 'update',
