@@ -491,6 +491,7 @@ export default function RoundGradingSingle(props: RoundGradingSingleProps) {
             <TableRow>
               <TableCell>{t("firstname", { ns: "common" })}</TableCell>
               <TableCell>{t("lastname", { ns: "common" })}</TableCell>
+              <TableCell>{t("club", { ns: "common" })}</TableCell>
               <TableCell>{t("category", { ns: "egt" })}</TableCell>
               <TableCell>{t("final_grade", { ns: "common" })}</TableCell>
             </TableRow>
@@ -506,6 +507,7 @@ export default function RoundGradingSingle(props: RoundGradingSingleProps) {
                 >
                   <TableCell>{realStarter.firstname}</TableCell>
                   <TableCell>{realStarter.lastname}</TableCell>
+                  <TableCell>{starter.starterlink.club.name}</TableCell>
                   <TableCell>
                     {t(
                       `category_${
@@ -525,7 +527,7 @@ export default function RoundGradingSingle(props: RoundGradingSingleProps) {
                           variant: "standard",
                         }}
                         inputMode="decimal"
-                        fullWidth={true}
+                        fullWidth={false}
                         rules={{
                           required: true,
                           min: 0,

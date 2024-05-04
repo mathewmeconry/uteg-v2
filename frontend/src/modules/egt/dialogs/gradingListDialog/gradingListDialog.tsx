@@ -42,6 +42,10 @@ const GradingListQueryDocument = graphql(`
             firstname
             lastname
           }
+          club {
+            id
+            name
+          }
         }
       }
     }
@@ -122,11 +126,14 @@ export default function GradingListDialog(props: GradingListDialogProps) {
                   <TableHead>
                     <TableRow>
                       <TableCell sx={{ width: "2vw", p: 0 }}></TableCell>
-                      <TableCell sx={{ width: "35vw" }}>
+                      <TableCell sx={{ width: "20vw" }}>
                         {t("firstname", { ns: "common" })}
                       </TableCell>
-                      <TableCell sx={{ width: "35vw" }}>
+                      <TableCell sx={{ width: "20vw" }}>
                         {t("lastname", { ns: "common" })}
+                      </TableCell>
+                      <TableCell sx={{ width: "40vw" }}>
+                        {t("club", { ns: "common" })}
                       </TableCell>
                       <TableCell sx={{ width: "20vw" }}>
                         {t("category", { ns: "egt" })}
@@ -153,6 +160,9 @@ export default function GradingListDialog(props: GradingListDialogProps) {
                         </TableCell>
                         <TableCell>
                           {starter.starterlink?.starter?.lastname}
+                        </TableCell>
+                        <TableCell>
+                          {starter.starterlink?.club?.name}
                         </TableCell>
                         <TableCell>
                           {t(`category_${starter.category}`, {
