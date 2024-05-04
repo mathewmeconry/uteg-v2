@@ -336,7 +336,7 @@ export default function RoundGradingSingle(props: RoundGradingSingleProps) {
       if (maxInputs > 1) {
         finalGrade = finalGrade["final"];
       }
-      console.log(values[starter]);
+
       if (finalGrade) {
         grades.push({
           deviceNumber: props.device,
@@ -363,6 +363,7 @@ export default function RoundGradingSingle(props: RoundGradingSingleProps) {
     } catch (e) {
       console.error(e);
       enqueueSnackbar(t("error", { ns: "common" }));
+      return;
     }
     advanceDivisionsDevice({
       variables: {
