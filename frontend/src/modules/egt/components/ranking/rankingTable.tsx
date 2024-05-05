@@ -95,10 +95,10 @@ export function RankingTable(props: RankingTableProps) {
                 highGrades[grade.deviceNumber] === grade.value ? "bold" : "",
             }}
           >
-            {(Math.round(grade.value * 100) / 100).toFixed(2)}
+            {(Math.ceil(grade.value * 100) / 100).toFixed(2)}
           </TableCell>
         ))}
-        <TableCell>{(Math.round(item.total * 100) / 100).toFixed(2)}</TableCell>
+        <TableCell>{(Math.ceil(item.total * 100) / 100).toFixed(2)}</TableCell>
         <TableCell>{getAwardIcon(item.award)}</TableCell>
       </>
     );

@@ -201,12 +201,14 @@ function RankingDocumentNonMemo(props: RankingDocumentProps) {
                     : "normal",
               }}
             >
-              {grade.value.toFixed(2)}
+              {(Math.ceil(grade.value * 100) / 100).toFixed(2)}
             </Text>
           </View>
         ))}
         <View style={{ ...styles.tableCol, ...styles.grade }}>
-          <Text style={styles.tableCell}>{item.total.toFixed(2)}</Text>
+          <Text style={styles.tableCell}>
+            {(Math.ceil(item.total * 100) / 100).toFixed(2)}
+          </Text>
         </View>
         <View style={{ ...styles.tableCol, ...styles.award }}>
           <Text style={styles.tableCell}>{getAwardIcon(item.award)}</Text>
