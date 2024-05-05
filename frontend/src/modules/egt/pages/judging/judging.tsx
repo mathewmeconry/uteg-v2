@@ -33,7 +33,7 @@ export type JudgingTokenData = {
 const theme = createTheme({
   typography: {
     fontSize: 20,
-    fontWeightRegular: 450
+    fontWeightRegular: 450,
   },
 });
 
