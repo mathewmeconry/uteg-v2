@@ -69,11 +69,6 @@ export class EGTDeviceService {
         category: 7,
         inputs: 2,
       },
-      {
-        aggregationMode: EGTDeviceAggregationMode.AVG,
-        category: 8,
-        inputs: 2,
-      },
     ];
     promises.push(this.create(vault));
 
