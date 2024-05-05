@@ -90,7 +90,12 @@ export class EGTRankingService {
     starterRanking.total =
       Math.round(
         starterRanking.grades.reduce(
-          (prev, curr) => prev + parseFloat(curr.value.toString()),
+          (prev, curr) =>
+            prev +
+            Math.round(
+              Math.ceil(parseFloat(curr.value.toString()) * 1000) / 10,
+            ) /
+              100,
           0,
         ) * 100,
       ) / 100;
