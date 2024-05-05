@@ -8,7 +8,14 @@ import {
   removeToken,
 } from "../../../../helpers/auth";
 import { useEffect, useState } from "react";
-import { Box, CircularProgress, IconButton, Tooltip } from "@mui/material";
+import {
+  Box,
+  CircularProgress,
+  IconButton,
+  Tooltip,
+  createTheme,
+  ThemeProvider,
+} from "@mui/material";
 import { useEgtJudgingCompetitionLazyQuery } from "../../../../__generated__/graphql";
 import {
   DeviceGrading,
@@ -22,6 +29,13 @@ export type JudgingTokenData = {
   device: number;
   ground: number;
 };
+
+const theme = createTheme({
+  typography: {
+    fontSize: 20,
+    fontWeightRegular: 450
+  },
+});
 
 export default function Judging() {
   const { t } = useTranslation(["egt", "common"]);
@@ -85,28 +99,30 @@ export default function Judging() {
   }
 
   return (
-    <PaperExtended
-      title={t(`device_${tokenData?.device}`)}
-      titleSuffix={
-        t("ground_typed", { name: tokenData?.ground, ns: "common" }) +
-          " - " +
-          competition?.competition.name || t("loading", { ns: "common" })
-      }
-      actions={[
-        <Tooltip title={t("logout", { ns: "common" })}>
-          <IconButton onClick={logout}>
-            <LogoutIcon />
-          </IconButton>
-        </Tooltip>,
-      ]}
-    >
-      <DeviceGrading
-        device={tokenData?.device}
-        ground={tokenData?.ground}
-        mode={DeviceGradingMode.SINGLE}
-        hideTitle={true}
-        onlyRunning
-      />
-    </PaperExtended>
+    <ThemeProvider theme={theme}>
+      <PaperExtended
+        title={t(`device_${tokenData?.device}`)}
+        titleSuffix={
+          t("ground_typed", { name: tokenData?.ground, ns: "common" }) +
+            " - " +
+            competition?.competition.name || t("loading", { ns: "common" })
+        }
+        actions={[
+          <Tooltip title={t("logout", { ns: "common" })}>
+            <IconButton onClick={logout}>
+              <LogoutIcon />
+            </IconButton>
+          </Tooltip>,
+        ]}
+      >
+        <DeviceGrading
+          device={tokenData?.device}
+          ground={tokenData?.ground}
+          mode={DeviceGradingMode.SINGLE}
+          hideTitle={true}
+          onlyRunning
+        />
+      </PaperExtended>
+    </ThemeProvider>
   );
 }
