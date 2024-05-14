@@ -5068,17 +5068,17 @@ schema-utils@^3.1.1, schema-utils@^3.1.2:
     ajv "^6.12.5"
     ajv-keywords "^3.5.2"
 
-semver@7.x, semver@^7.3.4, semver@^7.3.5, semver@^7.3.7, semver@^7.3.8, semver@^7.5.3, semver@^7.5.4:
+semver@^6.0.0, semver@^6.3.0, semver@^6.3.1:
+  version "6.3.1"
+  resolved "https://registry.yarnpkg.com/semver/-/semver-6.3.1.tgz#556d2ef8689146e46dcea4bfdd095f3434dffcb4"
+  integrity sha512-BR7VvDCVHO+q2xBEWskxS6DJE1qRnb7DxzUrogb71CWoSficBxYsiAGd+Kl0mmq/MprG9yArRkyrQxTO6XjMzA==
+
+semver@^7.3.4, semver@^7.3.5, semver@^7.3.7, semver@^7.3.8, semver@^7.5.3, semver@^7.5.4:
   version "7.5.4"
   resolved "https://registry.yarnpkg.com/semver/-/semver-7.5.4.tgz#483986ec4ed38e1c6c48c34894a9182dbff68a6e"
   integrity sha512-1bCSESV6Pv+i21Hvpxp3Dx+pSD8lIPt8uVjRrxAUt/nbswYc+tK6Y2btiULjd4+fnq15PX+nqQDC7Oft7WkwcA==
   dependencies:
     lru-cache "^6.0.0"
-
-semver@^6.0.0, semver@^6.3.0, semver@^6.3.1:
-  version "6.3.1"
-  resolved "https://registry.yarnpkg.com/semver/-/semver-6.3.1.tgz#556d2ef8689146e46dcea4bfdd095f3434dffcb4"
-  integrity sha512-BR7VvDCVHO+q2xBEWskxS6DJE1qRnb7DxzUrogb71CWoSficBxYsiAGd+Kl0mmq/MprG9yArRkyrQxTO6XjMzA==
 
 send@0.18.0:
   version "0.18.0"
@@ -5507,18 +5507,18 @@ tree-kill@1.2.2:
   resolved "https://registry.yarnpkg.com/tree-kill/-/tree-kill-1.2.2.tgz#4ca09a9092c88b73a7cdc5e8a01b507b0790a0cc"
   integrity sha512-L0Orpi8qGpRG//Nd+H90vFB+3iHnue1zSSGmNOOCh1GLJ7rUKVwV2HvijphGQS2UmhUZewS9VgvxYIdgr+fG1A==
 
-ts-jest@29.0.3:
-  version "29.0.3"
-  resolved "https://registry.yarnpkg.com/ts-jest/-/ts-jest-29.0.3.tgz#63ea93c5401ab73595440733cefdba31fcf9cb77"
-  integrity sha512-Ibygvmuyq1qp/z3yTh9QTwVVAbFdDy/+4BtIQR2sp6baF2SJU/8CKK/hhnGIDY2L90Az2jIqTwZPnN2p+BweiQ==
+ts-jest@29.1.2:
+  version "29.1.2"
+  resolved "https://registry.yarnpkg.com/ts-jest/-/ts-jest-29.1.2.tgz#7613d8c81c43c8cb312c6904027257e814c40e09"
+  integrity sha512-br6GJoH/WUX4pu7FbZXuWGKGNDuU7b8Uj77g/Sp7puZV6EXzuByl6JrECvm0MzVzSTkSHWTihsXt+5XYER5b+g==
   dependencies:
     bs-logger "0.x"
     fast-json-stable-stringify "2.x"
     jest-util "^29.0.0"
-    json5 "^2.2.1"
+    json5 "^2.2.3"
     lodash.memoize "4.x"
     make-error "1.x"
-    semver "7.x"
+    semver "^7.5.3"
     yargs-parser "^21.0.1"
 
 ts-loader@^9.2.3:
