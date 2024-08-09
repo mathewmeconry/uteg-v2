@@ -41,7 +41,7 @@
     "react-jwt": "^1.2.0",
     "react-router-dom": "^6.21.1",
     "react-virtuoso": "^4.6.2",
-    "styled-components": "^6.1.6",
+    "styled-components": "^6.1.12",
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.1/xlsx-0.20.1.tgz"
   },
   "devDependencies": {
