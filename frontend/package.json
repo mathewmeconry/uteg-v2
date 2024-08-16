@@ -16,7 +16,7 @@
     "@emotion/styled": "^11.11.5",
     "@fontsource/roboto": "^5.0.8",
     "@mui/icons-material": "^5.15.15",
-    "@mui/material": "^5.15.15",
+    "@mui/material": "^5.16.7",
     "@mui/styled-engine": "npm:@mui/styled-engine-sc@latest",
     "@mui/styled-engine-sc": "^6.0.0-alpha.10",
     "@mui/system": "^5.8.0",
