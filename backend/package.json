@@ -37,7 +37,7 @@
     "@nestjs/typeorm": "^10.0.2",
     "bcrypt": "^5.1.1",
     "dotenv": "^16.4.5",
-    "file-type": "^19.4.1",
+    "file-type": "^19.5.0",
     "graphql": "^16.9.0",
     "graphql-subscriptions": "^2.0.0",
     "graphql-upload-ts": "^2.1.2",
