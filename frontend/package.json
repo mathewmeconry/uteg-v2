@@ -28,7 +28,7 @@
     "dayjs": "^1.11.10",
     "graphql": "^16.9.0",
     "graphql-tag": "^2.0.0",
-    "i18next": "^23.14.0",
+    "i18next": "^23.15.1",
     "i18next-browser-languagedetector": "^7.2.0",
     "i18next-http-backend": "^2.6.1",
     "material-react-table": "^2.13.3",
