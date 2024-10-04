@@ -14,7 +14,7 @@
     "@apollo/client": "^3.11.8",
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
-    "@fontsource/roboto": "^5.0.8",
+    "@fontsource/roboto": "^5.1.0",
     "@mui/icons-material": "^5.15.15",
     "@mui/material": "^5.16.7",
     "@mui/styled-engine": "npm:@mui/styled-engine-sc@latest",
