@@ -52,7 +52,7 @@
     "@parcel/watcher": "^2.4.1",
     "@types/apollo-upload-client": "^18.0.0",
     "@types/jsonwebtoken": "^9.0.5",
-    "@types/node": "^20.10.5",
+    "@types/node": "^22.8.0",
     "@types/qrcode": "^1.5.5",
     "@types/react": "^18.2.43",
     "@types/react-dom": "^18.2.17",
