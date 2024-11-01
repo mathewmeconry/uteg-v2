@@ -482,10 +482,10 @@
   dependencies:
     "@babel/helper-plugin-utils" "^7.22.5"
 
-"@babel/runtime@^7.0.0", "@babel/runtime@^7.12.5", "@babel/runtime@^7.18.3", "@babel/runtime@^7.20.13", "@babel/runtime@^7.23.2", "@babel/runtime@^7.23.6", "@babel/runtime@^7.23.9", "@babel/runtime@^7.24.8", "@babel/runtime@^7.25.6", "@babel/runtime@^7.5.5", "@babel/runtime@^7.8.7":
-  version "7.25.6"
-  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.25.6.tgz#9afc3289f7184d8d7f98b099884c26317b9264d2"
-  integrity sha512-VBj9MYyDb9tuLq7yzqjgzt6Q+IBQLrGZfdjOekyEirZPHxXWoTSGUTMrpsfi58Up73d13NfYLv8HT9vmznjzhQ==
+"@babel/runtime@^7.0.0", "@babel/runtime@^7.12.5", "@babel/runtime@^7.18.3", "@babel/runtime@^7.20.13", "@babel/runtime@^7.23.2", "@babel/runtime@^7.23.6", "@babel/runtime@^7.23.9", "@babel/runtime@^7.25.0", "@babel/runtime@^7.25.6", "@babel/runtime@^7.5.5", "@babel/runtime@^7.8.7":
+  version "7.26.0"
+  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.26.0.tgz#8600c2f595f277c60815256418b85356a65173c1"
+  integrity sha512-FDSOghenHTiToteC/QRlv2q3DhPZ/oOXTBoirfWNx1Cx3TMVcGWQtMMmQcSvb/JjpNeGzx8Pq/b4fKEJuWm1sw==
   dependencies:
     regenerator-runtime "^0.14.0"
 
@@ -4571,12 +4571,12 @@ react-hook-form@^7.53.0:
   resolved "https://registry.yarnpkg.com/react-hook-form/-/react-hook-form-7.53.0.tgz#3cf70951bf41fa95207b34486203ebefbd3a05ab"
   integrity sha512-M1n3HhqCww6S2hxLxciEXy2oISPnAzxY7gvwVPrtlczTM/1dDadXgUxDpHMrMTblDOcm/AXtXxHwZ3jpg1mqKQ==
 
-react-i18next@^15.0.1:
-  version "15.0.1"
-  resolved "https://registry.yarnpkg.com/react-i18next/-/react-i18next-15.0.1.tgz#fc662d93829ecb39683fe2757a47ebfbc5c912a0"
-  integrity sha512-NwxLqNM6CLbeGA9xPsjits0EnXdKgCRSS6cgkgOdNcPXqL+1fYNl8fBg1wmnnHvFy812Bt4IWTPE9zjoPmFj3w==
+react-i18next@^15.1.0:
+  version "15.1.0"
+  resolved "https://registry.yarnpkg.com/react-i18next/-/react-i18next-15.1.0.tgz#9494e4add2389f04c205dd7628c1aa75747b98a3"
+  integrity sha512-zj3nJynMnZsy2gPZiOTC7XctCY5eQGqT3tcKMmfJWC9FMvgd+960w/adq61j8iPzpwmsXejqID9qC3Mqu1Xu2Q==
   dependencies:
-    "@babel/runtime" "^7.24.8"
+    "@babel/runtime" "^7.25.0"
     html-parse-stringify "^3.0.1"
 
 react-is@^16.13.1, react-is@^16.7.0:
