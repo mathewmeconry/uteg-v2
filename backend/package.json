@@ -39,7 +39,7 @@
     "dotenv": "^16.4.5",
     "file-type": "^19.6.0",
     "graphql": "^16.9.0",
-    "graphql-subscriptions": "^2.0.0",
+    "graphql-subscriptions": "^3.0.0",
     "graphql-upload-ts": "^2.1.2",
     "graphql-ws": "^5.16.0",
     "mysql2": "^3.11.4",
