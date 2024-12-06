@@ -946,15 +946,15 @@
     semver "^7.3.5"
     tar "^6.1.11"
 
-"@nestjs/apollo@^12.2.1":
-  version "12.2.1"
-  resolved "https://registry.yarnpkg.com/@nestjs/apollo/-/apollo-12.2.1.tgz#a9b850f34a2a96c1b3be89a58f45f1d774f7f0b9"
-  integrity sha512-Det66rvMZwXSxwSkMBdTd+jqVyQRDRT+GJh/CU25PR3bM4n7BpdBTzW0XR3Eoi5oyas1YB4cUxa7nR5Iy37lag==
+"@nestjs/apollo@^12.2.2":
+  version "12.2.2"
+  resolved "https://registry.yarnpkg.com/@nestjs/apollo/-/apollo-12.2.2.tgz#69ca06c151908724931da9f7a7d76248b73408e4"
+  integrity sha512-gsDqSfsmTSvF0k3XaRESRgM3uE/YFO+59txCsq7T1EadDOVOuoF3zVQiFmi6D50Rlnqohqs63qjjf46mgiiXgQ==
   dependencies:
     "@apollo/server-plugin-landing-page-graphql-playground" "4.0.0"
     iterall "1.3.0"
     lodash.omit "4.5.0"
-    tslib "2.8.0"
+    tslib "2.8.1"
 
 "@nestjs/cli@^10.4.8":
   version "10.4.8"
