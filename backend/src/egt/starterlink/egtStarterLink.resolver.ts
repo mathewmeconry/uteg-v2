@@ -117,7 +117,7 @@ export class EGTStarterLinkResolver {
     @Args('divisionIDs', { type: () => [ID], nullable: true })
     _divisionIDs: number[],
   ) {
-    return EGTStarterLinkPubSub.asyncIterator([
+    return EGTStarterLinkPubSub.asyncIterableIterator([
       EGTStarterLinkPubSubEvents.CREATE,
       EGTStarterLinkPubSubEvents.UPDATE,
       EGTStarterLinkPubSubEvents.DELETE,

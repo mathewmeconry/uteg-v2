@@ -145,7 +145,7 @@ export class EGTDivisionResolver {
   subscription(
     @Args('filter') filter: EGTDivisionFilterInput,
   ): AsyncIterator<EGTDivision, any, undefined> {
-    return EGTDivisionPubSub.asyncIterator([
+    return EGTDivisionPubSub.asyncIterableIterator([
       EGTDivisionPubSubEvents.CREATE,
       EGTDivisionPubSubEvents.UPDATE,
     ]);
