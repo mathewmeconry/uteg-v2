@@ -25,7 +25,7 @@
     "migration:revert": "npm run typeorm -- -d ./src/typeorm.ts migration:revert -t all"
   },
   "dependencies": {
-    "@apollo/server": "^4.11.2",
+    "@apollo/server": "^4.11.3",
     "@as-integrations/fastify": "^2.1.1",
     "@nestjs/apollo": "^12.2.2",
     "@nestjs/common": "^9.0.0",
