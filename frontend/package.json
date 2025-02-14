@@ -21,7 +21,7 @@
     "@mui/styled-engine-sc": "^6.0.0-alpha.10",
     "@mui/system": "^5.8.0",
     "@mui/x-data-grid": "^7.26.0",
-    "@mui/x-date-pickers": "^7.23.2",
+    "@mui/x-date-pickers": "^7.26.0",
     "@react-pdf/renderer": "^4.0.2",
     "apollo-upload-client": "^18.0.1",
     "csstype": "^3.0.10",
