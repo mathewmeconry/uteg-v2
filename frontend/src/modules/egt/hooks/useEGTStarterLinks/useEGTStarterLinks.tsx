@@ -55,7 +55,7 @@ export default function useEGTStarterLinks<
       // @ts-expect-error Override frozen attribute to "fake" fragment
       fragmentClone.name.value = "useEGTStarterLinks_PlaceholderFragment";
     }
-    return (fragmentClone as any) as typeof fragment;
+    return fragmentClone as any as typeof fragment;
   }, [fragment]);
 
   const queryClone = useMemo(() => {
@@ -67,11 +67,16 @@ export default function useEGTStarterLinks<
     return clone as TypedDocumentNode<FragmentType<T>, VariablesOf<T>>;
   }, [fragmentClone]);
 
-  const { loading: queryLoading, data: queryData, refetch } = useQuery<{
+  const {
+    loading: queryLoading,
+    data: queryData,
+    refetch,
+  } = useQuery<{
     egtStarterLinks: ResultOf<T>[];
   }>(queryClone, {
     variables,
     fetchPolicy: "network-only",
+    pollInterval: 60 * 1000,
   });
 
   const subscriptionClone = useMemo(() => {

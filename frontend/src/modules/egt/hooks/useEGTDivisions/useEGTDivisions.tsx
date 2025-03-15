@@ -62,6 +62,7 @@ export default function useEGTDivisions<
   }>(queryClone, {
     variables,
     fetchPolicy: "network-only",
+    pollInterval: 60 * 1000
   });
 
   const subscriptionClone = useMemo(() => {
