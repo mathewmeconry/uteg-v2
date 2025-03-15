@@ -9,7 +9,7 @@ import {
 } from "../../../../../../__generated__/graphql";
 import { Box, CircularProgress, Typography } from "@mui/material";
 import { Lineup } from "../../../../components/lineup/Lineup";
-import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
+import { DataGrid, GridActionsCellItem, GridColDef } from "@mui/x-data-grid";
 import { LineupToolbar } from "../../../../components/lineup/LineupToolbar";
 import { useState } from "react";
 import EditIcon from "@mui/icons-material/Edit";
@@ -87,25 +87,25 @@ export function Lineups() {
       return <CircularProgress />;
     }
 
-    const columns = [
+    const columns: GridColDef[] = [
       {
         field: "starter.firstname",
         headerName: t("firstname", { ns: "common" }),
-        valueGetter: (params: any) => params.row.starterlink.starter.firstname,
+        valueGetter: (_, row) => row.starterlink.starter.firstname,
         flex: 1,
         disableColumnMenu: true,
       },
       {
         field: "starter.lastname",
         headerName: t("lastname", { ns: "common" }),
-        valueGetter: (params: any) => params.row.starterlink.starter.lastname,
+        valueGetter: (_, row) => row.starterlink.starter.lastname,
         flex: 1,
         disableColumnMenu: true,
       },
       {
         field: "club.name",
         headerName: t("club", { ns: "common" }),
-        valueGetter: (params: any) => params.row.starterlink.club.name,
+        valueGetter: (_, row) => row.starterlink.club.name,
         flex: 1,
         filterOperators: [inFilter],
       },
@@ -143,7 +143,9 @@ export function Lineups() {
             }}
             checkboxSelection
             slots={{
+              // @ts-expect-error
               toolbar: LineupToolbar,
+              // @ts-expect-error
               columnMenu: GridColumnFilterMenu,
             }}
             slotProps={{
@@ -152,6 +154,7 @@ export function Lineups() {
                 rows: unassignedStarters?.egtStarterLinkUnassigned || [],
               },
               toolbar: {
+                // @ts-expect-error
                 lineups: division?.egtDivision?.lineups || [],
               },
             }}

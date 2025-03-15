@@ -6,7 +6,7 @@ import {
   useEgtLineupQuery,
 } from "../../../../__generated__/graphql";
 import { useTranslation } from "react-i18next";
-import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
+import { DataGrid, GridActionsCellItem, GridColDef } from "@mui/x-data-grid";
 import { LineupToolbar } from "./LineupToolbar";
 import EditIcon from "@mui/icons-material/Edit";
 import { useState } from "react";
@@ -47,25 +47,25 @@ export function Lineup(props: { id: string; lineups: EgtLineup[] }) {
     };
   }
 
-  const columns = [
+  const columns: GridColDef[] = [
     {
       field: "starter.firstname",
       headerName: t("firstname"),
-      valueGetter: (params: any) => params.row.starterlink.starter.firstname,
+      valueGetter: (_, row) => row.starterlink.starter.firstname,
       flex: 1,
       disableColumnMenu: true,
     },
     {
       field: "starter.lastname",
       headerName: t("lastname"),
-      valueGetter: (params: any) => params.row.starterlink.starter.lastname,
+      valueGetter: (_, row) => row.starterlink.starter.lastname,
       flex: 1,
       disableColumnMenu: true,
     },
     {
       field: "club.name",
       headerName: t("club"),
-      valueGetter: (params: any) => params.row.starterlink.club.name,
+      valueGetter: (_, row) => row.starterlink.club.name,
       flex: 1,
       filterOperators: [inFilter],
     },
@@ -102,7 +102,9 @@ export function Lineup(props: { id: string; lineups: EgtLineup[] }) {
           checkboxSelection
           density="compact"
           slots={{
+            // @ts-expect-error
             toolbar: LineupToolbar,
+            // @ts-expect-error
             columnMenu: GridColumnFilterMenu,
           }}
           slotProps={{
@@ -111,6 +113,7 @@ export function Lineup(props: { id: string; lineups: EgtLineup[] }) {
               rows: lineup?.egtLineup?.starterlinks || [],
             },
             toolbar: {
+              // @ts-expect-error
               lineups: props.lineups,
             },
           }}

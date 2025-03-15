@@ -57,7 +57,6 @@ const splitLink = split(
     );
   },
   wsLink,
-  // @ts-expect-error
   uploadLink
 );
 

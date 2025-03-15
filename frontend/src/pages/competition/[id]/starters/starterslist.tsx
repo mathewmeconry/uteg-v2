@@ -209,6 +209,7 @@ export function StartersList() {
   const tableLocalization = useMaterialReactTableLocalization();
   const table = useMaterialReactTable({
     columns,
+    // @ts-expect-error
     data: starterLinksData?.starterLinks || [],
     enableRowSelection: true,
     enableColumnOrdering: false,

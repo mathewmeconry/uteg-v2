@@ -62,14 +62,15 @@ export function Divisionslist() {
   const [toStartDivisions, setToStartDivisions] = useState<EgtDivision[]>([]);
   const [removeDivision] = useRemoveEgtDivisionMutation();
 
-  const { data: divisionsData, loading, refetch: refetchDivisions } = useEGTDivisions(
-    DivisionListFragment,
-    {
-      filter: {
-        competitionID: id!,
-      },
-    }
-  );
+  const {
+    data: divisionsData,
+    loading,
+    refetch: refetchDivisions,
+  } = useEGTDivisions(DivisionListFragment, {
+    filter: {
+      competitionID: id!,
+    },
+  });
   const previousData = usePrevious(divisionsData);
   useEffect(() => {
     if (!divisionsData) {
@@ -167,16 +168,17 @@ export function Divisionslist() {
       headerName: t("category", { ns: "egt" }),
       disableColumnMenu: true,
       flex: 1,
-      valueGetter: (params) =>
-        t(`category_${params.row.category}`, {
+      valueGetter: (_, row) =>
+        t(`category_${row.category}`, {
           ns: "egt",
-          context: params.row.sex.toLowerCase(),
+          context: row.sex.toLowerCase(),
         }),
     },
     {
       field: "sex",
       headerName: t("sex", { ns: "common" }),
-      valueGetter: (params) => t(params.row.sex, { ns: "common" }),
+      valueGetter: (_, row) =>
+        t(row.sex, { ns: "common" }),
       disableColumnMenu: true,
       flex: 1,
     },
@@ -347,10 +349,12 @@ export function Divisionslist() {
             pageSizeOptions={[20, 50, 100]}
             checkboxSelection
             slots={{
+              // @ts-expect-error
               toolbar: DivisionlistToolbar,
             }}
             slotProps={{
               toolbar: {
+                // @ts-expect-error
                 openDialog: setOpenDialog,
                 onRowDeletionClick: onRemoveRows,
                 onRowStartClick: onStartRows,
