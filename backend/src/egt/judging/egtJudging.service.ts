@@ -6,6 +6,7 @@ import { EGTStarterLink } from '../starterlink/egtStarterLink.entity';
 import { EGTJudgingDevice } from './egtJudging.types';
 import { EGTLineup } from '../lineup/egtLineup.entity';
 import { EGTStarterLinkService } from '../starterlink/egtStarterLink.service';
+import { EGTDivisionStates } from '../division/egtDivision.types';
 
 @Injectable()
 export class EGTJudgingService {
@@ -77,7 +78,8 @@ export class EGTJudgingService {
           ...starterLinks.filter(
             (starterLink) =>
               !starterLink.deletedAt ||
-              starterLink.deletedAt > division.lastStateTransition,
+              (starterLink.deletedAt > division.lastStateTransition &&
+                division.state !== EGTDivisionStates.PENDING),
           ),
         );
         lineups.push(lineup);
