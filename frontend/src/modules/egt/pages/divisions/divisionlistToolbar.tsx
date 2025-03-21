@@ -16,6 +16,7 @@ import {
   GridToolbarQuickFilter,
   GridValidRowModel,
   useGridApiContext,
+  useGridApiEventHandler,
 } from "@mui/x-data-grid";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
@@ -44,7 +45,10 @@ export function DivisionlistToolbar(props: {
   const { id } = useParams();
   const { t } = useTranslation(["egt", "common"]);
   const gridApi = useGridApiContext();
-  const selectedRows = gridApi.current.getSelectedRows();
+  useGridApiEventHandler(gridApi, "rowSelectionChange", () => {
+    setSelectedRows(gridApi.current.getSelectedRows());
+  })
+  const [selectedRows, setSelectedRows] = useState(new Map())
   const [exportAnchorEl, setExportAnchorEl] = useState<null | HTMLElement>(
     null
   );

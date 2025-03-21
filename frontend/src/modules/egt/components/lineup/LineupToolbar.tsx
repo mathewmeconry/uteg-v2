@@ -1,4 +1,8 @@
-import { GridToolbarContainer, useGridApiContext } from "@mui/x-data-grid";
+import {
+  GridToolbarContainer,
+  useGridApiContext,
+  useGridApiEventHandler,
+} from "@mui/x-data-grid";
 import { useTranslation } from "react-i18next";
 import { Button, CircularProgress } from "@mui/material";
 import { useState } from "react";
@@ -11,7 +15,10 @@ import {
 export function LineupToolbar(props: { lineups: EgtLineup[] }) {
   const { t } = useTranslation(["common", "egt"]);
   const gridApi = useGridApiContext();
-  const selectedRows = gridApi.current.getSelectedRows();
+  useGridApiEventHandler(gridApi, "rowSelectionChange", () => {
+    setSelectedRows(gridApi.current.getSelectedRows());
+  });
+  const [selectedRows, setSelectedRows] = useState(new Map());
   const [assignMutation] = useAssignEgtLineupMutation();
   const [assigning, setAssigning] = useState(false);
 
