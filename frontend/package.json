@@ -19,7 +19,7 @@
     "@mui/material": "^5.16.13",
     "@mui/styled-engine": "npm:@mui/styled-engine-sc@latest",
     "@mui/styled-engine-sc": "^6.0.0-alpha.10",
-    "@mui/system": "^5.8.0",
+    "@mui/system": "^6.4.9",
     "@mui/x-data-grid": "^7.26.0",
     "@mui/x-date-pickers": "^7.27.0",
     "@react-pdf/renderer": "^4.3.0",
