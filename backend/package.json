@@ -28,7 +28,7 @@
     "@apollo/server": "^4.12.0",
     "@as-integrations/fastify": "^2.1.1",
     "@nestjs/apollo": "^12.2.2",
-    "@nestjs/common": "^11.0.20",
+    "@nestjs/common": "^11.1.0",
     "@nestjs/core": "^9.0.0",
     "@nestjs/graphql": "^12.2.2",
     "@nestjs/jwt": "^11.0.0",
