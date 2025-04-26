@@ -17,11 +17,11 @@
     "@fontsource/roboto": "^5.1.1",
     "@mui/icons-material": "^5.16.14",
     "@mui/material": "^5.16.13",
-    "@mui/styled-engine": "^5.16.13",
+    "@mui/styled-engine": "npm:@mui/styled-engine-sc@latest",
     "@mui/styled-engine-sc": "^6.0.0-alpha.10",
-    "@mui/system": "^5.16.13",
+    "@mui/system": "^5.8.0",
     "@mui/x-data-grid": "^7.26.0",
-    "@mui/x-date-pickers": "^7.26.0",
+    "@mui/x-date-pickers": "^7.27.0",
     "@react-pdf/renderer": "^4.3.0",
     "apollo-upload-client": "^18.0.1",
     "csstype": "^3.0.10",
@@ -32,7 +32,7 @@
     "i18next-browser-languagedetector": "^8.0.0",
     "i18next-http-backend": "^2.6.2",
     "material-react-table": "^2.13.3",
-    "notistack": "^3.0.2",
+    "notistack": "^3.0.1",
     "qrcode": "^1.5.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -45,10 +45,10 @@
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.1/xlsx-0.20.1.tgz"
   },
   "devDependencies": {
-    "@graphql-codegen/cli": "^5.0.5",
+    "@graphql-codegen/cli": "^5.0.3",
     "@graphql-codegen/client-preset": "^4.4.0",
     "@graphql-codegen/typescript-react-apollo": "^4.3.2",
-    "@hookform/devtools": "^4.4.0",
+    "@hookform/devtools": "^4.3.1",
     "@parcel/watcher": "^2.5.0",
     "@types/apollo-upload-client": "^18.0.0",
     "@types/jsonwebtoken": "^9.0.7",
@@ -64,7 +64,7 @@
     "eslint-plugin-react-refresh": "^0.4.16",
     "ts-node": "^10.9.2",
     "typescript": "^5.7.2",
-    "vite": "^6.1.5"
+    "vite": "^6.1.0"
   },
   "resolutions": {
     "@mui/styled-engine": "npm:@mui/styled-engine-sc@latest"
