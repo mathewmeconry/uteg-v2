@@ -88,9 +88,11 @@ export function JudgingManualDocument(props: JudgingManualDocumentProps) {
         <Text style={styles.h1}>
           {props.t("judging_manual", { ns: "egt" })}
         </Text>
-        <Text style={{ ...styles.h2, marginTop: 0 }}>
-          {props.t("login", { ns: "common" })}
+        <Text style={{ ...styles.h2, marginTop: 0, fontWeight: 300 }}>
+          {props.t("ground_typed", { ns: "common", name: token.ground })} -{" "}
+          {props.t(`device_${token.device}`, { ns: "egt" })}
         </Text>
+        <Text style={styles.h2}>{props.t("login", { ns: "common" })}</Text>
         <Text>{props.t("judging_manual_login_step1", { ns: "egt" })}</Text>
         <QRCode
           value={location}
@@ -162,9 +164,7 @@ export function JudgingManualDocument(props: JudgingManualDocumentProps) {
             count: 2,
           })}
         </Text>
-        <Text>
-          {props.t("judging_manual_notifications", { ns: "egt" })}
-        </Text>
+        <Text>{props.t("judging_manual_notifications", { ns: "egt" })}</Text>
       </Page>
     );
   }
