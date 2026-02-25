@@ -71,10 +71,10 @@ function capitalizeNames(name: string): string {
   return name
     .toLowerCase()
     .split("-")
-    .map((namePart) => namePart[0].toUpperCase() + namePart.substring(1))
+    .map((namePart) => namePart && namePart[0] ? namePart[0].toUpperCase() + namePart.substring(1) : "")
     .join("-")
     .split(" ")
-    .map((namePart) => namePart[0].toUpperCase() + namePart.substring(1))
+    .map((namePart) => namePart && namePart[0] ? namePart[0].toUpperCase() + namePart.substring(1) : "")
     .join(" ");
 }
 
