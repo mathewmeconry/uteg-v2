@@ -121,5 +121,6 @@
   "notification_other": "Benachrichtigungen",
   "has_been_added": "{{name}} wurde hinzugefügt!",
   "token": "Token",
-  "has_been_reset": "{{name}} wurde zurückgesetzt!"
+  "has_been_reset": "{{name}} wurde zurückgesetzt!",
+  "close": "Schließen"
 }

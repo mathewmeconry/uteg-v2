@@ -29,6 +29,8 @@ import ClipboardCopy from "../../../../components/ClipboardCopy";
 import LockResetIcon from "@mui/icons-material/LockReset";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { enqueueSnackbar } from "notistack";
+import { QRCode } from "../../../../components/qrcode/QRCode";
+import QrCodeIcon from "@mui/icons-material/QrCode";
 
 export default function Displays() {
   const { id } = useParams();
@@ -127,61 +129,91 @@ function DisplayToken({
   token: Displaytoken;
   refetch: () => void;
 }) {
+  const { id } = useParams();
   const { t } = useTranslation(["egt", "common"]);
   const [resetToken, { loading: resetLoading }] =
     useEgtDisplaysResetTokenMutation();
   const [deleteToken, { loading: deleteLoading }] =
     useEgtDisplaysDeleteTokenMutation();
+  const [qrOpen, setQrOpen] = useState(false);
 
   const loading = resetLoading || deleteLoading;
+  const location = `${document.location.origin}/competition/${id}/egt/display/${encodeURIComponent(token.token)}`;
 
   return (
-    <TableRow>
-      <TableCell>{token.token}</TableCell>
-      <TableCell>{token.ground}</TableCell>
-      <TableCell>
-        <ClipboardCopy
-          value={`${document.location.origin}/egt/display/${encodeURIComponent(token.token)}`}
-          disabled={loading}
-        />
-        <IconButton
-          disabled={loading}
-          onClick={async () => {
-            await resetToken({
-              variables: {
-                id: token.id,
-              },
-            });
-            enqueueSnackbar(
-              t("common:has_been_reset", { name: t("common:token") }),
-              {
-                variant: "success",
-              },
-            );
-            await refetch();
-          }}
-        >
-          <LockResetIcon />
-        </IconButton>
-        <IconButton
-          disabled={loading}
-          onClick={async () => {
-            await deleteToken({
-              variables: {
-                id: token.id,
-              },
-            });
-            enqueueSnackbar(
-              t("common:has_been_deleted", { name: t("common:token") }),
-              { variant: "success" },
-            );
-            await refetch();
-          }}
-        >
-          <DeleteIcon />
-        </IconButton>
-      </TableCell>
-    </TableRow>
+    <>
+      <TableRow>
+        <TableCell>{token.token}</TableCell>
+        <TableCell>{token.ground}</TableCell>
+        <TableCell>
+          <IconButton onClick={() => setQrOpen(true)} disabled={loading}>
+            <QrCodeIcon />
+          </IconButton>
+          <ClipboardCopy value={location} disabled={loading} />
+          <IconButton
+            disabled={loading}
+            onClick={async () => {
+              await resetToken({
+                variables: {
+                  id: token.id,
+                },
+              });
+              enqueueSnackbar(
+                t("common:has_been_reset", { name: t("common:token") }),
+                {
+                  variant: "success",
+                },
+              );
+              await refetch();
+            }}
+          >
+            <LockResetIcon />
+          </IconButton>
+          <IconButton
+            disabled={loading}
+            onClick={async () => {
+              await deleteToken({
+                variables: {
+                  id: token.id,
+                },
+              });
+              enqueueSnackbar(
+                t("common:has_been_deleted", { name: t("common:token") }),
+                { variant: "success" },
+              );
+              await refetch();
+            }}
+          >
+            <DeleteIcon />
+          </IconButton>
+        </TableCell>
+      </TableRow>
+      {qrOpen && (
+        <QRCodeDialog location={location} onClose={() => setQrOpen(false)} />
+      )}
+    </>
+  );
+}
+
+function QRCodeDialog({
+  location,
+  onClose,
+}: {
+  location: string;
+  onClose: () => void;
+}) {
+  const { t } = useTranslation(["egt", "common"]);
+  return (
+    <Dialog open={true} onClose={onClose}>
+      <DialogContent
+        sx={{ display: "flex", justifyContent: "center", width: "fit-content" }}
+      >
+        <QRCode value={location} />
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={onClose}>{t("common:close")}</Button>
+      </DialogActions>
+    </Dialog>
   );
 }
 

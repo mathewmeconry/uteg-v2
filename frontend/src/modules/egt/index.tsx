@@ -25,6 +25,7 @@ import { MRT_ColumnDef, MRT_FilterFns } from "material-react-table";
 import { MRT_ColumnDefExtension } from "../../types/MRT_ColumnDefExtension";
 import Displays from "./pages/displays/displays";
 import TvIcon from '@mui/icons-material/Tv';
+import Display from "./pages/display/display";
 
 const routes: RouteObject[] = [
   {
@@ -97,6 +98,23 @@ const routes: RouteObject[] = [
           },
         ],
       },
+      {
+        path: "display",
+        handle: {
+          layout: {
+            hasDrawer: false,
+            hideAccount: true,
+            skipTokenCheck: true,
+            hideAppbar: true,
+          },
+        },
+        children: [
+          {
+            path: ":token",
+            element: <Display />,
+          },
+        ],
+      }
     ],
   },
 ];
