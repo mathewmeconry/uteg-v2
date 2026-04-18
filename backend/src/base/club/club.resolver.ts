@@ -14,7 +14,7 @@ export class ClubResolver {
     return this.clubService.findAll();
   }
 
-  @Mutation(() => Club, {name: 'createClub'})
+  @Mutation(() => Club, { name: 'createClub' })
   async create(@Args('data') clubData: CreateClubInput): Promise<Club> {
     const club = new Club();
     club.name = clubData.name;

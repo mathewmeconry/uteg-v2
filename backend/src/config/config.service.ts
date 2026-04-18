@@ -32,7 +32,7 @@ export class ConfigService {
     // loading from process.env
     const processEnv = process.env[key];
     if (processEnv) {
-      const processEnvInt = parseInt(processEnv)
+      const processEnvInt = parseInt(processEnv);
       if (!isNaN(processEnvInt) && processEnvInt.toString() === processEnv) {
         return processEnvInt as T;
       }

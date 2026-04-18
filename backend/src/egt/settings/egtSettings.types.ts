@@ -13,15 +13,15 @@ export class EGTSettingsInput {
 
 @InputType()
 export class EGTCategorySettingsInput extends EGTCategorySettings {
-    @Field()
-    category: number;
-  
-    @Field(() => SEX)
-    sex: SEX;
-  
-    @Field()
-    honourPrecentage: number;
-  
-    @Field({ nullable: true })
-    coverPage?: string;
+  @Field()
+  category: number;
+
+  @Field(() => SEX)
+  sex: SEX;
+
+  @Field()
+  honourPrecentage: number;
+
+  @Field({ nullable: true })
+  coverPage?: string;
 }

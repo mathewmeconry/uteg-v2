@@ -7,6 +7,7 @@ import { enqueueSnackbar } from "notistack";
 
 export type ClipboardCopyProps = {
   value: string;
+  disabled?: boolean;
 };
 
 export default function ClipboardCopy(props: ClipboardCopyProps) {
@@ -42,7 +43,7 @@ export default function ClipboardCopy(props: ClipboardCopyProps) {
 
   return (
     <Tooltip title={t("copy")}>
-      <IconButton onClick={onClick}>{icon}</IconButton>
+      <IconButton onClick={onClick} disabled={props.disabled}>{icon}</IconButton>
     </Tooltip>
   );
 }

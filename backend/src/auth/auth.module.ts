@@ -14,11 +14,14 @@ import { UserResolver } from './user/user.resolver';
 import { JudgetokenResolver } from './judgetoken/judgetoken.resolver';
 import { JudgetokenService } from './judgetoken/judgetoken.service';
 import { Judgetoken } from './judgetoken/judgetoken.entity';
+import { DisplaytokenService } from './displaytoken/displaytoken.service';
+import { DisplaytokenResolver } from './displaytoken/displaytoken.resolver';
+import { Displaytoken } from './displaytoken/displaytoken.entity';
 
 @Module({
   imports: [
     ConfigModule,
-    TypeOrmModule.forFeature([User, UserLink, Judgetoken]),
+    TypeOrmModule.forFeature([User, UserLink, Judgetoken, Displaytoken]),
     JwtModule.registerAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
@@ -32,7 +35,13 @@ import { Judgetoken } from './judgetoken/judgetoken.entity';
     }),
   ],
   controllers: [AuthController],
-  exports: [UserService, JudgetokenService, AuthService, RoleGuard],
+  exports: [
+    UserService,
+    JudgetokenService,
+    DisplaytokenService,
+    AuthService,
+    RoleGuard,
+  ],
   providers: [
     {
       provide: 'APP_GUARD',
@@ -43,6 +52,8 @@ import { Judgetoken } from './judgetoken/judgetoken.entity';
     UserResolver,
     JudgetokenResolver,
     JudgetokenService,
+    DisplaytokenService,
+    DisplaytokenResolver,
     AuthService,
   ],
 })

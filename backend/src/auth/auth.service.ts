@@ -95,10 +95,10 @@ export class AuthService {
 
   public async authorizeJudge(
     judgeID: number,
-    competitionID: number
+    competitionID: number,
   ): Promise<boolean> {
-    if(!competitionID) {
-      return false
+    if (!competitionID) {
+      return false;
     }
 
     const judge = await this.judgetokenService.findOne(judgeID);

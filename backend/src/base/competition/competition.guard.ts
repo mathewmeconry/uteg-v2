@@ -1,7 +1,4 @@
-import {
-  CanActivate,
-  ExecutionContext,
-} from '@nestjs/common';
+import { CanActivate, ExecutionContext } from '@nestjs/common';
 import { GqlExecutionContext } from '@nestjs/graphql';
 
 // Enriches gql context with role assigned to starterLink

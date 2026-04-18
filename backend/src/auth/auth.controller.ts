@@ -21,10 +21,10 @@ export class AuthController {
   @Post('token')
   @Public()
   async authenticateWithToken(
-    @Body('token') token: string
-  ): Promise<{token: string}> {
+    @Body('token') token: string,
+  ): Promise<{ token: string }> {
     return {
       token: await this.authService.authenticateWithToken(token),
-    }
+    };
   }
 }

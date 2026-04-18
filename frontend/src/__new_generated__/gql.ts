@@ -11,6 +11,7 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  * 3. It does not support dead code elimination, so it will add unused operations.
  *
  * Therefore it is highly recommended to use the babel or swc plugin for production.
+ * Learn more about it here: https://the-guild.dev/graphql/codegen/plugins/presets/preset-client#reducing-bundle-size
  */
 const documents = {
     "\n  query currentUser {\n    currentUser {\n      id\n      email\n      language\n    }\n  }\n": types.CurrentUserDocument,
@@ -58,6 +59,11 @@ const documents = {
     "\n  query useEGTStarterLinksQuery(\n    $ids: [ID!]\n    $divisionIDs: [ID!]\n    $withDeleted: Boolean\n  ) {\n    egtStarterLinks(\n      ids: $ids\n      divisionIDs: $divisionIDs\n      withDeleted: $withDeleted\n    ) {\n      ...useEGTStarterLinks_PlaceholderFragment\n    }\n  }\n": types.UseEgtStarterLinksQueryDocument,
     "\n  subscription useEEGTStarterLinksSubscription(\n    $ids: [ID!]\n    $divisionIDs: [ID!]\n  ) {\n    egtStarterLinks(ids: $ids, divisionIDs: $divisionIDs) {\n      ...useEGTStarterLinks_PlaceholderFragment\n    }\n  }\n": types.UseEegtStarterLinksSubscriptionDocument,
     "\n  fragment EGTStarterListFragment on StarterLink {\n    egt {\n      id\n      category\n      division {\n        id\n        number\n      }\n      lineup {\n        id\n        device {\n          id\n          deviceNumber\n        }\n      }\n    }\n  }\n": types.EgtStarterListFragmentFragmentDoc,
+    "\n  query EgtDisplaysTokens($competitionID: ID!) {\n    displayTokens(competitionID: $competitionID) {\n      id\n      token\n      ground\n    }\n  }\n": types.EgtDisplaysTokensDocument,
+    "\n  mutation EgtDisplaysCreateToken($competitionID: ID!, $ground: Int!) {\n    createDisplayToken(competitionID: $competitionID, ground: $ground) {\n      id\n      token\n      ground\n    }\n  }\n": types.EgtDisplaysCreateTokenDocument,
+    "\n  mutation EgtDisplaysResetToken($id: ID!) {\n    displayToken(id: $id) {\n      id\n      token\n    }\n  }\n": types.EgtDisplaysResetTokenDocument,
+    "\n  query EgtDisplaysGrounds($id: ID!) {\n    competition(id: $id) {\n      id\n      grounds\n    }\n  }\n": types.EgtDisplaysGroundsDocument,
+    "\n  mutation EgtDisplaysDeleteToken($id: ID!) {\n    deleteDisplayToken(id: $id)\n  }\n": types.EgtDisplaysDeleteTokenDocument,
     "\n    query egtDivisionGrading($id: ID!) {\n        egtDivision(id: $id) {\n            id\n            ground\n            totalRounds\n        }\n    }\n": types.EgtDivisionGradingDocument,
     "\n  query egtDivision($id: ID!) {\n    egtDivision(id: $id) {\n      id\n      category\n      ground\n      totalRounds\n      sex\n      number\n      lineups {\n        id\n        device {\n          id\n          deviceNumber\n        }\n      }\n    }\n  }\n": types.EgtDivisionDocument,
     "\n  query egtStarterLinkUnassigned($divisionID: ID!) {\n    egtStarterLinkUnassigned(divisionID: $divisionID) {\n      id\n      starterlink {\n        id\n        starter {\n          id\n          firstname\n          lastname\n          birthyear\n        }\n        club {\n          id\n          name\n        }\n      }\n    }\n  }\n": types.EgtStarterLinkUnassignedDocument,
@@ -279,6 +285,26 @@ export function graphql(source: "\n  subscription useEEGTStarterLinksSubscriptio
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n  fragment EGTStarterListFragment on StarterLink {\n    egt {\n      id\n      category\n      division {\n        id\n        number\n      }\n      lineup {\n        id\n        device {\n          id\n          deviceNumber\n        }\n      }\n    }\n  }\n"): (typeof documents)["\n  fragment EGTStarterListFragment on StarterLink {\n    egt {\n      id\n      category\n      division {\n        id\n        number\n      }\n      lineup {\n        id\n        device {\n          id\n          deviceNumber\n        }\n      }\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  query EgtDisplaysTokens($competitionID: ID!) {\n    displayTokens(competitionID: $competitionID) {\n      id\n      token\n      ground\n    }\n  }\n"): (typeof documents)["\n  query EgtDisplaysTokens($competitionID: ID!) {\n    displayTokens(competitionID: $competitionID) {\n      id\n      token\n      ground\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation EgtDisplaysCreateToken($competitionID: ID!, $ground: Int!) {\n    createDisplayToken(competitionID: $competitionID, ground: $ground) {\n      id\n      token\n      ground\n    }\n  }\n"): (typeof documents)["\n  mutation EgtDisplaysCreateToken($competitionID: ID!, $ground: Int!) {\n    createDisplayToken(competitionID: $competitionID, ground: $ground) {\n      id\n      token\n      ground\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation EgtDisplaysResetToken($id: ID!) {\n    displayToken(id: $id) {\n      id\n      token\n    }\n  }\n"): (typeof documents)["\n  mutation EgtDisplaysResetToken($id: ID!) {\n    displayToken(id: $id) {\n      id\n      token\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  query EgtDisplaysGrounds($id: ID!) {\n    competition(id: $id) {\n      id\n      grounds\n    }\n  }\n"): (typeof documents)["\n  query EgtDisplaysGrounds($id: ID!) {\n    competition(id: $id) {\n      id\n      grounds\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation EgtDisplaysDeleteToken($id: ID!) {\n    deleteDisplayToken(id: $id)\n  }\n"): (typeof documents)["\n  mutation EgtDisplaysDeleteToken($id: ID!) {\n    deleteDisplayToken(id: $id)\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

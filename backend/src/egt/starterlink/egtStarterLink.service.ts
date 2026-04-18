@@ -41,7 +41,7 @@ export class EGTStarterLinkService {
     let link: EGTStarterLink | null = null;
     if (linkData.starterLinkID) {
       link = await this.findByStarterLink(linkData.starterLinkID, true);
-      if(link && link.deletedAt) {
+      if (link && link.deletedAt) {
         await this.egtStarterLinkRepository.restore(link.id);
         link = await this.findByStarterLink(linkData.starterLinkID);
       }
@@ -74,9 +74,7 @@ export class EGTStarterLinkService {
       const starterLink = await link.starterLink;
       const starter = await starterLink.starter;
       const division = await this.egtDivisionService.findByNumber(
-        (
-          await starterLink.competition
-        ).id,
+        (await starterLink.competition).id,
         starter.sex,
         linkData.category,
         linkData.divisionNumber,

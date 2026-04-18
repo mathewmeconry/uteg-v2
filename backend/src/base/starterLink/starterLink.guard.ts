@@ -25,9 +25,7 @@ export class StarterLinkGuard implements CanActivate {
       return true;
     }
 
-    const starterLink = await this.starterLinkService.findOne(
-      args.id,
-    );
+    const starterLink = await this.starterLinkService.findOne(args.id);
 
     ctx.getContext().competition = (await starterLink.competition).id;
     return true;

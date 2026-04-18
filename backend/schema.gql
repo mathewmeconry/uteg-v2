@@ -67,6 +67,12 @@ input CreateUserInput {
   password: String!
 }
 
+type Displaytoken {
+  ground: Int!
+  id: ID!
+  token: String!
+}
+
 type EGTCategorySettings {
   category: Int!
   coverPage: String
@@ -210,10 +216,13 @@ type Mutation {
   competitionLogo(id: ID!, logo: Upload!): Competition!
   createClub(data: CreateClubInput!): Club!
   createCompetition(competition: CreateCompetitionInput!): Competition!
+  createDisplayToken(competitionID: ID!, ground: Int!): Displaytoken!
   createEgtDivision(data: CreateEGTDivisionInput!): EGTDivision!
   createStarter(data: CreateStarterInput!): Starter!
   createStarterLink(data: CreateStarterLinkInput!): StarterLink!
   createUser(user: CreateUserInput!): User!
+  deleteDisplayToken(id: ID!): Boolean!
+  displayToken(id: ID!): Displaytoken!
   egtCategorySettings(competitionID: ID!, data: EGTCategorySettingsInput!): EGTCategorySettings!
   egtSettings(competitionID: ID, data: EGTSettingsInput!): EGTSettings!
   egtStarterLink(data: EGTStarterLinkInput!, ignoreDivision: Boolean = false): EGTStarterLink!
@@ -233,6 +242,8 @@ type Query {
   competition(id: ID!): Competition!
   competitions: [Competition!]!
   currentUser: User
+  displayToken(competitionID: ID!, create: Boolean! = false, ground: Int): Displaytoken
+  displayTokens(competitionID: ID!): [Displaytoken!]!
   egtCategorySettings(category: Int!, competitionID: ID!, sex: Sex!): EGTCategorySettings!
   egtDevices(competitionID: ID!): [EGTDevice!]!
   egtDivision(id: ID!): EGTDivision

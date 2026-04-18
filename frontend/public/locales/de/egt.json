@@ -67,6 +67,7 @@
   "judges": "Wertungsrichter",
   "token_reset": "Token zurücksetzen",
   "judging": "Werten",
+  "displays": "Anzeigen",
   "manual_one": "Anleitung",
   "manual_other": "Anleitungen",
   "judging_manual": "Wertungsrichteranleitung",
@@ -81,5 +82,7 @@
   "judging_manual_division_overview": "Abteilungsübersicht",
   "judging_manual_division_overview_content": "Um eine Übersicht über alle Turner:innen zu bekommen, klicke auf das mittlere Icon in der unteren Zeile.",
   "judging_manual_division_overview_close": "Um die Übersicht zu schliessen klicke auf das \"X\" in der oberen rechten Ecke.",
-  "judging_manual_notifications": "Es kann sein, dass $t(common:notification, {\"count\": 2}) angezeigt werden. Diese informieren dich über Änderungen in der laufenden $t(division). Du kannst sie entfernen indem du auf das Häckchen klickst sobald du diese gelesen hast."
+  "judging_manual_notifications": "Es kann sein, dass $t(common:notification, {\"count\": 2}) angezeigt werden. Diese informieren dich über Änderungen in der laufenden $t(division). Du kannst sie entfernen indem du auf das Häckchen klickst sobald du diese gelesen hast.",
+  "no_displays": "Keine Anzeigen gefunden",
+  "create_display_token": "Anzeigetoken erstellen"
 }

@@ -98,9 +98,9 @@ export class StarterLinkResolver {
         await this.competitionService.findOne(linkData.competitionID),
       );
       const result = await this.starterLinkService.create(starterLink);
-      return result
+      return result;
     } catch (e) {
-      if (e.message === "Already Existing") {
+      if (e.message === 'Already Existing') {
         const starterlink = await this.starterLinkService.findForCompetition(
           linkData.starterID,
           linkData.competitionID,
@@ -133,17 +133,17 @@ export class StarterLinkResolver {
 
   @ResolveField(() => Starter)
   async starter(@Parent() starterLink: StarterLink): Promise<Starter> {
-    return this.starterService.findOne(starterLink.starterId)
+    return this.starterService.findOne(starterLink.starterId);
   }
 
   @ResolveField(() => Club)
   async club(@Parent() starterLink: StarterLink): Promise<Club> {
-    return this.clubService.findOne(starterLink.clubId)
+    return this.clubService.findOne(starterLink.clubId);
   }
 
   @ResolveField(() => Competition)
   async competition(@Parent() starterLink: StarterLink): Promise<Competition> {
-    return this.competitionService.findOne(starterLink.competitionId)
+    return this.competitionService.findOne(starterLink.competitionId);
   }
 
   @ResolveField()

@@ -22,12 +22,12 @@ export class GradeResolver {
   }
 
   @Role(ROLES.JUDGE)
-  @Query(() => [Grade], {name: 'starterGrades'})
+  @Query(() => [Grade], { name: 'starterGrades' })
   async findForStarters(
-    @Args('starterlinkIds', {type: () => [ID]}) starterlinkIds: number[],
-    @Args('device', {type: () => Int, nullable: true}) device?: number
+    @Args('starterlinkIds', { type: () => [ID] }) starterlinkIds: number[],
+    @Args('device', { type: () => Int, nullable: true }) device?: number,
   ): Promise<Grade[]> {
-    return this.gradeService.findForStarters(starterlinkIds, device)
+    return this.gradeService.findForStarters(starterlinkIds, device);
   }
 
   @Role(ROLES.ADMIN)
