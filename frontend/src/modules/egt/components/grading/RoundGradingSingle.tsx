@@ -74,31 +74,25 @@ export default function RoundGradingSingle(props: RoundGradingSingleProps) {
     deviceQuery,
     { loading: deviceDataLoading, data: deviceData, refetch: refetchDevice },
   ] = useEgtDeviceGradingLazyQuery();
-  const {
-    data: allStarterLinks,
-    loading: starterLinksLoading,
-  } = useEGTStarterLinks(EGTStarterLinkFragment, {
-    divisionIDs: props.divisionIds,
-    withDeleted: true,
-  });
-  const [
-    gradesQuery,
-    { loading: gradesLoading, data: gradesData },
-  ] = useEgtStarterGradesLazyQuery({
-    variables: {
-      device: props.device,
-      starterlinkIds:
-        starterLinks
-          .filter((starterLink) => !starterLink.isDeleted)
-          .map((starterlink) => starterlink.starterlink.id) ?? [],
-    },
-    fetchPolicy: "network-only",
-  });
+  const { data: allStarterLinks, loading: starterLinksLoading } =
+    useEGTStarterLinks(EGTStarterLinkFragment, {
+      divisionIDs: props.divisionIds,
+      withDeleted: true,
+    });
+  const [gradesQuery, { loading: gradesLoading, data: gradesData }] =
+    useEgtStarterGradesLazyQuery({
+      variables: {
+        device: props.device,
+        starterlinkIds:
+          starterLinks
+            .filter((starterLink) => !starterLink.isDeleted)
+            .map((starterlink) => starterlink.starterlink.id) ?? [],
+      },
+      fetchPolicy: "network-only",
+    });
   const [addGradesMutation, { loading: saving }] = useEgtAddGradesMutation();
-  const [
-    advanceDivisionsDevice,
-    { loading: advancingDevice },
-  ] = useAdvanceEgtDivisionsDeviceMutation();
+  const [advanceDivisionsDevice, { loading: advancingDevice }] =
+    useAdvanceEgtDivisionsDeviceMutation();
   const previousStarterLinks = usePrevious(allStarterLinks);
 
   const form = useForm({
@@ -125,15 +119,15 @@ export default function RoundGradingSingle(props: RoundGradingSingleProps) {
       (allStarterLinks.filter(
         (link) =>
           deviceStarters.findIndex(
-            (deviceLink) => deviceLink.id === link.id
-          ) !== -1
+            (deviceLink) => deviceLink.id === link.id,
+          ) !== -1,
       ) as EgtStarterLink[]) ?? [];
     setStarterLinks(
       activeStarterLinks.sort(
         (a, b) =>
           deviceStarters.findIndex((dl) => dl.id === a.id) -
-          deviceStarters.findIndex((dl) => dl.id === b.id)
-      )
+          deviceStarters.findIndex((dl) => dl.id === b.id),
+      ),
     );
   }, [allStarterLinks, deviceData]);
 
@@ -144,7 +138,7 @@ export default function RoundGradingSingle(props: RoundGradingSingleProps) {
 
     for (const starter of allStarterLinks) {
       const previousValue = previousStarterLinks.find(
-        (prevStarter) => prevStarter.id === starter.id
+        (prevStarter) => prevStarter.id === starter.id,
       );
 
       if (!previousValue?.isDeleted && !!starter.isDeleted) {
@@ -166,7 +160,7 @@ export default function RoundGradingSingle(props: RoundGradingSingleProps) {
                 <DoneIcon />
               </Button>
             ),
-          }
+          },
         );
       }
 
@@ -192,7 +186,7 @@ export default function RoundGradingSingle(props: RoundGradingSingleProps) {
                 <DoneIcon />
               </Button>
             ),
-          }
+          },
         );
       }
     }
@@ -228,7 +222,7 @@ export default function RoundGradingSingle(props: RoundGradingSingleProps) {
         }
 
         const grade = gradesData.starterGrades.find(
-          (grade) => grade.starterlink.id === starter.starterlink.id
+          (grade) => grade.starterlink.id === starter.starterlink.id,
         );
         if (maxInputs > 1) {
           values[starter.starterlink.id] = {
@@ -252,14 +246,14 @@ export default function RoundGradingSingle(props: RoundGradingSingleProps) {
     for (const starter of starterLinks) {
       if (
         deviceData.egtJudgingDevice.device.overrides.find(
-          (override) => override.category === starter.category
+          (override) => override.category === starter.category,
         )
       ) {
         inputs = Math.max(
           inputs,
           deviceData.egtJudgingDevice.device.overrides.find(
-            (override) => override.category === starter.category
-          )?.inputs ?? 1
+            (override) => override.category === starter.category,
+          )?.inputs ?? 1,
         );
       }
     }
@@ -270,7 +264,7 @@ export default function RoundGradingSingle(props: RoundGradingSingleProps) {
     if (maxInputs > 1) {
       for (const starterId of Object.keys(formValues)) {
         const starter = starterLinks.find(
-          (starter) => starter.starterlink.id === starterId
+          (starter) => starter.starterlink.id === starterId,
         );
         const categorySettings = getCategorySettings(starter?.category || 1);
         if (!categorySettings) {
@@ -281,15 +275,15 @@ export default function RoundGradingSingle(props: RoundGradingSingleProps) {
           .filter((key) => key !== "final")
           .map((key) =>
             parseFloat(
-              (formValues[starterId][key] ?? "").toString().replace(",", ".")
-            )
+              (formValues[starterId][key] ?? "").toString().replace(",", "."),
+            ),
           )
           .filter((grade) => grade);
         if (categorySettings?.inputs > 1 && Object.keys(grades).length > 0) {
           form.setValue(
             `${starterId}.final`,
             calcGrade(grades, categorySettings.aggregationMode),
-            { shouldDirty: true }
+            { shouldDirty: true },
           );
           form.clearErrors(`${starterId}.final`);
         }
@@ -299,7 +293,7 @@ export default function RoundGradingSingle(props: RoundGradingSingleProps) {
 
   function calcGrade(
     grades: number[],
-    aggregationMode: EgtDeviceAggregationMode
+    aggregationMode: EgtDeviceAggregationMode,
   ) {
     switch (aggregationMode) {
       case "AVG":
@@ -413,7 +407,7 @@ export default function RoundGradingSingle(props: RoundGradingSingleProps) {
       formValues[starter.starterlink.id] ?? {};
     let previousSet =
       Object.keys(previousValues).filter(
-        (key) => key !== "final" && previousValues[key]
+        (key) => key !== "final" && previousValues[key],
       ).length > 0;
     return [...Array(maxInputs + 1).keys()].map((key) => {
       if (key === maxInputs) {
@@ -476,8 +470,26 @@ export default function RoundGradingSingle(props: RoundGradingSingleProps) {
   }
 
   function onNext() {
+    let grade = formValues[starterLinks[starterIndex].starterlink.id];
+    if (typeof grade === "object") {
+      grade = grade.final;
+    }
+    addGradesMutation({
+      variables: {
+        grades: [
+          {
+            deviceNumber: props.device,
+            module: "egt",
+            starterlinkId: starterLinks[starterIndex].starterlink.id,
+            value: parseFloat(grade),
+          },
+        ],
+      },
+    });
     if (starterIndex < (starterLinks.length ?? 0) - 1) {
       setStarterIndex(starterIndex + 1);
+    } else {
+      setInReview(true);
     }
   }
 
@@ -513,7 +525,7 @@ export default function RoundGradingSingle(props: RoundGradingSingleProps) {
                     {t(
                       `category_${
                         starter.category
-                      }_${realStarter.sex.toLowerCase()}`
+                      }_${realStarter.sex.toLowerCase()}`,
                     )}
                   </TableCell>
                   <TableCell>
@@ -623,7 +635,7 @@ export default function RoundGradingSingle(props: RoundGradingSingleProps) {
               {t(
                 `category_${
                   starter.category
-                }_${starter.starterlink.starter.sex.toLowerCase()}`
+                }_${starter.starterlink.starter.sex.toLowerCase()}`,
               )}
             </Typography>
             {renderGradeInputs(starter as EgtStarterLink)}
@@ -662,7 +674,7 @@ export default function RoundGradingSingle(props: RoundGradingSingleProps) {
                 variant="contained"
                 color="success"
                 type="submit"
-                onClick={() => setInReview(true)}
+                onClick={onNext}
               >
                 {t("review", { ns: "common" })}
               </Button>
@@ -673,10 +685,10 @@ export default function RoundGradingSingle(props: RoundGradingSingleProps) {
     );
   }
 
-  const starter = useMemo(() => starterLinks[starterIndex], [
-    starterLinks,
-    starterIndex,
-  ]);
+  const starter = useMemo(
+    () => starterLinks[starterIndex],
+    [starterLinks, starterIndex],
+  );
 
   if (props.isFinished) {
     return (
