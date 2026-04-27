@@ -19,6 +19,8 @@ import { AuthModule } from 'src/auth/auth.module';
 import { ModuleService } from './modules/module.service';
 import { ConfigModule } from 'src/config/config.module';
 import { FileModule } from 'src/file/file.module';
+import { GradeGuard } from './grade/grade.guard';
+import { GradeSubscriber } from './grade/grade.subscriber';
 
 @Module({
   imports: [
@@ -48,6 +50,8 @@ import { FileModule } from 'src/file/file.module';
     StarterService,
     StarterLinkService,
     ModuleService,
+    GradeGuard,
+    GradeSubscriber,
   ],
 })
 export class BaseModule {}

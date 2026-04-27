@@ -67,6 +67,7 @@
   "judges": "Judges",
   "token_reset": "Token reset",
   "judging": "Judging",
+  "displays": "Grade Displays",
   "manual_one": "Manual",
   "manual_other": "Manuals",
   "judging_manual": "Judging Manual",
@@ -81,5 +82,7 @@
   "judging_manual_division_overview": "Divisionoverview",
   "judging_manual_division_overview_content": "To get an overview of all starters click on the middle icon in the lower row.",
   "judging_manual_division_overview_close": "To close the overview click on the \"X\" in the top right corner.",
-  "judging_manual_notifications": "It may be that $t(common:notification, {\"count\": 2}) pop up. These inform you about changes during the current $t(division). As soon as you read them, you can press on the checkmark to remove it."
+  "judging_manual_notifications": "It may be that $t(common:notification, {\"count\": 2}) pop up. These inform you about changes during the current $t(division). As soon as you read them, you can press on the checkmark to remove it.",
+  "no_displays": "No displays found",
+  "create_display_token": "Create display token"
 }

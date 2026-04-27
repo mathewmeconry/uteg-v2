@@ -1,10 +1,4 @@
-import {
-  Field,
-  ID,
-  InputType,
-  Int,
-  registerEnumType,
-} from '@nestjs/graphql';
+import { Field, ID, InputType, Int, registerEnumType } from '@nestjs/graphql';
 import { SEX } from 'src/base/starter/starter.types';
 
 @InputType()
@@ -24,8 +18,8 @@ export class EGTDivisionFilterInput {
   @Field(() => EGTDivisionStates, { nullable: true })
   state?: EGTDivisionStates;
 
-  @Field(() => [ID], {nullable: true})
-  ids?: number[]
+  @Field(() => [ID], { nullable: true })
+  ids?: number[];
 }
 
 @InputType()

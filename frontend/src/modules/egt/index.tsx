@@ -23,6 +23,9 @@ import DivisionGrading from "./pages/divisions/[id]/grading/divisionGrading";
 import { graphql } from "../../__new_generated__/gql";
 import { MRT_ColumnDef, MRT_FilterFns } from "material-react-table";
 import { MRT_ColumnDefExtension } from "../../types/MRT_ColumnDefExtension";
+import Displays from "./pages/displays/displays";
+import TvIcon from '@mui/icons-material/Tv';
+import Display from "./pages/display/display";
 
 const routes: RouteObject[] = [
   {
@@ -75,6 +78,10 @@ const routes: RouteObject[] = [
         element: <Judges />,
       },
       {
+        path: "displays",
+        element: <Displays />
+      },
+      {
         path: "judging",
         handle: {
           layout: {
@@ -91,6 +98,23 @@ const routes: RouteObject[] = [
           },
         ],
       },
+      {
+        path: "display",
+        handle: {
+          layout: {
+            hasDrawer: false,
+            hideAccount: true,
+            skipTokenCheck: true,
+            hideAppbar: true,
+          },
+        },
+        children: [
+          {
+            path: ":token",
+            element: <Display />,
+          },
+        ],
+      }
     ],
   },
 ];
@@ -207,6 +231,12 @@ export const EGTModule: Module = {
       text: "judges",
       key: "judges",
       to: "/competition/:id/egt/judges",
+    },
+    {
+      icon: <TvIcon />,
+      text: "displays",
+      key: "displays",
+      to: "/competition/:id/egt/displays",
     },
   ],
 };

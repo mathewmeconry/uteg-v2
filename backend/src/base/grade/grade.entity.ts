@@ -1,6 +1,19 @@
 import { Field, Float, ID, Int, ObjectType } from '@nestjs/graphql';
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { StarterLink } from '../starterLink/starterLink.entity';
+import { EventEmitter } from 'stream';
+import { PubSub } from 'graphql-subscriptions';
+
+const eventEmitter = new EventEmitter();
+eventEmitter.setMaxListeners(50);
+export const GradePubSub = new PubSub({
+  eventEmitter
+})
+
+export enum GradePubSubEvents {
+  UPDATE = 'update',
+  CREATE = 'create',
+}
 
 @ObjectType()
 @Entity()

@@ -55,7 +55,9 @@ export class JudgetokenResolver {
 
   @Role(ROLES.ADMIN)
   @Mutation(() => Judgetoken, { name: 'resetJudgeToken' })
-  async resetToken(@Args('id', { type: () => ID }) id: number): Promise<Judgetoken> {
+  async resetToken(
+    @Args('id', { type: () => ID }) id: number,
+  ): Promise<Judgetoken> {
     return this.judgetokenService.resetToken(id);
   }
 }

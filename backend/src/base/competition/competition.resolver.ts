@@ -54,7 +54,7 @@ export class CompetitionResolver {
   }
 
   @Query(() => Competition, { name: 'competition' })
-  @Role(ROLES.JUDGE)
+  @Role(ROLES.DISPLAY)
   async findById(
     @Args('id', { type: () => ID }) id: number,
   ): Promise<Competition> {

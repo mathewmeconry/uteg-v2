@@ -14,3 +14,9 @@ export class GradeInput {
   @Field()
   module: string;
 }
+
+@InputType() 
+export class GradeFilterInput {
+  @Field(() => [ID])
+  starterlinkIds?: string[];
+}

@@ -22,7 +22,7 @@ export async function getToken(email: string, password: string) {
   localStorage.setItem("token", responseBody.token);
 }
 
-export async function authWithJudgeToken(token: string) {
+export async function authWithToken(token: string) {
   const resp = await fetch(
     `${import.meta.env.VITE_BACKEND_URI || ""}/auth/token`,
     {

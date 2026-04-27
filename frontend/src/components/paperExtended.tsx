@@ -12,27 +12,24 @@ export type PaperExtendedProps = {
 export function PaperExtended(props: PaperExtendedProps & PropsWithChildren) {
   return (
     <Paper sx={{ padding: 2, ...props.sx }}>
-      <Grid container spacing={2} justifyContent={"space-between"}>
-        <Grid item xs="auto">
+      <Grid
+        container
+        spacing={2}
+        justifyContent={"space-between"}
+        alignItems={"center"}
+      >
+        <Grid item xs={4}>
           <Typography variant="h4">{props.title}</Typography>
         </Grid>
-        <Grid
-          item
-          container
-          xs={12}
-          md={3}
-          justifyContent={"space-between"}
-          alignItems={"flex-end"}
-        >
-          <Grid item xs="auto">
-            {props.titleSuffix && (
-              <Typography variant="caption">{props.titleSuffix}</Typography>
-            )}
-          </Grid>
-
-          <Grid item xs="auto">
-            {props.actions || []}
-          </Grid>
+        <Grid item xs={4}>
+          {props.titleSuffix && (
+            <Typography variant="h6" textAlign={"center"}>
+              {props.titleSuffix}
+            </Typography>
+          )}
+        </Grid>
+        <Grid container xs={4} item alignSelf={"center"} justifyContent={'flex-end'}>
+          {props.actions || []}
         </Grid>
       </Grid>
       <Divider sx={{ mb: 2 }} />

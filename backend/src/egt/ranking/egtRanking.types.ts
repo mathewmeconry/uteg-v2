@@ -23,7 +23,7 @@ export enum Award {
   SILVER = 'silver',
   BRONZE = 'bronze',
   HONOUR = 'honour',
-  NONE = ''
+  NONE = '',
 }
 
 registerEnumType(Award, { name: 'EGTAward' });

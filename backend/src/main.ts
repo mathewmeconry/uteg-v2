@@ -7,10 +7,12 @@ async function bootstrap() {
     snapshot: process.env.NODE_ENV === 'development',
   });
   app.enableCors();
-  app.use(graphqlUploadExpress({ 
-    maxFileSize: 5242880, // 5 MB
-    maxFiles: 1,
-  }));
+  app.use(
+    graphqlUploadExpress({
+      maxFileSize: 5242880, // 5 MB
+      maxFiles: 1,
+    }),
+  );
   await app.listen(process.env.PORT || 3000, '0.0.0.0');
 }
 bootstrap();

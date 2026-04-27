@@ -48,6 +48,9 @@ export class AuthGuard implements CanActivate {
         case JwtType.JUDGE:
           ctx.getContext().judge = payload;
           break;
+        case JwtType.DISPLAY:
+          ctx.getContext().display = payload;
+          break;
       }
 
       return true;

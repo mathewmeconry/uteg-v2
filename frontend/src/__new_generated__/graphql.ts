@@ -20,33 +20,6 @@ export type Scalars = {
   Upload: { input: any; output: any; }
 };
 
-export type Club = {
-  __typename?: 'Club';
-  id: Scalars['ID']['output'];
-  location: Scalars['String']['output'];
-  name: Scalars['String']['output'];
-};
-
-export type Competition = {
-  __typename?: 'Competition';
-  endDate: Scalars['Timestamp']['output'];
-  grounds: Scalars['Int']['output'];
-  id: Scalars['ID']['output'];
-  location: Scalars['String']['output'];
-  logo?: Maybe<Scalars['String']['output']>;
-  modules: Array<Scalars['String']['output']>;
-  name: Scalars['String']['output'];
-  startDate: Scalars['Timestamp']['output'];
-  stats: CompetitionStats;
-};
-
-export type CompetitionStats = {
-  __typename?: 'CompetitionStats';
-  clubs: Scalars['Int']['output'];
-  grades: Scalars['Int']['output'];
-  starters: Scalars['Int']['output'];
-};
-
 export type CreateClubInput = {
   location: Scalars['String']['input'];
   name: Scalars['String']['input'];
@@ -88,28 +61,11 @@ export type CreateUserInput = {
   password: Scalars['String']['input'];
 };
 
-export type EgtCategorySettings = {
-  __typename?: 'EGTCategorySettings';
-  category: Scalars['Int']['output'];
-  coverPage?: Maybe<Scalars['String']['output']>;
-  honourPrecentage: Scalars['Int']['output'];
-  sex: Sex;
-};
-
 export type EgtCategorySettingsInput = {
   category: Scalars['Int']['input'];
   coverPage?: InputMaybe<Scalars['String']['input']>;
   honourPrecentage: Scalars['Int']['input'];
   sex: Sex;
-};
-
-export type EgtDevice = {
-  __typename?: 'EGTDevice';
-  aggregationMode: EgtDeviceAggregationMode;
-  deviceNumber: Scalars['Int']['output'];
-  id: Scalars['ID']['output'];
-  inputs: Scalars['Int']['output'];
-  overrides: Array<EgtDeviceOverride>;
 };
 
 export enum EgtDeviceAggregationMode {
@@ -118,30 +74,6 @@ export enum EgtDeviceAggregationMode {
   Min = 'MIN',
   None = 'NONE'
 }
-
-export type EgtDeviceOverride = {
-  __typename?: 'EGTDeviceOverride';
-  aggregationMode: EgtDeviceAggregationMode;
-  category: Scalars['Int']['output'];
-  inputs: Scalars['Int']['output'];
-};
-
-export type EgtDivision = {
-  __typename?: 'EGTDivision';
-  category: Scalars['Int']['output'];
-  currentDeviceRound: Array<Scalars['Int']['output']>;
-  currentRound: Scalars['Int']['output'];
-  ground: Scalars['Int']['output'];
-  id: Scalars['ID']['output'];
-  lastStateTransition?: Maybe<Scalars['Timestamp']['output']>;
-  lineups: Array<EgtLineup>;
-  number: Scalars['Int']['output'];
-  sex: Sex;
-  starters: StarterLink;
-  state: EgtDivisionStates;
-  totalRounds: Scalars['Int']['output'];
-  totalStarters: Scalars['Int']['output'];
-};
 
 export type EgtDivisionFilterInput = {
   category?: InputMaybe<Scalars['Int']['input']>;
@@ -158,40 +90,9 @@ export enum EgtDivisionStates {
   Running = 'RUNNING'
 }
 
-export type EgtJudgingDevice = {
-  __typename?: 'EGTJudgingDevice';
-  device: EgtDevice;
-  lineups: Array<EgtLineup>;
-  round: Scalars['Int']['output'];
-  starterslist: Array<EgtStarterLink>;
-};
-
-export type EgtLineup = {
-  __typename?: 'EGTLineup';
-  device: EgtDevice;
-  id: Scalars['ID']['output'];
-  starterlinks: Array<EgtStarterLink>;
-};
-
-export type EgtSettings = {
-  __typename?: 'EGTSettings';
-  categorySettings: Array<EgtCategorySettings>;
-  id: Scalars['ID']['output'];
-};
-
 export type EgtSettingsInput = {
   categorySettings: Array<EgtCategorySettingsInput>;
   id?: InputMaybe<Scalars['ID']['input']>;
-};
-
-export type EgtStarterLink = {
-  __typename?: 'EGTStarterLink';
-  category?: Maybe<Scalars['Int']['output']>;
-  division?: Maybe<EgtDivision>;
-  id: Scalars['ID']['output'];
-  isDeleted: Scalars['Boolean']['output'];
-  lineup?: Maybe<EgtLineup>;
-  starterlink: StarterLink;
 };
 
 export type EgtStarterLinkInput = {
@@ -203,21 +104,8 @@ export type EgtStarterLinkInput = {
   starterLinkID?: InputMaybe<Scalars['ID']['input']>;
 };
 
-export type EgtStarterRanking = {
-  __typename?: 'EGTStarterRanking';
-  award: Scalars['String']['output'];
-  egtStarterlink: EgtStarterLink;
-  grades: Array<Grade>;
-  rank: Scalars['Int']['output'];
-  total: Scalars['Float']['output'];
-};
-
-export type Grade = {
-  __typename?: 'Grade';
-  deviceNumber: Scalars['Int']['output'];
-  id: Scalars['ID']['output'];
-  starterlink: StarterLink;
-  value: Scalars['Float']['output'];
+export type GradeFilterInput = {
+  starterlinkIds: Array<Scalars['ID']['input']>;
 };
 
 export type GradeInput = {
@@ -227,301 +115,9 @@ export type GradeInput = {
   value: Scalars['Float']['input'];
 };
 
-export type Judgetoken = {
-  __typename?: 'Judgetoken';
-  device: Scalars['Int']['output'];
-  ground: Scalars['Int']['output'];
-  id: Scalars['ID']['output'];
-  token: Scalars['String']['output'];
-};
-
-export type Mutation = {
-  __typename?: 'Mutation';
-  addGrades: Array<Grade>;
-  advanceEgtDivisionDevice: EgtDivision;
-  advanceEgtDivisionsDevice: EgtDivision;
-  competitionLogo: Competition;
-  createClub: Club;
-  createCompetition: Competition;
-  createEgtDivision: EgtDivision;
-  createStarter: Starter;
-  createStarterLink: StarterLink;
-  createUser: User;
-  egtCategorySettings: EgtCategorySettings;
-  egtSettings: EgtSettings;
-  egtStarterLink: EgtStarterLink;
-  removeEgtDivision: EgtDivision;
-  removeStarterLink: StarterLink;
-  resetJudgeToken: Judgetoken;
-  updateCompetition: Competition;
-  updateEgtDivisionState: EgtDivision;
-  updateStarter: Starter;
-  updateStarterLink: StarterLink;
-  updateUser: User;
-  upsertStarterLink: StarterLink;
-};
-
-
-export type MutationAddGradesArgs = {
-  grades: Array<GradeInput>;
-};
-
-
-export type MutationAdvanceEgtDivisionDeviceArgs = {
-  device: Scalars['Int']['input'];
-  id: Scalars['ID']['input'];
-  round: Scalars['Int']['input'];
-};
-
-
-export type MutationAdvanceEgtDivisionsDeviceArgs = {
-  device: Scalars['Int']['input'];
-  ids: Array<Scalars['ID']['input']>;
-  round: Scalars['Int']['input'];
-};
-
-
-export type MutationCompetitionLogoArgs = {
-  id: Scalars['ID']['input'];
-  logo: Scalars['Upload']['input'];
-};
-
-
-export type MutationCreateClubArgs = {
-  data: CreateClubInput;
-};
-
-
-export type MutationCreateCompetitionArgs = {
-  competition: CreateCompetitionInput;
-};
-
-
-export type MutationCreateEgtDivisionArgs = {
-  data: CreateEgtDivisionInput;
-};
-
-
-export type MutationCreateStarterArgs = {
-  data: CreateStarterInput;
-};
-
-
-export type MutationCreateStarterLinkArgs = {
-  data: CreateStarterLinkInput;
-};
-
-
-export type MutationCreateUserArgs = {
-  user: CreateUserInput;
-};
-
-
-export type MutationEgtCategorySettingsArgs = {
-  competitionID: Scalars['ID']['input'];
-  data: EgtCategorySettingsInput;
-};
-
-
-export type MutationEgtSettingsArgs = {
-  competitionID?: InputMaybe<Scalars['ID']['input']>;
-  data: EgtSettingsInput;
-};
-
-
-export type MutationEgtStarterLinkArgs = {
-  data: EgtStarterLinkInput;
-  ignoreDivision?: InputMaybe<Scalars['Boolean']['input']>;
-};
-
-
-export type MutationRemoveEgtDivisionArgs = {
-  id: Scalars['ID']['input'];
-};
-
-
-export type MutationRemoveStarterLinkArgs = {
-  id: Scalars['ID']['input'];
-};
-
-
-export type MutationResetJudgeTokenArgs = {
-  id: Scalars['ID']['input'];
-};
-
-
-export type MutationUpdateCompetitionArgs = {
-  data: UpdateCompetitionInput;
-  id: Scalars['ID']['input'];
-};
-
-
-export type MutationUpdateEgtDivisionStateArgs = {
-  data: UpdateEgtDivisionStateInput;
-};
-
-
-export type MutationUpdateStarterArgs = {
-  data: UpdateStarterInput;
-  id: Scalars['ID']['input'];
-};
-
-
-export type MutationUpdateStarterLinkArgs = {
-  data: UpdateStarterLinkInput;
-  id: Scalars['ID']['input'];
-};
-
-
-export type MutationUpdateUserArgs = {
-  data: UpdateUserInput;
-};
-
-
-export type MutationUpsertStarterLinkArgs = {
-  data: CreateStarterLinkInput;
-};
-
-export type Query = {
-  __typename?: 'Query';
-  clubs: Array<Club>;
-  competition: Competition;
-  competitions: Array<Competition>;
-  currentUser?: Maybe<User>;
-  egtCategorySettings: EgtCategorySettings;
-  egtDevices: Array<EgtDevice>;
-  egtDivision?: Maybe<EgtDivision>;
-  egtDivisions: Array<EgtDivision>;
-  egtJudgingDevice: EgtJudgingDevice;
-  egtJudgingDevices: Array<EgtJudgingDevice>;
-  egtLineup?: Maybe<EgtLineup>;
-  egtSettings: EgtSettings;
-  egtStarterLink?: Maybe<EgtStarterLink>;
-  egtStarterLinkUnassigned: Array<EgtStarterLink>;
-  egtStarterLinks: Array<EgtStarterLink>;
-  egtStarterRankings: Array<EgtStarterRanking>;
-  findJudgeToken?: Maybe<Judgetoken>;
-  grades: Array<Grade>;
-  judgeToken: Judgetoken;
-  starterGrades: Array<Grade>;
-  starterLink?: Maybe<StarterLink>;
-  starterLinks: Array<StarterLink>;
-  starters: Array<Starter>;
-  users: Array<User>;
-};
-
-
-export type QueryCompetitionArgs = {
-  id: Scalars['ID']['input'];
-};
-
-
-export type QueryEgtCategorySettingsArgs = {
-  category: Scalars['Int']['input'];
-  competitionID: Scalars['ID']['input'];
-  sex: Sex;
-};
-
-
-export type QueryEgtDevicesArgs = {
-  competitionID: Scalars['ID']['input'];
-};
-
-
-export type QueryEgtDivisionArgs = {
-  id: Scalars['ID']['input'];
-};
-
-
-export type QueryEgtDivisionsArgs = {
-  filter: EgtDivisionFilterInput;
-};
-
-
-export type QueryEgtJudgingDeviceArgs = {
-  device: Scalars['Int']['input'];
-  ids: Array<Scalars['ID']['input']>;
-  round: Scalars['Int']['input'];
-};
-
-
-export type QueryEgtJudgingDevicesArgs = {
-  ids: Array<Scalars['ID']['input']>;
-  round: Scalars['Int']['input'];
-};
-
-
-export type QueryEgtLineupArgs = {
-  id: Scalars['ID']['input'];
-};
-
-
-export type QueryEgtSettingsArgs = {
-  competitionID: Scalars['ID']['input'];
-};
-
-
-export type QueryEgtStarterLinkArgs = {
-  id?: InputMaybe<Scalars['ID']['input']>;
-  starterLinkID?: InputMaybe<Scalars['ID']['input']>;
-};
-
-
-export type QueryEgtStarterLinkUnassignedArgs = {
-  divisionID: Scalars['ID']['input'];
-};
-
-
-export type QueryEgtStarterLinksArgs = {
-  divisionIDs?: InputMaybe<Array<Scalars['ID']['input']>>;
-  ids?: InputMaybe<Array<Scalars['ID']['input']>>;
-  withDeleted?: InputMaybe<Scalars['Boolean']['input']>;
-};
-
-
-export type QueryEgtStarterRankingsArgs = {
-  category: Scalars['Int']['input'];
-  competitionID: Scalars['ID']['input'];
-  sex: Sex;
-};
-
-
-export type QueryFindJudgeTokenArgs = {
-  competitionID: Scalars['ID']['input'];
-  create?: Scalars['Boolean']['input'];
-  device: Scalars['Int']['input'];
-  ground: Scalars['Int']['input'];
-};
-
-
-export type QueryJudgeTokenArgs = {
-  id: Scalars['Int']['input'];
-};
-
-
-export type QueryStarterGradesArgs = {
-  device?: InputMaybe<Scalars['Int']['input']>;
-  starterlinkIds: Array<Scalars['ID']['input']>;
-};
-
-
-export type QueryStarterLinkArgs = {
-  id: Scalars['ID']['input'];
-};
-
-
-export type QueryStarterLinksArgs = {
-  competitionID: Scalars['ID']['input'];
-  sex?: InputMaybe<Scalars['String']['input']>;
-};
-
-
-export type QueryStartersArgs = {
-  filter: StarterFilter;
-};
-
 export enum Roles {
   Admin = 'ADMIN',
+  Display = 'DISPLAY',
   Judge = 'JUDGE',
   Starter = 'STARTER',
   Viewer = 'VIEWER'
@@ -532,50 +128,12 @@ export enum Sex {
   Male = 'MALE'
 }
 
-export type Starter = {
-  __typename?: 'Starter';
-  birthyear: Scalars['Int']['output'];
-  firstname: Scalars['String']['output'];
-  id: Scalars['ID']['output'];
-  lastname: Scalars['String']['output'];
-  sex: Sex;
-  starterLinks: Array<StarterLink>;
-  stvID?: Maybe<Scalars['String']['output']>;
-};
-
 export type StarterFilter = {
   competitionID?: InputMaybe<Scalars['ID']['input']>;
   firstname?: InputMaybe<Scalars['String']['input']>;
   lastname?: InputMaybe<Scalars['String']['input']>;
   sex?: InputMaybe<Sex>;
   stvID?: InputMaybe<Scalars['String']['input']>;
-};
-
-export type StarterLink = {
-  __typename?: 'StarterLink';
-  club: Club;
-  competition: Competition;
-  egt?: Maybe<EgtStarterLink>;
-  id: Scalars['ID']['output'];
-  isDeleted: Scalars['Boolean']['output'];
-  starter: Starter;
-};
-
-export type Subscription = {
-  __typename?: 'Subscription';
-  egtDivision: EgtDivision;
-  egtStarterLinks: EgtStarterLink;
-};
-
-
-export type SubscriptionEgtDivisionArgs = {
-  filter: EgtDivisionFilterInput;
-};
-
-
-export type SubscriptionEgtStarterLinksArgs = {
-  divisionIDs?: InputMaybe<Array<Scalars['ID']['input']>>;
-  ids?: InputMaybe<Array<Scalars['ID']['input']>>;
 };
 
 export type UpdateCompetitionInput = {
@@ -611,14 +169,6 @@ export type UpdateUserInput = {
   email: Scalars['String']['input'];
   id: Scalars['ID']['input'];
   language: Scalars['String']['input'];
-};
-
-export type User = {
-  __typename?: 'User';
-  email: Scalars['String']['output'];
-  globalRole: Roles;
-  id: Scalars['ID']['output'];
-  language: Scalars['String']['output'];
 };
 
 export type CurrentUserQueryVariables = Exact<{ [key: string]: never; }>;
@@ -932,6 +482,73 @@ export type UseEegtStarterLinksSubscriptionSubscription = { __typename?: 'Subscr
 
 export type EgtStarterListFragmentFragment = { __typename?: 'StarterLink', egt?: { __typename?: 'EGTStarterLink', id: string, category?: number | null, division?: { __typename?: 'EGTDivision', id: string, number: number } | null, lineup?: { __typename?: 'EGTLineup', id: string, device: { __typename?: 'EGTDevice', id: string, deviceNumber: number } } | null } | null } & { ' $fragmentName'?: 'EgtStarterListFragmentFragment' };
 
+export type EgtDisplayTokenQueryVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type EgtDisplayTokenQuery = { __typename?: 'Query', displayToken: { __typename?: 'Displaytoken', id: string, token: string, ground: number, competition: { __typename?: 'Competition', id: string } } };
+
+export type EgtDisplayCompetitionQueryVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type EgtDisplayCompetitionQuery = { __typename?: 'Query', competition: { __typename?: 'Competition', id: string, name: string } };
+
+export type EgtDisplayDivisionDataQueryVariables = Exact<{
+  ids: Array<Scalars['ID']['input']> | Scalars['ID']['input'];
+  round: Scalars['Int']['input'];
+}>;
+
+
+export type EgtDisplayDivisionDataQuery = { __typename?: 'Query', egtJudgingDevices: Array<{ __typename?: 'EGTJudgingDevice', device: { __typename?: 'EGTDevice', id: string, deviceNumber: number }, starterslist: Array<{ __typename?: 'EGTStarterLink', id: string, category?: number | null, starterlink: { __typename?: 'StarterLink', id: string, club: { __typename?: 'Club', id: string, name: string }, starter: { __typename?: 'Starter', id: string, firstname: string, lastname: string }, grades: Array<{ __typename?: 'Grade', id: string, deviceNumber: number, value: number }> } }> }> };
+
+export type EgtDisplayGradesSubscriptionSubscriptionVariables = Exact<{
+  filter: GradeFilterInput;
+}>;
+
+
+export type EgtDisplayGradesSubscriptionSubscription = { __typename?: 'Subscription', grade: { __typename?: 'Grade', id: string, value: number, deviceNumber: number, starterlink: { __typename?: 'StarterLink', id: string } } };
+
+export type DisplayDivisionFragmentFragment = { __typename?: 'EGTDivision', id: string, totalRounds: number, currentRound: number, state: EgtDivisionStates } & { ' $fragmentName'?: 'DisplayDivisionFragmentFragment' };
+
+export type EgtDisplaysTokensQueryVariables = Exact<{
+  competitionID: Scalars['ID']['input'];
+}>;
+
+
+export type EgtDisplaysTokensQuery = { __typename?: 'Query', displayTokens: Array<{ __typename?: 'Displaytoken', id: string, token: string, ground: number }> };
+
+export type EgtDisplaysCreateTokenMutationVariables = Exact<{
+  competitionID: Scalars['ID']['input'];
+  ground: Scalars['Int']['input'];
+}>;
+
+
+export type EgtDisplaysCreateTokenMutation = { __typename?: 'Mutation', createDisplayToken: { __typename?: 'Displaytoken', id: string, token: string, ground: number } };
+
+export type EgtDisplaysResetTokenMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type EgtDisplaysResetTokenMutation = { __typename?: 'Mutation', displayToken: { __typename?: 'Displaytoken', id: string, token: string } };
+
+export type EgtDisplaysGroundsQueryVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type EgtDisplaysGroundsQuery = { __typename?: 'Query', competition: { __typename?: 'Competition', id: string, grounds: number } };
+
+export type EgtDisplaysDeleteTokenMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type EgtDisplaysDeleteTokenMutation = { __typename?: 'Mutation', deleteDisplayToken: boolean };
+
 export type EgtDivisionGradingQueryVariables = Exact<{
   id: Scalars['ID']['input'];
 }>;
@@ -1123,6 +740,7 @@ export const RoundGradingTableFragmentDoc = {"kind":"Document","definitions":[{"
 export const UseEgtDivision_PlaceholderFragmentFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"useEGTDivision_PlaceholderFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"EGTDivision"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]} as unknown as DocumentNode<UseEgtDivision_PlaceholderFragmentFragment, unknown>;
 export const UseEgtStarterLinks_PlaceholderFragmentFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"useEGTStarterLinks_PlaceholderFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"EGTStarterLink"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]} as unknown as DocumentNode<UseEgtStarterLinks_PlaceholderFragmentFragment, unknown>;
 export const EgtStarterListFragmentFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"EGTStarterListFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"StarterLink"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"egt"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"category"}},{"kind":"Field","name":{"kind":"Name","value":"division"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"number"}}]}},{"kind":"Field","name":{"kind":"Name","value":"lineup"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"device"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"deviceNumber"}}]}}]}}]}}]}}]} as unknown as DocumentNode<EgtStarterListFragmentFragment, unknown>;
+export const DisplayDivisionFragmentFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"DisplayDivisionFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"EGTDivision"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"totalRounds"}},{"kind":"Field","name":{"kind":"Name","value":"currentRound"}},{"kind":"Field","name":{"kind":"Name","value":"state"}}]}}]} as unknown as DocumentNode<DisplayDivisionFragmentFragment, unknown>;
 export const DivisionListFragmentFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"DivisionListFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"EGTDivision"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"ground"}},{"kind":"Field","name":{"kind":"Name","value":"state"}},{"kind":"Field","name":{"kind":"Name","value":"currentRound"}},{"kind":"Field","name":{"kind":"Name","value":"totalRounds"}},{"kind":"Field","name":{"kind":"Name","value":"category"}},{"kind":"Field","name":{"kind":"Name","value":"sex"}},{"kind":"Field","name":{"kind":"Name","value":"number"}},{"kind":"Field","name":{"kind":"Name","value":"totalStarters"}}]}}]} as unknown as DocumentNode<DivisionListFragmentFragment, unknown>;
 export const CurrentUserDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"currentUser"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"currentUser"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"language"}}]}}]}}]} as unknown as DocumentNode<CurrentUserQuery, CurrentUserQueryVariables>;
 export const UpdateUserDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"updateUser"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"data"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"UpdateUserInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateUser"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"data"},"value":{"kind":"Variable","name":{"kind":"Name","value":"data"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"language"}}]}}]}}]} as unknown as DocumentNode<UpdateUserMutation, UpdateUserMutationVariables>;
@@ -1163,6 +781,15 @@ export const UseEgtDivisionQueryDocument = {"kind":"Document","definitions":[{"k
 export const UseEgtDivisionSubscriptionDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"subscription","name":{"kind":"Name","value":"useEGTDivisionSubscription"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filter"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"EGTDivisionFilterInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"egtDivision"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filter"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"useEGTDivision_PlaceholderFragment"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"useEGTDivision_PlaceholderFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"EGTDivision"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]} as unknown as DocumentNode<UseEgtDivisionSubscriptionSubscription, UseEgtDivisionSubscriptionSubscriptionVariables>;
 export const UseEgtStarterLinksQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"useEGTStarterLinksQuery"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"ids"}},"type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"divisionIDs"}},"type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"withDeleted"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Boolean"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"egtStarterLinks"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"ids"},"value":{"kind":"Variable","name":{"kind":"Name","value":"ids"}}},{"kind":"Argument","name":{"kind":"Name","value":"divisionIDs"},"value":{"kind":"Variable","name":{"kind":"Name","value":"divisionIDs"}}},{"kind":"Argument","name":{"kind":"Name","value":"withDeleted"},"value":{"kind":"Variable","name":{"kind":"Name","value":"withDeleted"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"useEGTStarterLinks_PlaceholderFragment"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"useEGTStarterLinks_PlaceholderFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"EGTStarterLink"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]} as unknown as DocumentNode<UseEgtStarterLinksQueryQuery, UseEgtStarterLinksQueryQueryVariables>;
 export const UseEegtStarterLinksSubscriptionDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"subscription","name":{"kind":"Name","value":"useEEGTStarterLinksSubscription"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"ids"}},"type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"divisionIDs"}},"type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"egtStarterLinks"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"ids"},"value":{"kind":"Variable","name":{"kind":"Name","value":"ids"}}},{"kind":"Argument","name":{"kind":"Name","value":"divisionIDs"},"value":{"kind":"Variable","name":{"kind":"Name","value":"divisionIDs"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"useEGTStarterLinks_PlaceholderFragment"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"useEGTStarterLinks_PlaceholderFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"EGTStarterLink"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]} as unknown as DocumentNode<UseEegtStarterLinksSubscriptionSubscription, UseEegtStarterLinksSubscriptionSubscriptionVariables>;
+export const EgtDisplayTokenDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"EgtDisplayToken"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"displayToken"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"token"}},{"kind":"Field","name":{"kind":"Name","value":"ground"}},{"kind":"Field","name":{"kind":"Name","value":"competition"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}}]} as unknown as DocumentNode<EgtDisplayTokenQuery, EgtDisplayTokenQueryVariables>;
+export const EgtDisplayCompetitionDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"EgtDisplayCompetition"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"competition"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]} as unknown as DocumentNode<EgtDisplayCompetitionQuery, EgtDisplayCompetitionQueryVariables>;
+export const EgtDisplayDivisionDataDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"EgtDisplayDivisionData"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"ids"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"round"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"egtJudgingDevices"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"ids"},"value":{"kind":"Variable","name":{"kind":"Name","value":"ids"}}},{"kind":"Argument","name":{"kind":"Name","value":"round"},"value":{"kind":"Variable","name":{"kind":"Name","value":"round"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"device"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"deviceNumber"}}]}},{"kind":"Field","name":{"kind":"Name","value":"starterslist"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"category"}},{"kind":"Field","name":{"kind":"Name","value":"starterlink"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"club"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"starter"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"firstname"}},{"kind":"Field","name":{"kind":"Name","value":"lastname"}}]}},{"kind":"Field","name":{"kind":"Name","value":"grades"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"deviceNumber"}},{"kind":"Field","name":{"kind":"Name","value":"value"}}]}}]}}]}}]}}]}}]} as unknown as DocumentNode<EgtDisplayDivisionDataQuery, EgtDisplayDivisionDataQueryVariables>;
+export const EgtDisplayGradesSubscriptionDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"subscription","name":{"kind":"Name","value":"EgtDisplayGradesSubscription"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filter"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"GradeFilterInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"grade"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filter"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"value"}},{"kind":"Field","name":{"kind":"Name","value":"deviceNumber"}},{"kind":"Field","name":{"kind":"Name","value":"starterlink"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}}]} as unknown as DocumentNode<EgtDisplayGradesSubscriptionSubscription, EgtDisplayGradesSubscriptionSubscriptionVariables>;
+export const EgtDisplaysTokensDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"EgtDisplaysTokens"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"competitionID"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"displayTokens"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"competitionID"},"value":{"kind":"Variable","name":{"kind":"Name","value":"competitionID"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"token"}},{"kind":"Field","name":{"kind":"Name","value":"ground"}}]}}]}}]} as unknown as DocumentNode<EgtDisplaysTokensQuery, EgtDisplaysTokensQueryVariables>;
+export const EgtDisplaysCreateTokenDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"EgtDisplaysCreateToken"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"competitionID"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"ground"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createDisplayToken"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"competitionID"},"value":{"kind":"Variable","name":{"kind":"Name","value":"competitionID"}}},{"kind":"Argument","name":{"kind":"Name","value":"ground"},"value":{"kind":"Variable","name":{"kind":"Name","value":"ground"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"token"}},{"kind":"Field","name":{"kind":"Name","value":"ground"}}]}}]}}]} as unknown as DocumentNode<EgtDisplaysCreateTokenMutation, EgtDisplaysCreateTokenMutationVariables>;
+export const EgtDisplaysResetTokenDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"EgtDisplaysResetToken"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"displayToken"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"token"}}]}}]}}]} as unknown as DocumentNode<EgtDisplaysResetTokenMutation, EgtDisplaysResetTokenMutationVariables>;
+export const EgtDisplaysGroundsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"EgtDisplaysGrounds"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"competition"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"grounds"}}]}}]}}]} as unknown as DocumentNode<EgtDisplaysGroundsQuery, EgtDisplaysGroundsQueryVariables>;
+export const EgtDisplaysDeleteTokenDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"EgtDisplaysDeleteToken"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deleteDisplayToken"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}]}]}}]} as unknown as DocumentNode<EgtDisplaysDeleteTokenMutation, EgtDisplaysDeleteTokenMutationVariables>;
 export const EgtDivisionGradingDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"egtDivisionGrading"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"egtDivision"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"ground"}},{"kind":"Field","name":{"kind":"Name","value":"totalRounds"}}]}}]}}]} as unknown as DocumentNode<EgtDivisionGradingQuery, EgtDivisionGradingQueryVariables>;
 export const EgtDivisionDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"egtDivision"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"egtDivision"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"category"}},{"kind":"Field","name":{"kind":"Name","value":"ground"}},{"kind":"Field","name":{"kind":"Name","value":"totalRounds"}},{"kind":"Field","name":{"kind":"Name","value":"sex"}},{"kind":"Field","name":{"kind":"Name","value":"number"}},{"kind":"Field","name":{"kind":"Name","value":"lineups"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"device"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"deviceNumber"}}]}}]}}]}}]}}]} as unknown as DocumentNode<EgtDivisionQuery, EgtDivisionQueryVariables>;
 export const EgtStarterLinkUnassignedDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"egtStarterLinkUnassigned"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"divisionID"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"egtStarterLinkUnassigned"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"divisionID"},"value":{"kind":"Variable","name":{"kind":"Name","value":"divisionID"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"starterlink"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"starter"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"firstname"}},{"kind":"Field","name":{"kind":"Name","value":"lastname"}},{"kind":"Field","name":{"kind":"Name","value":"birthyear"}}]}},{"kind":"Field","name":{"kind":"Name","value":"club"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}}]}}]} as unknown as DocumentNode<EgtStarterLinkUnassignedQuery, EgtStarterLinkUnassignedQueryVariables>;

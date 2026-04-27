@@ -25,7 +25,6 @@ export class EGTSettings {
   categorySettings: EGTCategorySettings[] = [];
 }
 
-
 @ObjectType()
 export class EGTCategorySettings {
   @Field()

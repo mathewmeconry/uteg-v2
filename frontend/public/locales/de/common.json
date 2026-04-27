@@ -87,6 +87,9 @@
   "start": "{{name}} starten",
   "start_typed": "{{count}} {{type}} starten",
   "start_confirmation": "Möchten Sie wirklich starten?",
+  "stop": "{{name}} stoppen",
+  "stop_typed": "{{count}} {{type}} stoppen",
+  "stop_confirmation": "Möchten Sie wirklich stoppen?",
   "undefined": "Undefiniert",
   "grade": "Note",
   "grade_labled": "{{label}} Note",
@@ -119,5 +122,8 @@
   "reset_all": "Alle zurücksetzen",
   "notification_one": "Benachrichtigung",
   "notification_other": "Benachrichtigungen",
-  "has_been_added": "{{name}} wurde hinzugefügt!"
+  "has_been_added": "{{name}} wurde hinzugefügt!",
+  "token": "Token",
+  "has_been_reset": "{{name}} wurde zurückgesetzt!",
+  "close": "Schließen"
 }

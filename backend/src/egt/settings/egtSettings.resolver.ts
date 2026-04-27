@@ -92,9 +92,8 @@ export class EGTSettingsResolver {
     @Args('data', { type: () => EGTCategorySettingsInput })
     data: EGTCategorySettingsInput,
   ) {
-    const settings = await this.egtSettingsService.findOneByCompetitionID(
-      competitionID,
-    );
+    const settings =
+      await this.egtSettingsService.findOneByCompetitionID(competitionID);
     if (!settings) {
       throw new NotFoundException();
     }
