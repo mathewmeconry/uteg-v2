@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next";
 import { PaperExtended } from "../../../../components/paperExtended";
 import { useNavigate, useParams } from "react-router-dom";
 import {
-  authWithJudgeToken,
+  authWithToken,
   getTokenData,
   isTokenValid,
   removeToken,
@@ -86,7 +86,7 @@ export default function Judging() {
   }
 
   if (!isTokenValid()) {
-    authWithJudgeToken(token || "").then(() => setAuthenticating(false));
+    authWithToken(token || "").then(() => setAuthenticating(false));
     return renderLoading();
   } else {
     if (authenticating) {

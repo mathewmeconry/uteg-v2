@@ -68,6 +68,7 @@ input CreateUserInput {
 }
 
 type Displaytoken {
+  competition: Competition!
   ground: Int!
   id: ID!
   token: String!
@@ -242,7 +243,7 @@ type Query {
   competition(id: ID!): Competition!
   competitions: [Competition!]!
   currentUser: User
-  displayToken(competitionID: ID!, create: Boolean! = false, ground: Int): Displaytoken
+  displayToken(id: ID!): Displaytoken!
   displayTokens(competitionID: ID!): [Displaytoken!]!
   egtCategorySettings(category: Int!, competitionID: ID!, sex: Sex!): EGTCategorySettings!
   egtDevices(competitionID: ID!): [EGTDevice!]!
@@ -268,6 +269,7 @@ type Query {
 
 enum Roles {
   ADMIN
+  DISPLAY
   JUDGE
   STARTER
   VIEWER

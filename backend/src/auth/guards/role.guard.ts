@@ -11,6 +11,7 @@ import { Reflector } from '@nestjs/core';
 import { ROLES } from '../types';
 import { GLOBAL_ROLE_KEY } from '../decorators/globalRole.decorator';
 import { JUDGE_KEY } from '../decorators/judge.decorator';
+import { DISPLAY_KEY } from '../decorators/display.decorator';
 
 @Injectable()
 export class RoleGuard implements CanActivate {
@@ -34,6 +35,10 @@ export class RoleGuard implements CanActivate {
       context.getHandler(),
       context.getClass(),
     ]);
+    const displayAllowed = this.reflector.getAllAndOverride<boolean>(
+      DISPLAY_KEY,
+      [context.getHandler(), context.getClass()],
+    );
 
     if (!role && !globalRole) {
       return true;
@@ -45,6 +50,19 @@ export class RoleGuard implements CanActivate {
           ctx.getContext().judge.sub,
           ctx.getContext().competition,
         );
+      }
+    }
+
+    if (ctx.getContext().display) {
+      if (role <= ROLES.DISPLAY || displayAllowed) {
+        if (
+          await this.authService.displayAuthorize(
+            ctx.getContext().display.sub,
+            ctx.getContext().competition,
+          )
+        ) {
+          return true;
+        }
       }
     }
 

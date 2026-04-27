@@ -1,4 +1,12 @@
-import { Resolver, Query, Args, ID, Mutation } from '@nestjs/graphql';
+import {
+  Resolver,
+  Query,
+  Args,
+  ID,
+  Mutation,
+  ResolveField,
+  Root,
+} from '@nestjs/graphql';
 import { Displaytoken } from './displaytoken.entity';
 import { Role } from '../decorators/role.decorator';
 import { ROLES } from '../types';
@@ -7,6 +15,7 @@ import { DisplaytokenService } from './displaytoken.service';
 import { DisplaytokenGuard } from './displaytoken.guard';
 import { RoleGuard } from '../guards/role.guard';
 import { AuthService } from '../auth.service';
+import { Competition } from 'src/base/competition/competition.entity';
 
 @Resolver(() => Displaytoken)
 @UseGuards(DisplaytokenGuard, RoleGuard)
@@ -26,23 +35,10 @@ export class DisplaytokenResolver {
     return this.displaytokenService.create(competitionId, ground);
   }
 
-  @Role(ROLES.ADMIN)
+  @Role(ROLES.DISPLAY)
   @Query(() => Displaytoken, { name: 'displayToken' })
-  async getOne(@Args('id') id: number): Promise<Displaytoken> {
+  async getOne(@Args('id', { type: () => ID }) id: number): Promise<Displaytoken> {
     return this.displaytokenService.findOne(id);
-  }
-
-  @Role(ROLES.ADMIN)
-  @Query(() => Displaytoken, { name: 'displayToken', nullable: true })
-  async findeOne(
-    @Args('competitionID', { type: () => ID }) competitionId: number,
-    @Args('ground', { nullable: true }) ground: number,
-    @Args('create', { defaultValue: false }) create: boolean,
-  ): Promise<Displaytoken | null> {
-    if (create) {
-      return this.displaytokenService.findOrCreate(competitionId, ground);
-    }
-    return this.displaytokenService.findByCompetition(competitionId, ground);
   }
 
   @Role(ROLES.ADMIN)
@@ -72,5 +68,11 @@ export class DisplaytokenResolver {
     } catch (error) {
       return false;
     }
+  }
+
+  @Role(ROLES.DISPLAY)
+  @ResolveField(() => Competition)
+  async competition(@Root() displaytoken: Displaytoken) {
+    return await displaytoken.competition
   }
 }

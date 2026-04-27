@@ -3,6 +3,7 @@ import { GqlExecutionContext } from '@nestjs/graphql';
 import { DisplaytokenService } from './displaytoken.service';
 
 // Enriches gql context with role assigned to starterLink
+
 export class DisplaytokenGuard implements CanActivate {
   @Inject()
   private readonly displaytokenService: DisplaytokenService;

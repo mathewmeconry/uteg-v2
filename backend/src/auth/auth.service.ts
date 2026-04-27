@@ -4,19 +4,27 @@ import { ConfigService } from 'src/config/config.service';
 import { ROLES } from './types';
 import { UserService } from './user/user.service';
 import { JudgetokenService } from './judgetoken/judgetoken.service';
-import { Field, ObjectType } from '@nestjs/graphql';
+import { DisplaytokenService } from './displaytoken/displaytoken.service';
 
 export enum JwtType {
   USER,
   JUDGE,
+  DISPLAY,
 }
 
-export type JwtPayload = JwtUserPayload | JwtJudgePayload;
+export type JwtPayload = JwtUserPayload | JwtJudgePayload | JwtDisplayPayload;
 
 export type JwtUserPayload = {
   type: JwtType.USER;
   sub: number;
   email: string;
+};
+
+export type JwtDisplayPayload = {
+  type: JwtType.DISPLAY;
+  sub: number;
+  competition: number;
+  ground: number;
 };
 
 export type JwtJudgePayload = {
@@ -40,6 +48,9 @@ export class AuthService {
 
   @Inject()
   private judgetokenService: JudgetokenService;
+
+  @Inject()
+  private displaytokenService: DisplaytokenService;
 
   public async authenticate(email: string, password: string): Promise<string> {
     if (!email || !password) {
@@ -84,6 +95,24 @@ export class AuthService {
     });
   }
 
+  public async authenticateWithDisplayToken(token: string): Promise<string> {
+    const displayToken = await this.displaytokenService.findByToken(token);
+    if (!displayToken) {
+      throw new UnauthorizedException();
+    }
+
+    const payload: JwtDisplayPayload = {
+      type: JwtType.DISPLAY,
+      sub: displayToken.id,
+      competition: (await displayToken.competition).id,
+      ground: displayToken.ground,
+    };
+
+    return this.jwtService.signAsync(payload, {
+      expiresIn: this.configService.get('JWT_EXPIRATION') || '10s',
+    });
+  }
+
   public async authorize(
     userID: number,
     competitionID: number,
@@ -106,6 +135,18 @@ export class AuthService {
       return false;
     }
     return (await judge.competition).id === parseInt(competitionID.toString());
+  }
+
+  public async displayAuthorize(displayID: number, competitionID: number): Promise<boolean> {
+    if (!competitionID) {
+      return false;
+    }
+
+    const display = await this.displaytokenService.findOne(displayID);
+    if (!display) {
+      return false;
+    }
+    return (await display.competition).id === parseInt(competitionID.toString());
   }
 
   public async globalAuthorize(userID: number, role: ROLES): Promise<boolean> {
