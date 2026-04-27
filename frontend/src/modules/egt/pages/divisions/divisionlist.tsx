@@ -18,6 +18,7 @@ import { Error } from "../../../../components/error";
 import { useEffect, useState } from "react";
 import { DivisionlistToolbar } from "./divisionlistToolbar";
 import PendingIcon from "@mui/icons-material/Pending";
+import StopIcon from "@mui/icons-material/Stop";
 import {
   CircularProgress,
   Box,
@@ -38,6 +39,7 @@ import GradingIcon from "@mui/icons-material/Grading";
 import { graphql } from "../../../../__new_generated__/gql";
 import useEGTDivisions from "../../hooks/useEGTDivisions/useEGTDivisions";
 import usePrevious from "../../../../hooks/usePrev/usePrev";
+import { StopDivisionsDialog } from "../../dialogs/stopDivisionsDialog/stopDivisionsDialog";
 
 const DivisionListFragment = graphql(`
   fragment DivisionListFragment on EGTDivision {
@@ -60,6 +62,7 @@ export function Divisionslist() {
   const [openDialog, setOpenDialog] = useState("");
   const [toDeleteDivisions, setToDeleteDivisions] = useState<EgtDivision[]>([]);
   const [toStartDivisions, setToStartDivisions] = useState<EgtDivision[]>([]);
+  const [toStopDivisions, setToStopDivisions] = useState<EgtDivision[]>([]);
   const [removeDivision] = useRemoveEgtDivisionMutation();
 
   const {
@@ -91,7 +94,7 @@ export function Divisionslist() {
       if (diff.state === "RUNNING") {
         enqueueSnackbar(
           t("started", { ns: "egt", name: t("division", { ns: "egt" }) }),
-          { variant: "success" }
+          { variant: "success" },
         );
       }
     }
@@ -130,6 +133,13 @@ export function Divisionslist() {
     };
   }
 
+  function onStop(division: EgtDivision) {
+    return () => {
+      setOpenDialog("stopDivision");
+      setToStopDivisions([division]);
+    };
+  }
+
   async function handleDivisionDelete() {
     try {
       for (const division of toDeleteDivisions) {
@@ -143,7 +153,7 @@ export function Divisionslist() {
         t("deleted", { ns: "common", name: t("division", { ns: "egt" }) }),
         {
           variant: "success",
-        }
+        },
       );
     } catch (e) {
       if (e instanceof ApolloError) {
@@ -177,8 +187,7 @@ export function Divisionslist() {
     {
       field: "sex",
       headerName: t("sex", { ns: "common" }),
-      valueGetter: (_, row) =>
-        t(row.sex, { ns: "common" }),
+      valueGetter: (_, row) => t(row.sex, { ns: "common" }),
       disableColumnMenu: true,
       flex: 1,
     },
@@ -206,7 +215,7 @@ export function Divisionslist() {
                   size="1.5rem"
                   color="inherit"
                   value={Math.round(
-                    (100 / params.row.totalRounds) * params.row.currentRound
+                    (100 / params.row.totalRounds) * params.row.currentRound,
                   )}
                 />
                 <Box
@@ -317,7 +326,22 @@ export function Divisionslist() {
           className="textWarning"
           color="warning"
           onClick={onStart(division)}
-        />
+        />,
+      );
+    }
+    if (division.state === "RUNNING") {
+      actions.push(
+        <GridActionsCellItem
+          icon={
+            <Tooltip title={t("stop", { ns: "common", name: t("division") })}>
+              <StopIcon />
+            </Tooltip>
+          }
+          label="Stop"
+          className="textError"
+          color="error"
+          onClick={onStop(division)}
+        />,
       );
     }
 
@@ -397,6 +421,13 @@ export function Divisionslist() {
             setOpenDialog("");
           }}
           divisions={toStartDivisions}
+        />
+        <StopDivisionsDialog
+          isOpen={openDialog === "stopDivision"}
+          onClose={() => {
+            setOpenDialog("");
+          }}
+          divisions={toStopDivisions}
         />
       </PaperExtended>
     </>

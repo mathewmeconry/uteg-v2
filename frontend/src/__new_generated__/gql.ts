@@ -61,6 +61,8 @@ const documents = {
     "\n  fragment EGTStarterListFragment on StarterLink {\n    egt {\n      id\n      category\n      division {\n        id\n        number\n      }\n      lineup {\n        id\n        device {\n          id\n          deviceNumber\n        }\n      }\n    }\n  }\n": types.EgtStarterListFragmentFragmentDoc,
     "\n  query EgtDisplayToken($id: ID!) {\n    displayToken(id: $id) {\n      id\n      token\n      ground\n      competition {\n        id\n      }\n    }\n  }\n": types.EgtDisplayTokenDocument,
     "\n  query EgtDisplayCompetition($id: ID!) {\n    competition(id: $id) {\n      id\n      name\n    }\n  }\n": types.EgtDisplayCompetitionDocument,
+    "\n  query EgtDisplayGrading($ids: [ID!]!, $round: Int!, $device: Int!) {\n     egtJudgingDevice(ids: $ids, round: $round, device: $device) {\n      device {\n        id\n        deviceNumber\n        inputs\n        aggregationMode\n        overrides {\n          category\n          inputs\n          aggregationMode\n        }\n      }\n      starterslist {\n        id\n      }\n      lineups {\n        id\n      }\n    }\n  }\n": types.EgtDisplayGradingDocument,
+    "\n  fragment DisplayDivisionFragment on EGTDivision {\n    id\n    totalRounds\n    currentRound\n    state\n  }\n": types.DisplayDivisionFragmentFragmentDoc,
     "\n  query EgtDisplaysTokens($competitionID: ID!) {\n    displayTokens(competitionID: $competitionID) {\n      id\n      token\n      ground\n    }\n  }\n": types.EgtDisplaysTokensDocument,
     "\n  mutation EgtDisplaysCreateToken($competitionID: ID!, $ground: Int!) {\n    createDisplayToken(competitionID: $competitionID, ground: $ground) {\n      id\n      token\n      ground\n    }\n  }\n": types.EgtDisplaysCreateTokenDocument,
     "\n  mutation EgtDisplaysResetToken($id: ID!) {\n    displayToken(id: $id) {\n      id\n      token\n    }\n  }\n": types.EgtDisplaysResetTokenDocument,
@@ -295,6 +297,14 @@ export function graphql(source: "\n  query EgtDisplayToken($id: ID!) {\n    disp
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n  query EgtDisplayCompetition($id: ID!) {\n    competition(id: $id) {\n      id\n      name\n    }\n  }\n"): (typeof documents)["\n  query EgtDisplayCompetition($id: ID!) {\n    competition(id: $id) {\n      id\n      name\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  query EgtDisplayGrading($ids: [ID!]!, $round: Int!, $device: Int!) {\n     egtJudgingDevice(ids: $ids, round: $round, device: $device) {\n      device {\n        id\n        deviceNumber\n        inputs\n        aggregationMode\n        overrides {\n          category\n          inputs\n          aggregationMode\n        }\n      }\n      starterslist {\n        id\n      }\n      lineups {\n        id\n      }\n    }\n  }\n"): (typeof documents)["\n  query EgtDisplayGrading($ids: [ID!]!, $round: Int!, $device: Int!) {\n     egtJudgingDevice(ids: $ids, round: $round, device: $device) {\n      device {\n        id\n        deviceNumber\n        inputs\n        aggregationMode\n        overrides {\n          category\n          inputs\n          aggregationMode\n        }\n      }\n      starterslist {\n        id\n      }\n      lineups {\n        id\n      }\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  fragment DisplayDivisionFragment on EGTDivision {\n    id\n    totalRounds\n    currentRound\n    state\n  }\n"): (typeof documents)["\n  fragment DisplayDivisionFragment on EGTDivision {\n    id\n    totalRounds\n    currentRound\n    state\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
