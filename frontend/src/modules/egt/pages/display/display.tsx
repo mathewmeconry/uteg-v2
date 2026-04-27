@@ -113,7 +113,11 @@ function Running({
     EgtDisplayGradesSubscriptionSubscription["grade"][]
   >([]);
   const [settingsOpen, setSettingsOpen] = useState(false);
-  const [fontSize, setFontSize] = useState(localStorage.getItem("displayFontSize") ? Number(localStorage.getItem("displayFontSize")) : 30);
+  const [fontSize, setFontSize] = useState(
+    localStorage.getItem("displayFontSize")
+      ? Number(localStorage.getItem("displayFontSize"))
+      : 30,
+  );
   const theme = useMemo(() => {
     localStorage.setItem("displayFontSize", fontSize.toString());
     return createTheme({
