@@ -9,7 +9,7 @@ import {
   ThemeProvider,
   Typography,
 } from "@mui/material";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   authWithToken,
   getTokenData,
@@ -19,6 +19,7 @@ import { PaperExtended } from "../../../../components/paperExtended";
 import useEGTDivisions from "../../hooks/useEGTDivisions/useEGTDivisions";
 import { graphql } from "../../../../__new_generated__/gql";
 import {
+  DisplayDivisionFragmentFragment,
   EgtDisplayDivisionDataQuery,
   EgtDivisionStates,
 } from "../../../../__new_generated__/graphql";
@@ -118,6 +119,12 @@ function Running({
       ? Number(localStorage.getItem("displayFontSize"))
       : 30,
   );
+  const [divisionsData, setDivisionsData] = useState<
+    DisplayDivisionFragmentFragment[]
+  >([]);
+  const [lowestRound, setLowestRound] = useState(0);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+
   const theme = useMemo(() => {
     localStorage.setItem("displayFontSize", fontSize.toString());
     return createTheme({
@@ -132,7 +139,7 @@ function Running({
     throw new Error("Token data is required for Running component");
   }
 
-  const { data: divisionsData, loading: divisionsDataLoading } =
+  const { data: rawDivisionData, loading: divisionsDataLoading } =
     useEGTDivisions(DisplayDivisionFragment, {
       filter: {
         competitionID: token.competition.toString(),
@@ -144,6 +151,28 @@ function Running({
     queryDivisions,
     { data: divisionsQueryData, loading: divisionsQueryLoading },
   ] = useEgtDisplayDivisionDataLazyQuery();
+
+  useEffect(() => {
+    if (rawDivisionData && rawDivisionData.length > 0) {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+      setDivisionsData(rawDivisionData);
+    } else {
+      timerRef.current = setTimeout(
+        () => {
+          setDivisionsData([]);
+        },
+        5 * 60 * 1000,
+      );
+    }
+
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+    };
+  }, [rawDivisionData]);
 
   const {
     data: gradesData,
@@ -185,9 +214,10 @@ function Running({
     console.error(gradesError);
   }
 
-  const lowestRound = useMemo(() => {
+  useEffect(() => {
     if (!divisionsData || divisionsData.length === 0) {
-      return 0;
+      setLowestRound(0);
+      return;
     }
     let lowest = Infinity;
     for (const division of divisionsData) {
@@ -195,7 +225,10 @@ function Running({
         lowest = division.currentRound;
       }
     }
-    return lowest === Infinity ? 0 : lowest;
+    const timer = setTimeout(() => {
+      setLowestRound(lowest === Infinity ? 0 : lowest);
+    }, 30 * 1000);
+    return () => clearTimeout(timer);
   }, [divisionsData]);
 
   useEffect(() => {
