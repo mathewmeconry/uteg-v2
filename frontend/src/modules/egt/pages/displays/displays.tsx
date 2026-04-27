@@ -36,20 +36,17 @@ export default function Displays() {
   const { id } = useParams();
   const { t } = useTranslation(["egt", "common"]);
   const [createOpen, setCreateOpen] = useState(false);
-  const { data, loading, error, refetch } = useEgtDisplaysTokensQuery({
+  const { data, loading, refetch } = useEgtDisplaysTokensQuery({
     variables: {
       competitionID: id!,
     },
   });
-  const {
-    data: groundsData,
-    loading: groundsLoading,
-    error: groundsError,
-  } = useEgtDisplaysGroundsQuery({
-    variables: {
-      id: id!,
-    },
-  });
+  const { data: groundsData, loading: groundsLoading } =
+    useEgtDisplaysGroundsQuery({
+      variables: {
+        id: id!,
+      },
+    });
   const [createToken] = useEgtDisplaysCreateTokenMutation();
 
   async function create(ground: number) {
@@ -126,7 +123,7 @@ function DisplayToken({
   token,
   refetch,
 }: {
-  token: Displaytoken;
+  token: Omit<Displaytoken, "competition">;
   refetch: () => void;
 }) {
   const { id } = useParams();

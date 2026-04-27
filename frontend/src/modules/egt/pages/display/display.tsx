@@ -42,7 +42,7 @@ export default function Display() {
     getTokenData(),
   );
   const [authenticating, setAuthenticating] = useState(true);
-  const [queryCompetition, { data, loading, error }] =
+  const [queryCompetition, { data, loading }] =
     useEgtDisplayCompetitionLazyQuery();
 
   useEffect(() => {
@@ -282,7 +282,7 @@ function Running({
               height: "90svh",
             }}
           >
-            {divisionsQueryData?.egtJudgingDevices.map((device, index) => (
+            {divisionsQueryData?.egtJudgingDevices.map((device) => (
               <Device
                 key={device.device.id}
                 number={device.device.deviceNumber}
