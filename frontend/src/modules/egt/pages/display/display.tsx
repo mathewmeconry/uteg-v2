@@ -256,10 +256,8 @@ function Running({
     <>
       <ThemeProvider theme={theme}>
         <PaperExtended
-          title={
-            (competition?.name || t("display")) +
-            ` - ${t("round", { number: lowestRound + 1 })}`
-          }
+          title={competition?.name || t("display")}
+          titleSuffix={t("round", { number: lowestRound + 1 })}
           actions={[
             <Button
               variant="text"
