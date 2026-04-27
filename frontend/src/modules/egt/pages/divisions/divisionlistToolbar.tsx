@@ -22,6 +22,7 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import StartIcon from "@mui/icons-material/Start";
 import DeleteIcon from "@mui/icons-material/Delete";
+import StopIcon from "@mui/icons-material/Stop";
 import { useTranslation } from "react-i18next";
 import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
@@ -41,6 +42,7 @@ export function DivisionlistToolbar(props: {
   openDialog: Dispatch<SetStateAction<string>>;
   onRowDeletionClick: (rows: Map<GridRowId, GridValidRowModel>) => void;
   onRowStartClick: (rows: Map<GridRowId, GridValidRowModel>) => void;
+  onRowStopClick: (rows: Map<GridRowId, GridValidRowModel>) => void;
 }) {
   const { id } = useParams();
   const { t } = useTranslation(["egt", "common"]);
@@ -222,6 +224,21 @@ export function DivisionlistToolbar(props: {
               onClick={() => props.onRowStartClick(selectedRows)}
             >
               <StartIcon />
+              <Typography variant="body1"> ({selectedRows.size})</Typography>
+            </Button>
+          </Tooltip>
+          <Tooltip
+            title={t("stop_typed", {
+              ns: "common",
+              count: selectedRows.size,
+              type: t("division", { count: selectedRows.size }),
+            })}
+          >
+            <Button
+              color="secondary"
+              onClick={() => props.onRowStopClick(selectedRows)}
+            >
+              <StopIcon />
               <Typography variant="body1"> ({selectedRows.size})</Typography>
             </Button>
           </Tooltip>

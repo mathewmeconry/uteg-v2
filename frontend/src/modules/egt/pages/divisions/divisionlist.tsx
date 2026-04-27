@@ -119,6 +119,14 @@ export function Divisionslist() {
     setOpenDialog("startDivision");
   }
 
+  async function onStopRows(rows: Map<GridRowId, EgtDivision>) {
+    const stopArray: EgtDivision[] = [];
+    rows.forEach((row) => stopArray.push(row));
+    setToStopDivisions(stopArray);
+    setOpenDialog("stopDivision");
+  }
+
+
   function onRemove(division: EgtDivision) {
     return () => {
       setOpenDialog("deleteDivisions");
@@ -382,6 +390,7 @@ export function Divisionslist() {
                 openDialog: setOpenDialog,
                 onRowDeletionClick: onRemoveRows,
                 onRowStartClick: onStartRows,
+                onRowStopClick: onStopRows,
               },
             }}
             ignoreDiacritics={false}
