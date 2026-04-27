@@ -25,6 +25,7 @@ import { Starter } from '../starter/starter.entity';
 import { Club } from '../club/club.entity';
 import { Competition } from '../competition/competition.entity';
 import { SEX } from '../starter/starter.types';
+import { Grade } from '../grade/grade.entity';
 
 @Resolver(() => StarterLink)
 @UseGuards(StarterLinkGuard, RoleGuard)
@@ -149,5 +150,10 @@ export class StarterLinkResolver {
   @ResolveField()
   isDeleted(@Parent() starterLink: StarterLink): boolean {
     return !!starterLink.deletedAt;
+  }
+
+  @ResolveField(() => [Grade])
+  async grades(@Parent() starterLink: StarterLink): Promise<Grade[]> {
+    return starterLink.grades;
   }
 }

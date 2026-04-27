@@ -3,12 +3,14 @@ import {
   DeleteDateColumn,
   Entity,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   RelationId,
 } from 'typeorm';
 import { Starter } from '../starter/starter.entity';
 import { Club } from '../club/club.entity';
 import { Competition } from '../competition/competition.entity';
+import { Grade } from '../grade/grade.entity';
 
 @ObjectType()
 @Entity()
@@ -37,4 +39,7 @@ export class StarterLink {
 
   @DeleteDateColumn()
   deletedAt?: Date;
+
+  @OneToMany(() => Grade, (grade) => grade.starterlink)
+  grades: Promise<Grade[]>;
 }

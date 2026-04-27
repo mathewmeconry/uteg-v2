@@ -43,7 +43,7 @@ export class EGTDivisionResolver {
   @Inject()
   private egtDivisionGuard: EGTDivisionGuard;
 
-  @Role(ROLES.JUDGE)
+  @Role(ROLES.DISPLAY)
   @Query(() => [EGTDivision], { name: 'egtDivisions' })
   findAll(
     @Args('filter') filter: EGTDivisionFilterInput,
@@ -51,7 +51,7 @@ export class EGTDivisionResolver {
     return this.egtDivisionService.findAll(filter);
   }
 
-  @Role(ROLES.JUDGE)
+  @Role(ROLES.DISPLAY)
   @Query(() => EGTDivision, { name: 'egtDivision', nullable: true })
   findOne(
     @Args('id', { type: () => ID }) id: number,
@@ -121,7 +121,7 @@ export class EGTDivisionResolver {
     );
   }
 
-  @Role(ROLES.JUDGE)
+  @Role(ROLES.DISPLAY)
   @Subscription(() => EGTDivision, {
     name: 'egtDivision',
     async filter(

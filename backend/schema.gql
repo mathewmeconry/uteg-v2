@@ -196,6 +196,10 @@ type Grade {
   value: Float!
 }
 
+input GradeFilterInput {
+  starterlinkIds: [ID!]!
+}
+
 input GradeInput {
   deviceNumber: Int!
   module: String!
@@ -302,6 +306,7 @@ type StarterLink {
   club: Club!
   competition: Competition!
   egt: EGTStarterLink
+  grades: [Grade!]!
   id: ID!
   isDeleted: Boolean!
   starter: Starter!
@@ -310,6 +315,7 @@ type StarterLink {
 type Subscription {
   egtDivision(filter: EGTDivisionFilterInput!): EGTDivision!
   egtStarterLinks(divisionIDs: [ID!], ids: [ID!]): EGTStarterLink!
+  grade(filter: GradeFilterInput!): Grade!
 }
 
 """
