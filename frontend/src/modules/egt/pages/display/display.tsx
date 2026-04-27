@@ -150,6 +150,10 @@ function Running({
     error: gradesError,
     restart: restartGradesSubscription,
   } = useEgtDisplayGradesSubscriptionSubscription({
+    skip:
+      !divisionsData ||
+      divisionsData.length === 0 ||
+      divisionsQueryData?.egtJudgingDevices.length === 0,
     variables: {
       filter: {
         starterlinkIds:
@@ -167,6 +171,13 @@ function Running({
   }, [gradesData]);
 
   useEffect(() => {
+    if (
+      !divisionsData ||
+      divisionsData.length === 0 ||
+      divisionsQueryData?.egtJudgingDevices.length === 0
+    ) {
+      return;
+    }
     restartGradesSubscription();
   }, [divisionsQueryData?.egtJudgingDevices, gradesError]);
 
