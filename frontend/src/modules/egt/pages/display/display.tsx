@@ -5,6 +5,7 @@ import {
   Button,
   CircularProgress,
   createTheme,
+  Drawer,
   ThemeProvider,
   Typography,
 } from "@mui/material";
@@ -22,11 +23,13 @@ import {
   EgtDivisionStates,
 } from "../../../../__new_generated__/graphql";
 import {
+  EgtDisplayCompetitionQuery,
   EgtDisplayGradesSubscriptionSubscription,
   useEgtDisplayCompetitionLazyQuery,
   useEgtDisplayDivisionDataLazyQuery,
   useEgtDisplayGradesSubscriptionSubscription,
 } from "../../../../__generated__/graphql";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 
 type DisplayTokenData = {
   competition: number;
@@ -34,7 +37,6 @@ type DisplayTokenData = {
 };
 
 export default function Display() {
-  const { t } = useTranslation(["egt", "common"]);
   const { token } = useParams();
   const [tokenData, setTokenData] = useState<DisplayTokenData | null>(
     getTokenData(),
@@ -42,17 +44,6 @@ export default function Display() {
   const [authenticating, setAuthenticating] = useState(true);
   const [queryCompetition, { data, loading, error }] =
     useEgtDisplayCompetitionLazyQuery();
-  const [round, setRound] = useState(0);
-  const [fontSize, setFontSize] = useState(50);
-
-  const theme = useMemo(() => {
-    return createTheme({
-      typography: {
-        fontSize: fontSize,
-        fontWeightRegular: 450,
-      },
-    });
-  }, [fontSize]);
 
   useEffect(() => {
     if (tokenData) {
@@ -81,39 +72,7 @@ export default function Display() {
   if (authenticating || loading) {
     return <Loading />;
   }
-
-  let title = data?.competition.name || t("display");
-  title += ` - ${t("round", { number: round + 1 })}`;
-
-  const fontActions = [
-    <Button
-      key="decrease"
-      onClick={() => setFontSize((s) => Math.max(s - 2.5, 10))}
-      variant="text"
-      size="small"
-      style={{
-        marginRight: "0.5rem",
-      }}
-    >
-      A-
-    </Button>,
-    <Button
-      key="increase"
-      onClick={() => setFontSize((s) => s + 2.5)}
-      variant="text"
-      size="small"
-    >
-      A+
-    </Button>,
-  ];
-
-  return (
-    <ThemeProvider theme={theme}>
-      <PaperExtended title={title} actions={fontActions}>
-        <Running setRound={setRound} />
-      </PaperExtended>
-    </ThemeProvider>
-  );
+  return <Running competition={data?.competition} />;
 }
 
 function Loading() {
@@ -144,15 +103,27 @@ const DisplayDivisionFragment = graphql(`
 `);
 
 function Running({
-  setRound,
+  competition,
 }: {
-  setRound: React.Dispatch<React.SetStateAction<number>>;
+  competition?: EgtDisplayCompetitionQuery["competition"];
 }) {
   const { t } = useTranslation(["egt", "common"]);
   const token = getTokenData<DisplayTokenData>();
   const [subscriptionGrades, setSubscriptionGrades] = useState<
     EgtDisplayGradesSubscriptionSubscription["grade"][]
   >([]);
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [fontSize, setFontSize] = useState(localStorage.getItem("displayFontSize") ? Number(localStorage.getItem("displayFontSize")) : 30);
+  const theme = useMemo(() => {
+    localStorage.setItem("displayFontSize", fontSize.toString());
+    return createTheme({
+      typography: {
+        fontSize: fontSize,
+        fontWeightRegular: 450,
+      },
+    });
+  }, [fontSize]);
+
   if (!token) {
     throw new Error("Token data is required for Running component");
   }
@@ -223,28 +194,53 @@ function Running({
     }
   }, [divisionsData, lowestRound]);
 
-  useEffect(() => {
-    setRound(lowestRound);
-  }, [lowestRound]);
-
   if (divisionsDataLoading) {
     return <Loading />;
   }
 
   if (!divisionsData || divisionsData.length === 0) {
     return (
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          mt: 5,
-        }}
-      >
-        <Typography variant="h5" sx={{ mt: 3 }}>
-          {t("no_started", { name: t("division") })}
-        </Typography>
-      </Box>
+      <>
+        <ThemeProvider theme={theme}>
+          <PaperExtended
+            title={competition?.name || t("display")}
+            actions={[
+              <Button
+                variant="text"
+                size="small"
+                onClick={() => setSettingsOpen(true)}
+              >
+                <InfoOutlinedIcon
+                  fontSize="small"
+                  color="action"
+                  style={{ fontSize: 25 }}
+                />
+              </Button>,
+            ]}
+          >
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                mt: 5,
+              }}
+            >
+              <Typography variant="h5" sx={{ mt: 3 }}>
+                {t("no_started", { name: t("division") })}
+              </Typography>
+            </Box>
+          </PaperExtended>
+        </ThemeProvider>
+        <SettingsDrawer
+          open={settingsOpen}
+          onClose={() => setSettingsOpen(false)}
+          fontSize={fontSize}
+          setFontSize={setFontSize}
+          competition={competition ? { name: competition.name } : undefined}
+          token={token}
+        />
+      </>
     );
   }
 
@@ -253,25 +249,139 @@ function Running({
   }
 
   return (
-    <div>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          flexWrap: "wrap",
-          gap: "2.5rem",
-        }}
-      >
-        {divisionsQueryData?.egtJudgingDevices.map((device, index) => (
-          <Device
-            key={device.device.id}
-            number={device.device.deviceNumber}
-            starters={device.starterslist}
-            grades={subscriptionGrades}
+    <>
+      <ThemeProvider theme={theme}>
+        <PaperExtended
+          title={
+            (competition?.name || t("display")) +
+            ` - ${t("round", { number: lowestRound + 1 })}`
+          }
+          actions={[
+            <Button
+              variant="text"
+              size="small"
+              onClick={() => setSettingsOpen(true)}
+            >
+              <InfoOutlinedIcon
+                fontSize="small"
+                color="action"
+                style={{ fontSize: 25 }}
+              />
+            </Button>,
+          ]}
+        >
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              flexWrap: "wrap",
+              gap: "2.5rem",
+              justifyContent: "space-between",
+              height: "90svh",
+            }}
+          >
+            {divisionsQueryData?.egtJudgingDevices.map((device, index) => (
+              <Device
+                key={device.device.id}
+                number={device.device.deviceNumber}
+                starters={device.starterslist}
+                grades={subscriptionGrades}
+              />
+            ))}
+          </div>
+        </PaperExtended>
+      </ThemeProvider>
+      <SettingsDrawer
+        open={settingsOpen}
+        onClose={() => setSettingsOpen(false)}
+        fontSize={fontSize}
+        setFontSize={setFontSize}
+        competition={competition ? { name: competition.name } : undefined}
+        lowestRound={lowestRound}
+        token={token}
+        startersCountPerDevice={
+          divisionsQueryData
+            ? Object.fromEntries(
+                divisionsQueryData.egtJudgingDevices.map((device) => [
+                  device.device.deviceNumber,
+                  device.starterslist.length,
+                ]),
+              )
+            : undefined
+        }
+      />
+    </>
+  );
+}
+
+function SettingsDrawer({
+  open,
+  onClose,
+  fontSize,
+  setFontSize,
+  competition,
+  lowestRound,
+  token,
+  startersCountPerDevice,
+}: {
+  open: boolean;
+  onClose: () => void;
+  fontSize: number;
+  setFontSize: (size: number) => void;
+  competition?: { name: string };
+  lowestRound?: number;
+  token: DisplayTokenData;
+  startersCountPerDevice?: { [deviceNumber: number]: number };
+}) {
+  const { t } = useTranslation(["egt", "common"]);
+
+  return (
+    <Drawer anchor="right" open={open} onClose={onClose}>
+      <Box sx={{ width: 250, p: 2 }}>
+        <Typography variant="h6" gutterBottom>
+          {t("settings")}
+        </Typography>
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+          <Typography variant="subtitle1">{t("font_size")}</Typography>
+          <input
+            type="range"
+            min={10}
+            max={60}
+            value={fontSize}
+            onChange={(e) => setFontSize(Number(e.target.value))}
           />
-        ))}
-      </div>
-    </div>
+        </Box>
+        <Box sx={{ mt: 4 }}>
+          <Typography variant="body2" color="textSecondary">
+            {t("competition")}: {competition?.name || t("unknown")}
+          </Typography>
+          <Typography variant="body2" color="textSecondary">
+            {t("ground")}: {token.ground}
+          </Typography>
+          <Typography variant="body2" color="textSecondary">
+            {t("round", { number: lowestRound ?? 0 })}
+          </Typography>
+          {startersCountPerDevice && (
+            <Box sx={{ mt: 2 }}>
+              <Typography variant="subtitle1">
+                {t("starters_per_device")}
+              </Typography>
+              {Object.entries(startersCountPerDevice).map(
+                ([deviceNumber, count]) => (
+                  <Typography
+                    key={deviceNumber}
+                    variant="body2"
+                    color="textSecondary"
+                  >
+                    {t("device", { number: deviceNumber })}: {count}
+                  </Typography>
+                ),
+              )}
+            </Box>
+          )}
+        </Box>
+      </Box>
+    </Drawer>
   );
 }
 
@@ -323,7 +433,7 @@ function Device({
 
   return (
     <div>
-      <Typography variant="h2" style={{ marginBottom: "1rem" }}>
+      <Typography variant="h3" style={{ marginBottom: "1rem" }}>
         {t(`device_${number}`)}
       </Typography>
       <div
