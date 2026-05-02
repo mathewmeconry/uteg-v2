@@ -102,6 +102,12 @@ export class EGTStarterLinkService {
       await this.egtLineupService.findOne(linkData.lineupID),
     );
 
+    const lineupResolved = await link.lineup;
+    const divisionResolved = await link.division;
+    if((await lineupResolved.division).id !== divisionResolved.id) {
+      throw new BadRequestException('Lineup does not belong to division');
+    }
+
     return this.save(link);
   }
 
