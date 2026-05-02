@@ -302,6 +302,10 @@ function Running({
         <PaperExtended
           title={competition?.name || t("display")}
           titleSuffix={t("round", { number: lowestRound + 1 })}
+          style={{
+            paddingLeft: "2rem",
+            paddingRight: "2rem"
+          }}
           actions={[
             <Button
               variant="text"
@@ -324,6 +328,8 @@ function Running({
               gap: "2.5rem",
               justifyContent: "space-between",
               height: "90svh",
+              paddingRight: "2rem",
+              paddingLeft: "2rem",
             }}
           >
             {divisionsQueryData?.egtJudgingDevices.map((device) => (
@@ -500,7 +506,7 @@ function Device({
             <Typography variant="h4" style={{ textAlign: "center" }}>
               {gradedStarter.starterlink.club.name}
             </Typography>
-            <Typography variant="h4" style={{ textAlign: "end" }}>
+            <Typography variant="h3" style={{ textAlign: "end", fontWeight: "bolder" }}>
               {getGrade(gradedStarter.starterlink.id)?.value.toFixed(2)}
             </Typography>
           </>

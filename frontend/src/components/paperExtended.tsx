@@ -7,6 +7,7 @@ export type PaperExtendedProps = {
   actions?: React.ReactElement[];
   sx?: SxProps;
   titleSuffix?: string;
+  style?: React.CSSProperties;
 };
 
 export function PaperExtended(props: PaperExtendedProps & PropsWithChildren) {
@@ -17,6 +18,8 @@ export function PaperExtended(props: PaperExtendedProps & PropsWithChildren) {
         spacing={2}
         justifyContent={"space-between"}
         alignItems={"center"}
+        style={props.style}
+
       >
         <Grid item xs={4}>
           <Typography variant="h4">{props.title}</Typography>
