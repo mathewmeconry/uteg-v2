@@ -44,4 +44,9 @@ export class EGTRankingResolver {
   async grades(@Parent() ranking: EGTStarterRanking): Promise<Grade[]> {
     return ranking.grades;
   }
+
+  @ResolveField(() => Date)
+  lastUpdated(): Date {
+    return new Date();
+  }
 }

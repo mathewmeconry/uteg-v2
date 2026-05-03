@@ -26,7 +26,7 @@ import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 import { InputClickEditable } from "../../../../components/InputClickEditable";
 import { usePdfDownload } from "../../../../hooks/usePdfDownload/usePdfDownload";
 import { RankingDocument } from "../../documents/rankingDocument/rankingDocument";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import WarningIcon from "@mui/icons-material/Warning";
 
 export type RankingListProps = {
@@ -90,6 +90,21 @@ export function RankingList(props: RankingListProps) {
     fetchPolicy: "network-only",
   });
   const [categorySettingsMutation] = useUpdateEgtCategorySettingsMutation();
+
+  // lowest last updated
+  let lastUpdated: Date | null = useMemo(() => {
+    if (!rankingData?.egtStarterRankings) {
+      return null;
+    }
+    let lowest = new Date();
+    for (const ranking of rankingData.egtStarterRankings) {
+      const updated = new Date(ranking.lastUpdated);
+      if (updated < lowest) {
+        lowest = updated;
+      }
+    }
+    return lowest;
+  }, [rankingData]);
 
   async function onHonourPercentageChange(value: string) {
     const result = await categorySettingsMutation({
@@ -178,19 +193,15 @@ export function RankingList(props: RankingListProps) {
           onSave={onHonourPercentageChange}
         />
         <Divider sx={{ mt: 2, mb: 2 }} />
-        <ToggleButton
-          sx={{ mb: 2 }}
-          size="small"
-          fullWidth
-          color="primary"
-          value="intermediate"
-          selected={showIntermediate}
-          onChange={() => {
-            setShowIntermediate(!showIntermediate);
-          }}
-        >
-          {t("TODO", { ns: "egt" })}
-        </ToggleButton>
+        {lastUpdated && (
+          <>
+            {" "}
+            {t("last_updated", { ns: "egt" })}
+            <br />
+            {lastUpdated.toLocaleString()}
+          </>
+        )}
+        <Divider sx={{ mt: 2, mb: 2 }} />
         <Button
           startIcon={<PictureAsPdfIcon />}
           fullWidth

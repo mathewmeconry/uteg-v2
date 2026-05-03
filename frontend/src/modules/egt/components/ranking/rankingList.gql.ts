@@ -30,6 +30,7 @@ export const STARTER_RANKING = gql`
         deviceNumber
         value
       }
+      lastUpdated
     }
   }
 `;

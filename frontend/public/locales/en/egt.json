@@ -85,5 +85,6 @@
   "judging_manual_notifications": "It may be that $t(common:notification, {\"count\": 2}) pop up. These inform you about changes during the current $t(division). As soon as you read them, you can press on the checkmark to remove it.",
   "no_displays": "No displays found",
   "create_display_token": "Create display token",
-  "ranking_warning": "There are running divisions. The ranking might be incomplete."
+  "ranking_warning": "There are running divisions. The ranking might be incomplete.",
+  "last_updated": "Last updated: "
 }

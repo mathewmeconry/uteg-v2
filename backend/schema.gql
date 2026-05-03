@@ -185,6 +185,7 @@ type EGTStarterRanking {
   award: String!
   egtStarterlink: EGTStarterLink!
   grades: [Grade!]!
+  lastUpdated: Timestamp!
   rank: Int!
   total: Float!
 }
