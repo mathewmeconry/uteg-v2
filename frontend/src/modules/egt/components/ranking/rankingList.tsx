@@ -54,6 +54,7 @@ export function RankingList(props: RankingListProps) {
       sex: props.sex,
       category: props.category,
     },
+    fetchPolicy: "network-only"
   });
   let {
     update: pdfUpdate,
@@ -70,6 +71,7 @@ export function RankingList(props: RankingListProps) {
       category: props.category,
       sex: props.sex,
     },
+    fetchPolicy: "network-only"
   });
   const [categorySettingsMutation] = useUpdateEgtCategorySettingsMutation();
 
