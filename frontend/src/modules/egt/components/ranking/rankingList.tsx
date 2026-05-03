@@ -5,10 +5,12 @@ import {
   Sex,
   useEgtCategorySettingsQuery,
   useEgtRankingListCompetitionQuery,
+  useEgtRankingRunningDivisionsQuery,
   useEgtStarterRankingQuery,
   useUpdateEgtCategorySettingsMutation,
 } from "../../../../__generated__/graphql";
 import {
+  Alert,
   Button,
   Divider,
   Grid,
@@ -25,6 +27,7 @@ import { InputClickEditable } from "../../../../components/InputClickEditable";
 import { usePdfDownload } from "../../../../hooks/usePdfDownload/usePdfDownload";
 import { RankingDocument } from "../../documents/rankingDocument/rankingDocument";
 import { useState } from "react";
+import WarningIcon from "@mui/icons-material/Warning";
 
 export type RankingListProps = {
   sex: Sex;
@@ -35,14 +38,12 @@ export function RankingList(props: RankingListProps) {
   const { t } = useTranslation("common");
   const [showIntermediate, setShowIntermediate] = useState(false);
   const { id } = useParams();
-  const {
-    data: competitionData,
-    loading: competitionLoading,
-  } = useEgtRankingListCompetitionQuery({
-    variables: {
-      id: id!,
-    },
-  });
+  const { data: competitionData, loading: competitionLoading } =
+    useEgtRankingListCompetitionQuery({
+      variables: {
+        id: id!,
+      },
+    });
   const {
     data: rankingData,
     loading: rankingLoading,
@@ -54,7 +55,22 @@ export function RankingList(props: RankingListProps) {
       sex: props.sex,
       category: props.category,
     },
-    fetchPolicy: "network-only"
+    fetchPolicy: "network-only",
+  });
+  const {
+    data: runningDivisionsData,
+    loading: runningDivisionsLoading,
+    error: runningDivisionsError,
+  } = useEgtRankingRunningDivisionsQuery({
+    variables: {
+      filter: {
+        competitionID: id!,
+        state: "RUNNING",
+        category: props.category,
+        sex: props.sex,
+      },
+    },
+    fetchPolicy: "network-only",
   });
   let {
     update: pdfUpdate,
@@ -71,7 +87,7 @@ export function RankingList(props: RankingListProps) {
       category: props.category,
       sex: props.sex,
     },
-    fetchPolicy: "network-only"
+    fetchPolicy: "network-only",
   });
   const [categorySettingsMutation] = useUpdateEgtCategorySettingsMutation();
 
@@ -119,7 +135,12 @@ export function RankingList(props: RankingListProps) {
     pdfDownload();
   }
 
-  if (rankingLoading || competitionLoading) {
+  if (
+    rankingLoading ||
+    competitionLoading ||
+    runningDivisionsLoading ||
+    honourPrecentageLoading
+  ) {
     return Array.from(Array(10).keys()).map((_) => <Skeleton variant="text" />);
   }
 
@@ -131,6 +152,16 @@ export function RankingList(props: RankingListProps) {
   return (
     <Grid container spacing={2} direction={"row"} wrap="wrap-reverse">
       <Grid item xs>
+        {(runningDivisionsData?.egtDivisions.length || 0) > 0 ||
+        runningDivisionsError ? (
+          <Alert
+            icon={<WarningIcon />}
+            severity="warning"
+            sx={{ mb: 2, mt: 2 }}
+          >
+            {t("ranking_warning", { ns: "egt" })}
+          </Alert>
+        ) : null}
         <RankingTable
           rankings={rankingData?.egtStarterRankings as EgtStarterRanking[]}
         />

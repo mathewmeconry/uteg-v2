@@ -63,3 +63,13 @@ gql`
     }
   }
 `
+
+gql`
+  query EgtRankingRunningDivisions($filter: EGTDivisionFilterInput!) {
+    egtDivisions(filter: $filter) {
+      id,
+      number,
+      state
+    }
+  }
+`

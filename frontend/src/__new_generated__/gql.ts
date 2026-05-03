@@ -41,6 +41,7 @@ const documents = {
     "\n  query egtCategorySettings($competitionID: ID!, $category: Int!, $sex: Sex!) {\n    egtCategorySettings(\n      competitionID: $competitionID\n      category: $category\n      sex: $sex\n    ) {\n      honourPrecentage\n    }\n  }\n": types.EgtCategorySettingsDocument,
     "\n  mutation updateEgtCategorySettings($competitionID: ID!, $data: EGTCategorySettingsInput!) {\n    egtCategorySettings(competitionID: $competitionID, data: $data) {\n      honourPrecentage      \n    }\n  }\n": types.UpdateEgtCategorySettingsDocument,
     "\n  query EgtRankingListCompetition($id: ID!) {\n    competition(id: $id) {\n      id\n      name\n      logo\n    }\n  }\n": types.EgtRankingListCompetitionDocument,
+    "\n  query EgtRankingRunningDivisions($filter: EGTDivisionFilterInput!) {\n    egtDivisions(filter: $filter) {\n      id,\n      number,\n      state\n    }\n  }\n": types.EgtRankingRunningDivisionsDocument,
     "\n  query egtAssignToDivisionDialog($filter: EGTDivisionFilterInput!) {\n    egtDivisions(filter: $filter) {\n      id\n      number\n      ground\n    }\n  }\n": types.EgtAssignToDivisionDialogDocument,
     "\n  mutation egtAssignToDivisionDialogMutation($data: EGTStarterLinkInput!) {\n    egtStarterLink(data: $data) {\n      id\n      category\n      division {\n        id\n        number\n      }\n      lineup {\n        id\n      }\n      starterlink {\n        id\n        starter {\n          id\n          sex\n        }\n      }\n    }\n  }\n": types.EgtAssignToDivisionDialogMutationDocument,
     "\n  query competitionGrounds($id: ID!) {\n    competition(id: $id) {\n      id\n      grounds\n    }\n  }\n": types.CompetitionGroundsDocument,
@@ -218,6 +219,10 @@ export function graphql(source: "\n  mutation updateEgtCategorySettings($competi
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n  query EgtRankingListCompetition($id: ID!) {\n    competition(id: $id) {\n      id\n      name\n      logo\n    }\n  }\n"): (typeof documents)["\n  query EgtRankingListCompetition($id: ID!) {\n    competition(id: $id) {\n      id\n      name\n      logo\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  query EgtRankingRunningDivisions($filter: EGTDivisionFilterInput!) {\n    egtDivisions(filter: $filter) {\n      id,\n      number,\n      state\n    }\n  }\n"): (typeof documents)["\n  query EgtRankingRunningDivisions($filter: EGTDivisionFilterInput!) {\n    egtDivisions(filter: $filter) {\n      id,\n      number,\n      state\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

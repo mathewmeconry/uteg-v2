@@ -84,5 +84,6 @@
   "judging_manual_division_overview_close": "Um die Übersicht zu schliessen klicke auf das \"X\" in der oberen rechten Ecke.",
   "judging_manual_notifications": "Es kann sein, dass $t(common:notification, {\"count\": 2}) angezeigt werden. Diese informieren dich über Änderungen in der laufenden $t(division). Du kannst sie entfernen indem du auf das Häckchen klickst sobald du diese gelesen hast.",
   "no_displays": "Keine Anzeigen gefunden",
-  "create_display_token": "Anzeigetoken erstellen"
+  "create_display_token": "Anzeigetoken erstellen",
+  "ranking_warning": "Es sind laufende Abteilungen vorhanden. Die Rangliste könnte unvollständig sein."
 }
