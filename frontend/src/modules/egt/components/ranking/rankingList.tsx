@@ -16,7 +16,6 @@ import {
   Grid,
   LinearProgress,
   Skeleton,
-  ToggleButton,
   Typography,
 } from "@mui/material";
 import { RankingTable } from "./rankingTable";
@@ -26,7 +25,7 @@ import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 import { InputClickEditable } from "../../../../components/InputClickEditable";
 import { usePdfDownload } from "../../../../hooks/usePdfDownload/usePdfDownload";
 import { RankingDocument } from "../../documents/rankingDocument/rankingDocument";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import WarningIcon from "@mui/icons-material/Warning";
 
 export type RankingListProps = {
@@ -36,7 +35,6 @@ export type RankingListProps = {
 
 export function RankingList(props: RankingListProps) {
   const { t } = useTranslation("common");
-  const [showIntermediate, setShowIntermediate] = useState(false);
   const { id } = useParams();
   const { data: competitionData, loading: competitionLoading } =
     useEgtRankingListCompetitionQuery({
