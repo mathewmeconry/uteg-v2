@@ -104,7 +104,10 @@ export class EGTStarterLinkService {
 
     const lineupResolved = await link.lineup;
     const divisionResolved = await link.division;
-    if((await lineupResolved.division).id !== divisionResolved.id) {
+    if (
+      lineupResolved &&
+      (await lineupResolved.division).id !== divisionResolved.id
+    ) {
       throw new BadRequestException('Lineup does not belong to division');
     }
 
@@ -197,6 +200,8 @@ export class EGTStarterLinkService {
 
   async onStarterLinkDelete(starterLink: StarterLink): Promise<void> {
     const link = await this.findByStarterLink(starterLink.id);
-    await this.egtStarterLinkRepository.softRemove(link);
+    if (link) {
+      await this.egtStarterLinkRepository.softRemove(link);
+    }
   }
 }
